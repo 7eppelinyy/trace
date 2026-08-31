@@ -1,0 +1,102 @@
+{
+  "generated_at": "2026-08-26T10:19:07.888811+00:00",
+  "note": "美国政策官方源（Commerce GovDelivery / BIS / Federal Register）",
+  "raw_items": [
+    {
+      "raw_item_id": "RAW-2a98db4a9ce64d70",
+      "source_id": "src_federal_register",
+      "title": "Significant New Use Rules on Certain Chemical Substances (24-5.5e)",
+      "url": "https://www.federalregister.gov/documents/2026/08/26/2026-17400/significant-new-use-rules-on-certain-chemical-substances-24-55e",
+      "canonical_url": "https://www.federalregister.gov/documents/2026/08/26/2026-17400/significant-new-use-rules-on-certain-chemical-substances-24-55e",
+      "published_at": "2026-08-25T20:00:00+00:00",
+      "fetched_at": "2026-08-26T10:04:23.099411+00:00"
+    },
+    {
+      "raw_item_id": "RAW-1ec363fd37c34233",
+      "source_id": "src_bis",
+      "title": "BIS Reaches Administrative Enforcement Settlement with Coastal PVA Technology, Inc.",
+      "url": "https://www.bis.doc.gov/press-release/bis-reaches-administrative-enforcement-settlement-coastal-pva-technology-inc.",
+      "canonical_url": "https://www.bis.doc.gov/press-release/bis-reaches-administrative-enforcement-settlement-coastal-pva-technology-inc.",
+      "published_at": null,
+      "fetched_at": "2026-08-26T10:04:21.182312+00:00"
+    },
+    {
+      "raw_item_id": "RAW-299d8d55fedd49d8",
+      "source_id": "src_bis",
+      "title": "Robert Bosch GmbH (Bosch) To Pay $36 Million Penalty to BIS for Violations Pertaining to Shipments to Huawei",
+      "url": "https://www.bis.doc.gov/press-release/robert-bosch-gmbh-bosch-pay-36-million-penalty-bis-violations-pertaining-shipments-huawei",
+      "canonical_url": "https://www.bis.doc.gov/press-release/robert-bosch-gmbh-bosch-pay-36-million-penalty-bis-violations-pertaining-shipments-huawei",
+      "published_at": null,
+      "fetched_at": "2026-08-26T10:04:21.182312+00:00"
+    }
+  ],
+  "events": [
+    {
+      "event_id": "EVT-20260826-3a9a33cd8111",
+      "title": "EPA发布关于某些化学物质的重要新用途规则",
+      "status": "official_confirmed",
+      "version": 1,
+      "first_seen_at": "2026-08-26T10:05:07.943944+00:00",
+      "role": "first"
+    },
+    {
+      "event_id": "EVT-20260826-c08e569efb03",
+      "title": "BIS与Coastal PVA Technology达成行政执法和解",
+      "status": "official_confirmed",
+      "version": 1,
+      "first_seen_at": "2026-08-26T10:04:53.544105+00:00",
+      "role": "first"
+    },
+    {
+      "event_id": "EVT-20260826-4c4b13d72c72",
+      "title": "Bosch pays $36 million penalty to BIS for violations related to Huawei shipments",
+      "status": "official_confirmed",
+      "version": 1,
+      "first_seen_at": "2026-08-26T10:04:51.936728+00:00",
+      "role": "first"
+    },
+    {
+      "event_id": "EVT-20260825-a7dea56d9fad",
+      "title": "Notice of Actions in Section 301 Investigations of Acts, Policies, and Practices of Various Economies Related to the Failure of Each Economy To Impose and Effectively Enforce a Prohibition on the Importation of Goods Produced With Forced Labor",
+      "status": "official_confirmed",
+      "version": 1,
+      "first_seen_at": "2026-08-25T18:32:56.709800+00:00",
+      "role": "first"
+    },
+    {
+      "event_id": "EVT-20260825-68d538d132b2",
+      "title": "Significant New Use Rules on Certain Chemical Substances (26-4)",
+      "status": "official_confirmed",
+      "version": 1,
+      "first_seen_at": "2026-08-25T18:32:56.698471+00:00",
+      "role": "first"
+    }
+  ],
+  "impacts_top": [
+    {
+      "event_id": "EVT-20260825-0ba5903eaace",
+      "security_id": "SEC-US-WDC",
+      "final_score": 7.52
+    },
+    {
+      "event_id": "EVT-20260825-ee81f74822da",
+      "security_id": "SEC-CN-688981.SH",
+      "final_score": 7.52
+    },
+    {
+      "event_id": "EVT-20260825-ee81f74822da",
+      "security_id": "SEC-US-MU",
+      "final_score": 7.52
+    },
+    {
+      "event_id": "EVT-20260825-ee81f74822da",
+      "security_id": "SEC-US-NVDA",
+      "final_score": 7.52
+    },
+    {
+      "event_id": "EVT-20260825-ee81f74822da",
+      "security_id": "SEC-US-SNDK",
+      "final_score": 7.52
+    }
+  ]
+}

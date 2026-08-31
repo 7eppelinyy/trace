@@ -1,0 +1,149 @@
+{
+  "generated_at": "2026-08-26T10:19:07.965263+00:00",
+  "note": "统一健康检查快照；derived_status 由字段派生（HEALTHY/DEGRADED/RATE_LIMITED/BROKEN/DISABLED）。Micron 官方 RSS 429/404 由 MicronCollector 自管：回退成功后仍记录 last_http_status。",
+  "health": [
+    {
+      "source_id": "src_bis",
+      "last_success_at": "2026-08-26T10:15:50.694515+00:00",
+      "last_failure_at": null,
+      "last_error": null,
+      "last_error_category": null,
+      "consecutive_failures": 0,
+      "last_item_at": "2026-08-26T00:00:00+00:00",
+      "last_http_status": null,
+      "derived_status": "HEALTHY"
+    },
+    {
+      "source_id": "src_cninfo",
+      "last_success_at": "2026-08-26T10:15:48.183652+00:00",
+      "last_failure_at": null,
+      "last_error": null,
+      "last_error_category": null,
+      "consecutive_failures": 0,
+      "last_item_at": "2026-08-25T16:00:00+00:00",
+      "last_http_status": null,
+      "derived_status": "HEALTHY"
+    },
+    {
+      "source_id": "src_commerce",
+      "last_success_at": "2026-08-26T10:15:55.993044+00:00",
+      "last_failure_at": null,
+      "last_error": null,
+      "last_error_category": null,
+      "consecutive_failures": 0,
+      "last_item_at": "2026-08-25T20:00:00+00:00",
+      "last_http_status": null,
+      "derived_status": "HEALTHY"
+    },
+    {
+      "source_id": "src_csrc",
+      "last_success_at": "2026-08-26T10:15:50.694515+00:00",
+      "last_failure_at": null,
+      "last_error": null,
+      "last_error_category": null,
+      "consecutive_failures": 0,
+      "last_item_at": "2026-08-26T00:00:00+00:00",
+      "last_http_status": null,
+      "derived_status": "DISABLED"
+    },
+    {
+      "source_id": "src_fed",
+      "last_success_at": "2026-08-26T10:15:55.993044+00:00",
+      "last_failure_at": null,
+      "last_error": null,
+      "last_error_category": null,
+      "consecutive_failures": 0,
+      "last_item_at": "2026-08-25T20:00:00+00:00",
+      "last_http_status": null,
+      "derived_status": "HEALTHY"
+    },
+    {
+      "source_id": "src_federal_register",
+      "last_success_at": "2026-08-26T10:15:55.993044+00:00",
+      "last_failure_at": null,
+      "last_error": null,
+      "last_error_category": null,
+      "consecutive_failures": 0,
+      "last_item_at": "2026-08-25T20:00:00+00:00",
+      "last_http_status": null,
+      "derived_status": "HEALTHY"
+    },
+    {
+      "source_id": "src_micron_ir",
+      "last_success_at": "2026-08-26T10:15:46.056544+00:00",
+      "last_failure_at": "2026-08-26T10:15:44.877869+00:00",
+      "last_error": null,
+      "last_error_category": null,
+      "consecutive_failures": 0,
+      "last_item_at": null,
+      "last_http_status": 404,
+      "derived_status": "HEALTHY"
+    },
+    {
+      "source_id": "src_miit",
+      "last_success_at": "2026-08-26T10:15:50.694515+00:00",
+      "last_failure_at": null,
+      "last_error": null,
+      "last_error_category": null,
+      "consecutive_failures": 0,
+      "last_item_at": "2026-08-26T00:00:00+00:00",
+      "last_http_status": null,
+      "derived_status": "HEALTHY"
+    },
+    {
+      "source_id": "src_mofcom",
+      "last_success_at": "2026-08-26T10:15:50.694515+00:00",
+      "last_failure_at": null,
+      "last_error": null,
+      "last_error_category": null,
+      "consecutive_failures": 0,
+      "last_item_at": "2026-08-26T00:00:00+00:00",
+      "last_http_status": null,
+      "derived_status": "HEALTHY"
+    },
+    {
+      "source_id": "src_nvidia_ir",
+      "last_success_at": "2026-08-26T10:15:39.103669+00:00",
+      "last_failure_at": null,
+      "last_error": null,
+      "last_error_category": null,
+      "consecutive_failures": 0,
+      "last_item_at": "2026-08-25T07:30:48+00:00",
+      "last_http_status": null,
+      "derived_status": "HEALTHY"
+    },
+    {
+      "source_id": "src_sec_edgar",
+      "last_success_at": "2026-08-26T10:15:38.002517+00:00",
+      "last_failure_at": null,
+      "last_error": null,
+      "last_error_category": null,
+      "consecutive_failures": 0,
+      "last_item_at": "2026-08-17T00:00:00+00:00",
+      "last_http_status": null,
+      "derived_status": "HEALTHY"
+    },
+    {
+      "source_id": "src_sndk_ir",
+      "last_success_at": "2026-08-26T10:15:39.744534+00:00",
+      "last_failure_at": null,
+      "last_error": null,
+      "last_error_category": null,
+      "consecutive_failures": 0,
+      "last_item_at": "2026-08-25T00:00:00+00:00",
+      "last_http_status": null,
+      "derived_status": "HEALTHY"
+    },
+    {
+      "source_id": "src_stats_cn",
+      "last_success_at": "2026-08-26T10:15:50.694515+00:00",
+      "last_failure_at": null,
+      "last_error": null,
+      "last_error_category": null,
+      "consecutive_failures": 0,
+      "last_item_at": "2026-08-26T00:00:00+00:00",
+      "last_http_status": null,
+      "derived_status": "DISABLED"
+    }
+  ]
+}

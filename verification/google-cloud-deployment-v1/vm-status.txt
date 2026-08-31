@@ -1,0 +1,7 @@
+instance: trace-vm
+zone: us-central1-a
+Linux trace-vm 6.8.0-1066-gcp #74~22.04.1-Ubuntu SMP Fri Aug  7 21:51:15 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux
+Description:	Ubuntu 22.04.5 LTS
+ 13:24:58 up 2 min,  0 users,  load average: 0.25, 0.35, 0.16
+active
+enabled

@@ -1,0 +1,8 @@
+total 3524
+drwxrwxr-x 2 Zeppelin Zeppelin    4096 Aug 26 13:18 .
+drwxr-xr-x 9 Zeppelin Zeppelin    4096 Aug 26 12:33 ..
+-rw-r--r-- 1 Zeppelin Zeppelin 2093056 Aug 26 13:15 trace.db
+-rw-r--r-- 1 Zeppelin Zeppelin   32768 Aug 26 13:24 trace.db-shm
+-rw-r--r-- 1 Zeppelin Zeppelin 1466752 Aug 26 13:24 trace.db-wal
+tables: ['schema_version', 'source', 'raw_item', 'event', 'event_source', 'event_revision', 'security', 'entity_alias', 'industry_edge', 'event_impact', 'market_snapshot', 'user', 'watchlist', 'alert_rule', 'alert_delivery', 'daily_digest', 'source_health', 'collector_cursor', 'human_review']
+raw_item: 222 event: 193 cursors: 8 source_health: 13

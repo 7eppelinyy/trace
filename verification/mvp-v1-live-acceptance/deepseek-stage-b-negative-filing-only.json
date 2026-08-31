@@ -1,0 +1,112 @@
+{
+  "event_id": "EVT-20260825-3dc67608b433",
+  "event_title": "SNDK 10-K: 10-K",
+  "evidence_note": "Evidence 仅含 SEC filing 元数据（无正文、无业务事实）",
+  "llm_raw_structured_output": [],
+  "impacts": [
+    {
+      "security_id": "SEC-US-AAPL",
+      "direction": "uncertain",
+      "confidence": 0.1,
+      "final_score": 5.22
+    },
+    {
+      "security_id": "SEC-US-MU",
+      "direction": "uncertain",
+      "confidence": 0.1,
+      "final_score": 5.22
+    },
+    {
+      "security_id": "SEC-US-SNDK",
+      "direction": "uncertain",
+      "confidence": 0.1,
+      "final_score": 5.22
+    },
+    {
+      "security_id": "SEC-CN-301308.SZ",
+      "direction": "uncertain",
+      "confidence": 0.1,
+      "final_score": 4.38
+    },
+    {
+      "security_id": "SEC-CN-688525.SH",
+      "direction": "uncertain",
+      "confidence": 0.1,
+      "final_score": 4.38
+    },
+    {
+      "security_id": "SEC-CN-688981.SH",
+      "direction": "uncertain",
+      "confidence": 0.1,
+      "final_score": 4.38
+    },
+    {
+      "security_id": "SEC-US-NVDA",
+      "direction": "uncertain",
+      "confidence": 0.1,
+      "final_score": 4.38
+    },
+    {
+      "security_id": "SEC-CN-300308.SZ",
+      "direction": "uncertain",
+      "confidence": 0.1,
+      "final_score": 3.68
+    },
+    {
+      "security_id": "SEC-CN-300394.SZ",
+      "direction": "uncertain",
+      "confidence": 0.1,
+      "final_score": 3.68
+    },
+    {
+      "security_id": "SEC-CN-300502.SZ",
+      "direction": "uncertain",
+      "confidence": 0.1,
+      "final_score": 3.68
+    },
+    {
+      "security_id": "SEC-CN-688008.SH",
+      "direction": "uncertain",
+      "confidence": 0.1,
+      "final_score": 3.68
+    },
+    {
+      "security_id": "SEC-US-AMD",
+      "direction": "uncertain",
+      "confidence": 0.1,
+      "final_score": 3.68
+    },
+    {
+      "security_id": "SEC-US-AMZN",
+      "direction": "uncertain",
+      "confidence": 0.1,
+      "final_score": 3.68
+    },
+    {
+      "security_id": "SEC-US-GOOGL",
+      "direction": "uncertain",
+      "confidence": 0.1,
+      "final_score": 3.68
+    },
+    {
+      "security_id": "SEC-US-META",
+      "direction": "uncertain",
+      "confidence": 0.1,
+      "final_score": 3.68
+    },
+    {
+      "security_id": "SEC-US-MSFT",
+      "direction": "uncertain",
+      "confidence": 0.1,
+      "final_score": 3.68
+    },
+    {
+      "security_id": "SEC-US-TSM",
+      "direction": "uncertain",
+      "confidence": 0.1,
+      "final_score": 3.68
+    }
+  ],
+  "rule_check": "direction 必须为 neutral/uncertain（不得因 filing 元数据输出 bullish/bearish）",
+  "violations": []
+}

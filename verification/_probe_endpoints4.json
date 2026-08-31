@@ -1,0 +1,205 @@
+{
+  "sandisk_rss_chrome": {
+    "url": "https://investor.sandisk.com/rss.xml",
+    "status": 200,
+    "latency_ms": 4617,
+    "bytes": 700253,
+    "etag": "\"1787612217\"",
+    "last_modified": "Mon, 24 Aug 2026 22:56:57 GMT",
+    "snippet": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<rss xmlns:dc=\"http://purl.org/dc/elements/1.1/\" version=\"2.0\" xml:base=\"https://investor.sandisk.com/\">\n  <channel>\n    <title>Sandisk Corporation</title>\n    <link>https://investor.sandisk.com/</link>\n    <description/>\n    <language>en</language>\n    \n    <item>\n  <title>Sandisk Details Growth Strategy and Long-Term Financial Model at 2026 Investor Day</title>\n  <link>https://investor.sandisk.com/news-releases/news-release-details/sandisk-details-growth-strategy-and-long-term-financial-model</link>\n  <description>&lt;span class=\"field field--name-title field--type-string field--label-hidden\"&gt;Sandisk Details Growth Strategy and Long-Term Financial Model at 2026 Investor Day&lt;/span&gt;\n&lt;span class=\"field field--name- field--type-entity-reference field--label-hidden\"&gt;&lt;span&gt;Content Import&lt;/span&gt;&lt;/span&gt;\n&lt;span class=\"field field--name-created field--type-created field--label-hidden\"&gt;&lt;time datetime=\"2026-08-13T10:59:27-04:00\" title=\"Thu, 08/13/2026 - 10:59\" timezone=\"America/New_York\" class=\"datetime\"&gt;Thu, 08/13/2026 - 10:59&lt;/time&gt;\n&lt;/span&gt;\n\n&lt;div class=\"field field--name-field-nir-news-title field--type-string field--label-hidden\"&gt;\n        &lt;div class=\"field__item\"&gt;Sandisk Details Growth Strategy and Long-Term Financial Model at 2026 Investor Day&lt;/div&gt;\n    &lt;/div&gt;\n\n&lt;div class=\"field field--name-field-nir-news-date field--type-datetimezone field--label-hidden\"&gt;\n          &lt;div class=\"field__item\"&gt;August 13, 2026&lt;/div&gt;\n          &lt;/div&gt;\n\n&lt;div class=\"field field--name-field-nir-news-type field--type-entity-reference field--label-hidden\"&gt;\n        &lt;div class=\"field__item\"&gt;&lt;a href=\"https://investor.sandisk.com/taxonomy/term/3886\" hreflang=\"en\"&gt;General&lt;/a&gt;&lt;/div&gt;\n    &lt;/div&gt;\n      &lt;ul class=\"bwlistdisc\"&gt;\n&lt;li&gt;\n&lt;i&gt;Leading NAND technology roadmap and durable customer partnerships to drive sustainable long-term value&lt;/i&gt;\n\n&lt;/li&gt;\n&lt;li&gt;\n&lt;i&gt;Financial model from FY2028 through FY2030 optimized for growth, sustainability and shareholder return&lt;/i&gt;\n\n&lt;/li&gt;\n&lt;li&gt;\n&lt;i&gt;Company expects to return 100 percent of excess cash to shareholders after investing in the business&lt;/i&gt;\n\n&lt;/li&gt;\n&lt;/ul&gt;\n&lt;p&gt;    &lt;location value=\"LU/us.ny.nyc\" idsrc=\"xmltag.org\"&gt;NEW YORK&lt;/location&gt;--(BUSINESS WIRE)--Aug. 13, 2026--\nSandisk (Nasdaq: SNDK) today highlighted its long-term growth strategy and sustainable long-term financial model at its 2026 Investor Day, Sandisk In Focus. At the event, Sandisk outlined key areas of product and technology innovation and developments in its business model. A replay of the presentation will be available on Sandisk’s &lt;a rel=\"nofollow\" href=\"https://cts.businesswire.com/ct/CT?id=smartlink&amp;amp;url=http%3A%2F%2Finvestor.sandisk.com%2F&amp;amp;esheet=54588815&amp;amp;newsitemid=20260813469901&amp;amp;"
+  },
+  "sandisk_news_list": {
+    "url": "https://investor.sandisk.com/news-events/news-releases",
+    "error": "ConnectError: [WinError 10054] 远程主机强迫关闭了一个现有的连接。",
+    "latency_ms": 28925
+  },
+  "mofcom_rcxwfb": {
+    "url": "https://www.mofcom.gov.cn/xwfb/rcxwfb/index.html",
+    "status": 200,
+    "latency_ms": 217,
+    "bytes": 7481,
+    "etag": "\"6a881468-2141\"",
+    "last_modified": "Fri, 21 Aug 2026 09:03:36 GMT",
+    "snippet": "<!DOCTYPE html>\n<!--[if lte IE 7 ]><html lang=\"zh-cn\" class=\"no-js ie lte7 lte8 lte9 \"> <![endif]-->\n<!--[if IE 8 ]><html lang=\"zh-cn\" class=\"no-js ie ie8 lte8 lte9 \"> <![endif]-->\n<!--[if IE 9 ]><html lang=\"zh-cn\" class=\"no-js ie ie9 lte9 \"> <![endif]-->\n<!--[if (gt IE 9)|!(IE)]><!-->\n<html lang=\"zh-cn\" class=\"no-js\"><!--<![endif]-->\n<head>\n<meta charset=\"utf-8\" />\n<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge,chrome=1\" />\n<meta name=\"renderer\" content=\"webkit\" />\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n\n<link href=\"/cms_files/webshangwubu/tplobject/defaultSet/c03a3c0790b842539760cded102bf99a/images/edi.base.min.css\" rel=\"stylesheet\">\n<link href=\"/cms_files/webshangwubu/tplobject/defaultSet/c03a3c0790b842539760cded102bf99a/images/edi.reset.min.css\" rel=\"stylesheet\">\n<link href=\"/cms_files/webshangwubu/tplobject/defaultSet/c03a3c0790b842539760cded102bf99a/images/edi.function.min.css\" rel=\"stylesheet\">\n<link href=\"/cms_files/webshangwubu/tplobject/defaultSet/c03a3c0790b842539760cded102bf99a/images/module.css\" rel=\"stylesheet\">\n<link href=\"/cms_files/webshangwubu/tplobject/defaultSet/c03a3c0790b842539760cded102bf99a/images/app.css\" rel=\"stylesheet\">\n<link rel=\"stylesheet\" href=\"/cms_files/webshangwubu/tplobject/defaultSet/c03a3c0790b842539760cded102bf99a/images/barrierfree.css\">\n</link></link></link></link></link></link></meta><script src=\"/cms_files/default/script/jslib/jquery.js\"></script>\r\n <script src=\"/cms_files/default/script/jslib/jquery.cookie.js\"></script>\r\n <script src=\"/cms_files/default/script/layui/layui.all.js\"></script>\r\n <script src=\"/cms_files/default/script/layui/layer/layer.js\"></script>\r\n <script src=\"/script/webglobal.js\"></script>\r\n <script src=\"/plugins/libs/require.js\"></script>\r\n <script src=\"/plugins/libs/load.js\"></script>\r\n <script src=\"/script/webgray.js\"></script>\r\n <link rel=\"stylesheet\" href=\"/cms_files/default/css/iconfont.css\" />\r\n<link rel=\"stylesheet\" href=\"/cms_files/default/script/layui/css/layui.css\" />\r\n<title>日常新闻发布</title>\n<meta name=\"ColId\" content=\"95d89972d8aa4fcea511701cd0f212d9\">\n<meta name=\"SiteName\" content=\"中华人民共和国商务部\">\n<meta name=\"SiteDomain\" content=\"www.mofcom.gov.cn\">\n<meta name=\"SiteIDCode\" content=\"bm22000001\">\n<meta name=\"ColumnName\" content=\"日常新闻发布\">\n<meta name=\"ColumnType\" content=\"日常新闻发布\">\n<meta name=\"ColumnDescription\" content=\"\">\n<meta name=\"ColumnKeywords\" content=\"日常新闻发布\">\n<meta name=\"server\" content=\"www.mofcom.gov.cn/xwfb/rcxwfb/index.html\">\n<meta name=\"MakeTime\" content=\"2026-08-21 17:03:36\">\n\n<meta id=\"pagetype\" content=\"2\">\n</meta></meta></meta></meta></meta></meta></meta></meta></meta></meta></meta></head>\n<body><div id='barrierfree_container'>\n<script src=\"/cms_files/filemanager/1077459795/script/20234/3e33840dbbbb43fcb5d037e7c96e874c.js\" type=\"text/javascript\" charset=\"utf-8\"></script>\t<section class=\"main\">\n\t\t<section class=\"container f-pr f-ptb0\">\n            <div class=\"row wms-con\">\n                <div class=\"col-lg-9 jgLBox\">\n\t\t\t\t\t<h2 cl"
+  },
+  "mofcom_rcxwfb_entries": [
+    {
+      "href": "https://www.mofcom.gov.cn/zfxxgk/zfwzgznb/art/2026/art_a32f1f3a3adb431993d9cf0924743845.html",
+      "text": "2025年度网站工作年度报表"
+    }
+  ],
+  "mofcom_rcxwfb_dates": [
+    "2026-08-21"
+  ],
+  "mofcom_rcxwfb_snippet_tail": "ep.shtml\" title=\"《区域全面经济伙伴关系协定》（RCEP）\" target=\"_blank\">《区域全面经济伙伴关系协定》（RCEP）</a></li>\n<li><a href=\"https://www.ciie.org/zbh/index.html\" title=\"中国国际进口博览会\" target=\"_blank\">中国国际进口博览会</a></li>\n<li><a href=\"https://scyxltfz.mofcom.gov.cn/\" title=\"市场运行与流通发展服务平台\" target=\"_blank\">市场运行与流通发展服务平台</a></li>\n<li><a href=\"https://www.mofcom.gov.cn/zfxxgk/zfwzgznb/art/2026/art_a32f1f3a3adb431993d9cf0924743845.html\" title=\"2025年度网站工作年度报表\" target=\"_blank\">2025年度网站工作年度报表</a></li>\n\t\t\t\t\t\t\t</ul>\n\t\t\t\t\t\t</section>\n\t\t\t\t\t</section>\n\t\t\t\t\t<section class=\"rColumnBox f-mt20\">\n\t\t\t\t\t\t<header class=\"columnTitle_01\">\n\t\t\t\t\t\t\t<h3>机构子站专题</h3>\t\t\t\t\t\t</header>\n\t\t\t\t\t\t<section class=\"con f-mt15\">\n\t\t\t\t\t\t\t<ul class=\"txtList_02\">\n<li><a href=\"http://yzs.mofcom.gov.cn/zrjjgcdh/index.html\" title=\"中日经济高层对话\" target=\"_blank\">中日经济高层对话</a></li>\n<li><a href=\"http://wms.mofcom.gov.cn/ztxx/ncpmyzt/index.html\" title=\"农产品贸易专题\" target=\"_blank\">农产品贸易专题</a></li>\n<li><a href=\"/cms_files/filemanager/ckzn/index.shtml\" title=\"出口商品技术指南\" target=\"_blank\">出口商品技术指南</a></li>\n\t\t\t\t\t\t\t</ul>\n\t\t\t\t\t\t</section>\n\t\t\t\t\t</section>\n\t\t\t\t</aside>\n            </div>\n<script src=\"/cms_files/filemanager/1077459795/script/20234/b360d82fa08745128ba0ead328d879c1.js\" type=\"text/javascript\" charset=\"utf-8\"></script>\t\t</section>\n\t</section>\n<script src=\"/cms_files/filemanager/1077459795/script/20233/d9e950c10e9041749d2f4a76d4c986f7.js\" type=\"text/javascript\" charset=\"utf-8\"></script>\t<script type=\"text/javascript\"></script>\n\t<script>\n\t\n\t</script>\n</div></body>\n</html>",
+  "mofcom_xwfyrth": {
+    "url": "https://www.mofcom.gov.cn/xwfb/xwfyrth/index.html",
+    "status": 200,
+    "latency_ms": 103,
+    "bytes": 7487,
+    "etag": "\"6a79a3bd-2151\"",
+    "last_modified": "Mon, 10 Aug 2026 10:11:09 GMT",
+    "snippet": "<!DOCTYPE html>\n<!--[if lte IE 7 ]><html lang=\"zh-cn\" class=\"no-js ie lte7 lte8 lte9 \"> <![endif]-->\n<!--[if IE 8 ]><html lang=\"zh-cn\" class=\"no-js ie ie8 lte8 lte9 \"> <![endif]-->\n<!--[if IE 9 ]><html lang=\"zh-cn\" class=\"no-js ie ie9 lte9 \"> <![endif]-->\n<!--[if (gt IE 9)|!(IE)]><!-->\n<html lang=\"zh-cn\" class=\"no-js\"><!--<![endif]-->\n<head>\n<meta charset=\"utf-8\" />\n<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge,chrome=1\" />\n<meta name=\"renderer\" content=\"webkit\" />\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n\n<link href=\"/cms_files/webshangwubu/tplobject/defaultSet/c03a3c0790b842539760cded102bf99a/images/edi.base.min.css\" rel=\"stylesheet\">\n<link href=\"/cms_files/webshangwubu/tplobject/defaultSet/c03a3c0790b842539760cded102bf99a/images/edi.reset.min.css\" rel=\"stylesheet\">\n<link href=\"/cms_files/webshangwubu/tplobject/defaultSet/c03a3c0790b842539760cded102bf99a/images/edi.function.min.css\" rel=\"stylesheet\">\n<link href=\"/cms_files/webshangwubu/tplobject/defaultSet/c03a3c0790b842539760cded102bf99a/images/module.css\" rel=\"stylesheet\">\n<link href=\"/cms_files/webshangwubu/tplobject/defaultSet/c03a3c0790b842539760cded102bf99a/images/app.css\" rel=\"stylesheet\">\n<link rel=\"stylesheet\" href=\"/cms_files/webshangwubu/tplobject/defaultSet/c03a3c0790b842539760cded102bf99a/images/barrierfree.css\">\n</link></link></link></link></link></link></meta><script src=\"/cms_files/default/script/jslib/jquery.js\"></script>\r\n <script src=\"/cms_files/default/script/jslib/jquery.cookie.js\"></script>\r\n <script src=\"/cms_files/default/script/layui/layui.all.js\"></script>\r\n <script src=\"/cms_files/default/script/layui/layer/layer.js\"></script>\r\n <script src=\"/script/webglobal.js\"></script>\r\n <script src=\"/plugins/libs/require.js\"></script>\r\n <script src=\"/plugins/libs/load.js\"></script>\r\n <script src=\"/script/webgray.js\"></script>\r\n <link rel=\"stylesheet\" href=\"/cms_files/default/css/iconfont.css\" />\r\n<link rel=\"stylesheet\" href=\"/cms_files/default/script/layui/css/layui.css\" />\r\n<title>新闻发言人谈话</title>\n<meta name=\"ColId\" content=\"625b494d0adc47c885f5e1a18ee42b94\">\n<meta name=\"SiteName\" content=\"中华人民共和国商务部\">\n<meta name=\"SiteDomain\" content=\"www.mofcom.gov.cn\">\n<meta name=\"SiteIDCode\" content=\"bm22000001\">\n<meta name=\"ColumnName\" content=\"新闻发言人谈话\">\n<meta name=\"ColumnType\" content=\"新闻发言人谈话\">\n<meta name=\"ColumnDescription\" content=\"\">\n<meta name=\"ColumnKeywords\" content=\"新闻发言人谈话\">\n<meta name=\"server\" content=\"www.mofcom.gov.cn/xwfb/xwfyrth/index.html\">\n<meta name=\"MakeTime\" content=\"2026-08-10 18:11:09\">\n\n<meta id=\"pagetype\" content=\"2\">\n</meta></meta></meta></meta></meta></meta></meta></meta></meta></meta></meta></head>\n<body><div id='barrierfree_container'>\n<script src=\"/cms_files/filemanager/1077459795/script/20234/3e33840dbbbb43fcb5d037e7c96e874c.js\" type=\"text/javascript\" charset=\"utf-8\"></script>\t<section class=\"main\">\n\t\t<section class=\"container f-pr f-ptb0\">\n            <div class=\"row wms-con\">\n                <div class=\"col-lg-9 jgLBox\">\n\t\t\t\t\t<"
+  },
+  "mofcom_xwfyrth_entries": [
+    {
+      "href": "https://www.mofcom.gov.cn/zfxxgk/zfwzgznb/art/2026/art_a32f1f3a3adb431993d9cf0924743845.html",
+      "text": "2025年度网站工作年度报表"
+    }
+  ],
+  "miit_api": {
+    "url": "https://www.miit.gov.cn/api-gateway/jpaas-publish-server/front/page/build/unit",
+    "status": 200,
+    "latency_ms": 145,
+    "bytes": 85,
+    "etag": null,
+    "last_modified": null,
+    "snippet": "{\"roles\":null,\"permissions\":null,\"success\":false,\"code\":\"200\",\"data\":{},\"message\":\"\"}"
+  },
+  "miit_api_post": {
+    "status": 500,
+    "snippet": "{\"roles\":null,\"permissions\":null,\"code\":\"200\",\"success\":false,\"data\":{},\"message\":\"不支持的HTTP方法\"}"
+  },
+  "miit_sjdt_full": {
+    "url": "https://www.miit.gov.cn/xwdt/gxdt/sjdt/index.html",
+    "status": 200,
+    "latency_ms": 165,
+    "bytes": 5112,
+    "etag": "W/\"66ec5261-14d8\"",
+    "last_modified": "Thu, 19 Sep 2024 16:33:37 GMT",
+    "snippet": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\n<head>\n    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=8\">\n    \n\t<META HTTP-EQUIV=\"pragma\" CONTENT=\"no-cache\"><META HTTP-EQUIV=\"Cache-Control\" CONTENT=\"no-store, must-revalidate\">\n</META></META></meta></meta><script src=\"/cms_files/default/script/jslib/jquery.js\"></script>\r\n <script src=\"/cms_files/default/script/jslib/jquery.cookie.js\"></script>\r\n <script src=\"/cms_files/default/script/layui/layui.all.js\"></script>\r\n <script src=\"/cms_files/default/script/layui/layer/layer.js\"></script>\r\n <script src=\"/script/webglobal.js\"></script>\r\n <script src=\"/plugins/libs/require.js\"></script>\r\n <script src=\"/plugins/libs/load.js\"></script>\r\n <script src=\"/script/webgray.js\"></script>\r\n <link rel=\"stylesheet\" href=\"/cms_files/default/css/iconfont.css\" />\r\n<link rel=\"stylesheet\" href=\"/cms_files/default/script/layui/css/layui.css\" />\r\n<title>司局动态</title>\n<meta name=\"MakeTime\" content=\"2024-09-20 00:33:33\">\n<meta name=\"SiteName\" content=\"中华人民共和国工业和信息化部\">\n<meta name=\"SiteDomain\" content=\"www.miit.gov.cn\">\n<meta name=\"SiteIDCode\" content=\"bm07000001\">\n<meta name=\"ColumnName\" content=\"司局动态\">\n<meta name=\"ColumnType\" content=\"司局动态\">\n<meta name=\"ColumnDescription\" content=\"司局动态\">\n<meta name=\"ColumnKeywords\" content=\"司局动态\">\n<meta id=\"pagetype\" content=\"2\">\n</meta></meta></meta></meta></meta></meta></meta></meta></meta></head>\n<body id=\"page_type\" alt=\"列表页\" class=\"lmy-wrapper ty_lmy\">\n<link type=\"text/css\" href=\"/cms_files/webmiit/tplobject/gxbsy/4bdaeb5e04be42ba8fe159b8f7e26868/images/layout.css\" rel=\"stylesheet\" />\n<link href=\"/cms_files/webmiit/tplobject/gxbsy/4bdaeb5e04be42ba8fe159b8f7e26868/images/main.css\" type=\"text/css\" rel=\"stylesheet\">\n<script type=\"text/javascript\" src=\"/cms_files/webmiit/tplobject/gxbsy/4bdaeb5e04be42ba8fe159b8f7e26868/images/pdy_tyyr.js\"></script>\n<div class=\"w1100 head clearfix\"><script src=\"/cms_files/filemanager/script/201911/6b79016112cc4d66aeb22aa6d9d999dc.js\" type=\"text/javascript\" charset=\"utf-8\"></script>\n</div>\n<script src=\"/cms_files/filemanager/script/20201/f77a47db235946388a3ee648b566c5ac.js\" type=\"text/javascript\" charset=\"utf-8\"></script>\n<div style=\"background:url(/cms_files/webmiit/tplobject/gxbsy/4bdaeb5e04be42ba8fe159b8f7e26868/images/7037090.png) repeat-x; width:100%; height:10px;\"></div>\n\n<div class=\"w980 center mnav\">\n\t<span>\n\t\t\t<a href=\"/index.html\">首页</a> &#xa0;>&#xa0; \n\t\t\t<a href=\"/xwfb/index.html\">新闻发布</a> &#xa0;>&#xa0; \n\t\t\t<a href=\"/xwfb/gzdt/index.html\">工作动态</a> &#xa0;>&#xa0; \n\t\t\t<a href=\"/xwdt/gxdt/sjdt/index.html\">司局动态</a>\n\t</span>\n</div>\n\n<div class=\"clist w1100 center\">\n    <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">\n        <tr>\n            <td width=\"249\" bgcolor=\"\" valign=\"top\">\n\n                <di"
+  },
+  "miit_page_data_attrs": [],
+  "miit_unit_calls": [
+    "build/unit"
+  ],
+  "miit_js_params": [
+    [
+      "webId",
+      "8d828e408d90447786ddbe128d495e9e"
+    ],
+    [
+      "webId",
+      "8d828e408d90447786ddbe128d495e9e"
+    ],
+    [
+      "pageId",
+      "028da85b0dbd4c9cb96fd5f421cd32b8"
+    ]
+  ],
+  "bis_news_updates": {
+    "url": "https://media.bis.gov/news-updates",
+    "status": 200,
+    "latency_ms": 2147,
+    "bytes": 3639753,
+    "etag": null,
+    "last_modified": null,
+    "snippet": "<!DOCTYPE html><html lang=\"en\"><head><meta charSet=\"utf-8\" data-next-head=\"\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1, shrink-to-fit=no\" data-next-head=\"\"/><title data-next-head=\"\">News and Updates | Bureau of Industry and Security</title><meta name=\"robots\" content=\"index,follow\" data-next-head=\"\"/><meta name=\"description\" content=\"Website of the United States Bureau of Industry and Security\" data-next-head=\"\"/><meta property=\"og:title\" content=\"News and Updates | Bureau of Industry and Security\" data-next-head=\"\"/><meta property=\"og:description\" content=\"Website of the United States Bureau of Industry and Security\" data-next-head=\"\"/><meta property=\"og:url\" content=\"https://media.bis.gov//news-updates\" data-next-head=\"\"/><meta property=\"og:type\" content=\"website\" data-next-head=\"\"/><link rel=\"canonical\" href=\"https://media.bis.gov//news-updates\" data-next-head=\"\"/><link rel=\"preload\" href=\"/_next/static/media/e4af272ccee01ff0-s.p.woff2\" as=\"font\" type=\"font/woff2\" crossorigin=\"anonymous\" data-next-font=\"size-adjust\"/><link rel=\"preload\" href=\"/_next/static/media/cf9548a654a0290e-s.p.woff2\" as=\"font\" type=\"font/woff2\" crossorigin=\"anonymous\" data-next-font=\"size-adjust\"/><link rel=\"preload\" href=\"/_next/static/css/0d7518c4907161a5.css\" as=\"style\"/><link rel=\"stylesheet\" href=\"/_next/static/css/0d7518c4907161a5.css\" data-n-g=\"\"/><noscript data-n-css=\"\"></noscript><script defer=\"\" noModule=\"\" src=\"/_next/static/chunks/polyfills-42372ed130431b0a.js\"></script><script src=\"/_next/static/chunks/webpack-b1dd8fe4c4bf3adc.js\" defer=\"\"></script><script src=\"/_next/static/chunks/framework-ba6a58d0e2bd392d.js\" defer=\"\"></script><script src=\"/_next/static/chunks/main-497cbd65d10ac1a3.js\" defer=\"\"></script><script src=\"/_next/static/chunks/pages/_app-df436e9f071a3c50.js\" defer=\"\"></script><script src=\"/_next/static/chunks/4655-2caaf0e3d0711f38.js\" defer=\"\"></script><script src=\"/_next/static/chunks/2867-0f645b6509d8bd84.js\" defer=\"\"></script><script src=\"/_next/static/chunks/6649-0eabeed1dda19376.js\" defer=\"\"></script><script src=\"/_next/static/chunks/pages/news-updates/%5B%5B...page%5D%5D-e7e6bb5662678d4a.js\" defer=\"\"></script><script src=\"/_next/static/GnZKUGTRbZraXCLAtftBY/_buildManifest.js\" defer=\"\"></script><script src=\"/_next/static/GnZKUGTRbZraXCLAtftBY/_ssgManifest.js\" defer=\"\"></script></head><body><link rel=\"preload\" as=\"image\" href=\"/_next/static/media/us_flag_small.ad6eb982.png\"/><script src=\"https://touchpoints.app.cloud.gov/touchpoints/4a04fc30.js\" async=\"\"></script><div id=\"__next\"><div class=\"__variable_f367f3 __variable_68a839 font-overpass antialiased\"><div class=\"bg-[#f0f0f0] w-full\"><div class=\"max-w-7xl flex flex-wrap mx-auto px-8 items-center\"><img src=\"/_next/static/media/us_flag_small.ad6eb982.png\" class=\"w-4 h-[11px] mr-2\"/><div class=\"text-[.8rem]\"><p>An official website of the United States government</p></div><button class=\"text-[.8rem] text-[#005ea2] ml-2 underline\">Here&#x27;s how you know<span class=\"m"
+  },
+  "bis_news_entries": [
+    {
+      "href": "/news-updates#main-content",
+      "text": "Skip to main content"
+    },
+    {
+      "href": "/news-updates",
+      "text": "Regulations"
+    },
+    {
+      "href": "/news-updates",
+      "text": "Licensing"
+    },
+    {
+      "href": "/news-updates",
+      "text": "Learn & Support"
+    },
+    {
+      "href": "/news-updates",
+      "text": "News & Updates"
+    },
+    {
+      "href": "/news-updates",
+      "text": "Enforcement"
+    },
+    {
+      "href": "/news-updates",
+      "text": "About BIS"
+    },
+    {
+      "href": "/press-release/bis-reaches-administrative-enforcement-settlement-container-manufacturing-ltd.",
+      "text": "BIS Reaches Administrative Enforcement Settlement with Container Manufacturing Ltd."
+    },
+    {
+      "href": "/press-release/bis-reaches-administrative-enforcement-settlement-plexon-inc.",
+      "text": "BIS Reaches Administrative Enforcement Settlement with Plexon, Inc."
+    },
+    {
+      "href": "/press-release/department-commerce-streamlines-export-controls-sound-suppressors",
+      "text": "Department of Commerce Streamlines Export Controls for Sound Suppressors"
+    },
+    {
+      "href": "/press-release/department-commerce-eases-export-controls-uae",
+      "text": "Department of Commerce Eases Export Controls for UAE"
+    },
+    {
+      "href": "/press-release/robert-bosch-gmbh-bosch-pay-36-million-penalty-bis-violations-pertaining-shipments-huawei",
+      "text": "Robert Bosch GmbH (Bosch) To Pay $36 Million Penalty to BIS for Violations Pertaining to Shipments t"
+    },
+    {
+      "href": "/press-release/bis-reaches-administrative-enforcement-settlement-coastal-pva-technology-inc.",
+      "text": "BIS Reaches Administrative Enforcement Settlement with Coastal PVA Technology, Inc."
+    },
+    {
+      "href": "/press-release/bis-reaches-administrative-enforcement-settlement-solventum-corporation-order",
+      "text": "BIS Reaches Administrative Enforcement Settlement with Solventum Corporation Order"
+    },
+    {
+      "href": "/press-release/bis-reaches-administrative-enforcement-settlement-teledyne-flir-llc-its-affiliates-flir-optoelectronic",
+      "text": "BIS Reaches Administrative Enforcement Settlement with Teledyne FLIR LLC and its affiliates, FLIR Op"
+    },
+    {
+      "href": "/press-release/bis-reaches-administrative-enforcement-settlement-vizicom-ict",
+      "text": "BIS Reaches Administrative Enforcement Settlement with Vizicom ICT"
+    },
+    {
+      "href": "/press-release/applied-materials-pay-252-million-penalty-bis-illegally-exporting-semiconductor-manufacturing-equipment",
+      "text": "Applied Materials to Pay $252 Million Penalty to BIS for Illegally Exporting Semiconductor Manufactu"
+    },
+    {
+      "href": "/press-release/department-commerce-revises-license-review-policy-semiconductors-exported-china",
+      "text": "Department of Commerce Revises License Review Policy for Semiconductors Exported to China"
+    },
+    {
+      "href": "/press-release/bis-imposes-administrative-penalty-exyte-management-gmbh",
+      "text": "BIS Imposes Administrative Penalty on Exyte Management GmbH"
+    },
+    {
+      "href": "/press-release/bis-reaches-administrative-enforcement-settlement-luminultra-technologies-inc.",
+      "text": "BIS Reaches Administrative Enforcement Settlement with Luminultra Technologies, Inc."
+    }
+  ],
+  "bis_dates_sample": [
+    "August 24, 2026",
+    "August 14, 2026",
+    "July 27, 2026",
+    "November 20, 2026",
+    "July 10, 2026",
+    "June 17, 2026",
+    "September 16, 2020",
+    "September 26, 2024",
+    "April 14, 2026",
+    "March 27, 2026",
+    "February 26, 2026",
+    "February 25, 2026",
+    "February 19, 2026",
+    "February 12, 2026",
+    "January 13, 2026",
+    "December 8, 2025",
+    "January 7, 2026",
+    "November 5, 2025",
+    "November 4, 2025",
+    "October 1, 2025"
+  ],
+  "bis_next_data": true,
+  "bis_next_data_snippet": "{\"props\":{\"pageProps\":{\"_nextI18Next\":{\"initialI18nStore\":{\"en\":{\"common\":{\"brand-logos\":\"Brand logos\",\"homepage-link\":\"Homepage\",\"menu-back\":\"Back\",\"menu\":\"Menu\",\"menu-toggle\":\"Toggle menu\",\"show-submenu\":\"Show submenu for {{parent}}\",\"promoted-articles\":\"Promoted articles\",\"no-content-found\":\"No content found\",\"posted-by\":\"Author: {{author}}\",\"search-bar-placeholder-text\":\"Search content\",\"search-button-text\":\"Search\",\"search\":\"Search\",\"no-results-found\":\"No results found.\",\"content-type\":\"Content type\",\"contact\":\"Contact Us\",\"tags\":\"Tags\",\"share-page\":\"Share this page\",\"share-to\":\"Share to {{location}}\",\"search-show-more-options\":\"Show more options\",\"search-showing\":\"Showing\",\"search-out-of\":\"out of\",\"search-for\":\"for\",\"search-previous\":\"Previous\",\"search-next\":\"Next\",\"search-go-to-page\":\"Go to page {{page}}\",\"skip-to-main-content\":\"Skip to main content\",\"filter-by\":\"Filter by {{label}}\",\"Page not found\":\"Page not found\",\"404-sorry\":\"We're sorry, we can't find the page you're looking for. It might have been removed, had its name or location changed, or is otherwise unavailable.\",\"404-ongoing-content-migration\":\"During the ongoing content migration, pages or files you're unable to locate may still be on the\",\"404-link-previous-website\":\"previous website.\",\"404-visit-our-homepage-link\":\"Visit our homepage\",\"404-visit-our-homepage-rest\":\"to view BIS regulations and helpful resources, or contact an export counselor and we'll point you in the right direction.\",\"Go back to the h"
+}

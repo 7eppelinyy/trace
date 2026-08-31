@@ -1,0 +1,112 @@
+{
+  "sitemap_news_count": 94,
+  "sitemap_news_sample": [
+    {
+      "url": "https://www.sandisk.com/company/newsroom",
+      "lastmod": "2026-07-29"
+    },
+    {
+      "url": "https://www.sandisk.com/company/newsroom/blogs/2025/an-enduring-legacy-the-the-sd-card-at-25",
+      "lastmod": "2026-01-26"
+    },
+    {
+      "url": "https://www.sandisk.com/company/newsroom/blogs/2025/behind-the-design-sandisks-new-brand",
+      "lastmod": "2026-01-26"
+    },
+    {
+      "url": "https://www.sandisk.com/company/newsroom/blogs/2025/capturing-creativity-with-sandisk-memory-man",
+      "lastmod": "2026-05-18"
+    },
+    {
+      "url": "https://www.sandisk.com/company/newsroom/blogs/2025/from-bottleneck-to-breakthrough-solving-the-ssd-preconditioning-challenge",
+      "lastmod": "2026-01-26"
+    },
+    {
+      "url": "https://www.sandisk.com/company/newsroom/blogs/2025/hidden-math-behind-reliable-flash-storage",
+      "lastmod": "2026-05-18"
+    },
+    {
+      "url": "https://www.sandisk.com/company/newsroom/blogs/2025/how-a-hardware-engineer-anticipates-the-future",
+      "lastmod": "2026-01-26"
+    },
+    {
+      "url": "https://www.sandisk.com/company/newsroom/blogs/2025/inside-ultraQLC-the-enterprise-ssd-platform-engineered-for-ai",
+      "lastmod": "2026-01-26"
+    },
+    {
+      "url": "https://www.sandisk.com/company/newsroom/blogs/2025/memory-centric-ai",
+      "lastmod": "2026-01-26"
+    },
+    {
+      "url": "https://www.sandisk.com/company/newsroom/blogs/2025/memory-growing-role-ai-conversation-hbm-pioneer-prof-joungho-kim",
+      "lastmod": "2026-07-20"
+    },
+    {
+      "url": "https://www.sandisk.com/company/newsroom/blogs/2025/nand-scaling-explained-4-vectors-driving-the-future-of-flash",
+      "lastmod": "2026-01-26"
+    },
+    {
+      "url": "https://www.sandisk.com/company/newsroom/blogs/2025/own-the-moment-sandisk-official-licensed-product-collection-FIFA-World-Cup-2026",
+      "lastmod": "2026-07-13"
+    },
+    {
+      "url": "https://www.sandisk.com/company/newsroom/blogs/2025/scaling-beyond-the-wall-inside-sandisks-high-bandwidth-flash-for-ai",
+      "lastmod": "2026-01-26"
+    },
+    {
+      "url": "https://www.sandisk.com/company/newsroom/blogs/2025/smart-career-moves-why-young-engineers-are-choosing-manufacturing",
+      "lastmod": "2026-01-26"
+    },
+    {
+      "url": "https://www.sandisk.com/company/newsroom/blogs/2025/the-past-and-future-of-nand-with-deepanshu-dutta",
+      "lastmod": "2026-01-26"
+    },
+    {
+      "url": "https://www.sandisk.com/company/newsroom/blogs/2025/the-sd-cards-next-chapter-begins-with-sd-express",
+      "lastmod": "2026-05-18"
+    },
+    {
+      "url": "https://www.sandisk.com/company/newsroom/blogs/2026/brothers-bands-and-the-role-of-relationships-in-filmmaking",
+      "lastmod": "2026-07-06"
+    },
+    {
+      "url": "https://www.sandisk.com/company/newsroom/blogs/2026/from-aed-to-active-network-response-avive-and-sandisk",
+      "lastmod": "2026-05-20"
+    },
+    {
+      "url": "https://www.sandisk.com/company/newsroom/blogs/2026/from-digital-chaos-to-control-meet-the-sandisk-app",
+      "lastmod": "2026-05-05"
+    },
+    {
+      "url": "https://www.sandisk.com/company/newsroom/blogs/2026/getting-the-shot-how-jeff-lewis-captures-the-big-game",
+      "lastmod": "2026-04-13"
+    }
+  ],
+  "api_probe": [
+    {
+      "url": "https://api.sandisk.com/",
+      "status": 404,
+      "sample": "<!doctype html><html lang=\"en\"><head><title>HTTP Status 404 – Not Found</title><style type=\"text/css\">body {font-family:Tahoma,Arial,sans-serif;} h1, h2, h3, b {color:white;background-color:#525D76;} "
+    },
+    {
+      "url": "https://api.sandisk.com/v1/news",
+      "status": 404,
+      "sample": "<!doctype html><html lang=\"en\"><head><title>HTTP Status 404 – Not Found</title><style type=\"text/css\">body {font-family:Tahoma,Arial,sans-serif;} h1, h2, h3, b {color:white;background-color:#525D76;} "
+    },
+    {
+      "url": "https://api.sandisk.com/newsroom",
+      "status": 404,
+      "sample": "<!doctype html><html lang=\"en\"><head><title>HTTP Status 404 – Not Found</title><style type=\"text/css\">body {font-family:Tahoma,Arial,sans-serif;} h1, h2, h3, b {color:white;background-color:#525D76;} "
+    },
+    {
+      "url": "https://api.sandisk.com/api/newsroom/articles",
+      "status": 404,
+      "sample": ""
+    }
+  ],
+  "rsc": {
+    "status": 200,
+    "len": 20117,
+    "sample": "1:\"$Sreact.fragment\"\n2:I[9766,[],\"\"]\n3:I[8924,[],\"\"]\n6:I[4431,[],\"OutletBoundary\"]\n8:I[5278,[],\"AsyncMetadataOutlet\"]\na:I[4431,[],\"ViewportBoundary\"]\nc:I[4431,[],\"MetadataBoundary\"]\nd:\"$Sreact.suspense\"\nf:I[986,[\"181\",\"static/chunks/181-ce193cf68634886b.js\",\"940\",\"static/chunks/940-1c859c80a1570a38.js\",\"497\",\"static/chunks/497-0a84f25c1fecff81.js\",\"954\",\"static/chunks/app/%5Blocale%5D/company/newsroom/page-3ee9f7b214f5e561.js\"],\"default\"]\n10:I[3365,[\"181\",\"static/chunks/181-ce193cf68634886b.js\","
+  }
+}

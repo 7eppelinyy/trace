@@ -1,0 +1,58 @@
+{
+  "miit_search_api": {
+    "status": 200,
+    "bytes": 191,
+    "sample": "{\"roles\":null,\"permissions\":null,\"traceId\":\"9f6bf931623e4ff692c1145d52587fac\",\"success\":false,\"code\":\"200\",\"data\":{},\"message\":\"行政区划代码、搜索管理id、分类id不可都为空\"}"
+  },
+  "miit_zcwj_api": {
+    "status": 404,
+    "bytes": 548,
+    "sample": "<html>\r\n<head><title>404 Not Found</title></head>\r\n<body>\r\n<center><h1>404 Not Found</h1></center>\r\n<hr><center>nginx</center>\r\n</body>\r\n</html>\r\n<!-- a padding to disable MSIE and Chrome friendly error page -->\r\n<!-- a padding to disable MSIE and Chrome friendly error page -->\r\n<!-- a padding to disable MSIE and Chrome friendly error page -->\r\n<!-- a padding to disable MSIE and Chrome friendly error page -->\r\n<!-- a padding to disable MSIE and Chrome friendly error page -->\r\n<!-- a padding to d"
+  },
+  "miit_jhtml_api": {
+    "status": 200,
+    "bytes": 5274,
+    "sample": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta name=\"renderer\" content=\"webkit\">\n    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge,chrome=1\">\n    <meta content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0\" name=\"viewport\">\n    <META HTTP-EQUIV=\"pragma\" CONTENT=\"no-cache\">\n    <META HTTP-EQUIV=\"Cache-Control\" CONTENT=\"no-store, must-revalidate\">\n    <meta charset=\"UTF-8\">\n    \n</meta></META></META></meta></meta></meta><script src=\"/cms_files/default/script/j"
+  },
+  "miit_sjdt_index": {
+    "status": 200,
+    "bytes": 5336,
+    "sample": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\n<head>\n    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=8\">\n    \n\t<META HTTP-EQUIV=\"pragma\" CONTENT=\"no-cache\"><META HTTP-EQUIV=\"Cache-Control\" CONTENT=\"no-store, must-revalidate\">\n</META></META></met"
+  },
+  "mofcom_rcxwfb": {
+    "status": 200,
+    "links": 1,
+    "sample": [
+      {
+        "t": "2025年度网站工作年度报表",
+        "h": "https://www.mofcom.gov.cn/zfxxgk/zfwzgznb/art/2026/art_a32f1f3a3adb431993d9cf0924743845.html"
+      }
+    ]
+  },
+  "mofcom_xwfyrth": {
+    "status": 200,
+    "links": 1,
+    "sample": [
+      {
+        "t": "2025年度网站工作年度报表",
+        "h": "https://www.mofcom.gov.cn/zfxxgk/zfwzgznb/art/2026/art_a32f1f3a3adb431993d9cf0924743845.html"
+      }
+    ]
+  },
+  "mofcom_sywfb": {
+    "status": 200,
+    "links": 1,
+    "sample": [
+      {
+        "t": "2025年度网站工作年度报表",
+        "h": "https://www.mofcom.gov.cn/zfxxgk/zfwzgznb/art/2026/art_a32f1f3a3adb431993d9cf0924743845.html"
+      }
+    ]
+  },
+  "micron_press_analysis": {
+    "status": 200,
+    "bytes": 292457,
+    "api_candidates": [],
+    "json_script_samples": []
+  }
+}

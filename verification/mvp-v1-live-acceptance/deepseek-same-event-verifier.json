@@ -1,0 +1,31 @@
+{
+  "model": "deepseek-chat",
+  "checked_at": "2026-08-26T05:31:50.018725+00:00",
+  "same_event_pair": {
+    "new": {
+      "title": "NVIDIA AI Factory Compute Is Becoming an Investable Asset Class",
+      "summary_excerpt": "We announced partnerships with Apollo, BlackRock, Blackstone, Brookfield, Goldman Sachs and KKR to establish independent financing platforms designed to mobilize over $500 billion of third-party capit"
+    },
+    "existing": {
+      "event_id": "EVT-20260825-7018a4aefcda",
+      "title": "NVIDIA AI Factory Compute Is Becoming an Investable Asset Class"
+    },
+    "expected": true,
+    "actual": true,
+    "pass": true
+  },
+  "different_event_pair": {
+    "new": {
+      "title": "SNDK 10-K: 10-K",
+      "summary_excerpt": "SNDK 10-K: 10-K"
+    },
+    "existing": {
+      "event_id": "EVT-20260825-7018a4aefcda",
+      "title": "NVIDIA AI Factory Compute Is Becoming an Investable Asset Class"
+    },
+    "expected": false,
+    "actual": false,
+    "pass": true
+  },
+  "overall_pass": true
+}

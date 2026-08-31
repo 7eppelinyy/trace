@@ -1,0 +1,34 @@
+{
+  "acceptance_test": true,
+  "event_id": "EVT-20260825-7018a4aefcda",
+  "deliveries": [
+    {
+      "user_id": "7166811279",
+      "event_id": "EVT-20260825-7018a4aefcda",
+      "security_id": "SEC-US-NVDA",
+      "event_version": 1,
+      "alert_type": "new_event",
+      "final_score": 8.61,
+      "direction": "bullish",
+      "telegram_chat_id": "7166811279",
+      "telegram_message_id": "3",
+      "sent_at": "2026-08-26T05:33:40.715951+00:00",
+      "status": "sent",
+      "response": "ok"
+    },
+    {
+      "user_id": "7166811279",
+      "event_id": "EVT-20260825-7018a4aefcda",
+      "security_id": "SEC-US-TSM",
+      "event_version": 1,
+      "alert_type": "new_event",
+      "final_score": 7.61,
+      "direction": "bullish",
+      "telegram_chat_id": "7166811279",
+      "telegram_message_id": "4",
+      "sent_at": "2026-08-26T05:33:42.272752+00:00",
+      "status": "sent",
+      "response": "ok"
+    }
+  ]
+}

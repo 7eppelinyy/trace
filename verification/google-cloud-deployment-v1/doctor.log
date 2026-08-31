@@ -1,0 +1,37 @@
+2026-08-26 13:15:43,754 INFO [-] trace.data.seed: seed data loaded
+2026-08-26 13:15:43,758 INFO [-] trace.collectors.market_data.alpaca: ALPACA_API_KEY not set (production): market data unavailable (mock forbidden in production)
+2026-08-26 13:15:43,758 INFO [-] trace.collectors.market_data.cn: CN market data not connected (production): unavailable (mock forbidden in production)
+2026-08-26 13:15:44,989 WARNING [-] trace.event_engine.embeddings: sentence-transformers unavailable (No module named 'sentence_transformers'), fallback to hash embedder
+2026-08-26 13:15:45,258 INFO [-] httpx: HTTP Request: GET https://www.sec.gov/files/company_tickers.json "HTTP/1.1 200 OK"
+2026-08-26 13:15:45,505 INFO [-] httpx: HTTP Request: GET https://nvidianews.nvidia.com/rss.xml "HTTP/1.1 200 OK"
+2026-08-26 13:15:46,466 INFO [-] httpx: HTTP Request: POST http://www.cninfo.com.cn/new/information/topSearch/query "HTTP/1.1 200 200"
+2026-08-26 13:15:46,873 INFO [-] httpx: HTTP Request: GET https://api.telegram.org/bot[REDACTED]/getMe "HTTP/1.1 200 OK"
+===== doctor 环境诊断 =====
+[OK  ] python                              3.10.12
+[OK  ] database                            /opt/trace/data/trace.db
+[OK  ] migration                           applied: 0001_initial, 0002_health_and_receipts, 0003_alert_receipts, 0004_bootstrap_suppression, 0005_source_completion
+[OK  ] data_dir_writable                   /opt/trace/data
+[OK  ] sec_edgar                           HTTP 200, UA=TraceEventRadar research@example.com
+[OK  ] us_ir_nvidia                        HTTP 200
+[OK  ] cninfo                              HTTP 200
+[OK  ] sse_szse_path                       路线B：SSE/SZSE 为巨潮公告的市场过滤适配器（见 trace/collectors/sse.py）
+[OK  ] llm_key                             provider=openai, OPENAI_API_KEY 已配置 (model=deepseek-chat)
+[OK  ] telegram_token                      TELEGRAM_BOT_TOKEN 已配置
+[OK  ] telegram_identity                   @traceyyy_bot
+[OK  ] default_chat_id                     TELEGRAM_DEFAULT_CHAT_ID 已配置
+[OK  ] timezone                            default_user_timezone=Asia/Taipei
+[OK  ] settings                            /opt/trace/trace/settings.yaml
+[OK  ] trace_mode                          TRACE_MODE=production
+[OK  ] source_health/src_bis               HEALTHY last_http=- last_ok=2026-08-26T13:14:23
+[OK  ] source_health/src_cninfo            HEALTHY last_http=- last_ok=2026-08-26T13:14:20
+[OK  ] source_health/src_commerce          HEALTHY last_http=- last_ok=2026-08-26T13:14:25
+[OK  ] source_health/src_fed               HEALTHY last_http=- last_ok=2026-08-26T13:14:25
+[OK  ] source_health/src_federal_register  HEALTHY last_http=- last_ok=2026-08-26T13:14:25
+[OK  ] source_health/src_micron_ir         HEALTHY last_http=404 last_ok=2026-08-26T13:14:13
+[OK  ] source_health/src_miit              HEALTHY last_http=- last_ok=2026-08-26T13:14:23
+[OK  ] source_health/src_mofcom            HEALTHY last_http=- last_ok=2026-08-26T13:14:23
+[OK  ] source_health/src_nvidia_ir         HEALTHY last_http=- last_ok=2026-08-26T13:14:07
+[OK  ] source_health/src_sec_edgar         HEALTHY last_http=- last_ok=2026-08-26T13:14:07
+[OK  ] source_health/src_sndk_ir           HEALTHY last_http=- last_ok=2026-08-26T13:14:08
+
+总计 26 项：失败 0 项

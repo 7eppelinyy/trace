@@ -1,0 +1,106 @@
+{
+  "probed_at": "2026-08-25T14:46:11.209598+00:00",
+  "checks": [
+    {
+      "name": "sec_company_tickers_authority",
+      "ok": true,
+      "elapsed_ms": 28344,
+      "detail": {
+        "total_companies": 10403,
+        "SNDK": "0002023554",
+        "MU": "0000723125",
+        "NVDA": "0001045810"
+      }
+    },
+    {
+      "name": "sec_edgar_SNDK_2023554",
+      "ok": true,
+      "elapsed_ms": 20406,
+      "detail": {
+        "name": "Sandisk Corp",
+        "recent_filings": 214,
+        "latest_form": "4",
+        "latest_date": "2026-08-24"
+      }
+    },
+    {
+      "name": "sec_edgar_MU_723125",
+      "ok": true,
+      "elapsed_ms": 3172,
+      "detail": {
+        "name": "MICRON TECHNOLOGY INC",
+        "recent_filings": 1000,
+        "latest_form": "144",
+        "latest_date": "2026-08-21"
+      }
+    },
+    {
+      "name": "sec_edgar_NVDA_1045810",
+      "ok": true,
+      "elapsed_ms": 2328,
+      "detail": {
+        "name": "NVIDIA CORP",
+        "recent_filings": 1000,
+        "latest_form": "4",
+        "latest_date": "2026-08-24"
+      }
+    },
+    {
+      "name": "nvda_official_rss",
+      "ok": true,
+      "elapsed_ms": 1281,
+      "detail": {
+        "items": 20,
+        "first_title": "How XPUs Meet a World-Class AI Factory"
+      }
+    },
+    {
+      "name": "micron_ir_rss",
+      "ok": false,
+      "elapsed_ms": 17625,
+      "error": "RuntimeError: no working Micron RSS endpoint; tried=[{'url': 'https://investors.micron.com/rss.xml', 'status': 429}, {'url': 'https://investors.micron.com/rss/news-releases.xml', 'status': 429}, {'url': 'https://www.micron.com/about/investors/rss', 'status': 404}]"
+    },
+    {
+      "name": "cninfo_topSearch_688981",
+      "ok": true,
+      "elapsed_ms": 156,
+      "detail": {
+        "code": "688981",
+        "zwjc": "中芯国际",
+        "orgId": "gshk0000981",
+        "category": "A股"
+      }
+    },
+    {
+      "name": "cninfo_announcements_688981",
+      "ok": true,
+      "elapsed_ms": 141,
+      "detail": {
+        "total_announcements": 819,
+        "first_title": "港股公告：董事会批准发布2026年中期业绩通知",
+        "first_id": "1225483219"
+      }
+    },
+    {
+      "name": "cninfo_topSearch_000977",
+      "ok": true,
+      "elapsed_ms": 109,
+      "detail": {
+        "code": "000977",
+        "zwjc": "浪潮信息",
+        "orgId": "gssz0000977",
+        "category": "A股"
+      }
+    },
+    {
+      "name": "cninfo_announcements_000977",
+      "ok": true,
+      "elapsed_ms": 109,
+      "detail": {
+        "total_announcements": 2147,
+        "first_title": "关于公司与专业机构共同投资的进展公告",
+        "first_id": "1225475208"
+      }
+    }
+  ]
+}

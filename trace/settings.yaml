@@ -1,0 +1,115 @@
+# ============================================================
+# 集中配置文件：所有阈值/权重必须在此管理，禁止散落硬编码
+# ============================================================
+
+database:
+  path: data/trace.db
+
+# SEC 公平访问：User-Agent = "公司名 联系邮箱"（可用环境变量 SEC_COMPANY_NAME / SEC_CONTACT_EMAIL 覆盖）
+sec_contact:
+  company_name: TraceEventRadar
+  contact_email: research@example.com
+
+llm:
+  provider: gemini        # 默认优先 Gemini；环境变量 LLM_PROVIDER 可覆盖（gemini | openai）
+  # 具体 API Key 从 .env 读取（GEMINI_API_KEY / OPENAI_API_KEY），此处只配置模型名
+  models:
+    gemini:
+      event_extractor: gemini-2.0-flash
+      impact_analyzer: gemini-2.0-flash
+      same_event_verifier: gemini-2.0-flash
+    openai:
+      event_extractor: gpt-4o-mini
+      impact_analyzer: gpt-4o-mini
+      same_event_verifier: gpt-4o-mini
+  temperature: 0.0
+
+embedding:
+  # 跨语言聚类使用；开发/离线环境可切到 hash 伪向量
+  provider: sentence-transformers
+  model: paraphrase-multilingual-MiniLM-L12-v2
+  # provider: hash 时使用
+  hash_dim: 256
+
+event_engine:
+  merge_weights:
+    title_semantic_similarity: 0.35
+    summary_semantic_similarity: 0.25
+    entity_overlap: 0.20
+    event_type_match: 0.10
+    time_proximity: 0.10
+  merge_thresholds:
+    auto_merge: 0.82
+    verifier_min: 0.72   # 0.72–0.82 交给 LLM same-event verifier
+    # < 0.72 创建新 Event
+  # 同一事件时间窗口（小时），超出窗口不参与聚类
+  time_window_hours: 72
+
+scoring:
+  # base_score = w1*source_reliability + w2*directness + w3*magnitude + w4*persistence
+  base_weights:
+    source_reliability: 0.22
+    directness: 0.28
+    magnitude: 0.30
+    persistence: 0.20
+  # final_score = clamp(base_score + market_confirmation_weight*(market_confirmation-5), 1, 10)
+  market_confirmation_weight: 0.15
+  score_min: 1
+  score_max: 10
+
+alerts:
+  default_threshold: 7          # final_score >= 7 才即时提醒
+  minimum_confidence: 0.0       # 默认不设最低置信度（重要度/置信度分离）
+  # 首次同步保护：只允许事件在 freshness_window_hours 内发生且
+  # 晚于该用户的 alert_activation_at 才作为即时 Alert 推送，
+  # 避免历史事件在用户注册时集中发送。
+  freshness_window_hours: 168   # 7 天
+  # 允许再次推送的 event revision 条件
+  revision_resend_rules:
+    - rumor_to_confirmed
+    - official_source_appeared
+    - direction_changed
+    - key_number_changed
+    - score_delta_ge_1
+    - first_cross_threshold
+  score_resend_delta: 1.0
+
+markets:
+  US:
+    timezone: America/New_York
+    sessions:
+      - open: "09:30"
+        close: "16:00"
+    pre_market_open: "04:00"
+    post_market_close: "20:00"
+  CN:
+    timezone: Asia/Shanghai
+    sessions:
+      - open: "09:30"
+        close: "11:30"
+      - open: "13:00"
+        close: "15:00"
+  # 事件后的市场反应观察窗口（分钟）
+  reaction_window_minutes: 30
+
+telegram:
+  # run-once 验收投递的默认接收人（环境变量 TELEGRAM_DEFAULT_CHAT_ID 覆盖）
+  default_user_timezone: Asia/Taipei
+
+digest:
+  # 每日摘要生成时间（用户默认时区）
+  send_time: "21:00"
+
+collectors:
+  # 采集间隔（秒），按 collector 类型
+  interval_seconds:
+    sec: 300
+    ir: 600
+    cninfo: 300
+    exchange_cn: 300
+    policy: 600
+    rss: 600
+    industry_media: 600
+  http:
+    timeout_seconds: 30
+    user_agent: "TraceEventRadar/0.1 (research use)"

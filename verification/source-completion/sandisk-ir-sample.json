@@ -1,0 +1,120 @@
+{
+  "generated_at": "2026-08-26T10:19:07.885242+00:00",
+  "note": "SanDisk 官方主站 sitemap → RawItem → Event → Evidence（直连可用）",
+  "raw_items": [
+    {
+      "raw_item_id": "RAW-98b837df37c64cfd",
+      "source_id": "src_sndk_ir",
+      "title": "SanDisk: Sandisk And Sk Hynix Advance Global Standardization Of Hbf",
+      "url": "https://www.sandisk.com/company/newsroom/press-releases/2026/2026-08-03-Sandisk-and-sk-hynix-advance-global-standardization-of-hbf",
+      "canonical_url": "https://www.sandisk.com/company/newsroom/press-releases/2026/2026-08-03-Sandisk-and-sk-hynix-advance-global-standardization-of-hbf",
+      "published_at": "2026-08-03T00:00:00+00:00",
+      "fetched_at": "2026-08-26T10:04:10.248742+00:00"
+    },
+    {
+      "raw_item_id": "RAW-937c0573b9a347df",
+      "source_id": "src_sndk_ir",
+      "title": "SanDisk: New 3d Flash Memory Technology From Kioxia And Sandisk Qlc Nand",
+      "url": "https://www.sandisk.com/company/newsroom/press-releases/2026/2026-08-04-new-3d-flash-memory-technology-from-kioxia-and-sandisk-qlc-nand",
+      "canonical_url": "https://www.sandisk.com/company/newsroom/press-releases/2026/2026-08-04-new-3d-flash-memory-technology-from-kioxia-and-sandisk-qlc-nand",
+      "published_at": "2026-08-04T00:00:00+00:00",
+      "fetched_at": "2026-08-26T10:04:10.248742+00:00"
+    },
+    {
+      "raw_item_id": "RAW-89cd7b14b5b9495a",
+      "source_id": "src_sndk_ir",
+      "title": "SanDisk: Sandisk Reports Fiscal Fourth Quarter 2026 Financial Results",
+      "url": "https://www.sandisk.com/company/newsroom/press-releases/2026/2026-08-05-sandisk-reports-fiscal-fourth-quarter-2026-financial-results",
+      "canonical_url": "https://www.sandisk.com/company/newsroom/press-releases/2026/2026-08-05-sandisk-reports-fiscal-fourth-quarter-2026-financial-results",
+      "published_at": "2026-08-05T00:00:00+00:00",
+      "fetched_at": "2026-08-26T10:04:10.248742+00:00"
+    },
+    {
+      "raw_item_id": "RAW-707cd6a37ad94c15",
+      "source_id": "src_sndk_ir",
+      "title": "SanDisk: Kioxia And Sandisk Unveil New High Performance Qlc 3d Flash Memory For Ai And Data Intensive Apps",
+      "url": "https://www.sandisk.com/company/newsroom/press-releases/2026/2026-08-12-kioxia-and-sandisk-unveil-new-high-performance-qlc-3d-flash-memory-for-ai-and-data-intensive-apps",
+      "canonical_url": "https://www.sandisk.com/company/newsroom/press-releases/2026/2026-08-12-kioxia-and-sandisk-unveil-new-high-performance-qlc-3d-flash-memory-for-ai-and-data-intensive-apps",
+      "published_at": "2026-08-12T00:00:00+00:00",
+      "fetched_at": "2026-08-26T10:04:10.248742+00:00"
+    },
+    {
+      "raw_item_id": "RAW-1bf33921f1c24a14",
+      "source_id": "src_sndk_ir",
+      "title": "SanDisk: Sandisk Investor Day 2026",
+      "url": "https://www.sandisk.com/company/newsroom/press-releases/2026/2026-08-13-sandisk-investor-day-2026",
+      "canonical_url": "https://www.sandisk.com/company/newsroom/press-releases/2026/2026-08-13-sandisk-investor-day-2026",
+      "published_at": "2026-08-13T00:00:00+00:00",
+      "fetched_at": "2026-08-26T10:04:10.248742+00:00"
+    }
+  ],
+  "events": [
+    {
+      "event_id": "EVT-20260826-80b6044305c4",
+      "title": "SanDisk与SK海力士推进HBF全球标准化",
+      "status": "official_confirmed",
+      "version": 1,
+      "first_seen_at": "2026-08-26T10:04:43.824890+00:00",
+      "role": "first"
+    },
+    {
+      "event_id": "EVT-20260826-1a37487a6432",
+      "title": "SanDisk 在 FMS 2026 展示面向 AI 推理时代的 NAND 创新",
+      "status": "official_confirmed",
+      "version": 1,
+      "first_seen_at": "2026-08-26T10:04:42.187379+00:00",
+      "role": "first"
+    },
+    {
+      "event_id": "EVT-20260826-026411ab92d9",
+      "title": "SanDisk 与 Kioxia 发布新型 3D 闪存技术 QLC NAND",
+      "status": "official_confirmed",
+      "version": 1,
+      "first_seen_at": "2026-08-26T10:04:40.495917+00:00",
+      "role": "first"
+    },
+    {
+      "event_id": "EVT-20260826-c43ddee7c9e1",
+      "title": "SanDisk Reports Fiscal Fourth Quarter 2026 Financial Results",
+      "status": "official_confirmed",
+      "version": 1,
+      "first_seen_at": "2026-08-26T10:04:38.192770+00:00",
+      "role": "first"
+    },
+    {
+      "event_id": "EVT-20260826-f6fca3975b21",
+      "title": "SanDisk与Kioxia发布面向AI和高数据密集型应用的新型高性能QLC 3D闪存",
+      "status": "official_confirmed",
+      "version": 1,
+      "first_seen_at": "2026-08-26T10:04:36.737435+00:00",
+      "role": "first"
+    }
+  ],
+  "impacts_top": [
+    {
+      "event_id": "EVT-20260826-f6fca3975b21",
+      "security_id": "SEC-US-SNDK",
+      "final_score": 8.41
+    },
+    {
+      "event_id": "EVT-20260826-026411ab92d9",
+      "security_id": "SEC-US-SNDK",
+      "final_score": 7.41
+    },
+    {
+      "event_id": "EVT-20260826-1a37487a6432",
+      "security_id": "SEC-US-SNDK",
+      "final_score": 7.41
+    },
+    {
+      "event_id": "EVT-20260826-7854203b74c3",
+      "security_id": "SEC-US-SNDK",
+      "final_score": 7.41
+    },
+    {
+      "event_id": "EVT-20260826-80b6044305c4",
+      "security_id": "SEC-US-SNDK",
+      "final_score": 7.41
+    }
+  ]
+}

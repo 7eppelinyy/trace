@@ -1,0 +1,29 @@
+{
+  "checked_at": "2026-08-26T05:31:50.020735+00:00",
+  "user_id": "7166811279",
+  "alert_activation_at": "2026-08-26 05:09:13.612155+00:00",
+  "freshness_window_hours": 168.0,
+  "event_id": "EVT-20260825-7018a4aefcda",
+  "event_time": "2026-08-11 16:38:21+00:00",
+  "event_published_before_activation": true,
+  "evaluate_without_bypass": {
+    "decisions_to_send": 0,
+    "suppressed": 10,
+    "bootstrap_suppressed": [
+      {
+        "user_id": "7166811279",
+        "event_id": "EVT-20260825-7018a4aefcda",
+        "security_id": "SEC-US-NVDA",
+        "reason": "freshness_window"
+      },
+      {
+        "user_id": "7166811279",
+        "event_id": "EVT-20260825-7018a4aefcda",
+        "security_id": "SEC-US-TSM",
+        "reason": "freshness_window"
+      }
+    ]
+  },
+  "requirement": "published_at < alert_activation_at 的历史事件保留在 Event DB 可查询，但不得作为即时 Telegram Alert 推送",
+  "pass": true
+}

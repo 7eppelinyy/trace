@@ -1,0 +1,10 @@
+{
+  "provider_impl": "openai",
+  "llm_provider_env": "openai",
+  "model": "deepseek-chat",
+  "base_url": "https://api.deepseek.com",
+  "available": true,
+  "trace_mode": "production",
+  "checked_at": "2026-08-26T05:31:12.163198+00:00",
+  "note": "真实调用验证见 deepseek-stage-a.json（非 ok:true 冒烟测试）"
+}

@@ -1,0 +1,110 @@
+[
+  {
+    "name": "sndk_rss_check",
+    "url": "https://investor.sandisk.com/rss.xml",
+    "status": "error",
+    "http_status": 0,
+    "latency_ms": 27484,
+    "bytes": 0,
+    "sample": "ConnectTimeout: _ssl.c:999: The handshake operation timed out"
+  },
+  {
+    "name": "micron_full_headers",
+    "url": "https://investors.micron.com/news-releases",
+    "status": "http_429",
+    "http_status": 429,
+    "latency_ms": 959,
+    "bytes": 5791,
+    "sample": "<!DOCTYPE html><html lang=\"en-US\"><head><title>Just a moment...</title><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=Edge\"><meta nam"
+  },
+  {
+    "name": "micron_main_newsroom",
+    "url": "https://www.micron.com/about/newsroom",
+    "status": "ok",
+    "http_status": 200,
+    "latency_ms": 1383,
+    "bytes": 292457,
+    "sample": " <!DOCTYPE html> <html lang=\"en-US\">  <head>               <meta name=\"content-page-ref\" content=\"QyejA8RNdXaoycf3MlFmXYQzkf7ELhqjFuP-IOGljGU0S_RIeJZIsoCDl49iuXxB0wqlJQdILb2lTTDSCnvLow\"> <script defer"
+  },
+  {
+    "name": "micron_main_rss",
+    "url": "https://www.micron.com/about/newsroom/rss",
+    "status": "http_404",
+    "http_status": 404,
+    "latency_ms": 471,
+    "bytes": 276596,
+    "sample": " <!DOCTYPE html> <html lang=\"en-US\">  <head>               <meta name=\"content-page-ref\" content=\"QyejA8RNdXaoycf3MlFmXUkMyK3hlI9Bq5yY2X1Px223tPBhOzycNAOkqXs-k3au\"> <script defer=\"defer\" type=\"text/ja"
+  },
+  {
+    "name": "micron_ir_rss_full",
+    "url": "https://investors.micron.com/rss.xml",
+    "status": "http_429",
+    "http_status": 429,
+    "latency_ms": 596,
+    "bytes": 5773,
+    "sample": "<!DOCTYPE html><html lang=\"en-US\"><head><title>Just a moment...</title><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=Edge\"><meta nam"
+  },
+  {
+    "name": "commerce_press_full",
+    "url": "https://www.commerce.gov/news/press-releases",
+    "status": "http_403",
+    "http_status": 403,
+    "latency_ms": 2885,
+    "bytes": 5784,
+    "sample": "<!DOCTYPE html><html lang=\"en-US\"><head><title>Just a moment...</title><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=Edge\"><meta nam"
+  },
+  {
+    "name": "commerce_sitemap",
+    "url": "https://www.commerce.gov/sitemap.xml",
+    "status": "http_403",
+    "http_status": 403,
+    "latency_ms": 688,
+    "bytes": 5760,
+    "sample": "<!DOCTYPE html><html lang=\"en-US\"><head><title>Just a moment...</title><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=Edge\"><meta nam"
+  },
+  {
+    "name": "commerce_search_json",
+    "url": "https://www.commerce.gov/api/v1/search?keys=semiconductor&type=news",
+    "status": "http_403",
+    "http_status": 403,
+    "latency_ms": 15849,
+    "bytes": 5925,
+    "sample": "<!DOCTYPE html><html lang=\"en-US\"><head><title>Just a moment...</title><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=Edge\"><meta nam"
+  },
+  {
+    "name": "mofcom_home",
+    "url": "https://www.mofcom.gov.cn/",
+    "status": "ok",
+    "http_status": 200,
+    "latency_ms": 85,
+    "bytes": 42092,
+    "sample": "<!DOCTYPE html> <!--[if lte IE 7 ]><html lang=\"zh-cn\" class=\"no-js ie lte7 lte8 lte9 \"> <![endif]--> <!--[if IE 8 ]><html lang=\"zh-cn\" class=\"no-js ie ie8 lte8 lte9 \"> <![endif]--> <!--[if IE 9 ]><htm"
+  },
+  {
+    "name": "mofcom_xwrcjd",
+    "url": "http://www.mofcom.gov.cn/article/xwfb/xwrcjd/",
+    "status": "http_404",
+    "http_status": 404,
+    "latency_ms": 703,
+    "bytes": 552,
+    "sample": "<html>\r <head><title>404 Not Found</title></head>\r <body>\r <center><h1>404 Not Found</h1></center>\r <hr><center>openresty</center>\r </body>\r </html>\r <!-- a padding to disable MSIE and Chrome friendly"
+  },
+  {
+    "name": "mofcom_xwsj",
+    "url": "http://www.mofcom.gov.cn/article/xwfb/xwsj/",
+    "status": "http_404",
+    "http_status": 404,
+    "latency_ms": 167,
+    "bytes": 552,
+    "sample": "<html>\r <head><title>404 Not Found</title></head>\r <body>\r <center><h1>404 Not Found</h1></center>\r <hr><center>openresty</center>\r </body>\r </html>\r <!-- a padding to disable MSIE and Chrome friendly"
+  },
+  {
+    "name": "mofcom_xxgb",
+    "url": "http://www.mofcom.gov.cn/article/xwfb/xxgzbd/",
+    "status": "http_404",
+    "http_status": 404,
+    "latency_ms": 61,
+    "bytes": 552,
+    "sample": "<html>\r <head><title>404 Not Found</title></head>\r <body>\r <center><h1>404 Not Found</h1></center>\r <hr><center>openresty</center>\r </body>\r </html>\r <!-- a padding to disable MSIE and Chrome friendly"
+  }
+]

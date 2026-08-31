@@ -1,0 +1,94 @@
+{
+  "generated_at": "2026-08-26T10:19:07.890849+00:00",
+  "note": "中国政策官方源（工信部 / 商务部），经 cn_policy Level 1 关键词初筛",
+  "raw_items": [
+    {
+      "raw_item_id": "RAW-b71ab79d9fe445a6",
+      "source_id": "src_mofcom",
+      "title": "商务部新闻发言人就对相关进口打印复印办公设备发起对外贸易国家安全调查答记者问",
+      "url": "https://www.mofcom.gov.cn/xwfb/xwfyrth/art/2026/art_fbfc500fbaa2459495caafae0c0f9b17.html",
+      "canonical_url": "https://www.mofcom.gov.cn/xwfb/xwfyrth/art/2026/art_fbfc500fbaa2459495caafae0c0f9b17.html",
+      "published_at": null,
+      "fetched_at": "2026-08-26T10:04:21.979344+00:00"
+    },
+    {
+      "raw_item_id": "RAW-7667ba670c68488b",
+      "source_id": "src_mofcom",
+      "title": "商务部公告2026年第34号 公布加强无人机相关两用物项对美国出口管制",
+      "url": "https://www.mofcom.gov.cn/zwgk/zcfb/art/2026/art_74835ca289b5463f9c36cb983b689dba.html",
+      "canonical_url": "https://www.mofcom.gov.cn/zwgk/zcfb/art/2026/art_74835ca289b5463f9c36cb983b689dba.html",
+      "published_at": null,
+      "fetched_at": "2026-08-26T10:04:21.979344+00:00"
+    },
+    {
+      "raw_item_id": "RAW-a32a92f2b00b41d9",
+      "source_id": "src_miit",
+      "title": "2026年全国原材料工业座谈会在浙江宁波召开",
+      "url": "http://www.miit.gov.cn/xwfb/bldhd/art/2026/art_99c779e9839a4f3782fcd30f69e2102f.html",
+      "canonical_url": "http://www.miit.gov.cn/xwfb/bldhd/art/2026/art_99c779e9839a4f3782fcd30f69e2102f.html",
+      "published_at": "2026-08-26T00:00:00+00:00",
+      "fetched_at": "2026-08-26T10:04:21.834691+00:00"
+    },
+    {
+      "raw_item_id": "RAW-e459ecd443c64788",
+      "source_id": "src_miit",
+      "title": "工业和信息化部举行“亚太经合组织（APEC）2026年数字和人工智能部长会议及数字周相关活动新闻通气会”",
+      "url": "http://www.miit.gov.cn/xwfb/bldhd/art/2026/art_a1dcaacc0394430fa13197ef3946dece.html",
+      "canonical_url": "http://www.miit.gov.cn/xwfb/bldhd/art/2026/art_a1dcaacc0394430fa13197ef3946dece.html",
+      "published_at": "2026-07-10T00:00:00+00:00",
+      "fetched_at": "2026-08-26T10:04:21.834691+00:00"
+    },
+    {
+      "raw_item_id": "RAW-fc684024878e498a",
+      "source_id": "src_miit",
+      "title": "2026年亚太经合组织（APEC）数字和人工智能部长会议新闻发布会在成都召开",
+      "url": "http://www.miit.gov.cn/xwfb/bldhd/art/2026/art_d109e2b6dc4844cc902a1f6f49712f67.html",
+      "canonical_url": "http://www.miit.gov.cn/xwfb/bldhd/art/2026/art_d109e2b6dc4844cc902a1f6f49712f67.html",
+      "published_at": "2026-07-23T00:00:00+00:00",
+      "fetched_at": "2026-08-26T10:04:21.834691+00:00"
+    }
+  ],
+  "events": [
+    {
+      "event_id": "EVT-20260826-83a12d86a05d",
+      "title": "商务部公告2026年第34号：加强无人机相关两用物项对美国出口管制",
+      "status": "official_confirmed",
+      "version": 1,
+      "first_seen_at": "2026-08-26T10:05:04.298780+00:00",
+      "role": "first"
+    },
+    {
+      "event_id": "EVT-20260826-5e897fdd98e9",
+      "title": "商务部对进口打印复印办公设备发起国家安全调查",
+      "status": "official_confirmed",
+      "version": 1,
+      "first_seen_at": "2026-08-26T10:05:02.547817+00:00",
+      "role": "first"
+    },
+    {
+      "event_id": "EVT-20260826-9327bf36f3c2",
+      "title": "工信部公示锂离子电池正极材料前驱体单位产品能源消耗限额等15项行业标准报批意见",
+      "status": "official_confirmed",
+      "version": 1,
+      "first_seen_at": "2026-08-26T10:05:00.899220+00:00",
+      "role": "first"
+    },
+    {
+      "event_id": "EVT-20260826-96c4a1affab6",
+      "title": "工信部举行APEC 2026年数字和人工智能部长会议及数字周相关活动新闻通气会",
+      "status": "official_confirmed",
+      "version": 1,
+      "first_seen_at": "2026-08-26T10:04:59.224825+00:00",
+      "role": "first"
+    },
+    {
+      "event_id": "EVT-20260826-ae9d9675c95e",
+      "title": "2026年亚太经合组织（APEC）数字和人工智能部长会议新闻发布会在成都召开",
+      "status": "official_confirmed",
+      "version": 1,
+      "first_seen_at": "2026-08-26T10:04:56.858004+00:00",
+      "role": "first"
+    }
+  ],
+  "impacts_top": []
+}

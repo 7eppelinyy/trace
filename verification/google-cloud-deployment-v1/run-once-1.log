@@ -1,0 +1,924 @@
+2026-08-26 12:34:02,546 INFO [-] trace.data.seed: seed data loaded
+2026-08-26 12:34:02,550 INFO [-] trace.collectors.market_data.alpaca: ALPACA_API_KEY not set (production): market data unavailable (mock forbidden in production)
+2026-08-26 12:34:02,551 INFO [-] trace.collectors.market_data.cn: CN market data not connected (production): unavailable (mock forbidden in production)
+2026-08-26 12:34:03,642 WARNING [-] trace.event_engine.embeddings: sentence-transformers unavailable (No module named 'sentence_transformers'), fallback to hash embedder
+2026-08-26 12:34:03,710 INFO [run-eab34434ef] trace.pipeline: default chat 7166811279 registered (all-threshold=7.0)
+2026-08-26 12:34:03,891 INFO [run-eab34434ef] httpx: HTTP Request: GET https://data.sec.gov/submissions/CIK0002023554.json "HTTP/1.1 200 OK"
+2026-08-26 12:34:04,300 INFO [run-eab34434ef] httpx: HTTP Request: GET https://data.sec.gov/submissions/CIK0000723125.json "HTTP/1.1 200 OK"
+2026-08-26 12:34:04,803 INFO [run-eab34434ef] httpx: HTTP Request: GET https://data.sec.gov/submissions/CIK0001045810.json "HTTP/1.1 200 OK"
+2026-08-26 12:34:04,924 INFO [run-eab34434ef] httpx: HTTP Request: GET https://nvidianews.nvidia.com/rss.xml "HTTP/1.1 200 OK"
+2026-08-26 12:34:05,159 INFO [run-eab34434ef] httpx: HTTP Request: GET https://www.sandisk.com/sitemap.xml "HTTP/1.1 200 OK"
+2026-08-26 12:34:05,165 INFO [run-eab34434ef] trace.collectors.sandisk: [src_sndk_ir] bootstrap dropped=45 (bootstrap_days=30)
+2026-08-26 12:34:05,497 INFO [run-eab34434ef] httpx: HTTP Request: GET https://investors.micron.com/rss.xml "HTTP/1.1 404 Not Found"
+2026-08-26 12:34:05,498 WARNING [run-eab34434ef] trace.common.http_client: [src_micron_ir] source_unavailable, retry 1/1 in 1.7s
+2026-08-26 12:34:10,264 INFO [run-eab34434ef] httpx: HTTP Request: GET https://investors.micron.com/rss.xml "HTTP/1.1 404 Not Found"
+2026-08-26 12:34:10,265 WARNING [run-eab34434ef] trace.collectors.micron: [src_micron_ir] RSS unavailable (source_unavailable), fallback to newsroom page
+2026-08-26 12:34:10,632 INFO [run-eab34434ef] httpx: HTTP Request: GET https://www.micron.com/about/newsroom/press-releases "HTTP/1.1 301 Moved Permanently"
+2026-08-26 12:34:10,882 INFO [run-eab34434ef] httpx: HTTP Request: GET https://www.micron.com/about/press/news "HTTP/1.1 200 OK"
+2026-08-26 12:34:12,424 INFO [run-eab34434ef] httpx: HTTP Request: POST http://www.cninfo.com.cn/new/information/topSearch/query "HTTP/1.1 200 200"
+2026-08-26 12:34:12,794 INFO [run-eab34434ef] httpx: HTTP Request: POST http://www.cninfo.com.cn/new/hisAnnouncement/query "HTTP/1.1 200 200"
+2026-08-26 12:34:13,508 INFO [run-eab34434ef] httpx: HTTP Request: POST http://www.cninfo.com.cn/new/information/topSearch/query "HTTP/1.1 200 200"
+2026-08-26 12:34:13,871 INFO [run-eab34434ef] httpx: HTTP Request: POST http://www.cninfo.com.cn/new/hisAnnouncement/query "HTTP/1.1 200 200"
+2026-08-26 12:34:15,604 INFO [run-eab34434ef] httpx: HTTP Request: POST http://www.cninfo.com.cn/new/information/topSearch/query "HTTP/1.1 200 200"
+2026-08-26 12:34:16,180 INFO [run-eab34434ef] httpx: HTTP Request: POST http://www.cninfo.com.cn/new/hisAnnouncement/query "HTTP/1.1 200 200"
+2026-08-26 12:34:16,989 INFO [run-eab34434ef] httpx: HTTP Request: POST http://www.cninfo.com.cn/new/information/topSearch/query "HTTP/1.1 200 200"
+2026-08-26 12:34:17,711 INFO [run-eab34434ef] httpx: HTTP Request: POST http://www.cninfo.com.cn/new/hisAnnouncement/query "HTTP/1.1 200 200"
+2026-08-26 12:34:18,053 INFO [run-eab34434ef] httpx: HTTP Request: POST http://www.cninfo.com.cn/new/information/topSearch/query "HTTP/1.1 200 200"
+2026-08-26 12:34:18,559 INFO [run-eab34434ef] httpx: HTTP Request: POST http://www.cninfo.com.cn/new/hisAnnouncement/query "HTTP/1.1 200 200"
+2026-08-26 12:34:18,821 INFO [run-eab34434ef] httpx: HTTP Request: GET https://www.bis.doc.gov/index.php/policy-focus/press-releases "HTTP/1.1 301 Moved Permanently"
+2026-08-26 12:34:18,970 INFO [run-eab34434ef] httpx: HTTP Request: GET https://www.bis.gov/ "HTTP/1.1 200 OK"
+2026-08-26 12:34:22,097 INFO [run-eab34434ef] httpx: HTTP Request: GET https://www.miit.gov.cn/ "HTTP/1.1 200 OK"
+2026-08-26 12:34:22,515 INFO [run-eab34434ef] httpx: HTTP Request: GET https://www.mofcom.gov.cn/ "HTTP/1.1 200 OK"
+2026-08-26 12:34:22,753 INFO [run-eab34434ef] httpx: HTTP Request: GET https://www.federalregister.gov/api/v1/documents.rss?conditions%5Bterm%5D=semiconductor "HTTP/1.1 200 OK"
+2026-08-26 12:34:22,938 INFO [run-eab34434ef] httpx: HTTP Request: GET https://www.federalreserve.gov/feeds/press_all.xml "HTTP/1.1 200 OK"
+2026-08-26 12:34:22,954 INFO [run-eab34434ef] trace.collectors.rss: [src_fed] bootstrap dropped=6 keyword_dropped=0 (bootstrap_days=30)
+2026-08-26 12:34:24,977 INFO [run-eab34434ef] httpx: HTTP Request: GET https://public.govdelivery.com/accounts/USDOC/feed.rss "HTTP/1.1 200 OK"
+2026-08-26 12:34:25,365 INFO [run-eab34434ef] trace.collectors.rss: [src_commerce] bootstrap dropped=25 keyword_dropped=0 (bootstrap_days=14)
+2026-08-26 12:34:25,366 INFO [run-eab34434ef] trace.pipeline: collected 244 raw items (sources ok=7 failed=0 disabled=3, keyword_filtered=100)
+2026-08-26 12:34:26,427 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:34:28,711 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-eb99ee5d67ad: SNDK提交10-K年度报告
+2026-08-26 12:34:29,029 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:34:30,773 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-9e7605a13ed3: SNDK 提交8-K文件
+2026-08-26 12:34:31,083 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:34:33,040 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-89a3ff039ec3: SNDK 提交10-Q季度报告
+2026-08-26 12:34:33,360 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:34:35,264 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-515fb285d297: Micron Technology Files Form 8-K with SEC
+2026-08-26 12:34:35,574 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:34:37,663 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-da2799cd13cb: 美光科技提交10-Q季度报告
+2026-08-26 12:34:37,975 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:34:40,217 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-9fb7fbf151e7: 美光科技提交8-K文件
+2026-08-26 12:34:40,532 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:34:42,758 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-244bb655b4d9: NVIDIA 提交 8-K 表格
+2026-08-26 12:34:43,077 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:34:44,802 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-3678d9281496: NVIDIA 提交 10-Q 季度报告
+2026-08-26 12:34:45,158 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:34:47,884 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-e1b2a1e213c0: NVIDIA brings blockbuster PC games and technology to RTX Spark at Gamescom
+2026-08-26 12:34:48,196 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:34:50,374 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-dcf43df5db8f: NVIDIA Announces Jetson Orin Nano 2 Robotics Computer
+2026-08-26 12:34:50,690 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:34:53,430 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-1f43ad4a30cd: NVIDIA 讨论 XPU 如何满足世界级 AI 工厂需求
+2026-08-26 12:34:53,748 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:34:55,986 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-028c8e568ec5: NVIDIA 扩展 Vera Rubin 推理能力，Groq 3 LPX 全面投产
+2026-08-26 12:34:56,309 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:34:58,702 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-cbd6be31c240: NVIDIA Vera Rubin NVL72 为 AI 代理设定新效率标准
+2026-08-26 12:34:59,028 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:35:01,115 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-dd305e31360f: SpaceXAI adopts NVIDIA Vera CPU to accelerate agentic AI
+2026-08-26 12:35:01,462 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:35:04,063 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:35:04,668 INFO [run-eab34434ef] trace.event_engine.engine: merged into EVT-20260826-028c8e568ec5 (reason=official_source_appeared, official=True)
+2026-08-26 12:35:04,987 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:35:07,403 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-4dc6dfedb3cd: GeForce NOW 新增 Firefox 浏览器支持
+2026-08-26 12:35:07,714 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:35:10,057 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-1cef40b0051c: NVIDIA 强调 AI 工厂是 AI 时代的关键基础设施
+2026-08-26 12:35:10,373 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:35:12,768 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-4fb97769a377: NVIDIA secures land, power and shell capacity at PORTS-Pike Technology Campus in Ohio
+2026-08-26 12:35:13,081 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:35:16,241 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-92c7e48afa20: 印尼首个大学AI中心在日惹成立，由UGM、Indosat和NVIDIA联合推出
+2026-08-26 12:35:16,557 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:35:18,627 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-a99a131e2eb4: GeForce NOW 推出 Linux 原生应用正式版及云优化
+2026-08-26 12:35:18,941 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:35:20,998 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-a4af338d98f5: NVIDIA CEO Jensen Huang tops Glassdoor's 2026 Best CEOs list
+2026-08-26 12:35:21,318 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:35:23,846 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-36d3cb8fb89f: NVIDIA announces partnerships to mobilize over $500 billion for AI infrastructure
+2026-08-26 12:35:24,162 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:35:26,697 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-13a1cb083e78: NVIDIA 探讨 AI 计算性能扩展需要新的电源架构
+2026-08-26 12:35:27,005 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:35:29,122 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-74d096864b5f: NVIDIA and Local AI Community Fuel Open Source Models and Intelligent Agents
+2026-08-26 12:35:29,441 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:35:31,831 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-a66248be8d6a: NVIDIA发布Nemotron 3.5 Lightning模型，提升代理式AI效率
+2026-08-26 12:35:32,144 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:35:35,030 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:35:35,565 INFO [run-eab34434ef] trace.event_engine.engine: merged into EVT-20260826-36d3cb8fb89f (reason=official_source_appeared, official=True)
+2026-08-26 12:35:35,885 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:35:38,288 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-434350458ebd: Firebird Launches CIS Region's Largest AI Factory in Armenia
+2026-08-26 12:35:38,604 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:35:40,759 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-85cf97c50f3e: GeForce NOW 八月新增26款游戏
+2026-08-26 12:35:41,074 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:35:42,650 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-b96a5aba4649: SanDisk庆祝宝可梦30周年
+2026-08-26 12:35:42,978 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:35:44,844 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-12c11719ab09: SanDisk Introduces NAS SSDs for Prosumers and Small Businesses
+2026-08-26 12:35:45,156 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:35:46,869 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-4cda7b13e350: SanDisk 举办 2026 年投资者日
+2026-08-26 12:35:47,190 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:35:48,881 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-ff220ec0f0eb: SanDisk与Kioxia推出面向AI和数据密集型应用的新型高性能QLC 3D闪存
+2026-08-26 12:35:49,201 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:35:50,732 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-bfb7213e6fb9: SanDisk Reports Fiscal Fourth Quarter 2026 Financial Results
+2026-08-26 12:35:51,054 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:35:52,979 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-eb7f53ea24e1: SanDisk 与 Kioxia 发布新型 3D 闪存技术 QLC NAND
+2026-08-26 12:35:53,341 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:35:55,118 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-2bc5862a2941: SanDisk 在 FMS 2026 展示面向 AI 推理时代的 NAND 创新
+2026-08-26 12:35:55,436 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:35:57,404 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-78c4681ef3dd: SanDisk与SK海力士推进HBF全球标准化
+2026-08-26 12:35:57,716 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:35:59,524 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-abf259b9a1f2: Micron Announces Leadership Appointments to Accelerate Innovation and Growth
+2026-08-26 12:35:59,841 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:36:01,274 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-faf1b6d695bd: Micron Opens State-of-the-Art Training Center in Boise to Strengthen America's Semiconductor Workforce
+2026-08-26 12:36:01,586 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:36:03,828 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-52f19b7233f4: Micron unveils Micron Research Labs, a U.S.-based Long-Horizon Innovation Hub
+2026-08-26 12:36:04,155 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:36:06,162 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-c83b402f3bc6: Micron Ventures Launches $250 Million Fund to Invest in the Next Generation of AI
+2026-08-26 12:36:06,474 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:36:08,002 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-c6b99a28ff29: 中芯国际董事会批准发布2026年中期业绩通知
+2026-08-26 12:36:08,316 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:36:09,800 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-fe76a510e290: 中芯国际发布2026年第二季度未经审核业绩
+2026-08-26 12:36:10,117 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:36:11,969 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-1677b691b697: 中芯国际发布证券变动月报表
+2026-08-26 12:36:12,280 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:36:14,112 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-aef537698f1f: 中芯国际发布2026年第二季度业绩说明会预告公告
+2026-08-26 12:36:14,427 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:36:16,431 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-3a93ce110082: 中芯国际发布董事会会议日期通知
+2026-08-26 12:36:16,742 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:36:18,364 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-1c8131f5567f: 中芯国际作废处理2021年科创板限制性股票激励计划部分限制性股票
+2026-08-26 12:36:18,678 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:36:20,338 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:36:20,925 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-8364b6b0a3d9: 中芯国际2021年科创板限制性股票激励计划预留授予部分第四个归属期符合归属条件
+2026-08-26 12:36:21,285 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:36:23,909 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:36:24,342 INFO [run-eab34434ef] trace.event_engine.engine: merged into EVT-20260826-8364b6b0a3d9 (reason=official_source_appeared, official=True)
+2026-08-26 12:36:24,672 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:36:26,460 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-d166ec413713: 中芯国际发布翌日披露报表
+2026-08-26 12:36:26,773 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:36:28,238 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-3031196beb40: 中芯国际发布董事会议事规则公告
+2026-08-26 12:36:28,575 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:36:30,205 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-06fcf29a2f8d: 中芯国际2026年度股东会法律意见书发布
+2026-08-26 12:36:30,526 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:36:32,268 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-95980f7ba676: 中芯国际发布经修订及重述组织章程大纲及细则
+2026-08-26 12:36:32,582 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:36:34,179 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-064721fbcf60: 中芯国际发布董事及高级管理人员薪酬管理制度
+2026-08-26 12:36:34,494 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:36:36,565 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-73fec0d97d1b: 中芯国际发布2026年度股东会决议公告
+2026-08-26 12:36:36,871 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:36:38,920 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:36:39,628 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-d864ffc9fc21: 中芯国际发布股东会议事规则公告
+2026-08-26 12:36:40,017 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:36:41,579 INFO [run-eab34434ef] trace.event_engine.engine: merged into EVT-20260826-95980f7ba676 (reason=official_source_appeared, official=True)
+2026-08-26 12:36:41,897 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:36:44,099 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-136b0bad8d7b: 中芯国际发行股份购买资产暨关联交易实施完成
+2026-08-26 12:36:44,420 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:36:46,025 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-4677607f7ffb: 国家集成电路产业投资基金及其一致行动人减持中芯国际境内股票
+2026-08-26 12:36:46,348 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:36:48,657 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:36:49,214 INFO [run-eab34434ef] trace.event_engine.engine: merged into EVT-20260826-136b0bad8d7b (reason=official_source_appeared, official=True)
+2026-08-26 12:36:49,547 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:36:51,874 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:36:52,284 INFO [run-eab34434ef] trace.event_engine.engine: merged into EVT-20260826-136b0bad8d7b (reason=official_source_appeared, official=True)
+2026-08-26 12:36:52,604 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:36:54,815 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:36:55,196 INFO [run-eab34434ef] trace.event_engine.engine: merged into EVT-20260826-136b0bad8d7b (reason=official_source_appeared, official=True)
+2026-08-26 12:36:55,595 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:36:57,699 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:36:58,376 INFO [run-eab34434ef] trace.event_engine.engine: merged into EVT-20260826-136b0bad8d7b (reason=official_source_appeared, official=True)
+2026-08-26 12:36:58,687 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:37:00,398 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-28a0b41bf7df: 中芯国际发布股东权益变动提示性公告
+2026-08-26 12:37:00,737 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:37:02,455 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-c124b63cc6ef: 中芯国际发行股份购买资产暨关联交易标的资产过户完成
+2026-08-26 12:37:02,764 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:37:04,901 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:37:05,511 INFO [run-eab34434ef] trace.event_engine.engine: merged into EVT-20260826-c124b63cc6ef (reason=official_source_appeared, official=True)
+2026-08-26 12:37:05,817 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:37:08,103 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:37:08,652 INFO [run-eab34434ef] trace.event_engine.engine: merged into EVT-20260826-c124b63cc6ef (reason=official_source_appeared, official=True)
+2026-08-26 12:37:08,965 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:37:10,808 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-14bc0286ceb2: 兆易创新发布H股公告-翌日披露报表
+2026-08-26 12:37:11,124 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:37:13,006 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-34ff4a4a3718: 兆易创新2023年股票期权激励计划第三个行权期行权结果暨股份上市公告
+2026-08-26 12:37:13,396 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:37:15,026 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-d593e3f79ecd: 兆易创新首次回购A股股份公告
+2026-08-26 12:37:15,341 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:37:17,243 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-12ecbcf6265a: 兆易创新发布A股股份回购报告书
+2026-08-26 12:37:17,558 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:37:19,594 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-ba5caa1fe41d: 兆易创新召开2026年第二次临时股东会，中银律所出具法律意见书
+2026-08-26 12:37:19,906 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:37:21,408 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-f82c50c322ab: 兆易创新发布回购A股股份用于注销并减少注册资本暨通知债权人的公告
+2026-08-26 12:37:21,727 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:37:23,199 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-9b555ea3c9ab: 兆易创新2026年第二次临时股东会决议公告
+2026-08-26 12:37:23,512 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:37:25,478 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:37:26,189 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-f9e8b2840540: 兆易创新2023年股票期权激励计划第三个行权期行权条件成就
+2026-08-26 12:37:26,517 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:37:28,059 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-560120b1c5a9: 兆易创新发布2026年H股股份奖励计划公告
+2026-08-26 12:37:28,371 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:37:30,005 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-d93aae387f8d: 兆易创新2026年第三次临时股东会会议资料发布
+2026-08-26 12:37:30,367 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:37:32,411 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-d996a10a1114: 兆易创新发布2026年半年度报告摘要
+2026-08-26 12:37:32,739 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:37:34,848 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:37:35,459 INFO [run-eab34434ef] trace.event_engine.engine: merged into EVT-20260826-f9e8b2840540 (reason=official_source_appeared, official=True)
+2026-08-26 12:37:35,775 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:37:37,481 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-694fef17e9f6: 兆易创新召开第五届董事会十五次会议并发布决议公告
+2026-08-26 12:37:37,800 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:37:39,342 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:37:39,829 INFO [run-eab34434ef] trace.event_engine.engine: merged into EVT-20260826-d93aae387f8d (reason=official_source_appeared, official=True)
+2026-08-26 12:37:40,158 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:37:41,922 INFO [run-eab34434ef] trace.event_engine.engine: merged into EVT-20260826-d996a10a1114 (reason=official_source_appeared, official=True)
+2026-08-26 12:37:42,240 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:37:43,804 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-7a0198f1bf76: 兆易创新召开2026年半年度业绩说明会
+2026-08-26 12:37:44,118 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:37:46,412 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-efa1a737f247: 兆易创新发布2026年半年度募集资金存放、管理与实际使用情况的专项报告
+2026-08-26 12:37:46,725 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:37:48,389 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-78c626393015: 兆易创新变更董事会秘书及联席公司秘书
+2026-08-26 12:37:48,702 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:37:50,182 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-e205e2753021: 兆易创新发布2026年度“提质增效重回报”行动方案暨半年度评估报告
+2026-08-26 12:37:50,495 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:37:52,174 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-1a5e0a49ba3d: 兆易创新发布回购A股股份事项前十大股东持股情况公告
+2026-08-26 12:37:52,481 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:37:53,986 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-691151436b3a: 兆易创新参与投资境外私募股权投资基金
+2026-08-26 12:37:54,301 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:37:56,125 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-8f5d0a1d66db: 兆易创新召开2026年第二次临时股东会
+2026-08-26 12:37:56,447 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:37:58,628 INFO [run-eab34434ef] trace.event_engine.engine: merged into EVT-20260826-8f5d0a1d66db (reason=official_source_appeared, official=True)
+2026-08-26 12:37:58,940 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:38:00,589 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-89cffd94295c: 兆易创新发布回购公司A股股份方案公告
+2026-08-26 12:38:00,913 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:38:02,787 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-42aaaf0b680e: 兆易创新参与投资私募股权投资基金进展公告
+2026-08-26 12:38:03,100 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:38:04,760 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-26a80db2d9ec: 兆易创新第五届董事会第十四次会议决议公告
+2026-08-26 12:38:05,085 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:38:06,583 INFO [run-eab34434ef] trace.event_engine.engine: merged into EVT-20260826-26a80db2d9ec (reason=official_source_appeared, official=True)
+2026-08-26 12:38:06,951 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:38:08,707 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-388cb0197d93: 澜起科技发布H股公告：董事会会议召开日期
+2026-08-26 12:38:09,024 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:38:10,912 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-e04883810b88: 澜起科技发布回购A股股份进展公告
+2026-08-26 12:38:11,221 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:38:13,249 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-b5405048facb: 澜起科技发布回购A股股份事项前十名股东持股情况公告
+2026-08-26 12:38:13,596 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:38:15,005 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-21d06fa64f92: 澜起科技首次回购A股股份公告
+2026-08-26 12:38:15,330 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:38:17,441 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-46cfb31150db: 澜起科技召开第三届董事会第十八次会议并发布决议公告
+2026-08-26 12:38:17,761 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:38:19,627 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-021623582585: 澜起科技调整限制性股票激励计划授予价格
+2026-08-26 12:38:19,953 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:38:21,961 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-a3bfa96dd8db: 澜起科技发布限制性股票激励计划归属条件公告
+2026-08-26 12:38:22,283 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:38:24,540 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:38:24,936 INFO [run-eab34434ef] trace.event_engine.engine: merged into EVT-20260826-a3bfa96dd8db (reason=official_source_appeared, official=True)
+2026-08-26 12:38:25,250 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:38:26,963 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:38:27,673 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-599d573eafb8: 澜起科技发布回购A股股份报告书
+2026-08-26 12:38:27,991 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:38:30,111 INFO [run-eab34434ef] trace.event_engine.engine: merged into EVT-20260826-021623582585 (reason=official_source_appeared, official=True)
+2026-08-26 12:38:30,433 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:38:33,103 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:38:33,543 INFO [run-eab34434ef] trace.event_engine.engine: merged into EVT-20260826-a3bfa96dd8db (reason=official_source_appeared, official=True)
+2026-08-26 12:38:33,886 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:38:35,959 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-0797003504a8: 澜起科技发布2025年年度权益分派实施公告
+2026-08-26 12:38:36,272 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:38:38,241 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-3911e6b96ce0: 澜起科技发布差异化分红专项法律意见书
+2026-08-26 12:38:38,561 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:38:39,987 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-d897b476f784: 澜起科技发布关于配合韩国相关调查的说明公告
+2026-08-26 12:38:40,310 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:38:41,914 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-7af4c1d55f35: 澜起科技发布2026年半年度业绩预增公告
+2026-08-26 12:38:42,229 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:38:43,676 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-7d961e9dc33f: 澜起科技董事长兼首席执行官提议回购A股股份
+2026-08-26 12:38:43,988 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:38:45,642 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-a4e9c6608efd: 澜起科技2025年第二次回购股份实施完成
+2026-08-26 12:38:45,961 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:38:47,853 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-086eb57a17e5: 澜起科技发布2025年第二次回购A股股份方案回购股份进展公告
+2026-08-26 12:38:48,169 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:38:50,116 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-27a3c92c0991: 澜起科技2025年年度股东会法律意见书发布
+2026-08-26 12:38:50,498 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:38:52,475 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-44ecc80a6baf: 澜起科技召开2025年年度股东会并通过决议
+2026-08-26 12:38:52,793 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:38:54,883 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-f93186baf711: 澜起科技发布2026年H股激励计划公告
+2026-08-26 12:38:55,196 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:38:56,708 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-dd3de18080e9: 澜起科技召开2025年年度股东会
+2026-08-26 12:38:57,044 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:38:58,865 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-e39be87b13c0: 澜起科技控股子公司增资扩股暨关联交易公告
+2026-08-26 12:38:59,174 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:39:00,929 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-d01eb8b7dae0: 澜起科技非执行董事变更并调整专门委员会委员
+2026-08-26 12:39:01,239 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:39:03,088 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-3eeb4b9da002: 澜起科技发布2025年审计报告
+2026-08-26 12:39:03,409 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:39:04,874 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-29bf13ceaaf9: 澜起科技召开第三届董事会第十七次会议
+2026-08-26 12:39:05,187 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:39:07,231 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-0a5ab9449a43: 中信建投证券关于江波龙使用自有资金支付募投项目部分款项后续以募集资金等额置换的核查意见
+2026-08-26 12:39:07,561 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:39:09,615 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-e9d57388a1ad: 中信建投证券核查意见：江波龙使用募集资金向子公司及孙公司增资或借款实施募投项目
+2026-08-26 12:39:09,978 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:39:11,500 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-dc45ce5465e1: 江波龙调整募集资金投资项目拟投入募集资金金额
+2026-08-26 12:39:11,820 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:39:13,804 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-5517af5a9578: 江波龙发布股东提名人选参选董事的程序草案
+2026-08-26 12:39:14,122 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:39:15,758 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-622a1d96cd93: 江波龙发布董事会成员与员工多元化政策（草案）
+2026-08-26 12:39:16,074 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:39:17,667 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-c06bed888468: 江波龙发布股东通讯政策（草案）
+2026-08-26 12:39:18,006 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:39:20,081 INFO [run-eab34434ef] trace.event_engine.engine: merged into EVT-20260826-0a5ab9449a43 (reason=official_source_appeared, official=True)
+2026-08-26 12:39:20,401 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:39:22,185 INFO [run-eab34434ef] trace.event_engine.engine: merged into EVT-20260826-e9d57388a1ad (reason=official_source_appeared, official=True)
+2026-08-26 12:39:22,501 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:39:24,089 INFO [run-eab34434ef] trace.event_engine.engine: merged into EVT-20260826-dc45ce5465e1 (reason=official_source_appeared, official=True)
+2026-08-26 12:39:24,413 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:39:26,253 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-19ff89f6c639: 中信建投证券发布关于江波龙新增2026年度日常关联交易预计的核查意见
+2026-08-26 12:39:26,576 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:39:28,871 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:39:29,516 INFO [run-eab34434ef] trace.event_engine.engine: merged into EVT-20260826-19ff89f6c639 (reason=official_source_appeared, official=True)
+2026-08-26 12:39:29,840 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:39:31,321 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-a9a7e0e82818: 江波龙召开2026年第二次临时股东会
+2026-08-26 12:39:31,647 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:39:33,293 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-c9e62059692d: 江波龙第三届董事会第二十一次会议决议公告
+2026-08-26 12:39:33,602 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:39:35,421 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-4ee527a42c17: 江波龙刊发H股发行聆讯后资料集
+2026-08-26 12:39:35,763 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:39:37,631 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-256ac04997e9: 江波龙与专业投资机构共同投资进展公告
+2026-08-26 12:39:37,952 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:39:39,914 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-51cc91556d0a: 江波龙发行H股获香港联交所审议
+2026-08-26 12:39:40,244 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:39:42,327 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:39:43,158 INFO [run-eab34434ef] trace.event_engine.engine: merged into EVT-20260826-256ac04997e9 (reason=official_source_appeared, official=True)
+2026-08-26 12:39:43,511 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:39:45,563 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-75e3de46a244: 江波龙发布回购股份报告书
+2026-08-26 12:39:45,882 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:39:47,530 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-be4226963f69: 江波龙发布回购股份事项前十名股东持股情况公告
+2026-08-26 12:39:47,845 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:39:49,546 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-cea6cbba6b16: 江波龙电子2025年度向特定对象发行股票上市公告
+2026-08-26 12:39:49,888 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:39:51,975 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:39:52,691 INFO [run-eab34434ef] trace.event_engine.engine: merged into EVT-20260826-cea6cbba6b16 (reason=official_source_appeared, official=True)
+2026-08-26 12:39:53,007 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:39:55,109 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-6bd82f6ad70a: 江波龙董事和高级管理人员持股情况变动公告
+2026-08-26 12:39:55,420 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:39:57,658 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-fb7e375c58f9: 中信建投证券发布江波龙向特定对象发行股票上市保荐书
+2026-08-26 12:39:57,976 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:39:59,433 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-57dec20f2cd9: 江波龙取得金融机构股票回购专项贷款承诺函
+2026-08-26 12:39:59,750 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:40:01,819 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-50bd77a4b195: 江波龙发布2025年度ESG报告（英文版）
+2026-08-26 12:40:02,134 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:40:03,938 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-715bf2167282: 江波龙发布董事会提名委员会工作细则（草案）
+2026-08-26 12:40:04,257 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:40:06,369 INFO [run-eab34434ef] trace.event_engine.engine: merged into EVT-20260826-715bf2167282 (reason=official_source_appeared, official=True)
+2026-08-26 12:40:06,680 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:40:08,856 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:40:09,740 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-dfaf96e3090c: 江波龙发布董事会议事规则（草案）
+2026-08-26 12:40:10,049 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:40:12,045 INFO [run-eab34434ef] trace.event_engine.engine: merged into EVT-20260826-dfaf96e3090c (reason=official_source_appeared, official=True)
+2026-08-26 12:40:12,359 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:40:14,431 INFO [run-eab34434ef] trace.event_engine.engine: merged into EVT-20260826-715bf2167282 (reason=official_source_appeared, official=True)
+2026-08-26 12:40:14,744 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:40:16,650 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-8b432de42600: 浪潮信息与专业机构共同投资进展公告
+2026-08-26 12:40:16,962 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:40:18,893 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-d44e003a38b2: 浪潮信息发布2026年度第二期科技创新债券发行情况公告
+2026-08-26 12:40:19,214 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:40:20,785 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-bfb02b93f1d8: 浪潮信息与专业机构共同投资公告
+2026-08-26 12:40:21,095 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:40:23,192 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-ed63354a15b9: 浪潮信息发布股票交易异常波动公告
+2026-08-26 12:40:23,522 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:40:25,371 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-517664fed998: 浪潮信息发布2026年半年度业绩预告
+2026-08-26 12:40:25,681 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:40:27,420 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-5e67d1ca3a8d: 浪潮信息发布2025年年度分红派息实施公告
+2026-08-26 12:40:27,737 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:40:28,915 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-f63b057e6a8e: 浪潮信息选举职工代表董事
+2026-08-26 12:40:29,245 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:40:31,145 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-a2eee75bad9e: 浪潮信息召开2025年度及2026年第一季度网上业绩说明会
+2026-08-26 12:40:31,454 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:40:33,414 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-3d46911b9599: 浪潮信息完成董事会换届选举并聘任高级管理人员、证券事务代表
+2026-08-26 12:40:33,728 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:40:35,366 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-92ab102de8cb: 浪潮信息2025年度股东会法律意见书发布
+2026-08-26 12:40:35,696 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:40:37,321 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-27b4f1422c56: 浪潮信息发布2025年度股东会决议公告
+2026-08-26 12:40:37,644 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:40:39,558 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-fb37b262603f: 浪潮信息第十届董事会第一次会议决议公告
+2026-08-26 12:40:39,874 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:40:41,922 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-4db4a1165974: 浪潮信息部分董事、高级管理人员股份减持计划实施完成
+2026-08-26 12:40:42,238 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:40:44,244 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-043ed6d8a06a: 浪潮信息发布2026年一季度报告
+2026-08-26 12:40:44,570 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:40:46,580 INFO [run-eab34434ef] trace.event_engine.engine: merged into EVT-20260826-d44e003a38b2 (reason=official_source_appeared, official=True)
+2026-08-26 12:40:46,894 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:40:49,023 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-9b79a381d915: 浪潮信息发布2025年度董事会工作报告
+2026-08-26 12:40:49,336 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:40:51,136 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-02daf1672bc0: 浪潮信息授权董事会制定中期分红方案
+2026-08-26 12:40:51,461 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:40:53,396 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-f5b29188befc: 浪潮信息续聘会计师事务所公告
+2026-08-26 12:40:53,714 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:40:55,890 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-58769d6f473e: 浪潮信息独立董事王爱国发布2025年度述职报告
+2026-08-26 12:40:56,208 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:40:58,881 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:40:59,625 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-e88c453eb38a: 浪潮信息独立董事关鑫发布2025年度述职报告
+2026-08-26 12:40:59,946 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:41:02,084 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:41:02,956 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-d8ad0a1b8449: 浪潮信息独立董事刘培德发布2025年度述职报告
+2026-08-26 12:41:03,268 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:41:05,218 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:41:05,722 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-6d6f6f15f6ce: 浪潮信息发布2025年度可持续发展报告
+2026-08-26 12:41:06,041 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:41:08,195 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:41:08,890 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-25454898d3fc: 浪潮信息发布2025年度内部控制审计报告
+2026-08-26 12:41:09,202 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:41:11,062 INFO [run-eab34434ef] trace.event_engine.engine: merged into EVT-20260826-25454898d3fc (reason=official_source_appeared, official=True)
+2026-08-26 12:41:11,389 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:41:13,593 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-fbd064ee2023: 浪潮信息发布董事、高级管理人员离职管理制度（2026年4月修订）
+2026-08-26 12:41:13,921 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:41:15,992 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-4c279cfa51e6: 浪潮信息发布内部审计制度（2026年4月）
+2026-08-26 12:41:16,304 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:41:18,307 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-b66b5d09901f: 浪潮信息发布关于会计政策变更的公告
+2026-08-26 12:41:18,631 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:41:20,533 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-20021bf63ab7: 浪潮信息独立董事候选人刘培德发布声明与承诺
+2026-08-26 12:41:20,845 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:41:23,021 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:41:23,842 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-4264dacdc950: 浪潮信息独立董事提名人张敏发布声明与承诺
+2026-08-26 12:41:24,160 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:41:25,803 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-e306461043eb: 浪潮信息独立董事提名人声明与承诺公告
+2026-08-26 12:41:26,130 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:41:27,871 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-72f60f94ece2: BIS与Container Manufacturing Ltd.达成行政执法和解
+2026-08-26 12:41:28,197 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:41:30,122 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-6ffcee9b28fd: BIS与Plexon, Inc.达成行政执法和解
+2026-08-26 12:41:30,464 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:41:31,917 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-cfcd686735e7: 美国商务部简化消音器出口管制
+2026-08-26 12:41:32,236 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:41:33,886 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-157ca3d72af7: 美国商务部放宽对阿联酋的出口管制
+2026-08-26 12:41:34,201 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:41:36,182 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-a49a7a23fe78: Bosch to Pay $36 Million Penalty to BIS for Violations Pertaining to Shipments to Huawei
+2026-08-26 12:41:36,505 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:41:38,879 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-7f24500fb055: BIS Reaches Administrative Enforcement Settlement with Coastal PVA Technology, Inc.
+2026-08-26 12:41:39,195 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:41:41,087 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-bfb693515708: 2026年全国原材料工业座谈会在浙江宁波召开
+2026-08-26 12:41:41,437 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:41:43,328 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-712db47e5c91: 2026年APEC数字和人工智能部长会议新闻发布会在成都召开
+2026-08-26 12:41:43,640 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:41:45,581 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-e6ef8ee99614: 工信部举行APEC 2026数字和人工智能部长会议及数字周新闻通气会
+2026-08-26 12:41:45,898 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:41:48,057 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-e55d13204c54: 工信部公示锂离子电池正极材料前驱体能耗限额等15项行业标准报批意见
+2026-08-26 12:41:48,382 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:41:50,360 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-01b55aad5d05: 商务部对进口打印复印办公设备发起国家安全调查
+2026-08-26 12:41:50,679 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:41:52,639 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-e45427d3d09f: 商务部公告2026年第34号：加强无人机相关两用物项对美国出口管制
+2026-08-26 12:41:52,950 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:41:56,497 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-a0ff91fba09d: EPA发布关于某些化学物质的重要新用途规则
+2026-08-26 12:41:56,816 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:41:59,701 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-a9eaa5a4f5ac: Ichor Systems 在 FTZ 183 申请半导体设备生产活动许可
+2026-08-26 12:42:00,038 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:42:02,135 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-f3a45c76d1ec: 美国对澳大利亚和挪威硅金属发布反倾销税令
+2026-08-26 12:42:02,533 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:42:04,427 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-11955650e0c1: 美国对澳大利亚和挪威硅金属发布反补贴税令
+2026-08-26 12:42:04,766 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:42:07,340 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-9017a9fc7d7c: SBA发布2026年修订版小企业规模标准方法论
+2026-08-26 12:42:07,656 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:42:10,379 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-7a7e5732a2ed: 美国国际贸易委员会收到关于特定DRAM设备的投诉并征求公众意见
+2026-08-26 12:42:10,720 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:42:13,014 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-828b948174e9: Nasdaq ISE 修订短期期权系列计划规则获批准
+2026-08-26 12:42:13,335 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:42:16,215 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-f0d078e9681b: EPA发布2026年统一监管与放松监管行动议程
+2026-08-26 12:42:16,541 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:42:19,011 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-354f456c41ec: 2026年联邦监管和放松监管行动统一议程发布
+2026-08-26 12:42:19,332 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:42:21,034 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-b493db761112: 美国调整多晶硅及其衍生物进口政策
+2026-08-26 12:42:21,354 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:42:27,164 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-ad4388a6b2b4: FCC发布关于通信供应链设备授权计划的国家安全威胁保护措施的进一步拟议规则制定通知
+2026-08-26 12:42:27,478 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:42:30,102 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-dbe905e4fac9: Ascentec Engineering 申请在俄勒冈州 FTZ 45 进行半导体设备精密零件生产
+2026-08-26 12:42:30,414 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:42:32,500 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-79e1fa8d7a93: Western Digital Technologies 申请在加州圣何塞和弗里蒙特进行半导体晶圆生产活动
+2026-08-26 12:42:32,820 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:42:35,539 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-5cb5e0a7383a: 美国国土安全部更新UFLPA实体清单，新增43个实体
+2026-08-26 12:42:35,880 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:42:40,745 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-32a4a03e7952: FAA发布无线电高度表抗干扰新规，要求分阶段在2030/2034年前合规
+2026-08-26 12:42:41,073 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:42:45,199 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-bcbb26eda506: EPA proposes significant new use rules for certain chemical substances under TSCA
+2026-08-26 12:42:45,510 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:42:49,567 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-9d8a79f9f427: 美国贸易代表根据301条款对60个经济体征收关税，并对特定经济体实施10%或12.5%的税率
+2026-08-26 12:42:49,893 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:42:51,730 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-9c3f4bd9aeeb: 美联储公布2026年7月贴现率会议纪要
+2026-08-26 12:42:52,127 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:42:53,485 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-8d90cbff2dbe: 美联储批准国民西敏寺银行申请
+2026-08-26 12:42:53,811 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:42:55,718 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-c5b0b8b1d31e: 美联储对Regions Bank和United Community Bank前员工采取执法行动
+2026-08-26 12:42:56,037 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:42:58,035 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-a1079e8c170c: 美联储对SouthPoint Bancshares采取执法行动并终止对德意志银行的执法行动
+2026-08-26 12:42:58,357 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:43:00,123 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-b14d16985164: 美联储公开市场委员会2026年7月会议纪要发布
+2026-08-26 12:43:00,438 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:43:02,145 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-7c11f3a5a11b: 美联储对 Regions Bank 前员工采取执法行动
+2026-08-26 12:43:02,456 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:43:04,123 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-1f920b0b1490: Federal Reserve Board approves Coastal Bend Bancshares application
+2026-08-26 12:43:04,441 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:43:06,046 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-5923a5d87086: 美联储批准FS Bancorp申请
+2026-08-26 12:43:06,361 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:43:08,042 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-035acfd37bbb: 美联储批准桑坦德银行及其美国控股公司的申请
+2026-08-26 12:43:08,359 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:43:10,696 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-df9553bb1bae: 美联储就现代化银行内部人信贷规则征求意见
+2026-08-26 12:43:11,024 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:43:12,616 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-524ee6f057a3: 美联储就互助银行组织规则现代化提案征求意见
+2026-08-26 12:43:12,935 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:43:14,430 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-262637fd9f8f: Federal Reserve Board issues enforcement action with Iuka Bancshares, Inc. and The Iuka State Bank
+2026-08-26 12:43:14,757 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:43:16,786 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-87acfb36342e: 美联储对 Regions Bank 和 First Interstate Bank 前员工采取执法行动
+2026-08-26 12:43:17,191 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:43:18,528 INFO [run-eab34434ef] trace.event_engine.engine: created event EVT-20260826-11c88ffe79f4: 美联储发布FOMC声明
+2026-08-26 12:43:18,857 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:43:33,942 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-eb99ee5d67ad analyzed: 17 impacts
+2026-08-26 12:43:34,272 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:43:50,060 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-9e7605a13ed3 analyzed: 17 impacts
+2026-08-26 12:43:50,379 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:44:04,903 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-89a3ff039ec3 analyzed: 17 impacts
+2026-08-26 12:44:05,221 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:44:21,085 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-515fb285d297 analyzed: 15 impacts
+2026-08-26 12:44:21,401 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:44:36,784 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-da2799cd13cb analyzed: 15 impacts
+2026-08-26 12:44:37,119 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:44:51,582 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-9fb7fbf151e7 analyzed: 15 impacts
+2026-08-26 12:44:51,608 INFO [run-eab34434ef] trace.alerts.engine: bootstrap suppressed: user=7166811279 event=EVT-20260826-9fb7fbf151e7 reason=freshness_window
+2026-08-26 12:44:51,932 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:45:02,997 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-244bb655b4d9 analyzed: 12 impacts
+2026-08-26 12:45:03,315 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:45:18,009 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-3678d9281496 analyzed: 12 impacts
+2026-08-26 12:45:18,010 INFO [run-eab34434ef] trace.alerts.engine: bootstrap suppressed: user=7166811279 event=EVT-20260826-3678d9281496 reason=freshness_window
+2026-08-26 12:45:18,334 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:45:31,886 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-e1b2a1e213c0 analyzed: 12 impacts
+2026-08-26 12:45:31,887 INFO [run-eab34434ef] trace.alerts.engine: bootstrap suppressed: user=7166811279 event=EVT-20260826-e1b2a1e213c0 reason=before_activation
+2026-08-26 12:45:32,204 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:45:44,306 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-dcf43df5db8f analyzed: 12 impacts
+2026-08-26 12:45:44,307 INFO [run-eab34434ef] trace.alerts.engine: bootstrap suppressed: user=7166811279 event=EVT-20260826-dcf43df5db8f reason=before_activation
+2026-08-26 12:45:44,307 INFO [run-eab34434ef] trace.alerts.engine: bootstrap suppressed: user=7166811279 event=EVT-20260826-dcf43df5db8f reason=before_activation
+2026-08-26 12:45:44,626 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:45:58,542 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-1f43ad4a30cd analyzed: 12 impacts
+2026-08-26 12:45:58,544 INFO [run-eab34434ef] trace.alerts.engine: bootstrap suppressed: user=7166811279 event=EVT-20260826-1f43ad4a30cd reason=before_activation
+2026-08-26 12:45:58,867 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:46:12,364 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-028c8e568ec5 analyzed: 12 impacts
+2026-08-26 12:46:12,366 INFO [run-eab34434ef] trace.alerts.engine: bootstrap suppressed: user=7166811279 event=EVT-20260826-028c8e568ec5 reason=before_activation
+2026-08-26 12:46:12,366 INFO [run-eab34434ef] trace.alerts.engine: bootstrap suppressed: user=7166811279 event=EVT-20260826-028c8e568ec5 reason=before_activation
+2026-08-26 12:46:12,677 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:46:26,757 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-cbd6be31c240 analyzed: 12 impacts
+2026-08-26 12:46:26,759 INFO [run-eab34434ef] trace.alerts.engine: bootstrap suppressed: user=7166811279 event=EVT-20260826-cbd6be31c240 reason=before_activation
+2026-08-26 12:46:26,759 INFO [run-eab34434ef] trace.alerts.engine: bootstrap suppressed: user=7166811279 event=EVT-20260826-cbd6be31c240 reason=before_activation
+2026-08-26 12:46:27,082 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:46:43,276 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-dd305e31360f analyzed: 12 impacts
+2026-08-26 12:46:43,278 INFO [run-eab34434ef] trace.alerts.engine: bootstrap suppressed: user=7166811279 event=EVT-20260826-dd305e31360f reason=before_activation
+2026-08-26 12:46:43,278 INFO [run-eab34434ef] trace.alerts.engine: bootstrap suppressed: user=7166811279 event=EVT-20260826-dd305e31360f reason=before_activation
+2026-08-26 12:46:43,600 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:46:56,868 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-4dc6dfedb3cd analyzed: 12 impacts
+2026-08-26 12:46:57,185 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:47:11,410 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-1cef40b0051c analyzed: 12 impacts
+2026-08-26 12:47:11,412 INFO [run-eab34434ef] trace.alerts.engine: bootstrap suppressed: user=7166811279 event=EVT-20260826-1cef40b0051c reason=freshness_window
+2026-08-26 12:47:11,412 INFO [run-eab34434ef] trace.alerts.engine: bootstrap suppressed: user=7166811279 event=EVT-20260826-1cef40b0051c reason=freshness_window
+2026-08-26 12:47:11,412 INFO [run-eab34434ef] trace.alerts.engine: bootstrap suppressed: user=7166811279 event=EVT-20260826-1cef40b0051c reason=freshness_window
+2026-08-26 12:47:11,731 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:47:23,887 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-4fb97769a377 analyzed: 12 impacts
+2026-08-26 12:47:23,889 INFO [run-eab34434ef] trace.alerts.engine: bootstrap suppressed: user=7166811279 event=EVT-20260826-4fb97769a377 reason=freshness_window
+2026-08-26 12:47:24,203 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:47:37,171 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-92c7e48afa20 analyzed: 12 impacts
+2026-08-26 12:47:37,172 INFO [run-eab34434ef] trace.alerts.engine: bootstrap suppressed: user=7166811279 event=EVT-20260826-92c7e48afa20 reason=freshness_window
+2026-08-26 12:47:37,522 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:47:52,172 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-a99a131e2eb4 analyzed: 12 impacts
+2026-08-26 12:47:52,173 INFO [run-eab34434ef] trace.alerts.engine: bootstrap suppressed: user=7166811279 event=EVT-20260826-a99a131e2eb4 reason=freshness_window
+2026-08-26 12:47:52,488 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:48:06,769 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-a4af338d98f5 analyzed: 12 impacts
+2026-08-26 12:48:07,095 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:48:20,368 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-36d3cb8fb89f analyzed: 12 impacts
+2026-08-26 12:48:20,369 INFO [run-eab34434ef] trace.alerts.engine: bootstrap suppressed: user=7166811279 event=EVT-20260826-36d3cb8fb89f reason=freshness_window
+2026-08-26 12:48:20,369 INFO [run-eab34434ef] trace.alerts.engine: bootstrap suppressed: user=7166811279 event=EVT-20260826-36d3cb8fb89f reason=freshness_window
+2026-08-26 12:48:20,698 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:48:37,954 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-13a1cb083e78 analyzed: 19 impacts
+2026-08-26 12:48:37,956 INFO [run-eab34434ef] trace.alerts.engine: bootstrap suppressed: user=7166811279 event=EVT-20260826-13a1cb083e78 reason=freshness_window
+2026-08-26 12:48:38,277 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:48:50,234 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-74d096864b5f analyzed: 12 impacts
+2026-08-26 12:48:50,235 INFO [run-eab34434ef] trace.alerts.engine: bootstrap suppressed: user=7166811279 event=EVT-20260826-74d096864b5f reason=freshness_window
+2026-08-26 12:48:50,560 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:49:02,157 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-a66248be8d6a analyzed: 12 impacts
+2026-08-26 12:49:02,159 INFO [run-eab34434ef] trace.alerts.engine: bootstrap suppressed: user=7166811279 event=EVT-20260826-a66248be8d6a reason=freshness_window
+2026-08-26 12:49:02,480 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:49:15,644 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-434350458ebd analyzed: 12 impacts
+2026-08-26 12:49:15,646 INFO [run-eab34434ef] trace.alerts.engine: bootstrap suppressed: user=7166811279 event=EVT-20260826-434350458ebd reason=freshness_window
+2026-08-26 12:49:15,646 INFO [run-eab34434ef] trace.alerts.engine: bootstrap suppressed: user=7166811279 event=EVT-20260826-434350458ebd reason=freshness_window
+2026-08-26 12:49:15,965 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:49:18,877 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-85cf97c50f3e analyzed: 1 impacts
+2026-08-26 12:49:19,194 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:49:37,999 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-b96a5aba4649 analyzed: 17 impacts
+2026-08-26 12:49:38,322 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:49:56,116 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-12c11719ab09 analyzed: 17 impacts
+2026-08-26 12:49:56,445 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:50:13,174 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-4cda7b13e350 analyzed: 17 impacts
+2026-08-26 12:50:13,498 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:50:34,625 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-ff220ec0f0eb analyzed: 17 impacts
+2026-08-26 12:50:34,627 INFO [run-eab34434ef] trace.alerts.engine: bootstrap suppressed: user=7166811279 event=EVT-20260826-ff220ec0f0eb reason=freshness_window
+2026-08-26 12:50:34,628 INFO [run-eab34434ef] trace.alerts.engine: bootstrap suppressed: user=7166811279 event=EVT-20260826-ff220ec0f0eb reason=freshness_window
+2026-08-26 12:50:34,628 INFO [run-eab34434ef] trace.alerts.engine: bootstrap suppressed: user=7166811279 event=EVT-20260826-ff220ec0f0eb reason=freshness_window
+2026-08-26 12:50:34,961 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:50:53,409 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-bfb7213e6fb9 analyzed: 17 impacts
+2026-08-26 12:50:53,411 INFO [run-eab34434ef] trace.alerts.engine: bootstrap suppressed: user=7166811279 event=EVT-20260826-bfb7213e6fb9 reason=freshness_window
+2026-08-26 12:50:53,736 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:51:12,792 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-eb7f53ea24e1 analyzed: 17 impacts
+2026-08-26 12:51:12,794 INFO [run-eab34434ef] trace.alerts.engine: bootstrap suppressed: user=7166811279 event=EVT-20260826-eb7f53ea24e1 reason=freshness_window
+2026-08-26 12:51:13,112 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:51:30,043 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-2bc5862a2941 analyzed: 17 impacts
+2026-08-26 12:51:30,045 INFO [run-eab34434ef] trace.alerts.engine: bootstrap suppressed: user=7166811279 event=EVT-20260826-2bc5862a2941 reason=freshness_window
+2026-08-26 12:51:30,388 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:51:53,786 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-78c4681ef3dd analyzed: 22 impacts
+2026-08-26 12:51:53,788 INFO [run-eab34434ef] trace.alerts.engine: bootstrap suppressed: user=7166811279 event=EVT-20260826-78c4681ef3dd reason=freshness_window
+2026-08-26 12:51:54,114 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:52:08,808 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-abf259b9a1f2 analyzed: 15 impacts
+2026-08-26 12:52:09,131 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:52:25,792 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-faf1b6d695bd analyzed: 15 impacts
+2026-08-26 12:52:26,189 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:52:42,201 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-52f19b7233f4 analyzed: 15 impacts
+2026-08-26 12:52:42,202 INFO [run-eab34434ef] trace.alerts.engine: bootstrap suppressed: user=7166811279 event=EVT-20260826-52f19b7233f4 reason=before_activation
+2026-08-26 12:52:42,522 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:52:58,085 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-c83b402f3bc6 analyzed: 15 impacts
+2026-08-26 12:52:58,086 INFO [run-eab34434ef] trace.alerts.engine: bootstrap suppressed: user=7166811279 event=EVT-20260826-c83b402f3bc6 reason=freshness_window
+2026-08-26 12:52:58,418 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:53:06,718 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-c6b99a28ff29 analyzed: 7 impacts
+2026-08-26 12:53:07,109 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:53:16,969 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-fe76a510e290 analyzed: 7 impacts
+2026-08-26 12:53:17,293 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:53:25,223 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-1677b691b697 analyzed: 7 impacts
+2026-08-26 12:53:25,549 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:53:33,095 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-aef537698f1f analyzed: 7 impacts
+2026-08-26 12:53:33,421 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:53:41,222 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-3a93ce110082 analyzed: 7 impacts
+2026-08-26 12:53:41,538 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:53:48,852 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-1c8131f5567f analyzed: 7 impacts
+2026-08-26 12:53:49,177 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:53:57,670 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-8364b6b0a3d9 analyzed: 7 impacts
+2026-08-26 12:53:57,984 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:54:06,226 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-d166ec413713 analyzed: 7 impacts
+2026-08-26 12:54:06,543 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:54:13,268 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-3031196beb40 analyzed: 7 impacts
+2026-08-26 12:54:13,681 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:54:20,385 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-06fcf29a2f8d analyzed: 7 impacts
+2026-08-26 12:54:20,705 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:54:29,042 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-95980f7ba676 analyzed: 7 impacts
+2026-08-26 12:54:29,365 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:54:37,085 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-064721fbcf60 analyzed: 7 impacts
+2026-08-26 12:54:37,409 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:54:46,035 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-73fec0d97d1b analyzed: 7 impacts
+2026-08-26 12:54:46,359 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:54:54,285 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-d864ffc9fc21 analyzed: 7 impacts
+2026-08-26 12:54:54,621 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:55:04,203 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-136b0bad8d7b analyzed: 7 impacts
+2026-08-26 12:55:04,518 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:55:11,132 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-4677607f7ffb analyzed: 7 impacts
+2026-08-26 12:55:11,461 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:55:18,967 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-28a0b41bf7df analyzed: 7 impacts
+2026-08-26 12:55:19,282 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:55:27,684 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-c124b63cc6ef analyzed: 7 impacts
+2026-08-26 12:55:28,004 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:55:29,972 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-14bc0286ceb2 analyzed: 1 impacts
+2026-08-26 12:55:30,289 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:55:32,381 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-34ff4a4a3718 analyzed: 1 impacts
+2026-08-26 12:55:32,696 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:55:34,247 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-d593e3f79ecd analyzed: 1 impacts
+2026-08-26 12:55:34,560 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:55:36,653 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-12ecbcf6265a analyzed: 1 impacts
+2026-08-26 12:55:36,964 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:55:38,453 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-ba5caa1fe41d analyzed: 1 impacts
+2026-08-26 12:55:38,772 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:55:40,429 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-f82c50c322ab analyzed: 1 impacts
+2026-08-26 12:55:40,748 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:55:42,698 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-9b555ea3c9ab analyzed: 1 impacts
+2026-08-26 12:55:43,028 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:55:44,961 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-f9e8b2840540 analyzed: 1 impacts
+2026-08-26 12:55:45,282 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:55:47,115 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-560120b1c5a9 analyzed: 1 impacts
+2026-08-26 12:55:47,439 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:55:49,537 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-d93aae387f8d analyzed: 1 impacts
+2026-08-26 12:55:49,856 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:55:52,082 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-d996a10a1114 analyzed: 1 impacts
+2026-08-26 12:55:52,399 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:55:54,411 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-694fef17e9f6 analyzed: 1 impacts
+2026-08-26 12:55:54,757 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:55:56,449 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-7a0198f1bf76 analyzed: 1 impacts
+2026-08-26 12:55:56,854 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:55:59,192 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-efa1a737f247 analyzed: 1 impacts
+2026-08-26 12:55:59,506 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:56:01,074 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-78c626393015 analyzed: 1 impacts
+2026-08-26 12:56:01,430 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:56:03,257 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-e205e2753021 analyzed: 1 impacts
+2026-08-26 12:56:03,608 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:56:05,318 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-1a5e0a49ba3d analyzed: 1 impacts
+2026-08-26 12:56:05,645 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:56:07,427 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-691151436b3a analyzed: 1 impacts
+2026-08-26 12:56:07,741 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:56:09,967 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-8f5d0a1d66db analyzed: 1 impacts
+2026-08-26 12:56:10,288 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:56:12,174 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-89cffd94295c analyzed: 1 impacts
+2026-08-26 12:56:12,495 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:56:14,552 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-42aaaf0b680e analyzed: 1 impacts
+2026-08-26 12:56:14,878 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:56:17,190 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-26a80db2d9ec analyzed: 1 impacts
+2026-08-26 12:56:17,518 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:56:21,155 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-388cb0197d93 analyzed: 3 impacts
+2026-08-26 12:56:21,481 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:56:25,935 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-e04883810b88 analyzed: 3 impacts
+2026-08-26 12:56:26,254 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:56:30,513 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-b5405048facb analyzed: 3 impacts
+2026-08-26 12:56:30,832 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:56:35,188 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-21d06fa64f92 analyzed: 3 impacts
+2026-08-26 12:56:35,509 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:56:39,125 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-46cfb31150db analyzed: 3 impacts
+2026-08-26 12:56:39,450 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:56:44,882 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-021623582585 analyzed: 3 impacts
+2026-08-26 12:56:45,205 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:56:49,686 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-a3bfa96dd8db analyzed: 3 impacts
+2026-08-26 12:56:50,002 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:56:53,753 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-599d573eafb8 analyzed: 3 impacts
+2026-08-26 12:56:54,078 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:56:59,448 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-0797003504a8 analyzed: 3 impacts
+2026-08-26 12:56:59,768 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:57:04,284 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-3911e6b96ce0 analyzed: 3 impacts
+2026-08-26 12:57:04,602 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:57:08,755 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-d897b476f784 analyzed: 3 impacts
+2026-08-26 12:57:09,092 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:57:13,639 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-7af4c1d55f35 analyzed: 3 impacts
+2026-08-26 12:57:13,641 INFO [run-eab34434ef] trace.alerts.engine: bootstrap suppressed: user=7166811279 event=EVT-20260826-7af4c1d55f35 reason=freshness_window
+2026-08-26 12:57:13,955 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:57:18,207 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-7d961e9dc33f analyzed: 3 impacts
+2026-08-26 12:57:18,539 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:57:23,509 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-a4e9c6608efd analyzed: 3 impacts
+2026-08-26 12:57:23,836 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:57:28,923 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-086eb57a17e5 analyzed: 3 impacts
+2026-08-26 12:57:29,242 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:57:33,935 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-27a3c92c0991 analyzed: 3 impacts
+2026-08-26 12:57:34,255 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:57:38,817 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-44ecc80a6baf analyzed: 3 impacts
+2026-08-26 12:57:39,134 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:57:43,875 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-f93186baf711 analyzed: 3 impacts
+2026-08-26 12:57:44,199 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:57:48,409 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-dd3de18080e9 analyzed: 3 impacts
+2026-08-26 12:57:48,729 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:57:53,512 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-e39be87b13c0 analyzed: 3 impacts
+2026-08-26 12:57:53,836 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:57:57,798 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-d01eb8b7dae0 analyzed: 3 impacts
+2026-08-26 12:57:58,127 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:58:03,081 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-3eeb4b9da002 analyzed: 3 impacts
+2026-08-26 12:58:03,413 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:58:07,313 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-29bf13ceaaf9 analyzed: 3 impacts
+2026-08-26 12:58:07,629 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:58:14,398 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-0a5ab9449a43 analyzed: 5 impacts
+2026-08-26 12:58:14,723 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:58:20,997 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-e9d57388a1ad analyzed: 5 impacts
+2026-08-26 12:58:21,338 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:58:29,637 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-dc45ce5465e1 analyzed: 5 impacts
+2026-08-26 12:58:29,957 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:58:36,401 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-5517af5a9578 analyzed: 5 impacts
+2026-08-26 12:58:36,722 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:58:42,686 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-622a1d96cd93 analyzed: 5 impacts
+2026-08-26 12:58:43,005 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:58:48,873 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-c06bed888468 analyzed: 5 impacts
+2026-08-26 12:58:49,195 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:58:56,626 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-19ff89f6c639 analyzed: 5 impacts
+2026-08-26 12:58:56,940 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:59:02,259 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-a9a7e0e82818 analyzed: 5 impacts
+2026-08-26 12:59:02,576 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:59:09,318 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-c9e62059692d analyzed: 5 impacts
+2026-08-26 12:59:09,643 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:59:16,305 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-4ee527a42c17 analyzed: 5 impacts
+2026-08-26 12:59:16,627 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:59:23,777 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-256ac04997e9 analyzed: 5 impacts
+2026-08-26 12:59:24,102 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:59:30,250 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-51cc91556d0a analyzed: 5 impacts
+2026-08-26 12:59:30,576 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:59:37,450 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-75e3de46a244 analyzed: 5 impacts
+2026-08-26 12:59:37,766 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:59:43,362 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-be4226963f69 analyzed: 5 impacts
+2026-08-26 12:59:43,675 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:59:49,690 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-cea6cbba6b16 analyzed: 5 impacts
+2026-08-26 12:59:50,018 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 12:59:56,112 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-6bd82f6ad70a analyzed: 5 impacts
+2026-08-26 12:59:56,432 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 13:00:03,775 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-fb7e375c58f9 analyzed: 5 impacts
+2026-08-26 13:00:04,097 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 13:00:10,452 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-57dec20f2cd9 analyzed: 5 impacts
+2026-08-26 13:00:10,779 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 13:00:16,752 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-50bd77a4b195 analyzed: 5 impacts
+2026-08-26 13:00:17,085 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 13:00:23,934 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-715bf2167282 analyzed: 5 impacts
+2026-08-26 13:00:24,261 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 13:00:30,493 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-dfaf96e3090c analyzed: 5 impacts
+2026-08-26 13:00:30,844 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 13:00:46,374 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-8b432de42600 analyzed: 14 impacts
+2026-08-26 13:00:46,699 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 13:01:00,177 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-d44e003a38b2 analyzed: 14 impacts
+2026-08-26 13:01:00,499 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 13:01:15,663 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-bfb02b93f1d8 analyzed: 14 impacts
+2026-08-26 13:01:15,980 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 13:01:32,016 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-ed63354a15b9 analyzed: 14 impacts
+2026-08-26 13:01:32,335 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 13:01:46,478 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-517664fed998 analyzed: 14 impacts
+2026-08-26 13:01:46,480 INFO [run-eab34434ef] trace.alerts.engine: bootstrap suppressed: user=7166811279 event=EVT-20260826-517664fed998 reason=freshness_window
+2026-08-26 13:01:46,796 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 13:02:01,984 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-5e67d1ca3a8d analyzed: 14 impacts
+2026-08-26 13:02:02,306 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 13:02:15,691 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-f63b057e6a8e analyzed: 14 impacts
+2026-08-26 13:02:16,016 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 13:02:32,443 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-a2eee75bad9e analyzed: 14 impacts
+2026-08-26 13:02:32,799 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 13:02:48,613 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-3d46911b9599 analyzed: 14 impacts
+2026-08-26 13:02:48,943 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 13:03:04,506 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-92ab102de8cb analyzed: 14 impacts
+2026-08-26 13:03:04,833 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 13:03:20,984 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-27b4f1422c56 analyzed: 14 impacts
+2026-08-26 13:03:21,312 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 13:03:37,531 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-fb37b262603f analyzed: 14 impacts
+2026-08-26 13:03:37,854 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 13:03:55,583 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-4db4a1165974 analyzed: 14 impacts
+2026-08-26 13:03:55,906 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 13:04:09,860 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-043ed6d8a06a analyzed: 14 impacts
+2026-08-26 13:04:10,185 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 13:04:27,699 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-9b79a381d915 analyzed: 14 impacts
+2026-08-26 13:04:28,040 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 13:04:40,276 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-02daf1672bc0 analyzed: 14 impacts
+2026-08-26 13:04:40,597 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 13:04:53,334 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-f5b29188befc analyzed: 14 impacts
+2026-08-26 13:04:53,657 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 13:05:10,709 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-58769d6f473e analyzed: 14 impacts
+2026-08-26 13:05:11,042 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 13:05:24,942 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-e88c453eb38a analyzed: 14 impacts
+2026-08-26 13:05:25,263 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 13:05:39,248 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-d8ad0a1b8449 analyzed: 14 impacts
+2026-08-26 13:05:39,565 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 13:05:53,940 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-6d6f6f15f6ce analyzed: 14 impacts
+2026-08-26 13:05:54,268 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 13:06:10,112 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-25454898d3fc analyzed: 14 impacts
+2026-08-26 13:06:10,429 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 13:06:23,259 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-fbd064ee2023 analyzed: 14 impacts
+2026-08-26 13:06:23,581 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 13:06:36,125 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-4c279cfa51e6 analyzed: 14 impacts
+2026-08-26 13:06:36,438 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 13:06:51,064 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-b66b5d09901f analyzed: 14 impacts
+2026-08-26 13:06:51,407 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 13:07:05,956 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-20021bf63ab7 analyzed: 14 impacts
+2026-08-26 13:07:06,283 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 13:07:18,726 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-4264dacdc950 analyzed: 14 impacts
+2026-08-26 13:07:19,053 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 13:07:33,808 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-e306461043eb analyzed: 14 impacts
+2026-08-26 13:07:34,132 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 13:07:45,232 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-72f60f94ece2 analyzed: 12 impacts
+2026-08-26 13:07:45,562 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 13:07:58,021 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-6ffcee9b28fd analyzed: 12 impacts
+2026-08-26 13:07:58,344 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 13:08:09,484 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-cfcd686735e7 analyzed: 12 impacts
+2026-08-26 13:08:09,813 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 13:08:21,517 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-157ca3d72af7 analyzed: 12 impacts
+2026-08-26 13:08:21,841 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 13:08:35,676 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-a49a7a23fe78 analyzed: 12 impacts
+2026-08-26 13:08:35,996 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 13:08:47,454 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-7f24500fb055 analyzed: 12 impacts
+2026-08-26 13:08:47,457 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-bfb693515708: no graph hits
+2026-08-26 13:08:47,458 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-712db47e5c91: no graph hits
+2026-08-26 13:08:47,461 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-e6ef8ee99614: no graph hits
+2026-08-26 13:08:47,464 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-e55d13204c54: no graph hits
+2026-08-26 13:08:47,466 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-01b55aad5d05: no graph hits
+2026-08-26 13:08:47,469 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-e45427d3d09f: no graph hits
+2026-08-26 13:08:47,470 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-a0ff91fba09d: no graph hits
+2026-08-26 13:08:47,472 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-a9eaa5a4f5ac: no graph hits
+2026-08-26 13:08:47,796 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 13:09:01,084 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-f3a45c76d1ec analyzed: 12 impacts
+2026-08-26 13:09:01,405 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 13:09:13,502 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-11955650e0c1 analyzed: 12 impacts
+2026-08-26 13:09:13,505 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-9017a9fc7d7c: no graph hits
+2026-08-26 13:09:13,826 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 13:09:25,519 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-7a7e5732a2ed analyzed: 8 impacts
+2026-08-26 13:09:25,522 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-828b948174e9: no graph hits
+2026-08-26 13:09:25,524 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-f0d078e9681b: no graph hits
+2026-08-26 13:09:25,526 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-354f456c41ec: no graph hits
+2026-08-26 13:09:25,528 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-b493db761112: no graph hits
+2026-08-26 13:09:25,530 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-ad4388a6b2b4: no graph hits
+2026-08-26 13:09:25,532 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-dbe905e4fac9: no graph hits
+2026-08-26 13:09:25,856 INFO [run-eab34434ef] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-08-26 13:09:28,146 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-79e1fa8d7a93 analyzed: 1 impacts
+2026-08-26 13:09:28,148 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-5cb5e0a7383a: no graph hits
+2026-08-26 13:09:28,150 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-32a4a03e7952: no graph hits
+2026-08-26 13:09:28,152 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-bcbb26eda506: no graph hits
+2026-08-26 13:09:28,155 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-9d8a79f9f427: no graph hits
+2026-08-26 13:09:28,156 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-9c3f4bd9aeeb: no graph hits
+2026-08-26 13:09:28,158 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-8d90cbff2dbe: no graph hits
+2026-08-26 13:09:28,160 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-c5b0b8b1d31e: no graph hits
+2026-08-26 13:09:28,161 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-a1079e8c170c: no graph hits
+2026-08-26 13:09:28,163 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-b14d16985164: no graph hits
+2026-08-26 13:09:28,164 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-7c11f3a5a11b: no graph hits
+2026-08-26 13:09:28,166 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-1f920b0b1490: no graph hits
+2026-08-26 13:09:28,168 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-5923a5d87086: no graph hits
+2026-08-26 13:09:28,169 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-035acfd37bbb: no graph hits
+2026-08-26 13:09:28,171 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-df9553bb1bae: no graph hits
+2026-08-26 13:09:28,172 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-524ee6f057a3: no graph hits
+2026-08-26 13:09:28,174 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-262637fd9f8f: no graph hits
+2026-08-26 13:09:28,175 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-87acfb36342e: no graph hits
+2026-08-26 13:09:28,177 INFO [run-eab34434ef] trace.ai.pipeline: event EVT-20260826-11c88ffe79f4: no graph hits
+2026-08-26 13:09:28,178 INFO [run-eab34434ef] trace.pipeline: run summary: {'run_id': 'run-eab34434ef', 'trace_mode': 'production', 'status': 'OK', 'sources_checked': 10, 'sources_succeeded': 7, 'sources_failed': 0, 'sources_disabled': 3, 'raw_items_new': 222, 'raw_items_duplicate': 22, 'events_created': 193, 'events_revised': 29, 'events_analyzed': 193, 'alerts_eligible': 0, 'alerts_sent': 0, 'alerts_suppressed': 1352, 'alerts_failed': 0, 'human_review': 0, 'keyword_filtered': 100, 'llm_stage_a_calls': 222, 'llm_stage_b_calls': 160, 'llm_verifier_calls': 26, 'failed_sources': [], 'notes': []}
+
+===== run-once 摘要 =====
+{
+  "run_id": "run-eab34434ef",
+  "trace_mode": "production",
+  "status": "OK",
+  "sources_checked": 10,
+  "sources_succeeded": 7,
+  "sources_failed": 0,
+  "sources_disabled": 3,
+  "raw_items_new": 222,
+  "raw_items_duplicate": 22,
+  "events_created": 193,
+  "events_revised": 29,
+  "events_analyzed": 193,
+  "alerts_eligible": 0,
+  "alerts_sent": 0,
+  "alerts_suppressed": 1352,
+  "alerts_failed": 0,
+  "human_review": 0,
+  "keyword_filtered": 100,
+  "llm_stage_a_calls": 222,
+  "llm_stage_b_calls": 160,
+  "llm_verifier_calls": 26,
+  "failed_sources": [],
+  "notes": []
+}

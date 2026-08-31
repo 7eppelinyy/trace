@@ -1,0 +1,13 @@
+{
+  "user_id": "7166811279",
+  "user_created": false,
+  "timezone": "Asia/Taipei",
+  "alert_activation_at": "2026-08-26T05:09:13.612155+00:00",
+  "watchlist": [
+    "MU",
+    "NVDA",
+    "SNDK"
+  ],
+  "alert_threshold_all": 7.0,
+  "note": "Watchlist 仅包含默认三只证券，未自动加入整个 Security Master"
+}

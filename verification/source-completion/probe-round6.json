@@ -1,0 +1,49 @@
+{
+  "miit_search_v2": {
+    "status": 200,
+    "sample": "{\"roles\":null,\"permissions\":null,\"success\":false,\"traceId\":\"09ec295d68864ab5afd788ab3a4c9a8b\",\"code\":\"200\",\"message\":\"行政区划代码、搜索管理id、分类id不可都为空\",\"data\":{}}"
+  },
+  "miit_search_v3": {
+    "status": 200,
+    "sample": "{\"roles\":null,\"permissions\":null,\"traceId\":\"75018247ecb647d2b0da7ab3a32c26e8\",\"success\":false,\"code\":\"200\",\"data\":{},\"message\":\"行政区划代码、搜索管理id、分类id不可都为空\"}"
+  },
+  "miit_search_v4": {
+    "status": 200,
+    "sample": "{\"roles\":null,\"permissions\":null,\"success\":false,\"traceId\":\"35f01cc3591a482d9f70063704054252\",\"code\":\"200\",\"message\":\"行政区划代码、搜索管理id、分类id不可都为空\",\"data\":{}}"
+  },
+  "mofcom_cms_api1": {
+    "status": 200,
+    "bytes": 2066,
+    "sample": "<!DOCTYPE html><html lang=\"zh-cmn-Hans\"><head><meta charset=\"utf-8\"><meta name=\"renderer\" content=\"webkit\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><link rel=\"icon\" href=\"/cms/logo/index-title-logo.png\"><title></title><style>#loading-mask{position:fixed;left:0;top:0;height:100%;width:100%;background:#fff;user-select:none;z-index:9999;overflow:hidden}.loading-wrapper{posit"
+  },
+  "mofcom_cms_api2": {
+    "status": 404,
+    "bytes": 552,
+    "sample": "<html>\r\n<head><title>404 Not Found</title></head>\r\n<body>\r\n<center><h1>404 Not Found</h1></center>\r\n<hr><center>openresty</center>\r\n</body>\r\n</html>\r\n<!-- a padding to disable MSIE and Chrome friendly error page -->\r\n<!-- a padding to disable MSIE and Chrome friendly error page -->\r\n<!-- a padding to disable MSIE and Chrome friendly error page -->\r\n<!-- a padding to disable MSIE and Chrome friendl"
+  },
+  "mofcom_art_list": {
+    "status": 404,
+    "bytes": 552,
+    "sample": "<html>\r\n<head><title>404 Not Found</title></head>\r\n<body>\r\n<center><h1>404 Not Found</h1></center>\r\n<hr><center>openresty</center>\r\n</body>\r\n</html>\r\n<!-- a padding to disable MSIE and Chrome friendly error page -->\r\n<!-- a padding to disable MSIE and Chrome friendly error page -->\r\n<!-- a padding to disable MSIE and Chrome friendly error page -->\r\n<!-- a padding to disable MSIE and Chrome friendl"
+  },
+  "mofcom_jsonp": {
+    "status": 404,
+    "bytes": 552,
+    "sample": "<html>\r\n<head><title>404 Not Found</title></head>\r\n<body>\r\n<center><h1>404 Not Found</h1></center>\r\n<hr><center>openresty</center>\r\n</body>\r\n</html>\r\n<!-- a padding to disable MSIE and Chrome friendly error page -->\r\n<!-- a padding to disable MSIE and Chrome friendly error page -->\r\n<!-- a padding to disable MSIE and Chrome friendly error page -->\r\n<!-- a padding to disable MSIE and Chrome friendl"
+  },
+  "micron_deep": {
+    "status": 200,
+    "bytes": 292457,
+    "data_attrs": [],
+    "script_srcs": [
+      "/.rum/@adobe/helix-rum-js@%5E2/dist/micro.js",
+      "//assets.adobedtm.com/4406f1b3c350/3d3af170ba9c/launch-adcde120cf16.min.js",
+      "/etc.clientlibs/core/wcm/components/commons/datalayer/v2/clientlibs/core.wcm.components.commons.datalayer.v2.lc-1e0136bad0acfb78be509234578e44f9-lc.min.js",
+      "/etc.clientlibs/core/wcm/components/commons/datalayer/acdl/core.wcm.components.commons.datalayer.acdl.lc-bf921af342fd2c40139671dbf0920a1f-lc.min.js",
+      "/content/dam/system/hcl-discovery/discover-21-07-minified-iframe.js",
+      "/etc.clientlibs/micron/components/content/hiddencontainer/clientlibs.lc-1df571e37c3cf2a3a31f1648c8f48cb1-lc.min.js",
+      "/etc.clientlibs/micron/clientlibs/clientlib-site.lc-765dbfa65cdf4946d96785033168a49e-lc.min.js",
+      "/etc.clientlibs/micron/clientlibs/clientlib-react.lc-497789133901cece79f6de34238c7e06-lc.min.js"
+    ]
+  }
+}

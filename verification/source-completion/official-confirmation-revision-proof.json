@@ -1,0 +1,22 @@
+{
+  "generated_at": "2026-08-26T10:19:08.266659+00:00",
+  "note": "官方来源晚于媒体报道：同一事件合并（不生成新事件），status reported → official_confirmed，version += 1，primary_source 更新为官方源；只有 material update 才允许再次推送。",
+  "step1_media_created": {
+    "action": "created",
+    "event_id": "EVT-20260826-f31c831ed9c9",
+    "version": 1,
+    "status": "reported",
+    "first_source": "src_reuters"
+  },
+  "step2_official_merged": {
+    "action": "revised",
+    "version": 2,
+    "status": "official_confirmed",
+    "primary_source_id": "src_micron_ir",
+    "all_source_ids": [
+      "src_micron_ir",
+      "src_reuters"
+    ],
+    "material_update": true
+  }
+}

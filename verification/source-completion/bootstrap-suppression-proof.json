@@ -1,0 +1,118 @@
+{
+  "generated_at": "2026-08-26T10:19:07.966954+00:00",
+  "note": "新增源首轮接入：历史事件全部抑制（before_activation / freshness_window），无历史公告集中推送。本轮 run 0 条新告警发出。",
+  "suppressed_count_total": 10,
+  "suppressed_rows": [
+    {
+      "delivery_id": "ALD-46bd119a7ad548ec",
+      "user_id": "7166811279",
+      "event_id": "EVT-20260826-369ce4457448",
+      "security_id": "SEC-US-MU",
+      "alert_type": "new_event",
+      "final_score": 7.41,
+      "status": "suppressed",
+      "bootstrap_suppressed": 1,
+      "sent_at": "2026-08-26T10:08:19.631888+00:00"
+    },
+    {
+      "delivery_id": "ALD-f08e4c96dccf4349",
+      "user_id": "7166811279",
+      "event_id": "EVT-20260826-51f6f0bf8f52",
+      "security_id": "SEC-US-MU",
+      "alert_type": "new_event",
+      "final_score": 7.81,
+      "status": "suppressed",
+      "bootstrap_suppressed": 1,
+      "sent_at": "2026-08-26T10:08:02.872102+00:00"
+    },
+    {
+      "delivery_id": "ALD-448a74eb201b4376",
+      "user_id": "7166811279",
+      "event_id": "EVT-20260826-80b6044305c4",
+      "security_id": "SEC-US-SNDK",
+      "alert_type": "new_event",
+      "final_score": 7.41,
+      "status": "suppressed",
+      "bootstrap_suppressed": 1,
+      "sent_at": "2026-08-26T10:07:32.221557+00:00"
+    },
+    {
+      "delivery_id": "ALD-5c1dce23a2164833",
+      "user_id": "7166811279",
+      "event_id": "EVT-20260826-1a37487a6432",
+      "security_id": "SEC-US-SNDK",
+      "alert_type": "new_event",
+      "final_score": 7.41,
+      "status": "suppressed",
+      "bootstrap_suppressed": 1,
+      "sent_at": "2026-08-26T10:07:12.964228+00:00"
+    },
+    {
+      "delivery_id": "ALD-9fe2315bac8e43b3",
+      "user_id": "7166811279",
+      "event_id": "EVT-20260826-026411ab92d9",
+      "security_id": "SEC-US-SNDK",
+      "alert_type": "new_event",
+      "final_score": 7.41,
+      "status": "suppressed",
+      "bootstrap_suppressed": 1,
+      "sent_at": "2026-08-26T10:06:57.007772+00:00"
+    },
+    {
+      "delivery_id": "ALD-af6352fc04fd4610",
+      "user_id": "7166811279",
+      "event_id": "EVT-20260826-c43ddee7c9e1",
+      "security_id": "SEC-US-SNDK",
+      "alert_type": "new_event",
+      "final_score": 7.11,
+      "status": "suppressed",
+      "bootstrap_suppressed": 1,
+      "sent_at": "2026-08-26T10:06:38.780591+00:00"
+    },
+    {
+      "delivery_id": "ALD-47b0ab4431884266",
+      "user_id": "7166811279",
+      "event_id": "EVT-20260826-f6fca3975b21",
+      "security_id": "SEC-CN-301308.SZ",
+      "alert_type": "new_event",
+      "final_score": 7.41,
+      "status": "suppressed",
+      "bootstrap_suppressed": 1,
+      "sent_at": "2026-08-26T10:06:21.602285+00:00"
+    },
+    {
+      "delivery_id": "ALD-5b9f0e4cdb2b491e",
+      "user_id": "7166811279",
+      "event_id": "EVT-20260826-f6fca3975b21",
+      "security_id": "SEC-CN-688525.SH",
+      "alert_type": "new_event",
+      "final_score": 7.41,
+      "status": "suppressed",
+      "bootstrap_suppressed": 1,
+      "sent_at": "2026-08-26T10:06:21.602285+00:00"
+    },
+    {
+      "delivery_id": "ALD-5c1ad725a60343df",
+      "user_id": "7166811279",
+      "event_id": "EVT-20260826-f6fca3975b21",
+      "security_id": "SEC-US-SNDK",
+      "alert_type": "new_event",
+      "final_score": 8.41,
+      "status": "suppressed",
+      "bootstrap_suppressed": 1,
+      "sent_at": "2026-08-26T10:06:21.602285+00:00"
+    },
+    {
+      "delivery_id": "ALD-ae522dc9881e4a63",
+      "user_id": "7166811279",
+      "event_id": "EVT-20260826-7854203b74c3",
+      "security_id": "SEC-US-SNDK",
+      "alert_type": "new_event",
+      "final_score": 7.41,
+      "status": "suppressed",
+      "bootstrap_suppressed": 1,
+      "sent_at": "2026-08-26T10:05:42.438210+00:00"
+    }
+  ],
+  "new_alerts_sent_after_2026_08_26": 2
+}

@@ -1,0 +1,11 @@
+{
+  "checked_at": "2026-08-26T05:35:04.220225+00:00",
+  "trace_mode": "production",
+  "market_data_modes_in_event_impact": [
+    "unavailable"
+  ],
+  "rendered_message_mock_tokens_found": [],
+  "rendered_message_contains": "行情确认：暂未接入",
+  "requirement": "production 未真实接入行情时 market_data_mode=unavailable，Telegram 消息不得出现任何 Mock 行情字段",
+  "pass": true
+}

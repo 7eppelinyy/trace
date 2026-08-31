@@ -1,0 +1,24 @@
+{
+  "generated_at": "2026-08-26T10:19:07.967954+00:00",
+  "note": "DeepSeek 成本控制（任务书 §17）：\n首轮接入（run-b2e72cd6ca）：raw_items 75 → Level1 关键词初筛拦截 100 → 精确去重 55 → 新事件 20 → Stage A 20 / Stage B 13。\n幂等复跑（run-009fe8543a）：raw_items 13 全部精确去重命中，LLM 调用 = 0（重复条目在 Stage A 之前被确定性拦截）。\n新增 5 个来源未导致 LLM 调用线性暴增：政策源经关键词初筛，重复条目零 LLM 成本。",
+  "first_run": {
+    "run_id": "run-b2e72cd6ca",
+    "raw_items_collected": 75,
+    "after_keyword_filter": 100,
+    "after_exact_dedup": 55,
+    "after_event_dedup_new_events": 20,
+    "llm_stage_a_calls": 20,
+    "llm_stage_b_calls": 13,
+    "llm_verifier_calls": 0
+  },
+  "idempotent_repeat_run": {
+    "run_id": "run-009fe8543a",
+    "raw_items_collected": 13,
+    "raw_items_new": 0,
+    "raw_items_duplicate": 13,
+    "llm_stage_a_calls": 0,
+    "llm_stage_b_calls": 0,
+    "llm_verifier_calls": 0,
+    "alerts_sent": 0
+  }
+}

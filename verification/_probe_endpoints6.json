@@ -1,0 +1,277 @@
+{
+  "miit_script_attrs": [
+    {
+      "id": "e1f9ed54d8c148028b880d7ea4a7851c",
+      "url": "/api-gateway/jpaas-publish-server/front/page/build/unit",
+      "querydata": "{'parseType':'buildstatic','webId':'8d828e408d90447786ddbe128d495e9e','tplSetId':'209741b2109044b5b7695700b2bec37e','pageType':'column','tagId':'右侧内容','editType':'null','pageId':'028da85b0dbd4c9cb96fd5f421cd32b8'}"
+    }
+  ],
+  "miit_unit_resp": {
+    "status": 200,
+    "bytes": 7538,
+    "snippet": "{\"roles\":null,\"permissions\":null,\"code\":\"200\",\"success\":true,\"data\":{\"html\":\"\\t\\n<div id=\\\"右侧内容\\\">\\n  <div class=\\\"page-content\\\">\\n\\t<ul>\\n\\t\\t\\t<li class=\\\"cf\\\">\\n\\t\\t\\t\\t<a class=\\\"fl\\\" href=\\\"/xwfb/gxdt/sjdt/art/2026/art_7f856663a2584c56a0f88dda36f8eaca.html\\\" target=\\\"_blank\\\" title=\\\"科技成果赋智企业“深度行”（呼伦贝尔站）活动成功举办\\\"><i></i>科技成果赋智企业“深度行”（呼伦贝尔站）活动成功举办</a>\\n\\t\\t\\t\\t<span class=\\\"fr\\\">2026-08-25</span>\\n\\t\\t\\t</li>\\n\\t\\t\\t<li class=\\\"cf\\\">\\n\\t\\t\\t\\t<a class=\\\"fl\\\" href=\\\"/xwfb/gxdt/sjdt/art/2026/art_e2581439540947b7b4522c48743fe368.html\\\" target=\\\"_blank\\\" title=\\\"北斗规模应用宣传媒体圆桌会在京召开\\\"><i></i>北斗规模应用宣传媒体圆桌会在京召开</a>\\n\\t\\t\\t\\t<span class=\\\"fr\\\">2026-08-25</span>\\n\\t\\t\\t</li>\\n\\t\\t\\t<li class=\\\"cf\\\">\\n\\t\\t\\t\\t<a class=\\\"fl\\\" href=\\\"/xwfb/gxdt/sjdt/art/2026/art_3f3988321b044aeb8a19ea9316f9af0f.html\\\" target=\\\"_blank\\\" title=\\\"工业和信息化部绿色低碳标准化技术委员会成立\\\"><i></i>工业和信息化部绿色低碳标准化技术委员会成立</a>\\n\\t\\t\\t\\t<span class=\\\"fr\\\">2026-08-25</span>\\n\\t\\t\\t</li>\\n\\t\\t\\t<li class=\\\"cf\\\">\\n\\t\\t\\t\\t<a class=\\\"fl\\\" href=\\\"/xwfb/gxdt/sjdt/art/2026/art_b0879936348c4018a1e54f1c773514a5.html\\\" target=\\\"_blank\\\" title=\\\"关于侵害用户权益行为的APP（SDK）通报\\n（2026年第5批，总第58批）\\\"><i></i>关于侵害用户权益行为的APP（SDK）通报\\n（2026年第5批，总第58批）</a>\\n\\t\\t\\t\\t<span class=\\\"fr\\\">2026-08-25</span>\\n\\t\\t\\t</li>\\n\\t\\t\\t<li class=\\\"cf\\\">\\n\\t\\t\\t\\t<a class=\\\"fl\\\" href=\\\"/xwfb/gxdt/sjdt/art/2026/art_0ecb2a5a2b4e47aea9efb3d6bbeb0934.html\\\" target=\\\"_blank\\\" title=\\\"工业和信息化部批复浙江时空道宇科技有限公司开展卫星物联网业务商用试验\\\"><i></i>工业和信息化部批复浙江时空道宇科技有限公司开展卫星物联网业务商用试验</a>\\n\\t\\t\\t\\t<span c"
+  },
+  "miit_unit_html_len": 6687,
+  "miit_unit_entries": [
+    {
+      "href": "/xwfb/gxdt/sjdt/art/2026/art_7f856663a2584c56a0f88dda36f8eaca.html",
+      "text": "科技成果赋智企业“深度行”（呼伦贝尔站）活动成功举办",
+      "date": "2026-08-25"
+    },
+    {
+      "href": "/xwfb/gxdt/sjdt/art/2026/art_e2581439540947b7b4522c48743fe368.html",
+      "text": "北斗规模应用宣传媒体圆桌会在京召开",
+      "date": "2026-08-25"
+    },
+    {
+      "href": "/xwfb/gxdt/sjdt/art/2026/art_3f3988321b044aeb8a19ea9316f9af0f.html",
+      "text": "工业和信息化部绿色低碳标准化技术委员会成立",
+      "date": "2026-08-25"
+    },
+    {
+      "href": "/xwfb/gxdt/sjdt/art/2026/art_b0879936348c4018a1e54f1c773514a5.html",
+      "text": "关于侵害用户权益行为的APP（SDK）通报\n（2026年第5批，总第58批）",
+      "date": "2026-08-25"
+    },
+    {
+      "href": "/xwfb/gxdt/sjdt/art/2026/art_0ecb2a5a2b4e47aea9efb3d6bbeb0934.html",
+      "text": "工业和信息化部批复浙江时空道宇科技有限公司开展卫星物联网业务商用试验",
+      "date": "2026-08-20"
+    },
+    {
+      "href": "/xwfb/gxdt/sjdt/art/2026/art_75704052e3a64e098758854a386c3160.html",
+      "text": "我国成功发射卫星互联网低轨24组卫星",
+      "date": "2026-08-17"
+    },
+    {
+      "href": "/xwfb/gxdt/sjdt/art/2026/art_9f55b2c30e2a4089b5e4f0f134c69bc9.html",
+      "text": "科技成果赋智企业“深度行”（福州站）活动成功举办",
+      "date": "2026-08-17"
+    },
+    {
+      "href": "/xwfb/gxdt/sjdt/art/2026/art_87adf097f9ce4cd2ba6da567cafd4b69.html",
+      "text": "工业和信息化部新增配置P频段资源  助力气象部门提升应对极端天气能力",
+      "date": "2026-08-07"
+    },
+    {
+      "href": "/xwfb/gxdt/sjdt/art/2026/art_20bf245cb87549e28519078d857c6eb0.html",
+      "text": "我国成功发射卫星互联网低轨23组卫星",
+      "date": "2026-08-05"
+    },
+    {
+      "href": "/xwfb/gxdt/sjdt/art/2026/art_4b5ab63f32c84d318ad7a6ba4893a89d.html",
+      "text": "工业和信息化部装备工业一司组织道路机动车辆检验检测机构开展座谈 部署提升检验检测工作质量相...",
+      "date": "2026-08-04"
+    },
+    {
+      "href": "/xwfb/gxdt/sjdt/art/2026/art_16d1319a933d4ffd8501e60dc4d88491.html",
+      "text": "《智能网联汽车 自动驾驶系统安全要求》强制性国家标准正式发布",
+      "date": "2026-08-04"
+    },
+    {
+      "href": "/xwfb/gxdt/sjdt/art/2026/art_665a6382d255431e935b31231be07ea1.html",
+      "text": "科技成果赋智企业“深度行”（拉萨站）活动成功举办",
+      "date": "2026-08-04"
+    },
+    {
+      "href": "/xwfb/gxdt/sjdt/art/2026/art_e9d492b5b42642fdbfee562118de42c1.html",
+      "text": "工业和信息化部召开光伏行业座谈会 进一步解读宣贯光伏组件强制性国家标准",
+      "date": "2026-08-04"
+    },
+    {
+      "href": "/xwfb/gxdt/sjdt/art/2026/art_1f1bfccff4ac4ed09cfaf1cc976c8ccc.html",
+      "text": "节能与综合利用司组织召开国家级零碳工厂建设工作座谈会",
+      "date": "2026-08-03"
+    },
+    {
+      "href": "/xwfb/gxdt/sjdt/art/2026/art_2ffc92a1bf824f5da581e2dcda36d116.html",
+      "text": "工业和信息化部等三部门组织开展2026年度重点行业能效、碳效领跑者企业推荐工作",
+      "date": "2026-08-03"
+    },
+    {
+      "href": "/xwfb/gxdt/sjdt/art/2026/art_f9bc90ec3dcb4865b57f186b38f91f97.html",
+      "text": "中国代表团完成2027年世界无线电通信大会亚太区第三次筹备会参会任务",
+      "date": "2026-08-03"
+    },
+    {
+      "href": "/xwfb/gxdt/sjdt/art/2026/art_a010059b3086418bac0964165fc2c1af.html",
+      "text": "工业和信息化部装备工业一司赴奇瑞、蔚来、江汽开展监督检查",
+      "date": "2026-07-31"
+    },
+    {
+      "href": "/xwfb/gxdt/sjdt/art/2026/art_d4a6006efae84f9e980c55c5096c688d.html",
+      "text": "20家媒体记者受邀担任汽车行业账期问题监督员",
+      "date": "2026-07-28"
+    },
+    {
+      "href": "/xwfb/gxdt/sjdt/art/2026/art_24e3239834a2439ba257ac53f723b379.html",
+      "text": "制造业数字化转型评估工作座谈会在杭州召开",
+      "date": "2026-07-22"
+    },
+    {
+      "href": "/xwfb/gxdt/sjdt/art/2026/art_e4d9035769cb4b6b8e6f7fb81d2a7205.html",
+      "text": "国家税务总局 工业和信息化部关于发布《免征车辆购置税的设有固定装置的非运输专用作业车辆目录...",
+      "date": "2026-07-21"
+    },
+    {
+      "href": "/xwfb/gxdt/sjdt/art/2026/art_edd621696cea4933b2fb3b6afb3e1bc1.html",
+      "text": "工业和信息化部组织开展国家级零碳工厂建设工作",
+      "date": "2026-07-22"
+    },
+    {
+      "href": "/xwfb/gxdt/sjdt/art/2026/art_ea68c0d37b324ae9ae86db2289e73978.html",
+      "text": "工业和信息化部部署地方无线电管理机构迅速查处涉嫌违规线上销售信号屏蔽器行为",
+      "date": "2026-07-19"
+    },
+    {
+      "href": "/xwfb/gxdt/sjdt/art/2026/art_d4bc4c5b6f2342cd851987f6d7177fc1.html",
+      "text": "中国代表团完成国际电信联盟无线电通信部门第四研究组下设WP4A、WP4C工作组会议参会任务",
+      "date": "2026-07-15"
+    },
+    {
+      "href": "/xwfb/gxdt/sjdt/art/2026/art_fb47488a00ee428bb3840cf4771fdb1d.html",
+      "text": "第五届通信海缆保护政策宣传周活动正式启动",
+      "date": "2026-07-15"
+    }
+  ],
+  "micron_all_news_links": [
+    {
+      "href": "/about/press",
+      "text": "Press"
+    },
+    {
+      "href": "/about/press/image-gallery",
+      "text": "Image gallery"
+    },
+    {
+      "href": "/about/press/media-relations",
+      "text": "Media relations and resources"
+    },
+    {
+      "href": "/about/press/news",
+      "text": "Newsroom"
+    },
+    {
+      "href": "/about/press/trademark-usage-guidelines",
+      "text": "Trademark and usage guidelines"
+    },
+    {
+      "href": "https://www.micron.cn/about/press/news",
+      "text": "China - 简体中文"
+    },
+    {
+      "href": "https://in.micron.com/about/press/news",
+      "text": "India - English"
+    },
+    {
+      "href": "https://jp.micron.com/about/press/news",
+      "text": "Japan - 日本語"
+    },
+    {
+      "href": "https://my.micron.com/about/press/news",
+      "text": "Malaysia - English"
+    },
+    {
+      "href": "https://sg.micron.com/about/press/news",
+      "text": "Singapore - English"
+    },
+    {
+      "href": "https://tw.micron.com/about/press/news",
+      "text": "Taiwan – 繁體中文"
+    },
+    {
+      "href": "/system/sling/logout.html?resource=https://www.micron.com/about/press/news",
+      "text": "Logout"
+    },
+    {
+      "href": "/about/press",
+      "text": "Press"
+    },
+    {
+      "href": "https://investors.micron.com/news/press-release/2026/Micron-Opens-State-of-the-Art-Training-Center-in-Boise-to-Strengthen-Americas-Semiconductor-Workforce/default.aspx",
+      "text": "Read article"
+    },
+    {
+      "href": "https://investors.micron.com/news/press-release/2026/Micron-Unveils-Micron-Research-Labs-a-U-S--Based-Long-Horizon-Innovation-Hub-to-Shape-the-Future-of-Memory-and-AI/default.aspx",
+      "text": "Read article"
+    },
+    {
+      "href": "https://investors.micron.com/news/press-release/2026/Micron-Ventures-Launches-250-Million-Fund-to-Invest-in-the-Next-Generation-of-AI/default.aspx",
+      "text": "Read article"
+    },
+    {
+      "href": "https://investors.micron.com/news/press-release/2026/Micron-Strengthens-Automotive-Ecosystem-Supply-Through-Strategic-Customer-Agreements/default.aspx",
+      "text": "Read article"
+    },
+    {
+      "href": "https://investors.micron.com/news/press-release/2026/Micron-Announces-Participation-in-Investor-Event-dafb80110/default.aspx",
+      "text": "Read article"
+    },
+    {
+      "href": "https://investors.micron.com/news/press-release/2026/Micron-Accelerates-U-S--Investments-Pours-First-Concrete-at-New-York-Fab/default.aspx",
+      "text": "Read article"
+    },
+    {
+      "href": "https://investors.micron.com/news/press-release/2026/Micron-Announces-Up-to-3-Billion-Strategic-Investment-to-Strengthen-U-S--Semiconductor-Ecosystem/default.aspx",
+      "text": "Read article"
+    },
+    {
+      "href": "https://investors.micron.com/news/press-release/2026/Micron-and-Ford-Sign-Strategic-Agreement-to-Strengthen-Long-Term-Memory-Supply-and-Industry-Resilience/default.aspx",
+      "text": "Read article"
+    },
+    {
+      "href": "https://investors.micron.com/news/press-release/2026/Micron-and-General-Motors-Sign-Strategic-Agreement-to-Secure-Supply-and-Accelerate-Innovation/default.aspx",
+      "text": "Read article"
+    },
+    {
+      "href": "https://investors.micron.com/news/press-release/2026/Micron-Announces-250-Million-Investment-in-Trump-Accounts-Reaching-1-Million-Children-Families-and-the-Future-Workforce/default.aspx",
+      "text": "Read article"
+    },
+    {
+      "href": "https://investors.micron.com/news/press-release/2026/Micron-Technology-Inc--Reports-Record-Results-for-the-Third-Quarter-of-Fiscal-2026/default.aspx",
+      "text": "Read article"
+    },
+    {
+      "href": "https://investors.micron.com/news/press-release/2026/Micron-and-Anthropic-Announce-Strategic-Agreement-to-Scale-Next-Generation-AI-Infrastructure/default.aspx",
+      "text": "Read article"
+    },
+    {
+      "href": "https://investors.micron.com/news/default.aspx",
+      "text": "View all news"
+    },
+    {
+      "href": "/about/press/image-gallery",
+      "text": "Image gallery\n    \nOur image galleries provide photographs of company officers, manufacturing, produ"
+    },
+    {
+      "href": "/about/press/media-relations/press-kits",
+      "text": "Media kits\n    \nOur media kits provide key information and resources including press releases, suppo"
+    },
+    {
+      "href": "/about/press/trademark-usage-guidelines",
+      "text": "Trademark and usage guidelines\n    \nOur trademarks, service marks, and logos, whether registered or "
+    },
+    {
+      "href": "https://investors.micron.com/latest-news",
+      "text": "Latest news"
+    }
+  ],
+  "micron_date_ancestors": [
+    "p.None",
+    "div.['cmp-teaser__description']",
+    "div.['cmp-teaser__content']",
+    "div.['cmp-teaser']",
+    "div.['teaser', 'cmp-teaser__tile', 'equal-height', 'card', 'background-grey', 'top-padding', 'right-padding', 'aem-GridColumn', 'aem-GridColumn--default--12']",
+    "div.['aem-Grid', 'aem-Grid--12', 'aem-Grid--default--12']"
+  ],
+  "micron_container_links": [
+    {
+      "href": "https://investors.micron.com/news/press-release/2026/Micron-Strengthens-Automotive-Ecosystem-Supply-Through-Strategic-Customer-Agreements/default.aspx",
+      "text": "Read article"
+    }
+  ],
+  "micron_search_api": {
+    "status": 200,
+    "snippet": "[{\"suggestion\":\"4Gb x8, x16 M60A Automotive temperature ECC NAND Flash Memory Data Sheet\",\"pageUrl\":\"/content/dam/micron/global/secure/products/data-sheet/nand-flash/60-series/m60a-at-4gb-x8-x16-ecc-nand.pdf\",\"securitylevel\":\"3\"},{\"suggestion\":\"4Gb 3.3V x1, x2, x4 SPI M79A NAND Flash Memory Data Sheet\",\"pageUrl\":\"/content/dam/micron/global/secure/products/data-sheet/nand-flash/70-series/m79a-ddp-4gb-3v-nand-spi.pdf\",\"securitylevel\":\"3\"},{\"suggestion\":\"2Gb x8 M79M Embedded Security NAND Flash Memory Data Sheet\",\"pageUrl\":\"/content/dam/micron/global/secure/products/data-sheet/nand-flash/70-series/m79m-2gb-embedded-security-nand.pdf\",\"securitylevel\":\"3\"},{\"suggestion\":\"M49A datasheet 2Gb, 4Gb, 8Gb: x8, x16 NAND Flash Memory\",\"pageUrl\":\"/content/dam/micron/global/secure/products/data-sheet/nand-flash/40-series/2-4-8gb-nand-m49a.pdf\",\"securitylevel\":\"4\"},{\"suggestion\":\"2Gb x8, x16 Automotive (AT, IT) M69A Async only SLC NAND Flash Memory Data Sheet\",\"pageUrl\":\"/content/dam/micron/global/sec"
+  }
+}

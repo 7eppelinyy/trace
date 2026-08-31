@@ -1,0 +1,110 @@
+[
+  {
+    "name": "sndk_rss_retry1",
+    "url": "https://investor.sandisk.com/rss.xml",
+    "status": "ok",
+    "http_status": 200,
+    "latency_ms": 6723,
+    "bytes": 700832,
+    "sample": "entries=10 | Sandisk Details Growth Strategy and Long-Term Financial Model at 2026  || Kioxia and Sandisk Unveil New High-Performance QLC 3D Flash Memory Tec || Sandisk Reports Fiscal Fourth Quarter 2026 Financial Results"
+  },
+  {
+    "name": "sndk_rss_retry2",
+    "url": "https://investor.sandisk.com/rss.xml",
+    "status": "ok",
+    "http_status": 200,
+    "latency_ms": 601,
+    "bytes": 700832,
+    "sample": "entries=10 | Sandisk Details Growth Strategy and Long-Term Financial Model at 2026  || Kioxia and Sandisk Unveil New High-Performance QLC 3D Flash Memory Tec || Sandisk Reports Fiscal Fourth Quarter 2026 Financial Results"
+  },
+  {
+    "name": "micron_newsroom_news",
+    "url": "https://www.micron.com/about/newsroom/news",
+    "status": "http_404",
+    "http_status": 404,
+    "latency_ms": 1190,
+    "bytes": 276596,
+    "sample": " <!DOCTYPE html> <html lang=\"en-US\">  <head>               <meta name=\"content-page-ref\" content=\"QyejA8RNdXaoycf3MlFmXUkMyK3hlI9Bq5yY2X1Px223tPBhOzycNAOkqXs-k3au\"> <script defer=\"defer\" type=\"text/javascript\" src=\"/.rum/@adobe/helix-rum-js@%5E2/dist"
+  },
+  {
+    "name": "micron_newsroom_press",
+    "url": "https://www.micron.com/about/newsroom/press-releases",
+    "status": "ok",
+    "http_status": 200,
+    "latency_ms": 811,
+    "bytes": 292457,
+    "sample": " <!DOCTYPE html> <html lang=\"en-US\">  <head>               <meta name=\"content-page-ref\" content=\"QyejA8RNdXaoycf3MlFmXYQzkf7ELhqjFuP-IOGljGU0S_RIeJZIsoCDl49iuXxB0wqlJQdILb2lTTDSCnvLow\"> <script defer=\"defer\" type=\"text/javascript\" src=\"/.rum/@adobe/"
+  },
+  {
+    "name": "micron_newsroom_api",
+    "url": "https://www.micron.com/api/newsroom/news?limit=10",
+    "status": "http_404",
+    "http_status": 404,
+    "latency_ms": 490,
+    "bytes": 276596,
+    "sample": " <!DOCTYPE html> <html lang=\"en-US\">  <head>               <meta name=\"content-page-ref\" content=\"QyejA8RNdXaoycf3MlFmXUkMyK3hlI9Bq5yY2X1Px223tPBhOzycNAOkqXs-k3au\"> <script defer=\"defer\" type=\"text/javascript\" src=\"/.rum/@adobe/helix-rum-js@%5E2/dist"
+  },
+  {
+    "name": "commerce_news_feed",
+    "url": "https://www.commerce.gov/news/feed",
+    "status": "http_403",
+    "http_status": 403,
+    "latency_ms": 688,
+    "bytes": 5753,
+    "sample": "<!DOCTYPE html><html lang=\"en-US\"><head><title>Just a moment...</title><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=Edge\"><meta name=\"robots\" content=\"noindex,nofollow\"><meta name=\""
+  },
+  {
+    "name": "commerce_govdelivery",
+    "url": "https://public.govdelivery.com/accounts/USDOC/feed.rss",
+    "status": "ok",
+    "http_status": 200,
+    "latency_ms": 4188,
+    "bytes": 255589,
+    "sample": "<?xml version=\"1.0\" encoding=\"UTF-8\"?> <rss version=\"2.0\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:atom=\"http://www.w3.org/2005/Atom\">   <channel>     <title>US Department of Commerce - Recent Updates</title>     <link>https://www.commerce.g"
+  },
+  {
+    "name": "commerce_bis_govdelivery",
+    "url": "https://public.govdelivery.com/accounts/USBIS/feed.rss",
+    "status": "http_404",
+    "http_status": 404,
+    "latency_ms": 241,
+    "bytes": 1274,
+    "sample": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\"> <html lang='en' xml:lang='en' xmlns='http://www.w3.org/1999/xhtml'> <head> <title> Page not found  </title> <meta content='text/"
+  },
+  {
+    "name": "mofcom_news_a",
+    "url": "http://www.mofcom.gov.cn/article/xwfb/xwrcjd/",
+    "status": "http_404",
+    "http_status": 404,
+    "latency_ms": 90,
+    "bytes": 552,
+    "sample": "<html>\r <head><title>404 Not Found</title></head>\r <body>\r <center><h1>404 Not Found</h1></center>\r <hr><center>openresty</center>\r </body>\r </html>\r <!-- a padding to disable MSIE and Chrome friendly error page -->\r <!-- a padding to disable MSIE an"
+  },
+  {
+    "name": "mofcom_news_b",
+    "url": "http://www.mofcom.gov.cn/xwfb/xwrcjd/",
+    "status": "http_404",
+    "http_status": 404,
+    "latency_ms": 50,
+    "bytes": 552,
+    "sample": "<html>\r <head><title>404 Not Found</title></head>\r <body>\r <center><h1>404 Not Found</h1></center>\r <hr><center>openresty</center>\r </body>\r </html>\r <!-- a padding to disable MSIE and Chrome friendly error page -->\r <!-- a padding to disable MSIE an"
+  },
+  {
+    "name": "mofcom_news_c",
+    "url": "https://www.mofcom.gov.cn/article/a/",
+    "status": "http_404",
+    "http_status": 404,
+    "latency_ms": 150,
+    "bytes": 552,
+    "sample": "<html>\r <head><title>404 Not Found</title></head>\r <body>\r <center><h1>404 Not Found</h1></center>\r <hr><center>openresty</center>\r </body>\r </html>\r <!-- a padding to disable MSIE and Chrome friendly error page -->\r <!-- a padding to disable MSIE an"
+  },
+  {
+    "name": "miit_sjdt_content",
+    "url": "https://www.miit.gov.cn/xwdt/gxdt/sjdt/index.html",
+    "status": "ok",
+    "http_status": 200,
+    "latency_ms": 2440,
+    "bytes": 5336,
+    "sample": ""
+  }
+]

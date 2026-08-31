@@ -1,0 +1,110 @@
+[
+  {
+    "source_id": "src_bis",
+    "last_success_at": "2026-08-25T18:36:11.087954+00:00",
+    "last_failure_at": null,
+    "last_error": null,
+    "last_error_category": null,
+    "consecutive_failures": 0,
+    "last_item_at": "2026-08-25T18:36:11.087954+00:00"
+  },
+  {
+    "source_id": "src_cninfo",
+    "last_success_at": "2026-08-25T18:36:01.521537+00:00",
+    "last_failure_at": null,
+    "last_error": null,
+    "last_error_category": null,
+    "consecutive_failures": 0,
+    "last_item_at": "2026-08-25T16:00:00+00:00"
+  },
+  {
+    "source_id": "src_csrc",
+    "last_success_at": "2026-08-25T18:36:11.087954+00:00",
+    "last_failure_at": null,
+    "last_error": null,
+    "last_error_category": null,
+    "consecutive_failures": 0,
+    "last_item_at": "2026-08-25T18:36:11.087954+00:00"
+  },
+  {
+    "source_id": "src_fed",
+    "last_success_at": "2026-08-25T18:36:13.790535+00:00",
+    "last_failure_at": null,
+    "last_error": null,
+    "last_error_category": null,
+    "consecutive_failures": 0,
+    "last_item_at": "2026-08-25T10:00:00+00:00"
+  },
+  {
+    "source_id": "src_federal_register",
+    "last_success_at": "2026-08-25T18:36:13.790535+00:00",
+    "last_failure_at": null,
+    "last_error": null,
+    "last_error_category": null,
+    "consecutive_failures": 0,
+    "last_item_at": "2026-08-25T10:00:00+00:00"
+  },
+  {
+    "source_id": "src_micron_ir",
+    "last_success_at": "2026-08-25T18:35:59.417712+00:00",
+    "last_failure_at": null,
+    "last_error": null,
+    "last_error_category": null,
+    "consecutive_failures": 0,
+    "last_item_at": "2026-08-25T07:30:48+00:00"
+  },
+  {
+    "source_id": "src_miit",
+    "last_success_at": "2026-08-25T18:36:11.087954+00:00",
+    "last_failure_at": null,
+    "last_error": null,
+    "last_error_category": null,
+    "consecutive_failures": 0,
+    "last_item_at": "2026-08-25T18:36:11.087954+00:00"
+  },
+  {
+    "source_id": "src_mofcom",
+    "last_success_at": "2026-08-25T18:36:11.087954+00:00",
+    "last_failure_at": null,
+    "last_error": null,
+    "last_error_category": null,
+    "consecutive_failures": 0,
+    "last_item_at": "2026-08-25T18:36:11.087954+00:00"
+  },
+  {
+    "source_id": "src_nvidia_ir",
+    "last_success_at": "2026-08-25T18:35:59.418728+00:00",
+    "last_failure_at": null,
+    "last_error": null,
+    "last_error_category": null,
+    "consecutive_failures": 0,
+    "last_item_at": "2026-08-25T07:30:48+00:00"
+  },
+  {
+    "source_id": "src_sec_edgar",
+    "last_success_at": "2026-08-25T18:35:58.375456+00:00",
+    "last_failure_at": null,
+    "last_error": null,
+    "last_error_category": null,
+    "consecutive_failures": 0,
+    "last_item_at": "2026-08-17T00:00:00+00:00"
+  },
+  {
+    "source_id": "src_sndk_ir",
+    "last_success_at": "2026-08-25T18:35:59.418728+00:00",
+    "last_failure_at": null,
+    "last_error": null,
+    "last_error_category": null,
+    "consecutive_failures": 0,
+    "last_item_at": "2026-08-25T07:30:48+00:00"
+  },
+  {
+    "source_id": "src_stats_cn",
+    "last_success_at": "2026-08-25T18:36:11.087954+00:00",
+    "last_failure_at": null,
+    "last_error": null,
+    "last_error_category": null,
+    "consecutive_failures": 0,
+    "last_item_at": "2026-08-25T18:36:11.087954+00:00"
+  }
+]

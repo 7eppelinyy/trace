@@ -1,0 +1,12 @@
+{
+  "telegram_chat_id": "7166811279",
+  "telegram_message_id": "6",
+  "sent_at": "2026-08-26T13:15:50.076924+00:00",
+  "status": "sent",
+  "response": "ok",
+  "bot_username": "@traceyyy_bot",
+  "llm_label": "DeepSeek AI",
+  "llm_connected": true,
+  "trace_mode": "production",
+  "note": "系统连通性测试消息（非市场事件）"
+}

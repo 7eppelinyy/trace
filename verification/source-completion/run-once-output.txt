@@ -1,0 +1,243 @@
+﻿.venv\Scripts\python : 2026-08-26 18:04:04,172 INFO [-] trace.data.seed: seed data loaded
+At C:\Users\Zeppelin\AppData\Local\Temp\trae-agent-toolhost\jobs\job-ed44753b09554e30ba35c9659b6f62b7\command.ps1:15 ch
+ar:7207
++ ... ipgrep\bin'; .venv\Scripts\python -m trace.main run-once 2>&1 | Tee-O ...
++                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (2026-08-26 18:0...eed data loaded:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+2026-08-26 18:04:04,177 INFO [-] trace.collectors.market_data.alpaca: ALPACA_API_KEY not set (production): market data 
+unavailable (mock forbidden in production)
+2026-08-26 18:04:04,177 INFO [-] trace.collectors.market_data.cn: CN market data not connected (production): unavailabl
+e (mock forbidden in production)
+2026-08-26 18:04:06,451 WARNING [-] trace.event_engine.embeddings: sentence-transformers unavailable (No module named '
+sentence_transformers'), fallback to hash embedder
+2026-08-26 18:04:07,852 INFO [run-b2e72cd6ca] httpx: HTTP Request: GET https://data.sec.gov/submissions/CIK0002023554.j
+son "HTTP/1.1 200 OK"
+2026-08-26 18:04:08,094 INFO [run-b2e72cd6ca] httpx: HTTP Request: GET https://data.sec.gov/submissions/CIK0000723125.j
+son "HTTP/1.1 200 OK"
+2026-08-26 18:04:08,441 INFO [run-b2e72cd6ca] httpx: HTTP Request: GET https://data.sec.gov/submissions/CIK0001045810.j
+son "HTTP/1.1 200 OK"
+2026-08-26 18:04:09,394 INFO [run-b2e72cd6ca] httpx: HTTP Request: GET https://nvidianews.nvidia.com/rss.xml "HTTP/1.1 
+200 OK"
+2026-08-26 18:04:10,238 INFO [run-b2e72cd6ca] httpx: HTTP Request: GET https://www.sandisk.com/sitemap.xml "HTTP/1.1 20
+0 OK"
+2026-08-26 18:04:10,248 INFO [run-b2e72cd6ca] trace.collectors.sandisk: [src_sndk_ir] bootstrap dropped=45 (bootstrap_d
+ays=30)
+2026-08-26 18:04:11,566 INFO [run-b2e72cd6ca] httpx: HTTP Request: GET https://investors.micron.com/rss.xml "HTTP/1.1 4
+04 Not Found"
+2026-08-26 18:04:11,572 WARNING [run-b2e72cd6ca] trace.common.http_client: [src_micron_ir] source_unavailable, retry 1/
+1 in 1.9s
+2026-08-26 18:04:15,392 INFO [run-b2e72cd6ca] httpx: HTTP Request: GET https://investors.micron.com/rss.xml "HTTP/1.1 4
+04 Not Found"
+2026-08-26 18:04:15,393 WARNING [run-b2e72cd6ca] trace.collectors.micron: [src_micron_ir] RSS unavailable (source_unava
+ilable), fallback to newsroom page
+2026-08-26 18:04:16,210 INFO [run-b2e72cd6ca] httpx: HTTP Request: GET https://www.micron.com/about/newsroom/press-rele
+ases "HTTP/1.1 301 Moved Permanently"
+2026-08-26 18:04:16,377 INFO [run-b2e72cd6ca] httpx: HTTP Request: GET https://www.micron.com/about/press/news "HTTP/1.
+1 200 OK"
+2026-08-26 18:04:16,645 INFO [run-b2e72cd6ca] httpx: HTTP Request: POST http://www.cninfo.com.cn/new/hisAnnouncement/qu
+ery "HTTP/1.1 200 200"
+2026-08-26 18:04:17,958 INFO [run-b2e72cd6ca] httpx: HTTP Request: POST http://www.cninfo.com.cn/new/hisAnnouncement/qu
+ery "HTTP/1.1 200 200"
+2026-08-26 18:04:18,914 INFO [run-b2e72cd6ca] httpx: HTTP Request: POST http://www.cninfo.com.cn/new/hisAnnouncement/qu
+ery "HTTP/1.1 200 200"
+2026-08-26 18:04:19,085 INFO [run-b2e72cd6ca] httpx: HTTP Request: POST http://www.cninfo.com.cn/new/hisAnnouncement/qu
+ery "HTTP/1.1 200 200"
+2026-08-26 18:04:19,610 INFO [run-b2e72cd6ca] httpx: HTTP Request: POST http://www.cninfo.com.cn/new/hisAnnouncement/qu
+ery "HTTP/1.1 200 200"
+2026-08-26 18:04:20,480 INFO [run-b2e72cd6ca] httpx: HTTP Request: GET https://www.bis.doc.gov/index.php/policy-focus/p
+ress-releases "HTTP/1.1 301 Moved Permanently"
+2026-08-26 18:04:21,141 INFO [run-b2e72cd6ca] httpx: HTTP Request: GET https://www.bis.gov/ "HTTP/1.1 200 OK"
+2026-08-26 18:04:21,800 INFO [run-b2e72cd6ca] httpx: HTTP Request: GET https://www.miit.gov.cn/ "HTTP/1.1 200 OK"
+2026-08-26 18:04:21,961 INFO [run-b2e72cd6ca] httpx: HTTP Request: GET https://www.mofcom.gov.cn/ "HTTP/1.1 200 OK"
+2026-08-26 18:04:23,054 INFO [run-b2e72cd6ca] httpx: HTTP Request: GET https://www.federalregister.gov/api/v1/documents
+.rss?conditions%5Bterm%5D=semiconductor "HTTP/1.1 200 OK"
+2026-08-26 18:04:23,696 INFO [run-b2e72cd6ca] httpx: HTTP Request: GET https://www.federalreserve.gov/feeds/press_all.x
+ml "HTTP/1.1 200 OK"
+2026-08-26 18:04:23,734 INFO [run-b2e72cd6ca] trace.collectors.rss: [src_fed] bootstrap dropped=6 keyword_dropped=0 (bo
+otstrap_days=30)
+2026-08-26 18:04:26,844 INFO [run-b2e72cd6ca] httpx: HTTP Request: GET https://public.govdelivery.com/accounts/USDOC/fe
+ed.rss "HTTP/1.1 200 OK"
+2026-08-26 18:04:27,693 INFO [run-b2e72cd6ca] trace.collectors.rss: [src_commerce] bootstrap dropped=25 keyword_dropped
+=0 (bootstrap_days=14)
+2026-08-26 18:04:27,695 INFO [run-b2e72cd6ca] trace.pipeline: collected 75 raw items (sources ok=7 failed=0 disabled=3,
+ keyword_filtered=100)
+2026-08-26 18:04:29,086 INFO [run-b2e72cd6ca] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTT
+P/1.1 200 OK"
+2026-08-26 18:04:30,746 INFO [run-b2e72cd6ca] trace.event_engine.engine: created event EVT-20260826-ccb861ddd21f: SanDi
+sk Celebrates 30 Years of Pokémon
+2026-08-26 18:04:31,010 INFO [run-b2e72cd6ca] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTT
+P/1.1 200 OK"
+2026-08-26 18:04:32,955 INFO [run-b2e72cd6ca] trace.event_engine.engine: created event EVT-20260826-7854203b74c3: SanDi
+sk Introduces NAS SSDs for Prosumers and Small Businesses
+2026-08-26 18:04:33,041 INFO [run-b2e72cd6ca] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTT
+P/1.1 200 OK"
+2026-08-26 18:04:34,589 INFO [run-b2e72cd6ca] trace.event_engine.engine: created event EVT-20260826-d7cb25b7b8ab: SanDi
+sk 举办 2026 年投资者日
+2026-08-26 18:04:34,685 INFO [run-b2e72cd6ca] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTT
+P/1.1 200 OK"
+2026-08-26 18:04:36,738 INFO [run-b2e72cd6ca] trace.event_engine.engine: created event EVT-20260826-f6fca3975b21: SanDi
+sk与Kioxia发布面向AI和高数据密集型应用的新型高性能QLC 3D闪存
+2026-08-26 18:04:36,840 INFO [run-b2e72cd6ca] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTT
+P/1.1 200 OK"
+2026-08-26 18:04:38,193 INFO [run-b2e72cd6ca] trace.event_engine.engine: created event EVT-20260826-c43ddee7c9e1: SanDi
+sk Reports Fiscal Fourth Quarter 2026 Financial Results
+2026-08-26 18:04:38,293 INFO [run-b2e72cd6ca] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTT
+P/1.1 200 OK"
+2026-08-26 18:04:40,495 INFO [run-b2e72cd6ca] trace.event_engine.engine: created event EVT-20260826-026411ab92d9: SanDi
+sk 与 Kioxia 发布新型 3D 闪存技术 QLC NAND
+2026-08-26 18:04:40,612 INFO [run-b2e72cd6ca] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTT
+P/1.1 200 OK"
+2026-08-26 18:04:42,187 INFO [run-b2e72cd6ca] trace.event_engine.engine: created event EVT-20260826-1a37487a6432: SanDi
+sk 在 FMS 2026 展示面向 AI 推理时代的 NAND 创新
+2026-08-26 18:04:42,274 INFO [run-b2e72cd6ca] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTT
+P/1.1 200 OK"
+2026-08-26 18:04:43,825 INFO [run-b2e72cd6ca] trace.event_engine.engine: created event EVT-20260826-80b6044305c4: SanDi
+sk与SK海力士推进HBF全球标准化
+2026-08-26 18:04:43,912 INFO [run-b2e72cd6ca] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTT
+P/1.1 200 OK"
+2026-08-26 18:04:45,665 INFO [run-b2e72cd6ca] trace.event_engine.engine: created event EVT-20260826-a473ab289ccf: Micro
+n Opens State-of-the-Art Training Center in Boise to Strengthen America’s Semiconductor Workforce
+2026-08-26 18:04:45,748 INFO [run-b2e72cd6ca] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTT
+P/1.1 200 OK"
+2026-08-26 18:04:48,039 INFO [run-b2e72cd6ca] trace.event_engine.engine: created event EVT-20260826-51f6f0bf8f52: Micro
+n unveils Micron Research Labs, a U.S.-based Long-Horizon Innovation Hub
+2026-08-26 18:04:48,129 INFO [run-b2e72cd6ca] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTT
+P/1.1 200 OK"
+2026-08-26 18:04:49,888 INFO [run-b2e72cd6ca] trace.event_engine.engine: created event EVT-20260826-369ce4457448: Micro
+n Ventures Launches $250 Million Fund to Invest in AI
+2026-08-26 18:04:49,969 INFO [run-b2e72cd6ca] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTT
+P/1.1 200 OK"
+2026-08-26 18:04:51,937 INFO [run-b2e72cd6ca] trace.event_engine.engine: created event EVT-20260826-4c4b13d72c72: Bosch
+ pays $36 million penalty to BIS for violations related to Huawei shipments
+2026-08-26 18:04:52,021 INFO [run-b2e72cd6ca] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTT
+P/1.1 200 OK"
+2026-08-26 18:04:53,544 INFO [run-b2e72cd6ca] trace.event_engine.engine: created event EVT-20260826-c08e569efb03: BIS与C
+oastal PVA Technology达成行政执法和解
+2026-08-26 18:04:53,624 INFO [run-b2e72cd6ca] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTT
+P/1.1 200 OK"
+2026-08-26 18:04:54,938 INFO [run-b2e72cd6ca] trace.event_engine.engine: created event EVT-20260826-0cfd5a41b937: 2026年
+全国原材料工业座谈会在浙江宁波召开
+2026-08-26 18:04:55,035 INFO [run-b2e72cd6ca] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTT
+P/1.1 200 OK"
+2026-08-26 18:04:56,859 INFO [run-b2e72cd6ca] trace.event_engine.engine: created event EVT-20260826-ae9d9675c95e: 2026年
+亚太经合组织（APEC）数字和人工智能部长会议新闻发布会在成都召开
+2026-08-26 18:04:57,192 INFO [run-b2e72cd6ca] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTT
+P/1.1 200 OK"
+2026-08-26 18:04:59,225 INFO [run-b2e72cd6ca] trace.event_engine.engine: created event EVT-20260826-96c4a1affab6: 工信部举行
+APEC 2026年数字和人工智能部长会议及数字周相关活动新闻通气会
+2026-08-26 18:04:59,310 INFO [run-b2e72cd6ca] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTT
+P/1.1 200 OK"
+2026-08-26 18:05:00,900 INFO [run-b2e72cd6ca] trace.event_engine.engine: created event EVT-20260826-9327bf36f3c2: 工信部公示
+锂离子电池正极材料前驱体单位产品能源消耗限额等15项行业标准报批意见
+2026-08-26 18:05:01,000 INFO [run-b2e72cd6ca] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTT
+P/1.1 200 OK"
+2026-08-26 18:05:02,548 INFO [run-b2e72cd6ca] trace.event_engine.engine: created event EVT-20260826-5e897fdd98e9: 商务部对进
+口打印复印办公设备发起国家安全调查
+2026-08-26 18:05:02,640 INFO [run-b2e72cd6ca] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTT
+P/1.1 200 OK"
+2026-08-26 18:05:04,298 INFO [run-b2e72cd6ca] trace.event_engine.engine: created event EVT-20260826-83a12d86a05d: 商务部公告
+2026年第34号：加强无人机相关两用物项对美国出口管制
+2026-08-26 18:05:04,387 INFO [run-b2e72cd6ca] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTT
+P/1.1 200 OK"
+2026-08-26 18:05:07,943 INFO [run-b2e72cd6ca] trace.event_engine.engine: created event EVT-20260826-3a9a33cd8111: EPA发布
+关于某些化学物质的重要新用途规则
+2026-08-26 18:05:08,061 INFO [run-b2e72cd6ca] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTT
+P/1.1 200 OK"
+2026-08-26 18:05:23,859 INFO [run-b2e72cd6ca] trace.ai.pipeline: event EVT-20260826-ccb861ddd21f analyzed: 17 impacts
+2026-08-26 18:05:23,974 INFO [run-b2e72cd6ca] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTT
+P/1.1 200 OK"
+2026-08-26 18:05:42,436 INFO [run-b2e72cd6ca] trace.ai.pipeline: event EVT-20260826-7854203b74c3 analyzed: 17 impacts
+2026-08-26 18:05:42,439 INFO [run-b2e72cd6ca] trace.alerts.engine: bootstrap suppressed: user=7166811279 event=EVT-2026
+0826-7854203b74c3 reason=before_activation
+2026-08-26 18:05:42,538 INFO [run-b2e72cd6ca] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTT
+P/1.1 200 OK"
+2026-08-26 18:06:00,858 INFO [run-b2e72cd6ca] trace.ai.pipeline: event EVT-20260826-d7cb25b7b8ab analyzed: 17 impacts
+2026-08-26 18:06:00,955 INFO [run-b2e72cd6ca] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTT
+P/1.1 200 OK"
+2026-08-26 18:06:21,601 INFO [run-b2e72cd6ca] trace.ai.pipeline: event EVT-20260826-f6fca3975b21 analyzed: 17 impacts
+2026-08-26 18:06:21,602 INFO [run-b2e72cd6ca] trace.alerts.engine: bootstrap suppressed: user=7166811279 event=EVT-2026
+0826-f6fca3975b21 reason=freshness_window
+2026-08-26 18:06:21,602 INFO [run-b2e72cd6ca] trace.alerts.engine: bootstrap suppressed: user=7166811279 event=EVT-2026
+0826-f6fca3975b21 reason=freshness_window
+2026-08-26 18:06:21,602 INFO [run-b2e72cd6ca] trace.alerts.engine: bootstrap suppressed: user=7166811279 event=EVT-2026
+0826-f6fca3975b21 reason=freshness_window
+2026-08-26 18:06:21,686 INFO [run-b2e72cd6ca] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTT
+P/1.1 200 OK"
+2026-08-26 18:06:38,779 INFO [run-b2e72cd6ca] trace.ai.pipeline: event EVT-20260826-c43ddee7c9e1 analyzed: 17 impacts
+2026-08-26 18:06:38,781 INFO [run-b2e72cd6ca] trace.alerts.engine: bootstrap suppressed: user=7166811279 event=EVT-2026
+0826-c43ddee7c9e1 reason=freshness_window
+2026-08-26 18:06:38,876 INFO [run-b2e72cd6ca] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTT
+P/1.1 200 OK"
+2026-08-26 18:06:57,006 INFO [run-b2e72cd6ca] trace.ai.pipeline: event EVT-20260826-026411ab92d9 analyzed: 17 impacts
+2026-08-26 18:06:57,007 INFO [run-b2e72cd6ca] trace.alerts.engine: bootstrap suppressed: user=7166811279 event=EVT-2026
+0826-026411ab92d9 reason=freshness_window
+2026-08-26 18:06:57,135 INFO [run-b2e72cd6ca] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTT
+P/1.1 200 OK"
+2026-08-26 18:07:12,961 INFO [run-b2e72cd6ca] trace.ai.pipeline: event EVT-20260826-1a37487a6432 analyzed: 17 impacts
+2026-08-26 18:07:12,964 INFO [run-b2e72cd6ca] trace.alerts.engine: bootstrap suppressed: user=7166811279 event=EVT-2026
+0826-1a37487a6432 reason=freshness_window
+2026-08-26 18:07:13,079 INFO [run-b2e72cd6ca] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTT
+P/1.1 200 OK"
+2026-08-26 18:07:32,220 INFO [run-b2e72cd6ca] trace.ai.pipeline: event EVT-20260826-80b6044305c4 analyzed: 22 impacts
+2026-08-26 18:07:32,222 INFO [run-b2e72cd6ca] trace.alerts.engine: bootstrap suppressed: user=7166811279 event=EVT-2026
+0826-80b6044305c4 reason=freshness_window
+2026-08-26 18:07:32,309 INFO [run-b2e72cd6ca] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTT
+P/1.1 200 OK"
+2026-08-26 18:07:45,819 INFO [run-b2e72cd6ca] trace.ai.pipeline: event EVT-20260826-a473ab289ccf analyzed: 15 impacts
+2026-08-26 18:07:45,909 INFO [run-b2e72cd6ca] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTT
+P/1.1 200 OK"
+2026-08-26 18:08:02,871 INFO [run-b2e72cd6ca] trace.ai.pipeline: event EVT-20260826-51f6f0bf8f52 analyzed: 15 impacts
+2026-08-26 18:08:02,872 INFO [run-b2e72cd6ca] trace.alerts.engine: bootstrap suppressed: user=7166811279 event=EVT-2026
+0826-51f6f0bf8f52 reason=before_activation
+2026-08-26 18:08:02,963 INFO [run-b2e72cd6ca] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTT
+P/1.1 200 OK"
+2026-08-26 18:08:19,629 INFO [run-b2e72cd6ca] trace.ai.pipeline: event EVT-20260826-369ce4457448 analyzed: 16 impacts
+2026-08-26 18:08:19,631 INFO [run-b2e72cd6ca] trace.alerts.engine: bootstrap suppressed: user=7166811279 event=EVT-2026
+0826-369ce4457448 reason=freshness_window
+2026-08-26 18:08:19,734 INFO [run-b2e72cd6ca] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTT
+P/1.1 200 OK"
+2026-08-26 18:08:30,907 INFO [run-b2e72cd6ca] trace.ai.pipeline: event EVT-20260826-4c4b13d72c72 analyzed: 12 impacts
+2026-08-26 18:08:30,996 INFO [run-b2e72cd6ca] httpx2: HTTP Request: POST https://api.deepseek.com/chat/completions "HTT
+P/1.1 200 OK"
+2026-08-26 18:08:41,019 INFO [run-b2e72cd6ca] trace.ai.pipeline: event EVT-20260826-c08e569efb03 analyzed: 12 impacts
+2026-08-26 18:08:41,021 INFO [run-b2e72cd6ca] trace.ai.pipeline: event EVT-20260826-0cfd5a41b937: no graph hits
+2026-08-26 18:08:41,022 INFO [run-b2e72cd6ca] trace.ai.pipeline: event EVT-20260826-ae9d9675c95e: no graph hits
+2026-08-26 18:08:41,023 INFO [run-b2e72cd6ca] trace.ai.pipeline: event EVT-20260826-96c4a1affab6: no graph hits
+2026-08-26 18:08:41,026 INFO [run-b2e72cd6ca] trace.ai.pipeline: event EVT-20260826-9327bf36f3c2: no graph hits
+2026-08-26 18:08:41,028 INFO [run-b2e72cd6ca] trace.ai.pipeline: event EVT-20260826-5e897fdd98e9: no graph hits
+2026-08-26 18:08:41,029 INFO [run-b2e72cd6ca] trace.ai.pipeline: event EVT-20260826-83a12d86a05d: no graph hits
+2026-08-26 18:08:41,030 INFO [run-b2e72cd6ca] trace.ai.pipeline: event EVT-20260826-3a9a33cd8111: no graph hits
+2026-08-26 18:08:41,031 INFO [run-b2e72cd6ca] trace.pipeline: run summary: {'run_id': 'run-b2e72cd6ca', 'trace_mode': '
+production', 'status': 'OK', 'sources_checked': 10, 'sources_succeeded': 7, 'sources_failed': 0, 'sources_disabled': 3,
+ 'raw_items_new': 20, 'raw_items_duplicate': 55, 'events_created': 20, 'events_revised': 0, 'events_analyzed': 20, 'ale
+rts_eligible': 0, 'alerts_sent': 0, 'alerts_suppressed': 211, 'alerts_failed': 0, 'human_review': 0, 'keyword_filtered'
+: 100, 'llm_stage_a_calls': 20, 'llm_stage_b_calls': 13, 'llm_verifier_calls': 0, 'failed_sources': [], 'notes': []}
+
+===== run-once 摘要 =====
+{
+  "run_id": "run-b2e72cd6ca",
+  "trace_mode": "production",
+  "status": "OK",
+  "sources_checked": 10,
+  "sources_succeeded": 7,
+  "sources_failed": 0,
+  "sources_disabled": 3,
+  "raw_items_new": 20,
+  "raw_items_duplicate": 55,
+  "events_created": 20,
+  "events_revised": 0,
+  "events_analyzed": 20,
+  "alerts_eligible": 0,
+  "alerts_sent": 0,
+  "alerts_suppressed": 211,
+  "alerts_failed": 0,
+  "human_review": 0,
+  "keyword_filtered": 100,
+  "llm_stage_a_calls": 20,
+  "llm_stage_b_calls": 13,
+  "llm_verifier_calls": 0,
+  "failed_sources": [],
+  "notes": []
+}

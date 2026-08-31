@@ -1,0 +1,322 @@
+{
+  "miit_get_webId_pageId": {
+    "status": 200,
+    "snippet": "{\"roles\":null,\"permissions\":null,\"code\":\"200\",\"success\":false,\"data\":{},\"message\":\"\"}"
+  },
+  "miit_get_webId": {
+    "status": 200,
+    "snippet": "{\"roles\":null,\"permissions\":null,\"success\":false,\"code\":\"200\",\"data\":{},\"message\":\"\"}"
+  },
+  "miit_post_json": {
+    "status": 500,
+    "snippet": "{\"roles\":null,\"permissions\":null,\"code\":\"200\",\"success\":false,\"data\":{},\"message\":\"不支持的HTTP方法\"}"
+  },
+  "miit_unitbuild_js": {
+    "url": "https://www.miit.gov.cn/cms_files/default/script/AuthorizedRead/unitbuild.js?v=3.1.3-GXB",
+    "status": 200,
+    "latency_ms": 2297,
+    "bytes": 616,
+    "snippet": "var script = $('#'+authorizedReadUnitId);\r\nif (script.attr('queryData')) {\r\n\tvar url = script.attr('url');\r\n\tvar scriptId = script.attr('id');\r\n\tvar idRandom = 'authorizedRead_' + scriptId;\r\n\tscript.before('<div id=\"' + idRandom + '\"></div>');\r\n\tvar queryData = JSON.parse(script.attr('queryData').replace(/'/g, \"\\\"\"));\r\n\tgetHtml(url, queryData, idRandom);\r\n}\r\n\r\nfunction getHtml(url, queryData, idRandom) {\r\n\t$.ajax({\r\n\t\turl: url,\r\n\t\ttype: 'get',\r\n\t\tdata: queryData,\r\n\t\tsuccess: function(result) {\r\n\t\t\t$('#' + idRandom).html(result.data.html);\r\n\t\t},\r\n\t\terror: function(error) {\r\n\t\t\tlayer.msg('系统错误');\r\n\t\t}\r\n\t})\r\n}\r\n"
+  },
+  "miit_unitbuild_len": 616,
+  "miit_unitbuild_ajax": [
+    ");\r\n\tvar scriptId = script.attr(",
+    ",\r\n\t\tdata: queryData,\r\n\t\tsuccess: function(result) {\r\n\t\t\t$("
+  ],
+  "miit_unitbuild_snippet": "var script = $('#'+authorizedReadUnitId);\r\nif (script.attr('queryData')) {\r\n\tvar url = script.attr('url');\r\n\tvar scriptId = script.attr('id');\r\n\tvar idRandom = 'authorizedRead_' + scriptId;\r\n\tscript.before('<div id=\"' + idRandom + '\"></div>');\r\n\tvar queryData = JSON.parse(script.attr('queryData').replace(/'/g, \"\\\"\"));\r\n\tgetHtml(url, queryData, idRandom);\r\n}\r\n\r\nfunction getHtml(url, queryData, idRandom) {\r\n\t$.ajax({\r\n\t\turl: url,\r\n\t\ttype: 'get',\r\n\t\tdata: queryData,\r\n\t\tsuccess: function(result) {\r\n\t\t\t$('#' + idRandom).html(result.data.html);\r\n\t\t},\r\n\t\terror: function(error) {\r\n\t\t\tlayer.msg('系统错误');\r\n\t\t}\r\n\t})\r\n}\r\n",
+  "mofcom_home_full": {
+    "url": "https://www.mofcom.gov.cn/",
+    "status": 200,
+    "latency_ms": 99,
+    "bytes": 33622,
+    "snippet": "<!DOCTYPE html>\n<!--[if lte IE 7 ]><html lang=\"zh-cn\" class=\"no-js ie lte7 lte8 lte9 \"> <![endif]-->\n<!--[if IE 8 ]><html lang=\"zh-cn\" class=\"no-js ie ie8 lte8 lte9 \"> <![endif]-->\n<!--[if IE 9 ]><html lang=\"zh-cn\" class=\"no-js ie ie9 lte9 \"> <![endif]-->\n<!--[if (gt IE 9)|!(IE)]><!--><html lang=\"zh-cn\" class=\"no-js\"><!--<![endif]-->\n<head>\n<meta charset=\"utf-8\" />\n<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge,chrome=1\" />\n<meta name=\"renderer\" content=\"webkit\" />\n\n<link rel=\"stylesheet\" href=\"/cms_files/webshangwubu/tplobject/defaultSet/229896a16318433a8f9940c8ec5d46c8/images/edi.base.min.css\">\n<link rel=\"stylesheet\" href=\"/cms_files/webshangwubu/tplobject/defaultSet/229896a16318433a8f9940c8ec5d46c8/images/edi.reset.min.css\" />\n<link rel=\"stylesheet\" href=\"/cms_files/webshangwubu/tplobject/defaultSet/229896a16318433a8f9940c8ec5d46c8/images/edi.function.min.css\" />\n<link rel=\"stylesheet\" href=\"/cms_files/webshangwubu/tplobject/defaultSet/229896a16318433a8f9940c8ec5d46c8/images/module.css\">\n<link rel=\"stylesheet\" href=\"/cms_files/webshangwubu/tplobject/defaultSet/229896a16318433a8f9940c8ec5d46c8/images/barrierfree.css\">\n<link rel=\"stylesheet\" href=\"/cms_files/webshangwubu/tplo"
+  },
+  "mofcom_home_pairs": [
+    {
+      "href": "/syxwfb/art/2026/art_ff990c6a7c9e46efba81cbe4cd09d177.html",
+      "text": "中国—加纳经贸联委会第五次会议在阿克拉召开",
+      "date": null
+    },
+    {
+      "href": "/syxwfb/art/2026/art_7f5fe2ad9e1041358b3d493beae679b4.html",
+      "text": "中国与瑞士宣布完成自贸协定升级谈判",
+      "date": null
+    },
+    {
+      "href": "/xwfb/bldhd/art/2026/art_f33c949a0c4c45c8871e2daa9ed34046.html",
+      "text": "全国商务工作会议在京召开\n1月10日至11日，全国商务工作会议在京召开。会议以习近平新时代中国特色社会主义思想为指导，深入贯彻落实党的二十大和二十届历次全会精神",
+      "date": null
+    },
+    {
+      "href": "https://www.mofcom.gov.cn/syxwfb/art/2026/art_2d11cc8218d248a3b4c98ea465781427.html",
+      "text": "商务部召开党风廉政建设和反腐败工作会议暨警示教育大会",
+      "date": null
+    },
+    {
+      "href": "/xwfb/rcxwfb/art/2026/art_d22dcc4d9d19455bbfce84ad52727aa4.html",
+      "text": "2026年1-7月全国吸收外资4383.3亿元人民币",
+      "date": null
+    },
+    {
+      "href": "/xwfb/rcxwfb/art/2026/art_405b045ef88f4c44ae9c142664add462.html",
+      "text": "商务部公布2025年国家级经济技术开发区综合发展水平考核评价结果",
+      "date": null
+    },
+    {
+      "href": "/xwfb/rcxwfb/art/2026/art_0b757d71b41047c6923bfeedaa4f8686.html",
+      "text": "关于所谓“产能过剩”问题的中方立场",
+      "date": null
+    },
+    {
+      "href": "/xwfb/rcxwfb/art/2026/art_ea6d68fe5ee74367a2be1ca271765033.html",
+      "text": "2026年1-6月全国吸收外资4021.4亿元人民币",
+      "date": null
+    },
+    {
+      "href": "/xwfb/xwfyrth/art/2026/art_c3d812a75499429ab0acc4e6b000bf0d.html",
+      "text": "商务部新闻发言人就对原产于墨西哥和美国的进口碧根果反倾销调查初裁答记者问",
+      "date": null
+    },
+    {
+      "href": "/xwfb/xwfyrth/art/2026/art_e247be3a58d7425e9cfd0813ae7c2695.html",
+      "text": "商务部新闻发言人就对美国联邦通信委员会、美国土安全部系列涉华消极措施实施反制答记者问",
+      "date": null
+    },
+    {
+      "href": "/xwfb/xwfyrth/art/2026/art_fbfc500fbaa2459495caafae0c0f9b17.html",
+      "text": "商务部新闻发言人就对相关进口打印复印办公设备发起对外贸易国家安全调查答记者问",
+      "date": null
+    },
+    {
+      "href": "/xwfb/xwfyrth/art/2026/art_97e8026ea5e745ccb0cf5e87294cd009.html",
+      "text": "商务部新闻发言人就美国将中国企业列入所谓涉疆法案实体清单答记者问",
+      "date": null
+    },
+    {
+      "href": "/xwfb/sjfzrfb/art/2026/art_86cb6daa2fb64a978d4aaf7b13168dd0.html",
+      "text": "商务部电子商务司负责人介绍2026年1-7月我国电子商务发展情况",
+      "date": null
+    },
+    {
+      "href": "/xwfb/sjfzrfb/art/2026/art_2fe3377247874276bdacc8ee5c0b737d.html",
+      "text": "商务部消费促进司负责人谈2026年7月我国消费市场情况",
+      "date": null
+    },
+    {
+      "href": "/xwfb/sjfzrfb/art/2026/art_0650c63c75984bc5a2e0bcd4259e2877.html",
+      "text": "商务部服贸司负责人介绍2026年1-6月服务贸易发展情况",
+      "date": null
+    },
+    {
+      "href": "/xwfb/sjfzrfb/art/2026/art_2db1752ad0034be5aaf744940debee5a.html",
+      "text": "商务部条约法律司负责人就世贸组织发布我诉土耳其电动汽车和其他车辆限制措施世贸争端案专家组报告答记者问",
+      "date": null
+    },
+    {
+      "href": "/zwgk/zcfb/art/2026/art_6f98942be87b4429bcbb02242279aaac.html",
+      "text": "商务部公告2026年第36号 公布对原产于美国、欧盟、台湾地区和日本的进口共聚聚甲醛反倾销措施相关企业税率继承的决定",
+      "date": "08-20"
+    },
+    {
+      "href": "/zwgk/gztz/art/2026/art_456096407104439ca42d249858c2a6df.html",
+      "text": "商务部等部门联合印发《关于进一步激发下沉市场活力 活跃县域消费的意见》",
+      "date": "08-18"
+    },
+    {
+      "href": "/zwgk/zcfb/art/2026/art_39e326e1c5a44c16b7b18f5ec6c62baf.html",
+      "text": "商务部等9部门关于进一步激发下沉市场活力 活跃县域消费的意见",
+      "date": "08-18"
+    },
+    {
+      "href": "/zwgk/zcfb/art/2026/art_688f5c2a225544bda6c087ce08f721c2.html",
+      "text": "商务部公告2026年第35号 公布对原产于印度的进口单模光纤所适用反倾销措施的期终复审裁定",
+      "date": "08-13"
+    },
+    {
+      "href": "/zwgk/zcfb/art/2026/art_7d3cfb2920ed43f69e56ab0fccbef027.html",
+      "text": "商务部公告2026年第32号 公布对原产于墨西哥和美国的进口碧根果反倾销调查的初步裁定",
+      "date": "08-10"
+    },
+    {
+      "href": "/zwgk/zcfb/art/2026/art_74835ca289b5463f9c36cb983b689dba.html",
+      "text": "商务部公告2026年第34号 公布加强无人机相关两用物项对美国出口管制",
+      "date": "08-05"
+    },
+    {
+      "href": "/zwgk/zcfb/art/2026/art_5536d924b28442f3ad90db8d764bab0d.html",
+      "text": "中华人民共和国商务部令二〇二六年第3号 关于对美国合规性测试公司采取反制措施的决定",
+      "date": "08-05"
+    },
+    {
+      "href": "/zwgk/zcfb/art/2026/art_bd62c275eb144ba7bc6a50716ab823b6.html",
+      "text": "中华人民共和国商务部令二〇二六年第2号 关于对应用DNA科学公司等6家美国实体采取反制措施的决定",
+      "date": "08-05"
+    },
+    {
+      "href": "https://ozs.mofcom.gov.cn/tzgg/art/2026/art_f6b98851dc054b578a29ef2e9bf90a59.html",
+      "text": "中国—波兰经济联委会第20次会议征求意见\n      [已结束]",
+      "date": "2026-08-17"
+    },
+    {
+      "href": "https://fms.mofcom.gov.cn/zxdt/art/2026/art_2afe38ae327447c583508bd1464cb55e.html",
+      "text": "公开征求《家电服务商管理规范》行业标准意见\n      [进行中]",
+      "date": "2026-07-28"
+    },
+    {
+      "href": "https://hzs.mofcom.gov.cn/gzdt/art/2026/art_07afd66d4aa140fd8f65e36ca8d61a15.html",
+      "text": "商务部关于《对外劳务合作管理条例（修订草案）》公开征求意见的通知\n      [已结束]",
+      "date": "2026-07-24"
+    },
+    {
+      "href": "https://tfs.mofcom.gov.cn/gzdt/art/2026/art_2e8ecf0cfe09452fa1c18cccb80e3a60.html",
+      "text": "中国—瑞士知识产权工作组第14次会议征求意见\n      [已结束]",
+      "date": "2026-07-06"
+    }
+  ],
+  "micron_newsroom2": {
+    "url": "https://www.micron.com/about/press/news",
+    "status": 200,
+    "latency_ms": 1310,
+    "bytes": 292392,
+    "snippet": "\n<!DOCTYPE html>\n<html lang=\"en-US\">\n\n<head>\n    \n    \n    <meta name=\"content-page-ref\" content=\"QyejA8RNdXaoycf3MlFmXYQzkf7ELhqjFuP-IOGljGU0S_RIeJZIsoCDl49iuXxB0wqlJQdILb2lTTDSCnvLow\">\n<script defer=\"defer\" type=\"text/javascript\" src=\"/.rum/@adobe/helix-rum-js@%5E2/dist/micro.js\"></script>\n<script>(function (w, d, s, l, i) {\n            w[l] = w[l] || []; w[l].push({\n                'gtm.start':\n                    new Date().getTime(), event: 'gtm.js'\n            }); var f = d.getElementsByTagName(s)[0],\n                j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =\n                    'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);\n        })(window, document, 'script', 'dataLayer', 'GTM-M7QXFFP4');</script>\n    \n        <meta charset=\"UTF-8\"/>\n        <title>Newsroom | Micron Technology Inc.</title>\n        <meta name=\"keywords\" content=\"Global Communications and Marketing\"/>\n\n        \n\n        \n            <meta name=\"description\" content=\"Latest press releases, new stories, and other breaking company news. Discover our Newsroom and find how Micron leads as a tech innovator.\"/>\n        \n        "
+  },
+  "micron_links": [
+    {
+      "href": "/about/press/media-relations",
+      "text": "Media relations and resources"
+    },
+    {
+      "href": "/about/press/trademark-usage-guidelines",
+      "text": "Trademark and usage guidelines"
+    },
+    {
+      "href": "https://my.micron.com/about/press/news",
+      "text": "Malaysia - English"
+    },
+    {
+      "href": "https://sg.micron.com/about/press/news",
+      "text": "Singapore - English"
+    },
+    {
+      "href": "/about/press/image-gallery",
+      "text": "Image gallery\n    \nOur image galleries provide photographs of company officers, manufacturing, produ"
+    },
+    {
+      "href": "/about/press/media-relations/press-kits",
+      "text": "Media kits\n    \nOur media kits provide key information and resources including press releases, suppo"
+    },
+    {
+      "href": "/about/press/trademark-usage-guidelines",
+      "text": "Trademark and usage guidelines\n    \nOur trademarks, service marks, and logos, whether registered or "
+    }
+  ],
+  "micron_next_data": false,
+  "micron_jsonld_count": 0,
+  "micron_dates": [
+    "July 16, 2026",
+    "July 16, 2026",
+    "July 15, 2026",
+    "July 15, 2026",
+    "July 9, 2026",
+    "July 9, 2026",
+    "July 9, 2026",
+    "July 9, 2026",
+    "July 6, 2026",
+    "July 6, 2026",
+    "July 1, 2026",
+    "July 1, 2026",
+    "June 30, 2026",
+    "June 30, 2026",
+    "June 24, 2026"
+  ],
+  "micron_api_hints": [
+    "></iframe></noscript>\n    \n\t\t<script>\n\t\t\twindow.adobeDataLayer = window.adobeDataLayer || [];\n\t\t\tadobeDataLayer.push({\n\t\t\t\tpage: JSON.parse(",
+    "search-api-path",
+    "/content/micron/us/en/about/press/news/_jcr_content.search.json/getSuggestions/SEARCH-TEXT/en_US/11",
+    "suggestions-api-path"
+  ],
+  "bis_news2": {
+    "url": "https://media.bis.gov/news-updates",
+    "status": 200,
+    "latency_ms": 2040,
+    "bytes": 3639753,
+    "snippet": "<!DOCTYPE html><html lang=\"en\"><head><meta charSet=\"utf-8\" data-next-head=\"\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1, shrink-to-fit=no\" data-next-head=\"\"/><title data-next-head=\"\">News and Updates | Bureau of Industry and Security</title><meta name=\"robots\" content=\"index,follow\" data-next-head=\"\"/><meta name=\"description\" content=\"Website of the United States Bureau of Industry and Security\" data-next-head=\"\"/><meta property=\"og:title\" content=\"News and Updates | Bureau of Industry and Security\" data-next-head=\"\"/><meta property=\"og:description\" content=\"Website of the United States Bureau of Industry and Security\" data-next-head=\"\"/><meta property=\"og:url\" content=\"https://media.bis.gov//news-updates\" data-next-head=\"\"/><meta property=\"og:type\" content=\"website\" data-next-head=\"\"/><link rel=\"canonical\" href=\"https://media.bis.gov//news-updates\" data-next-head=\"\"/><link rel=\"preload\" href=\"/_next/static/media/e4af272ccee01ff0-s.p.woff2\" as=\"font\" type=\"font/woff2\" crossorigin=\"anonymous\" data-next-font=\"size-adjust\"/><link rel=\"preload\" href=\"/_next/static/media/cf9548a654a0290e-s.p.woff2\" as=\"font\" type=\"font/woff2\" crossorigin=\"anonymous\" data-next-fo"
+  },
+  "bis_entries": [
+    {
+      "href": "/press-release/bis-reaches-administrative-enforcement-settlement-container-manufacturing-ltd.",
+      "text": "BIS Reaches Administrative Enforcement Settlement with Container Manufacturing Ltd.",
+      "date": "August 24, 2026"
+    },
+    {
+      "href": "/press-release/bis-reaches-administrative-enforcement-settlement-plexon-inc.",
+      "text": "BIS Reaches Administrative Enforcement Settlement with Plexon, Inc.",
+      "date": "August 14, 2026"
+    },
+    {
+      "href": "/press-release/department-commerce-streamlines-export-controls-sound-suppressors",
+      "text": "Department of Commerce Streamlines Export Controls for Sound Suppressors",
+      "date": "July 27, 2026"
+    },
+    {
+      "href": "/press-release/department-commerce-eases-export-controls-uae",
+      "text": "Department of Commerce Eases Export Controls for UAE",
+      "date": "July 10, 2026"
+    },
+    {
+      "href": "/press-release/robert-bosch-gmbh-bosch-pay-36-million-penalty-bis-violations-pertaining-shipments-huawei",
+      "text": "Robert Bosch GmbH (Bosch) To Pay $36 Million Penalty to BIS for Violations Pertaining to Shipments t",
+      "date": "June 17, 2026"
+    },
+    {
+      "href": "/press-release/bis-reaches-administrative-enforcement-settlement-coastal-pva-technology-inc.",
+      "text": "BIS Reaches Administrative Enforcement Settlement with Coastal PVA Technology, Inc.",
+      "date": "April 14, 2026"
+    },
+    {
+      "href": "/press-release/bis-reaches-administrative-enforcement-settlement-solventum-corporation-order",
+      "text": "BIS Reaches Administrative Enforcement Settlement with Solventum Corporation Order",
+      "date": "March 27, 2026"
+    },
+    {
+      "href": "/press-release/bis-reaches-administrative-enforcement-settlement-teledyne-flir-llc-its-affiliates-flir-optoelectronic",
+      "text": "BIS Reaches Administrative Enforcement Settlement with Teledyne FLIR LLC and its affiliates, FLIR Op",
+      "date": "February 26, 2026"
+    },
+    {
+      "href": "/press-release/bis-reaches-administrative-enforcement-settlement-vizicom-ict",
+      "text": "BIS Reaches Administrative Enforcement Settlement with Vizicom ICT",
+      "date": "February 25, 2026"
+    },
+    {
+      "href": "/press-release/applied-materials-pay-252-million-penalty-bis-illegally-exporting-semiconductor-manufacturing-equipment",
+      "text": "Applied Materials to Pay $252 Million Penalty to BIS for Illegally Exporting Semiconductor Manufactu",
+      "date": "February 12, 2026"
+    },
+    {
+      "href": "/press-release/department-commerce-revises-license-review-policy-semiconductors-exported-china",
+      "text": "Department of Commerce Revises License Review Policy for Semiconductors Exported to China",
+      "date": "January 13, 2026"
+    },
+    {
+      "href": "/press-release/bis-imposes-administrative-penalty-exyte-management-gmbh",
+      "text": "BIS Imposes Administrative Penalty on Exyte Management GmbH",
+      "date": "January 7, 2026"
+    },
+    {
+      "href": "/press-release/bis-reaches-administrative-enforcement-settlement-luminultra-technologies-inc.",
+      "text": "BIS Reaches Administrative Enforcement Settlement with Luminultra Technologies, Inc.",
+      "date": "October 1, 2025"
+    },
+    {
+      "href": "/press-release/bis-imposes-administrative-penalty-hallewell-ventures-ltd",
+      "text": "BIS Imposes Administrative Penalty on Hallewell Ventures Ltd.",
+      "date": "October 1, 2025"
+    },
+    {
+      "href": "/press-release/department-commerce-rescinds-biden-era-firearms-rule-restoring-common-sense-export-controls-civilian",
+      "text": "Department of Commerce Rescinds Biden-Era Firearms Rule, Restoring Common Sense to Export Controls o",
+      "date": "September 29, 2025"
+    }
+  ]
+}

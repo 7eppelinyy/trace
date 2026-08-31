@@ -1,0 +1,143 @@
+{
+  "micron_helix_json": {
+    "status": 404,
+    "bytes": 276596,
+    "sample": "\n<!DOCTYPE html>\n<html lang=\"en-US\">\n\n<head>\n    \n    \n    <meta name=\"content-page-ref\" content=\"QyejA8RNdXaoycf3MlFmXUkMyK3hlI9Bq5yY2X1Px223tPBhOzycNAOkqXs-k3au\">\n<script defer=\"defer\" type=\"text/javascript\" src=\"/.rum/@adobe/helix-rum-js@%5E2/dist/micro.js\"></script>\n<script>(function (w, d, s, l"
+  },
+  "micron_plain_html": {
+    "status": 404,
+    "bytes": 276596,
+    "sample": "\n<!DOCTYPE html>\n<html lang=\"en-US\">\n\n<head>\n    \n    \n    <meta name=\"content-page-ref\" content=\"QyejA8RNdXaoycf3MlFmXUkMyK3hlI9Bq5yY2X1Px223tPBhOzycNAOkqXs-k3au\">\n<script defer=\"defer\" type=\"text/javascript\" src=\"/.rum/@adobe/helix-rum-js@%5E2/dist/micro.js\"></script>\n<script>(function (w, d, s, l"
+  },
+  "micron_html_headings": [
+    [
+      "a",
+      "\n            Micron blog"
+    ],
+    [
+      "a",
+      "\n            Micron glossary"
+    ],
+    [
+      "h2",
+      "\n                Micron Opens State-of-the-Art Training Center in Boise to Strengthen America’s Semiconductor Workforce\n            "
+    ],
+    [
+      "h2",
+      "\n                Micron unveils Micron Research Labs, a U.S.-based Long-Horizon Innovation Hub to shape the future of memory and AI\n            "
+    ],
+    [
+      "h2",
+      "\n                Micron Ventures Launches $250 Million Fund to Invest in the Next Generation of AI\n            "
+    ],
+    [
+      "h2",
+      "\n                Micron Strengthens Automotive Ecosystem Supply Through Strategic Customer Agreements\n            "
+    ],
+    [
+      "h2",
+      "\n                Micron Announces Participation in Investor Event\n            "
+    ],
+    [
+      "h2",
+      "\n                Micron Accelerates U.S. Investments, Pours First Concrete at New York Fab\n            "
+    ],
+    [
+      "h2",
+      "\n                Micron Announces Up to $3 Billion Strategic Investment to Strengthen U.S. Semiconductor Ecosystem\n            "
+    ],
+    [
+      "h2",
+      "\n                Micron and Ford Sign Strategic Agreement to Strengthen Long-Term Memory Supply and Industry Resilience\n            "
+    ]
+  ],
+  "micron_dates": [
+    "Jul",
+    "Jul",
+    "Jul",
+    "Jul",
+    "Jul",
+    "Jul",
+    "Jul",
+    "Jul"
+  ],
+  "mofcom_pairs": [
+    {
+      "title": "",
+      "url": "/tj/sjtj/art/2026/art_ca1c3639394f43d5b834d5397148dc88.html",
+      "date": "2026-08-11"
+    },
+    {
+      "title": "",
+      "url": "/tj/sjtj/art/2026/art_c7be1b12c00f4d5a88788764a046d2ce.html",
+      "date": "2026-08-07"
+    },
+    {
+      "title": "",
+      "url": "/tj/sjtj/art/2026/art_dc2cc2b88d3147ef82e8723ab4125c05.html",
+      "date": "2026-08-05"
+    },
+    {
+      "title": "中国—波兰经济联委会第20次会议征求意见\n      [已结束]",
+      "url": "https://ozs.mofcom.gov.cn/tzgg/art/2026/art_f6b98851dc054b578a29ef2e9bf90a59.html",
+      "date": "2026-08-17"
+    },
+    {
+      "title": "公开征求《家电服务商管理规范》行业标准意见\n      [进行中]",
+      "url": "https://fms.mofcom.gov.cn/zxdt/art/2026/art_2afe38ae327447c583508bd1464cb55e.html",
+      "date": "2026-07-28"
+    },
+    {
+      "title": "商务部关于《对外劳务合作管理条例（修订草案）》公开征求意见的通知\n      [已结束]",
+      "url": "https://hzs.mofcom.gov.cn/gzdt/art/2026/art_07afd66d4aa140fd8f65e36ca8d61a15.html",
+      "date": "2026-07-24"
+    },
+    {
+      "title": "中国—瑞士知识产权工作组第14次会议征求意见\n      [已结束]",
+      "url": "https://tfs.mofcom.gov.cn/gzdt/art/2026/art_2e8ecf0cfe09452fa1c18cccb80e3a60.html",
+      "date": "2026-07-06"
+    }
+  ],
+  "miit_pairs": [
+    {
+      "title": "习近平致电祝贺阿拉姆吉尔就任孟加拉国总统",
+      "url": "/xwfb/szyw/art/2026/art_bf281957b855498bafd2dc6836b5be85.html",
+      "date": "2026-08-24"
+    },
+    {
+      "title": "习近平同约旦国王阿卜杜拉二世会谈",
+      "url": "/xwfb/szyw/art/2026/art_911d8c9b5d964797ace8e0d568fd412e.html",
+      "date": "2026-08-24"
+    },
+    {
+      "title": "习近平作出重要指示强调 巩固拓展树立和践行正确政绩观学习教育成果 努力创造经得起实践人民历史检验的实绩",
+      "url": "/xwfb/szyw/art/2026/art_382284e7e221439baa45d852c80d0ddb.html",
+      "date": "2026-08-24"
+    },
+    {
+      "title": "习近平致电祝贺希奇莱马当选连任赞比亚总统",
+      "url": "/xwfb/szyw/art/2026/art_2df774ea49a84c5da986893378ed13b7.html",
+      "date": "2026-08-20"
+    },
+    {
+      "title": "国务院常务会议听取新一代通信网建设情况汇报等",
+      "url": "/xwfb/szyw/art/2026/art_748d9e959a7e4d2e8c485253f6951637.html",
+      "date": "2026-08-21"
+    },
+    {
+      "title": "习近平致电祝贺鲍卡就任匈牙利总统",
+      "url": "/xwfb/szyw/art/2026/art_1411367eac344f6592b61c335becfab6.html",
+      "date": "2026-08-19"
+    },
+    {
+      "title": "习近平同厄瓜多尔总统诺沃亚会谈",
+      "url": "/xwfb/szyw/art/2026/art_953081343134439a9ab0bc9d32871847.html",
+      "date": "2026-08-18"
+    },
+    {
+      "title": "李乐成主持召开制造业企业座谈会 围绕产业人才队伍建设听取意见建议",
+      "url": "http://www.miit.gov.cn/xwfb/bldhd/art/2026/art_f0e5f657ecc04c9fbf3c9edc5f131e63.html",
+      "date": "2026-08-25"
+    }
+  ]
+}

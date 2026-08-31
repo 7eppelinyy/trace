@@ -1,0 +1,20 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+data/
+*.db
+*.db-wal
+*.db-shm
+.pytest_cache/
+dist/
+build/
+*.egg-info/
+
+# ---- 密钥 / 构建产物（2026-08-31 安全加固，禁止提交）----
+.deploy/.env.server
+.deploy/.env
+**/env.server
+.deploy/trace-deploy.zip
+*.zip

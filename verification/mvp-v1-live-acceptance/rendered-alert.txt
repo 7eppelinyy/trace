@@ -1,0 +1,71 @@
+
+
+========================================🧪 历史真实事件验收回放（非实时新闻）
+🚨 重大事件
+NVDA 英伟达 重大事件
+
+市场：美股｜代码：NVDA
+影响：🟢 偏利多
+重要度：8.6 / 10
+置信度：90%
+
+事件
+NVIDIA AI Factory Compute Is Becoming an Investable Asset Class
+
+涉及证券
+NVDA 8.6（direct）
+
+为什么重要
+英伟达直接宣布与多家金融机构合作建立融资平台，调动超过5000亿美元用于AI基础设施，这对英伟达是重要里程碑，可能推动其AI计算产品需求。
+
+产业传导
+nvda
+
+状态
+✅ 官方已确认
+
+⚠️ 行情确认：暂未接入
+
+来源
+NVIDIA Investor Relations · 18:32
+
+🕒 2026-08-26 02:32 用户本地时间
+
+Event ID: EVT-20260825-7018a4aefcda
+
+🔗 原文: https://blogs.nvidia.com/blog/nvidia-ai-factory-compute/
+
+🧪 历史真实事件验收回放（非实时新闻）
+🚨 重大事件
+TSM 台积电 重大事件
+
+市场：美股｜代码：TSM
+影响：🟢 偏利多
+重要度：7.6 / 10
+置信度：60%
+
+事件
+NVIDIA AI Factory Compute Is Becoming an Investable Asset Class
+
+涉及证券
+TSM 7.6（direct）
+
+为什么重要
+英伟达的AI基础设施建设可能增加对台积电先进芯片的需求，因为英伟达是台积电的主要客户。5000亿美元的投资预计将提升AI计算需求，间接利好台积电。
+
+产业传导
+nvda → tsmc
+
+状态
+✅ 官方已确认
+
+⚠️ 行情确认：暂未接入
+
+来源
+NVIDIA Investor Relations · 18:32
+
+🕒 2026-08-26 02:32 用户本地时间
+
+Event ID: EVT-20260825-7018a4aefcda
+
+🔗 原文: https://blogs.nvidia.com/blog/nvidia-ai-factory-compute/

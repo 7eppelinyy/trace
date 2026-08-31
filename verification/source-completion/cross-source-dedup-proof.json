@@ -1,0 +1,11 @@
+{
+  "generated_at": "2026-08-26T10:19:08.269679+00:00",
+  "note": "Commerce/BIS/Federal Register 同一政策事件：合并为同一 Event + N Evidence，不生成重复 Alert；非官方来源合并不会把 official_confirmed 降级。",
+  "event_id": "EVT-20260826-8d0d577c1344",
+  "status_after_merge": "official_confirmed",
+  "all_source_ids": [
+    "src_bis",
+    "src_federal_register"
+  ],
+  "no_status_downgrade": true
+}

@@ -1,0 +1,21 @@
+[Unit]
+Description=Trace event radar pipeline (run mode, poll 60s, per-source intervals honored)
+Documentation=file:///opt/trace/trace/main.py
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=Zeppelin
+WorkingDirectory=/opt/trace
+EnvironmentFile=/opt/trace/.env
+ExecStart=/opt/trace/.venv/bin/python -m trace.main run
+Restart=always
+RestartSec=30
+# 日志走 journal（journalctl -u trace-run），基本轮转由 journald.conf 管理
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=trace-run
+
+[Install]
+WantedBy=multi-user.target

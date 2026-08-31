@@ -1,0 +1,233 @@
+{
+  "sandisk_home": {
+    "url": "https://investor.sandisk.com/",
+    "status": 200,
+    "latency_ms": 5474,
+    "bytes": 62244,
+    "etag": "\"1787608469\"",
+    "last_modified": "Mon, 24 Aug 2026 21:54:29 GMT"
+  },
+  "sandisk_home_links": [
+    {
+      "href": "/news-events/news-releases",
+      "text": "News & Events"
+    },
+    {
+      "href": "https://www.sandisk.com/company/newsroom",
+      "text": "News Releases"
+    },
+    {
+      "href": "/news-events/events",
+      "text": "Events"
+    },
+    {
+      "href": "/news-events/presentations",
+      "text": "Presentations"
+    },
+    {
+      "href": "/news-releases/news-release-details/sandisk-details-growth-strategy-and-long-term-financial-model",
+      "text": "Read More"
+    },
+    {
+      "href": "https://www.sandisk.com/company/newsroom",
+      "text": "All News Releases"
+    },
+    {
+      "href": "/news-releases/news-release-details/sandisk-details-growth-strategy-and-long-term-financial-model",
+      "text": "Sandisk Details Growth Strategy and Long-Term Financial Model at 2026 Investor D"
+    },
+    {
+      "href": "/news-releases/news-release-details/kioxia-and-sandisk-unveil-new-high-performance-qlc-3d-flash",
+      "text": "Kioxia and Sandisk Unveil New High-Performance QLC 3D Flash Memory Technology De"
+    },
+    {
+      "href": "/news-releases/news-release-details/sandisk-reports-fiscal-fourth-quarter-2026-financial-results",
+      "text": "Sandisk Reports Fiscal Fourth Quarter 2026 Financial Results"
+    },
+    {
+      "href": "https://investor.sandisk.com/news-events/events",
+      "text": "All Events"
+    },
+    {
+      "href": "/news-events/events",
+      "text": "Events"
+    },
+    {
+      "href": "https://www.sandisk.com/company/newsroom",
+      "text": "News Releases"
+    },
+    {
+      "href": "/news-events/presentations",
+      "text": "Presentations and Corporate Materials"
+    }
+  ],
+  "mofcom_home": {
+    "url": "https://www.mofcom.gov.cn/",
+    "status": 200,
+    "latency_ms": 1065,
+    "bytes": 33622,
+    "etag": "W/\"6a8e93df-a46c\"",
+    "last_modified": "Wed, 26 Aug 2026 07:21:03 GMT"
+  },
+  "mofcom_home_links": [],
+  "mofcom_columns": [
+    {
+      "href": "/xwfb/index.html",
+      "text": "新闻发布"
+    },
+    {
+      "href": "/syxwfb/art/2026/art_1c64cd1185ad4ea39d6e87d60252f2b2.html",
+      "text": "习近平作出重要指示强调 巩固拓展树立和践行正确政绩观学习教育"
+    },
+    {
+      "href": "/syxwfb/art/2026/art_23c4de34a92442759580dee7622c6b61.html",
+      "text": "习近平同约旦国王阿卜杜拉二世会谈"
+    },
+    {
+      "href": "/syxwfb/art/2026/art_ff990c6a7c9e46efba81cbe4cd09d177.html",
+      "text": "中国—加纳经贸联委会第五次会议在阿克拉召开"
+    },
+    {
+      "href": "/syxwfb/art/2026/art_7f5fe2ad9e1041358b3d493beae679b4.html",
+      "text": "中国与瑞士宣布完成自贸协定升级谈判"
+    },
+    {
+      "href": "/xwfb/bldhd/art/2026/art_f33c949a0c4c45c8871e2daa9ed34046.html",
+      "text": "全国商务工作会议在京召开\n1月10日至11日，全国商务工作会"
+    },
+    {
+      "href": "https://www.mofcom.gov.cn/syxwfb/art/2026/art_2d11cc8218d248a3b4c98ea465781427.html",
+      "text": "商务部召开党风廉政建设和反腐败工作会议暨警示教育大会"
+    },
+    {
+      "href": "/xwfb/rcxwfb/index.html",
+      "text": "日常新闻发布"
+    },
+    {
+      "href": "/xwfb/rcxwfb/art/2026/art_d22dcc4d9d19455bbfce84ad52727aa4.html",
+      "text": "2026年1-7月全国吸收外资4383.3亿元人民币"
+    },
+    {
+      "href": "/xwfb/rcxwfb/art/2026/art_405b045ef88f4c44ae9c142664add462.html",
+      "text": "商务部公布2025年国家级经济技术开发区综合发展水平考核评价"
+    },
+    {
+      "href": "/xwfb/rcxwfb/art/2026/art_0b757d71b41047c6923bfeedaa4f8686.html",
+      "text": "关于所谓“产能过剩”问题的中方立场"
+    },
+    {
+      "href": "/xwfb/rcxwfb/art/2026/art_ea6d68fe5ee74367a2be1ca271765033.html",
+      "text": "2026年1-6月全国吸收外资4021.4亿元人民币"
+    },
+    {
+      "href": "/xwfb/xwfyrth/index.html",
+      "text": "新闻发言人谈话"
+    },
+    {
+      "href": "/xwfb/xwfyrth/art/2026/art_c3d812a75499429ab0acc4e6b000bf0d.html",
+      "text": "商务部新闻发言人就对原产于墨西哥和美国的进口碧根果反倾销调查"
+    },
+    {
+      "href": "/xwfb/xwfyrth/art/2026/art_e247be3a58d7425e9cfd0813ae7c2695.html",
+      "text": "商务部新闻发言人就对美国联邦通信委员会、美国土安全部系列涉华"
+    },
+    {
+      "href": "/xwfb/xwfyrth/art/2026/art_fbfc500fbaa2459495caafae0c0f9b17.html",
+      "text": "商务部新闻发言人就对相关进口打印复印办公设备发起对外贸易国家"
+    },
+    {
+      "href": "/xwfb/xwfyrth/art/2026/art_97e8026ea5e745ccb0cf5e87294cd009.html",
+      "text": "商务部新闻发言人就美国将中国企业列入所谓涉疆法案实体清单答记"
+    },
+    {
+      "href": "/xwfb/sjfzrfb/index.html",
+      "text": "司局负责人发布"
+    },
+    {
+      "href": "/xwfb/sjfzrfb/art/2026/art_86cb6daa2fb64a978d4aaf7b13168dd0.html",
+      "text": "商务部电子商务司负责人介绍2026年1-7月我国电子商务发展"
+    },
+    {
+      "href": "/xwfb/sjfzrfb/art/2026/art_2fe3377247874276bdacc8ee5c0b737d.html",
+      "text": "商务部消费促进司负责人谈2026年7月我国消费市场情况"
+    },
+    {
+      "href": "/xwfb/sjfzrfb/art/2026/art_0650c63c75984bc5a2e0bcd4259e2877.html",
+      "text": "商务部服贸司负责人介绍2026年1-6月服务贸易发展情况"
+    },
+    {
+      "href": "/xwfb/sjfzrfb/art/2026/art_2db1752ad0034be5aaf744940debee5a.html",
+      "text": "商务部条约法律司负责人就世贸组织发布我诉土耳其电动汽车和其他"
+    },
+    {
+      "href": "/xwfbh/index.html",
+      "text": "新闻发布会"
+    },
+    {
+      "href": "https://www.mofcom.gov.cn/xwfbzt/2026/swbzklxxwfbh2026n8y20r/index.html",
+      "text": "商务部召开例行新闻发布会（2026年8月20日）"
+    },
+    {
+      "href": "/xwfbzt/2026/swbzklxxwfbh2026n7y30r/index.html",
+      "text": "商务部召开例行新闻发布会（2026年7月30日）"
+    }
+  ],
+  "miit_sjdt": {
+    "url": "https://www.miit.gov.cn/xwdt/gxdt/sjdt/index.html",
+    "status": 200,
+    "latency_ms": 165,
+    "bytes": 5112,
+    "etag": "W/\"66ec5261-14d8\"",
+    "last_modified": "Thu, 19 Sep 2024 16:33:37 GMT"
+  },
+  "miit_sjdt_body_len": 5112,
+  "miit_scripts": [
+    "/cms_files/default/script/jslib/jquery.js",
+    "/cms_files/default/script/jslib/jquery.cookie.js",
+    "/cms_files/default/script/layui/layui.all.js",
+    "/cms_files/default/script/layui/layer/layer.js",
+    "/script/webglobal.js",
+    "/plugins/libs/require.js",
+    "/plugins/libs/load.js",
+    "/script/webgray.js",
+    "/cms_files/webmiit/tplobject/gxbsy/4bdaeb5e04be42ba8fe159b8f7e26868/images/pdy_tyyr.js",
+    "/cms_files/filemanager/script/201911/6b79016112cc4d66aeb22aa6d9d999dc.js",
+    "/cms_files/filemanager/script/20201/f77a47db235946388a3ee648b566c5ac.js",
+    "/cms_files/default/script/AuthorizedRead/unitbuild.js?v=3.1.3-GXB",
+    "/cms_files/filemanager/script/20201/840397482ca5455aa2209d4942e43e72.js"
+  ],
+  "miit_api_hints": [
+    "clist w1100 center",
+    "clist_con",
+    "/api-gateway/jpaas-publish-server/front/page/build/unit",
+    "clist_r_title"
+  ],
+  "miit_iframes": [],
+  "bis_media_home": {
+    "url": "https://media.bis.gov/",
+    "status": 200,
+    "latency_ms": 722,
+    "bytes": 75815,
+    "etag": null,
+    "last_modified": null
+  },
+  "bis_buildId": "GnZKUGTRbZraXCLAtftBY",
+  "bis_api_hints": [],
+  "bis_links": [
+    "/press-release/robert-bosch-gmbh-bosch-pay-36-million-penalty-bis-violations-pertaining-shipments-huawei",
+    "/press-release/bis-reaches-administrative-enforcement-settlement-coastal-pva-technology-inc.",
+    "/media/documents/bis-sorn-80-fr-63737.pdf",
+    "/news-updates",
+    "/press-release/bis-reaches-administrative-enforcement-settlement-plexon-inc.",
+    "/media/documents/May-31-FAQ.pdf",
+    "/_next/static/media/us_flag_small.ad6eb982.png",
+    "/press-release/bis-reaches-administrative-enforcement-settlement-container-manufacturing-ltd.",
+    "/media/documents/dlthty-nov-2024-1-7-25",
+    "/media/documents/qualityguidelines.pdf",
+    "/media/documents/bis-guidance-may-31-2026.pdf",
+    "/_next/static/media/e4af272ccee01ff0-s.p.woff2",
+    "/_next/static/media/cf9548a654a0290e-s.p.woff2",
+    "/press-release/department-commerce-streamlines-export-controls-sound-suppressors",
+    "/press-release/department-commerce-eases-export-controls-uae"
+  ]
+}

@@ -1,0 +1,110 @@
+{
+  "total_urls": 275,
+  "newsroom_urls": 91,
+  "segments": {
+    "https:": 1,
+    "blogs": 30,
+    "events": 3,
+    "(page)": 2,
+    "our-technology": 2,
+    "press-releases": 53
+  },
+  "newest": [
+    {
+      "url": "https://www.sandisk.com/company/newsroom/press-releases/2026/2026-08-25-sandisk-celebrates-30-years-of-pokemon",
+      "lastmod": "2026-08-25"
+    },
+    {
+      "url": "https://www.sandisk.com/company/newsroom/our-technology",
+      "lastmod": "2026-08-20"
+    },
+    {
+      "url": "https://www.sandisk.com/company/newsroom/blogs/2026/windsurfing-whales-unspoiled-nature-kirill-umrikhin-drone-photography",
+      "lastmod": "2026-08-19"
+    },
+    {
+      "url": "https://www.sandisk.com/company/newsroom/press-releases/2026/2026-08-20-sandisk-introduces-nas-ssds-to-power-fast-high-endurance-storage-for-prosumers-and-small-businesses",
+      "lastmod": "2026-08-19"
+    },
+    {
+      "url": "https://www.sandisk.com/company/newsroom/blogs/2026/three-drives-one-goal-helping-do-more-with-sandisk-optimus-ssds",
+      "lastmod": "2026-08-17"
+    },
+    {
+      "url": "https://www.sandisk.com/company/newsroom/our-technology/ssd-preconditioning-with-sandisk-sprandom",
+      "lastmod": "2026-08-14"
+    },
+    {
+      "url": "https://www.sandisk.com/company/newsroom/our-technology/ultraqlc-ssds-for-ai",
+      "lastmod": "2026-08-14"
+    },
+    {
+      "url": "https://www.sandisk.com/company/newsroom/press-releases/2026/2026-08-13-sandisk-investor-day-2026",
+      "lastmod": "2026-08-13"
+    },
+    {
+      "url": "https://www.sandisk.com/company/newsroom/press-releases/2026/2026-08-12-kioxia-and-sandisk-unveil-new-high-performance-qlc-3d-flash-memory-for-ai-and-data-intensive-apps",
+      "lastmod": "2026-08-12"
+    },
+    {
+      "url": "https://www.sandisk.com/company/newsroom/press-releases/2026/2026-08-04-new-3d-flash-memory-technology-from-kioxia-and-sandisk-qlc-nand",
+      "lastmod": "2026-08-11"
+    }
+  ],
+  "rsc_status": 200,
+  "rsc_len": 20117,
+  "rsc_urls": [
+    "https://static.sandisk.com/etc.clientlibs/sd-static/designs/clientlibs/vue-global.min.js",
+    "https://www.sandisk.com",
+    "https://www.sandisk.com/#organization",
+    "https://www.sandisk.com/ar-sa/company/newsroom",
+    "https://www.sandisk.com/company/newsroom",
+    "https://www.sandisk.com/content/dam/sandisk/en-us/assets/home-page/brand-logos/sandisk/sandisk-logo.svg",
+    "https://www.sandisk.com/content/dam/sandisk/en-us/portal-assets/logos/Sandisk-Open-Graph-Logo-1200x627-Clear-Spaced.png",
+    "https://www.sandisk.com/content/dam/sandisk/en-us/portal-assets/logos/favicon.ico",
+    "https://www.sandisk.com/cs-cz/company/newsroom",
+    "https://www.sandisk.com/de-at/company/newsroom",
+    "https://www.sandisk.com/de-de/company/newsroom",
+    "https://www.sandisk.com/el-gr/company/newsroom",
+    "https://www.sandisk.com/en-ae/company/newsroom",
+    "https://www.sandisk.com/en-ap/company/newsroom",
+    "https://www.sandisk.com/en-au/company/newsroom",
+    "https://www.sandisk.com/en-ca/company/newsroom",
+    "https://www.sandisk.com/en-gb/company/newsroom",
+    "https://www.sandisk.com/en-ie/company/newsroom",
+    "https://www.sandisk.com/en-il/company/newsroom",
+    "https://www.sandisk.com/en-in/company/newsroom",
+    "https://www.sandisk.com/en-kw/company/newsroom",
+    "https://www.sandisk.com/en-kz/company/newsroom",
+    "https://www.sandisk.com/en-se/company/newsroom",
+    "https://www.sandisk.com/en-sg/company/newsroom",
+    "https://www.sandisk.com/en-ua/company/newsroom",
+    "https://www.sandisk.com/en-us/company/newsroom",
+    "https://www.sandisk.com/en-za/company/newsroom",
+    "https://www.sandisk.com/es-es/company/newsroom",
+    "https://www.sandisk.com/es-la/company/newsroom",
+    "https://www.sandisk.com/es-mx/company/newsroom"
+  ],
+  "rsc_title_like": [
+    "static/chunks/181-ce193cf68634886b.js",
+    "static/chunks/940-1c859c80a1570a38.js",
+    "static/chunks/497-0a84f25c1fecff81.js",
+    "static/chunks/app/%5Blocale%5D/company/newsroom/page-3ee9f7b214f5e561.js",
+    "static/chunks/181-ce193cf68634886b.js",
+    "static/chunks/940-1c859c80a1570a38.js",
+    "static/chunks/497-0a84f25c1fecff81.js",
+    "static/chunks/app/%5Blocale%5D/company/newsroom/page-3ee9f7b214f5e561.js",
+    "M4mjZUrGM0vaWPxtLddWt",
+    "404: This page could not be found.",
+    ",Roboto,Helvetica,Arial,sans-serif,\\",
+    "dangerouslySetInnerHTML",
+    "This page could not be found.",
+    "}]]}]]}],{},null,false]},null,false]},null,false]},null,false]},null,false],[",
+    "rATsNKyucgyOS08QF472bv",
+    "rATsNKyucgyOS08QF472bm",
+    "lg:mt-[174px] mt-[80px]",
+    ",null,{}]}]}]}]]\n11:I[1402,[",
+    "static/chunks/181-ce193cf68634886b.js",
+    "static/chunks/940-1c859c80a1570a38.js"
+  ]
+}

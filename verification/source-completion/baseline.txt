@@ -1,0 +1,17 @@
+Trace Source Completion Gate V1 — baseline snapshot
+generated_at: 2026-08-26T09:25:07.405656+00:00
+
+== raw_item by source ==
+src_bis                  count=   29 latest=2026-08-25T18:32:36.403340+00:00
+src_cninfo               count=  140 latest=2026-08-25T16:00:00+00:00
+src_fed                  count=   20 latest=2026-08-25T10:00:00+00:00
+src_federal_register     count=   16 latest=2026-08-23T20:00:00+00:00
+src_nvidia_ir            count=   20 latest=2026-08-25T07:30:48+00:00
+src_sec_edgar            count=    8 latest=2026-08-17T00:00:00+00:00
+
+event total: 233
+alert_delivery total: 2
+alert_delivery sent: 2
+
+== pytest baseline ==
+151 passed (before source-completion tests), target >= 131

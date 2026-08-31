@@ -1,0 +1,175 @@
+{
+  "event": {
+    "event_id": "EVT-20260825-1c90cbb1172b",
+    "title": "港股公告：中芯国际截至2026年6月30日止三个月未经审核业绩公布",
+    "summary": "港股公告：中芯国际截至2026年6月30日止三个月未经审核业绩公布",
+    "event_type": "earnings",
+    "status": "official_confirmed",
+    "version": 1,
+    "event_time": "2026-08-13T16:00:00+00:00",
+    "first_source_id": "src_cninfo",
+    "primary_source_id": "src_cninfo",
+    "first_source_name": "巨潮资讯"
+  },
+  "evidence": [
+    {
+      "raw_item_id": "RAW-a1bda84210b54d48",
+      "source_id": "src_cninfo",
+      "source_item_id": "src_cninfo:1225471507",
+      "title": "港股公告：中芯国际截至2026年6月30日止三个月未经审核业绩公布",
+      "url": "http://static.cninfo.com.cn/finalpage/2026-08-14/1225471507.PDF",
+      "published_at": "2026-08-13T16:00:00+00:00",
+      "reference": "巨潮资讯公告 证券=688981 中芯国际 类别=01010501||010123||012399 公告ID=1225471507 登记来源=src_cninfo",
+      "role": "first"
+    }
+  ],
+  "impacts": [
+    {
+      "security_id": "SEC-CN-688981.SH",
+      "ticker": "688981.SH",
+      "market": "CN",
+      "direction": "uncertain",
+      "directness": "direct",
+      "magnitude": 6.0,
+      "persistence": 5.0,
+      "confidence": 0.4,
+      "source_reliability": 9.5,
+      "base_score": 7.41,
+      "market_confirmation": 5.0,
+      "final_score": 7.41,
+      "reason": "规则降级分析（rule_based_degraded）：产业关联（1 跳）：smic",
+      "industry_path": "smic",
+      "evidence_ids": [
+        "RAW-a1bda84210b54d48"
+      ],
+      "analysis_mode": "rule_based_degraded",
+      "market_data_mode": "mock"
+    },
+    {
+      "security_id": "SEC-US-AAPL",
+      "ticker": "AAPL",
+      "market": "US",
+      "direction": "uncertain",
+      "directness": "conditional",
+      "magnitude": 4.0,
+      "persistence": 5.0,
+      "confidence": 0.19999999999999996,
+      "source_reliability": 9.5,
+      "base_score": 5.27,
+      "market_confirmation": 5.0,
+      "final_score": 5.27,
+      "reason": "规则降级分析（rule_based_degraded）：产业关联（3 跳）：smic → us_gov → sndk → apple",
+      "industry_path": "smic → us_gov → sndk → apple",
+      "evidence_ids": [
+        "RAW-a1bda84210b54d48"
+      ],
+      "analysis_mode": "rule_based_degraded",
+      "market_data_mode": "mock"
+    },
+    {
+      "security_id": "SEC-US-AMD",
+      "ticker": "AMD",
+      "market": "US",
+      "direction": "uncertain",
+      "directness": "conditional",
+      "magnitude": 4.0,
+      "persistence": 5.0,
+      "confidence": 0.19999999999999996,
+      "source_reliability": 9.5,
+      "base_score": 5.27,
+      "market_confirmation": 5.0,
+      "final_score": 5.27,
+      "reason": "规则降级分析（rule_based_degraded）：产业关联（3 跳）：smic → us_gov → nvda → amd",
+      "industry_path": "smic → us_gov → nvda → amd",
+      "evidence_ids": [
+        "RAW-a1bda84210b54d48"
+      ],
+      "analysis_mode": "rule_based_degraded",
+      "market_data_mode": "mock"
+    },
+    {
+      "security_id": "SEC-US-MU",
+      "ticker": "MU",
+      "market": "US",
+      "direction": "uncertain",
+      "directness": "indirect",
+      "magnitude": 5.0,
+      "persistence": 5.0,
+      "confidence": 0.3,
+      "source_reliability": 9.5,
+      "base_score": 6.27,
+      "market_confirmation": 5.0,
+      "final_score": 6.27,
+      "reason": "规则降级分析（rule_based_degraded）：产业关联（2 跳）：smic → us_gov → mu",
+      "industry_path": "smic → us_gov → mu",
+      "evidence_ids": [
+        "RAW-a1bda84210b54d48"
+      ],
+      "analysis_mode": "rule_based_degraded",
+      "market_data_mode": "mock"
+    },
+    {
+      "security_id": "SEC-US-NVDA",
+      "ticker": "NVDA",
+      "market": "US",
+      "direction": "uncertain",
+      "directness": "indirect",
+      "magnitude": 5.0,
+      "persistence": 5.0,
+      "confidence": 0.3,
+      "source_reliability": 9.5,
+      "base_score": 6.27,
+      "market_confirmation": 5.0,
+      "final_score": 6.27,
+      "reason": "规则降级分析（rule_based_degraded）：产业关联（2 跳）：smic → us_gov → nvda",
+      "industry_path": "smic → us_gov → nvda",
+      "evidence_ids": [
+        "RAW-a1bda84210b54d48"
+      ],
+      "analysis_mode": "rule_based_degraded",
+      "market_data_mode": "mock"
+    },
+    {
+      "security_id": "SEC-US-SNDK",
+      "ticker": "SNDK",
+      "market": "US",
+      "direction": "uncertain",
+      "directness": "indirect",
+      "magnitude": 5.0,
+      "persistence": 5.0,
+      "confidence": 0.3,
+      "source_reliability": 9.5,
+      "base_score": 6.27,
+      "market_confirmation": 5.0,
+      "final_score": 6.27,
+      "reason": "规则降级分析（rule_based_degraded）：产业关联（2 跳）：smic → us_gov → sndk",
+      "industry_path": "smic → us_gov → sndk",
+      "evidence_ids": [
+        "RAW-a1bda84210b54d48"
+      ],
+      "analysis_mode": "rule_based_degraded",
+      "market_data_mode": "mock"
+    },
+    {
+      "security_id": "SEC-US-TSM",
+      "ticker": "TSM",
+      "market": "US",
+      "direction": "uncertain",
+      "directness": "conditional",
+      "magnitude": 4.0,
+      "persistence": 5.0,
+      "confidence": 0.19999999999999996,
+      "source_reliability": 9.5,
+      "base_score": 5.27,
+      "market_confirmation": 5.0,
+      "final_score": 5.27,
+      "reason": "规则降级分析（rule_based_degraded）：产业关联（3 跳）：smic → us_gov → nvda → tsmc",
+      "industry_path": "smic → us_gov → nvda → tsmc",
+      "evidence_ids": [
+        "RAW-a1bda84210b54d48"
+      ],
+      "analysis_mode": "rule_based_degraded",
+      "market_data_mode": "mock"
+    }
+  ]
+}

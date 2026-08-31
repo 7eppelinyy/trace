@@ -1,0 +1,42 @@
+{
+  "event_id": "EVT-20260825-7018a4aefcda",
+  "raw_item_id": "RAW-f3bdb7c23c614ee2",
+  "analysis_mode": "llm",
+  "model": "deepseek-chat",
+  "provider": "openai",
+  "latency_seconds": 4.02,
+  "structured_output": {
+    "title": "NVIDIA宣布与多家金融机构合作，动员超5000亿美元支持AI基础设施建设",
+    "summary": "NVIDIA宣布与Apollo、BlackRock、Blackstone、Brookfield、Goldman Sachs和KKR建立合作伙伴关系，设立独立融资平台，旨在动员超过5000亿美元的第三方资本，以支持AI基础设施的长期建设。",
+    "summary_zh": "NVIDIA宣布与Apollo、BlackRock、Blackstone、Brookfield、Goldman Sachs和KKR建立合作伙伴关系，设立独立融资平台，旨在动员超过5000亿美元的第三方资本，以支持AI基础设施的长期建设。",
+    "entities": [
+      "NVIDIA",
+      "Apollo",
+      "BlackRock",
+      "Blackstone",
+      "Brookfield",
+      "Goldman Sachs",
+      "KKR"
+    ],
+    "facts": [
+      "NVIDIA宣布与Apollo、BlackRock、Blackstone、Brookfield、Goldman Sachs和KKR建立合作伙伴关系。",
+      "这些合作伙伴关系旨在建立独立的融资平台。",
+      "这些平台旨在动员超过5000亿美元的第三方资本。",
+      "这些资本将用于支持AI基础设施的长期建设。"
+    ],
+    "key_numbers": [
+      "$500 billion"
+    ],
+    "occurred_at": "2026-08-11 16:38:21+00:00",
+    "source_claim_type": "official_press_release",
+    "event_type": "supply_chain",
+    "event_status": "official_confirmed",
+    "uncertainties": [
+      "具体融资平台成立时间未提及",
+      "资本动员的具体时间表未提及"
+    ],
+    "evidence_ids": [
+      "RAW-f3bdb7c23c614ee2"
+    ]
+  }
+}

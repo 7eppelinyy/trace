@@ -1,0 +1,25 @@
+# HTTP / 采集
+httpx>=0.27
+feedparser>=6.0
+beautifulsoup4>=4.12
+lxml>=5.0
+
+# 语义相似度（跨语言 Event 聚类，默认模型可配置；缺失时自动降级为 hash 伪向量）
+sentence-transformers>=2.7
+
+# LLM Structured Output（可插拔 Provider：默认 Gemini 走 REST/httpx，无 SDK 硬依赖；
+# OpenAI Provider 保持兼容，非必需依赖）
+openai>=1.30
+
+# Telegram Bot
+python-telegram-bot>=21.0
+
+# 配置
+pyyaml>=6.0
+python-dotenv>=1.0
+
+# 时区
+pytz>=2024.1
+
+# 测试
+pytest>=8.0

@@ -1,0 +1,51 @@
+{
+  "description": "同一真实来源连续运行 run-once 的幂等证明。第一轮完成真实采集入库后，后续每一轮的确定性去重（source_item_id / canonical_url / title_hash / content_hash）与投递幂等键 (user, event, security, version, alert_type) 保证零重复。",
+  "run_1_real_ingest": {
+    "run_id": "run-eb09ab06ac",
+    "raw_items_new": 233,
+    "raw_items_duplicate": 21,
+    "events_created": 233,
+    "events_revised": 0,
+    "alerts_sent": 0,
+    "note": "首次真实采集（SEC EDGAR / NVIDIA IR / 巨潮 / Fed / BIS / Federal Register）"
+  },
+  "run_2_repeat": {
+    "run_id": "run-6e214edfc3",
+    "raw_items_new": 0,
+    "raw_items_duplicate": 86,
+    "events_created": 0,
+    "events_revised": 0,
+    "alerts_sent": 0
+  },
+  "run_3_repeat": {
+    "run_id": "run-6725f8ec0d",
+    "raw_items_new": 0,
+    "raw_items_duplicate": 86,
+    "events_created": 0,
+    "events_revised": 0,
+    "alerts_sent": 0
+  },
+  "run_4_repeat": {
+    "run_id": "run-4a969ed209",
+    "raw_items_new": 0,
+    "raw_items_duplicate": 86,
+    "events_created": 0,
+    "events_revised": 0,
+    "alerts_sent": 0
+  },
+  "assertions": {
+    "new_duplicate_raw_items_after_first_run": 0,
+    "new_duplicate_events_after_first_run": 0,
+    "new_duplicate_alert_deliveries_after_first_run": 0,
+    "duplicate_telegram_messages": 0
+  },
+  "database_state": {
+    "raw_items_total": 233,
+    "events_total": 233,
+    "events_official_confirmed": 233,
+    "event_impact_total": 450,
+    "alert_delivery_total": 0,
+    "users_total": 0
+  },
+  "caveat": "当前环境未配置 TELEGRAM_BOT_TOKEN / TELEGRAM_DEFAULT_CHAT_ID，无注册用户与投递记录；投递幂等由 alert_delivery 唯一键与单元测试 test_run_once_then_repeat_is_idempotent / test_evaluate_idempotent_across_versions 覆盖。配置凭据后重跑即可产生真实回执。"
+}

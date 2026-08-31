@@ -1,0 +1,43 @@
+{
+  "first_run": {
+    "run_id": "run-2bef4d5444",
+    "trace_mode": "production",
+    "status": "OK",
+    "sources_checked": 8,
+    "sources_succeeded": 5,
+    "sources_failed": 0,
+    "sources_disabled": 3,
+    "raw_items_new": 0,
+    "raw_items_duplicate": 86,
+    "events_created": 0,
+    "events_revised": 0,
+    "events_analyzed": 0,
+    "alerts_eligible": 0,
+    "alerts_sent": 0,
+    "alerts_suppressed": 0,
+    "alerts_failed": 0,
+    "human_review": 0
+  },
+  "second_run_idempotency": {
+    "run_id": "run-a76a89bc8e",
+    "status": "OK",
+    "sources_checked": 8,
+    "sources_succeeded": 5,
+    "sources_failed": 0,
+    "sources_disabled": 3,
+    "raw_items_new": 0,
+    "raw_items_duplicate": 86,
+    "events_created": 0,
+    "events_revised": 0,
+    "events_analyzed": 0,
+    "alerts_eligible": 0,
+    "alerts_sent": 0,
+    "alerts_suppressed": 0,
+    "alerts_failed": 0,
+    "duplicate_telegram_alert": 0,
+    "duplicate_event": 0,
+    "duplicate_alert_delivery": 0
+  },
+  "note": "两次运行间无来源真实更新：全部 86 条 RawItem 命中精确去重，重复 Telegram Alert = 0、重复 Event = 0、重复 AlertDelivery = 0",
+  "pass": true
+}

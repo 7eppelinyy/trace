@@ -1,0 +1,63 @@
+{
+  "micron_cards": [
+    {
+      "title": "Micron Opens State-of-the-Art Training Center in Boise to Strengthen America’s Semiconductor Workforce",
+      "href": "https://investors.micron.com/news/press-release/2026/Micron-Opens-State-of-the-Art-Training-Center-in-Boise-to-Strengthen-Americas-Semicondu",
+      "container_tag": "div",
+      "container_class": [
+        "cmp-teaser__content"
+      ],
+      "texts": [
+        "Micron Opens State-of-the-Art Training Center in Boise to Strengthen America’s Semiconductor Workforce",
+        "August 24, 2026",
+        "Read article"
+      ]
+    },
+    {
+      "title": "Micron unveils Micron Research Labs, a U.S.-based Long-Horizon Innovation Hub to shape the future of memory an",
+      "href": "https://investors.micron.com/news/press-release/2026/Micron-Unveils-Micron-Research-Labs-a-U-S--Based-Long-Horizon-Innovation-Hub-to-Shape-t",
+      "container_tag": "div",
+      "container_class": [
+        "cmp-teaser__content"
+      ],
+      "texts": [
+        "Micron unveils Micron Research Labs, a U.S.-based Long-Horizon Innovation Hub to shape the future of memory and AI",
+        "August 20, 2026",
+        "Read article"
+      ]
+    },
+    {
+      "title": "Micron Ventures Launches $250 Million Fund to Invest in the Next Generation of AI",
+      "href": "https://investors.micron.com/news/press-release/2026/Micron-Ventures-Launches-250-Million-Fund-to-Invest-in-the-Next-Generation-of-AI/defaul",
+      "container_tag": "div",
+      "container_class": [
+        "cmp-teaser__content"
+      ],
+      "texts": [
+        "Micron Ventures Launches $250 Million Fund to Invest in the Next Generation of AI",
+        "August 13, 2026",
+        "Read article"
+      ]
+    }
+  ],
+  "trendforce_rss": {
+    "status": 404,
+    "bytes": 161596,
+    "sample": "<!DOCTYPE html>\n<!--[if lt IE 10]> <html  lang=\"en\" class=\"iex\"> <![endif]-->\n<!--[if (gt IE 10)|!(IE)]><!-->\n<html lang=\"en\">\n<!--<![endif]-->\n    <head>\n        <meta charset=\"utf-8\">\n    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n    <meta name=\"csrf-token\" content=\"\">\n    <!-- Google Tag Manager -->\n<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':\n      new Date().getTime(),event:'gtm.js'});"
+  },
+  "trendforce_press": {
+    "status": 200,
+    "bytes": 269452,
+    "sample": "<!DOCTYPE html>\n<!--[if lt IE 10]> <html  lang=\"en\" class=\"iex\"> <![endif]-->\n<!--[if (gt IE 10)|!(IE)]><!-->\n<html lang=\"en\">\n<!--<![endif]-->\n    <head>\n        <meta charset=\"utf-8\">\n    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n    <meta name=\"csrf-token\" content=\"hC8dRyvWr38b9xnt0AmkyWK2oRDivMOU7cUOhKyb\">\n    <!-- Google Tag Manager -->\n<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':\n    "
+  },
+  "trendforce_news": {
+    "status": 200,
+    "bytes": 82016,
+    "sample": "<!DOCTYPE html>\n<!--[if lt IE 10]> <html  lang=\"en\" class=\"iex\"> <![endif]-->\n<!--[if (gt IE 10)|!(IE)]><!-->\n<html lang=\"en\">\n<!--<![endif]-->\n\n<head>\n\t<meta charset=\"utf-8\">\n\t<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n    <!-- Google Tag Manager -->\n    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':\n          new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],\n        j=d."
+  },
+  "trendforce_robots": {
+    "status": 200,
+    "bytes": 269,
+    "sample": "User-agent: *\nDisallow: /images/hp_final.jpg\nDisallow: /images/LoboChiang_final_20220901.jpg\nDisallow: /search\nDisallow: /searchNews\nDisallow: /research/feedback/*\n\nSitemap: https://www.trendforce.com/sitemap.xml\nSitemap: https://www.trendforce.com/sitemap_insights.xml"
+  }
+}

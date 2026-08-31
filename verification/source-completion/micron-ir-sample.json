@@ -1,0 +1,86 @@
+{
+  "generated_at": "2026-08-26T10:19:07.886251+00:00",
+  "note": "Micron 官方新闻室页面回退 → RawItem → Event → Evidence（RSS 429/404 回退）",
+  "raw_items": [
+    {
+      "raw_item_id": "RAW-46a7b7a1c7604c61",
+      "source_id": "src_micron_ir",
+      "title": "Micron Opens State-of-the-Art Training Center in Boise to Strengthen America’s Semiconductor Workforce",
+      "url": "https://investors.micron.com/news/press-release/2026/Micron-Opens-State-of-the-Art-Training-Center-in-Boise-to-Strengthen-Americas-Semiconductor-Workforce/default.aspx",
+      "canonical_url": "https://investors.micron.com/news/press-release/2026/Micron-Opens-State-of-the-Art-Training-Center-in-Boise-to-Strengthen-Americas-Semiconductor-Workforce/default.aspx",
+      "published_at": "2026-08-24T00:00:00+00:00",
+      "fetched_at": "2026-08-26T10:04:16.491239+00:00"
+    },
+    {
+      "raw_item_id": "RAW-528d09521a6640a0",
+      "source_id": "src_micron_ir",
+      "title": "Micron unveils Micron Research Labs, a U.S.-based Long-Horizon Innovation Hub to shape the future of memory and AI",
+      "url": "https://investors.micron.com/news/press-release/2026/Micron-Unveils-Micron-Research-Labs-a-U-S--Based-Long-Horizon-Innovation-Hub-to-Shape-the-Future-of-Memory-and-AI/default.aspx",
+      "canonical_url": "https://investors.micron.com/news/press-release/2026/Micron-Unveils-Micron-Research-Labs-a-U-S--Based-Long-Horizon-Innovation-Hub-to-Shape-the-Future-of-Memory-and-AI/default.aspx",
+      "published_at": "2026-08-20T00:00:00+00:00",
+      "fetched_at": "2026-08-26T10:04:16.491239+00:00"
+    },
+    {
+      "raw_item_id": "RAW-78e43f4515da4cc5",
+      "source_id": "src_micron_ir",
+      "title": "Micron Ventures Launches $250 Million Fund to Invest in the Next Generation of AI",
+      "url": "https://investors.micron.com/news/press-release/2026/Micron-Ventures-Launches-250-Million-Fund-to-Invest-in-the-Next-Generation-of-AI/default.aspx",
+      "canonical_url": "https://investors.micron.com/news/press-release/2026/Micron-Ventures-Launches-250-Million-Fund-to-Invest-in-the-Next-Generation-of-AI/default.aspx",
+      "published_at": "2026-08-13T00:00:00+00:00",
+      "fetched_at": "2026-08-26T10:04:16.491239+00:00"
+    }
+  ],
+  "events": [
+    {
+      "event_id": "EVT-20260826-369ce4457448",
+      "title": "Micron Ventures Launches $250 Million Fund to Invest in AI",
+      "status": "official_confirmed",
+      "version": 1,
+      "first_seen_at": "2026-08-26T10:04:49.887688+00:00",
+      "role": "first"
+    },
+    {
+      "event_id": "EVT-20260826-51f6f0bf8f52",
+      "title": "Micron unveils Micron Research Labs, a U.S.-based Long-Horizon Innovation Hub",
+      "status": "official_confirmed",
+      "version": 1,
+      "first_seen_at": "2026-08-26T10:04:48.038820+00:00",
+      "role": "first"
+    },
+    {
+      "event_id": "EVT-20260826-a473ab289ccf",
+      "title": "Micron Opens State-of-the-Art Training Center in Boise to Strengthen America’s Semiconductor Workforce",
+      "status": "official_confirmed",
+      "version": 1,
+      "first_seen_at": "2026-08-26T10:04:45.664938+00:00",
+      "role": "first"
+    }
+  ],
+  "impacts_top": [
+    {
+      "event_id": "EVT-20260826-51f6f0bf8f52",
+      "security_id": "SEC-US-MU",
+      "final_score": 7.81
+    },
+    {
+      "event_id": "EVT-20260826-369ce4457448",
+      "security_id": "SEC-US-MU",
+      "final_score": 7.41
+    },
+    {
+      "event_id": "EVT-20260826-51f6f0bf8f52",
+      "security_id": "SEC-US-SNDK",
+      "final_score": 6.31
+    },
+    {
+      "event_id": "EVT-20260826-369ce4457448",
+      "security_id": "SEC-US-ARM",
+      "final_score": 6.11
+    },
+    {
+      "event_id": "EVT-20260826-369ce4457448",
+      "security_id": "SEC-US-SNDK",
+      "final_score": 6.11
+    }
+  ]
+}

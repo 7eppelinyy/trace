@@ -1,0 +1,80 @@
+{
+  "micron_press_page": {
+    "http_status": 200,
+    "bytes": 292457,
+    "links_count": 0,
+    "links_sample": [],
+    "json_scripts_sample": [
+      "\n\t\t\twindow.adobeDataLayer = window.adobeDataLayer || [];\n\t\t\tadobeDataLayer.push({\n\t\t\t\tpage: JSON.parse(\"{\\x22page\\u002Dcb747a4fc2\\x22:{\\x22@type\\x22:\\x22micron\\/components\\/structure\\/page\\x22,\\x22repo:modifyDate\\x22:\\x222026\\u002D08\\u002D24T16:03:29Z\\x22,\\x22dc:title\\x22:\\x22Newsroom\\x22,\\x22dc:des"
+    ]
+  },
+  "miit_sjdt": {
+    "http_status": 200,
+    "bytes": 5336,
+    "iframes": [],
+    "links_sample": [],
+    "raw_head": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\n<head>\n    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=8\">\n    \n\t<META HTTP-EQUIV=\"pragma\" CONTENT=\"no-cache\"><META HTTP-EQUIV=\"Cache-Control\" CONTENT=\"no-store, must-revalidate\">\n</META></META></meta></meta><script src=\"/cms_files/default/script/jslib/jquery.js\"></script>\r\n <script src=\"/cms_files"
+  },
+  "mofcom_home_links": [
+    {
+      "title": "习近平作出重要指示强调 巩固拓展树立和践行正确政绩观学习教育成果 努力创造经得起实践人民历史检验的实绩",
+      "href": "/syxwfb/art/2026/art_1c64cd1185ad4ea39d6e87d60252f2b2.html"
+    },
+    {
+      "title": "习近平同约旦国王阿卜杜拉二世会谈",
+      "href": "/syxwfb/art/2026/art_23c4de34a92442759580dee7622c6b61.html"
+    },
+    {
+      "title": "中国—加纳经贸联委会第五次会议在阿克拉召开",
+      "href": "/syxwfb/art/2026/art_ff990c6a7c9e46efba81cbe4cd09d177.html"
+    },
+    {
+      "title": "中国与瑞士宣布完成自贸协定升级谈判",
+      "href": "/syxwfb/art/2026/art_7f5fe2ad9e1041358b3d493beae679b4.html"
+    },
+    {
+      "title": "全国商务工作会议在京召开1月10日至11日，全国商务工作会议在京召开。会议以习近平新时代中国特色社会主义思想为指导，深入",
+      "href": "/xwfb/bldhd/art/2026/art_f33c949a0c4c45c8871e2daa9ed34046.html"
+    },
+    {
+      "title": "商务部召开党风廉政建设和反腐败工作会议暨警示教育大会",
+      "href": "https://www.mofcom.gov.cn/syxwfb/art/2026/art_2d11cc8218d248a3b4c98ea465781427.html"
+    },
+    {
+      "title": "日常新闻发布",
+      "href": "/xwfb/rcxwfb/index.html"
+    },
+    {
+      "title": "2026年1-7月全国吸收外资4383.3亿元人民币",
+      "href": "/xwfb/rcxwfb/art/2026/art_d22dcc4d9d19455bbfce84ad52727aa4.html"
+    },
+    {
+      "title": "商务部公布2025年国家级经济技术开发区综合发展水平考核评价结果",
+      "href": "/xwfb/rcxwfb/art/2026/art_405b045ef88f4c44ae9c142664add462.html"
+    },
+    {
+      "title": "关于所谓“产能过剩”问题的中方立场",
+      "href": "/xwfb/rcxwfb/art/2026/art_0b757d71b41047c6923bfeedaa4f8686.html"
+    },
+    {
+      "title": "2026年1-6月全国吸收外资4021.4亿元人民币",
+      "href": "/xwfb/rcxwfb/art/2026/art_ea6d68fe5ee74367a2be1ca271765033.html"
+    },
+    {
+      "title": "新闻发言人谈话",
+      "href": "/xwfb/xwfyrth/index.html"
+    },
+    {
+      "title": "商务部新闻发言人就对原产于墨西哥和美国的进口碧根果反倾销调查初裁答记者问",
+      "href": "/xwfb/xwfyrth/art/2026/art_c3d812a75499429ab0acc4e6b000bf0d.html"
+    },
+    {
+      "title": "商务部新闻发言人就对美国联邦通信委员会、美国土安全部系列涉华消极措施实施反制答记者问",
+      "href": "/xwfb/xwfyrth/art/2026/art_e247be3a58d7425e9cfd0813ae7c2695.html"
+    },
+    {
+      "title": "商务部新闻发言人就对相关进口打印复印办公设备发起对外贸易国家安全调查答记者问",
+      "href": "/xwfb/xwfyrth/art/2026/art_fbfc500fbaa2459495caafae0c0f9b17.html"
+    }
+  ]
+}

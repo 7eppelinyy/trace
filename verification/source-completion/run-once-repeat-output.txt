@@ -1,0 +1,91 @@
+﻿.venv\Scripts\python : 2026-08-26 18:15:33,571 INFO [-] trace.data.seed: seed data loaded
+At C:\Users\Zeppelin\AppData\Local\Temp\trae-agent-toolhost\jobs\job-d00b86ea957d4b718230545e0ec5ca9f\command.ps1:15 ch
+ar:7207
++ ... ipgrep\bin'; .venv\Scripts\python -m trace.main run-once 2>&1 | Tee-O ...
++                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (2026-08-26 18:1...eed data loaded:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+2026-08-26 18:15:33,575 INFO [-] trace.collectors.market_data.alpaca: ALPACA_API_KEY not set (production): market data 
+unavailable (mock forbidden in production)
+2026-08-26 18:15:33,575 INFO [-] trace.collectors.market_data.cn: CN market data not connected (production): unavailabl
+e (mock forbidden in production)
+2026-08-26 18:15:35,827 WARNING [-] trace.event_engine.embeddings: sentence-transformers unavailable (No module named '
+sentence_transformers'), fallback to hash embedder
+2026-08-26 18:15:37,111 INFO [run-009fe8543a] httpx: HTTP Request: GET https://data.sec.gov/submissions/CIK0002023554.j
+son "HTTP/1.1 200 OK"
+2026-08-26 18:15:37,452 INFO [run-009fe8543a] httpx: HTTP Request: GET https://data.sec.gov/submissions/CIK0000723125.j
+son "HTTP/1.1 200 OK"
+2026-08-26 18:15:37,858 INFO [run-009fe8543a] httpx: HTTP Request: GET https://data.sec.gov/submissions/CIK0001045810.j
+son "HTTP/1.1 200 OK"
+2026-08-26 18:15:38,896 INFO [run-009fe8543a] httpx: HTTP Request: GET https://nvidianews.nvidia.com/rss.xml "HTTP/1.1 
+200 OK"
+2026-08-26 18:15:39,743 INFO [run-009fe8543a] httpx: HTTP Request: GET https://www.sandisk.com/sitemap.xml "HTTP/1.1 30
+4 Not Modified"
+2026-08-26 18:15:41,097 INFO [run-009fe8543a] httpx: HTTP Request: GET https://investors.micron.com/rss.xml "HTTP/1.1 4
+04 Not Found"
+2026-08-26 18:15:41,097 WARNING [run-009fe8543a] trace.common.http_client: [src_micron_ir] source_unavailable, retry 1/
+1 in 2.0s
+2026-08-26 18:15:44,877 INFO [run-009fe8543a] httpx: HTTP Request: GET https://investors.micron.com/rss.xml "HTTP/1.1 4
+04 Not Found"
+2026-08-26 18:15:44,877 WARNING [run-009fe8543a] trace.collectors.micron: [src_micron_ir] RSS unavailable (source_unava
+ilable), fallback to newsroom page
+2026-08-26 18:15:45,749 INFO [run-009fe8543a] httpx: HTTP Request: GET https://www.micron.com/about/newsroom/press-rele
+ases "HTTP/1.1 301 Moved Permanently"
+2026-08-26 18:15:45,914 INFO [run-009fe8543a] httpx: HTTP Request: GET https://www.micron.com/about/press/news "HTTP/1.
+1 200 OK"
+2026-08-26 18:15:46,229 INFO [run-009fe8543a] httpx: HTTP Request: POST http://www.cninfo.com.cn/new/hisAnnouncement/qu
+ery "HTTP/1.1 200 200"
+2026-08-26 18:15:46,674 INFO [run-009fe8543a] httpx: HTTP Request: POST http://www.cninfo.com.cn/new/hisAnnouncement/qu
+ery "HTTP/1.1 200 200"
+2026-08-26 18:15:47,189 INFO [run-009fe8543a] httpx: HTTP Request: POST http://www.cninfo.com.cn/new/hisAnnouncement/qu
+ery "HTTP/1.1 200 200"
+2026-08-26 18:15:47,670 INFO [run-009fe8543a] httpx: HTTP Request: POST http://www.cninfo.com.cn/new/hisAnnouncement/qu
+ery "HTTP/1.1 200 200"
+2026-08-26 18:15:48,181 INFO [run-009fe8543a] httpx: HTTP Request: POST http://www.cninfo.com.cn/new/hisAnnouncement/qu
+ery "HTTP/1.1 200 200"
+2026-08-26 18:15:49,195 INFO [run-009fe8543a] httpx: HTTP Request: GET https://www.bis.doc.gov/index.php/policy-focus/p
+ress-releases "HTTP/1.1 301 Moved Permanently"
+2026-08-26 18:15:49,909 INFO [run-009fe8543a] httpx: HTTP Request: GET https://www.bis.gov/ "HTTP/1.1 200 OK"
+2026-08-26 18:15:50,531 INFO [run-009fe8543a] httpx: HTTP Request: GET https://www.miit.gov.cn/ "HTTP/1.1 200 OK"
+2026-08-26 18:15:50,674 INFO [run-009fe8543a] httpx: HTTP Request: GET https://www.mofcom.gov.cn/ "HTTP/1.1 200 OK"
+2026-08-26 18:15:51,842 INFO [run-009fe8543a] httpx: HTTP Request: GET https://www.federalregister.gov/api/v1/documents
+.rss?conditions%5Bterm%5D=semiconductor "HTTP/1.1 200 OK"
+2026-08-26 18:15:52,579 INFO [run-009fe8543a] httpx: HTTP Request: GET https://www.federalreserve.gov/feeds/press_all.x
+ml "HTTP/1.1 304 Not Modified"
+2026-08-26 18:15:55,991 INFO [run-009fe8543a] httpx: HTTP Request: GET https://public.govdelivery.com/accounts/USDOC/fe
+ed.rss "HTTP/1.1 304 Not Modified"
+2026-08-26 18:15:55,994 INFO [run-009fe8543a] trace.pipeline: collected 13 raw items (sources ok=7 failed=0 disabled=3,
+ keyword_filtered=100)
+2026-08-26 18:15:55,994 INFO [run-009fe8543a] trace.pipeline: run summary: {'run_id': 'run-009fe8543a', 'trace_mode': '
+production', 'status': 'OK', 'sources_checked': 10, 'sources_succeeded': 7, 'sources_failed': 0, 'sources_disabled': 3,
+ 'raw_items_new': 0, 'raw_items_duplicate': 13, 'events_created': 0, 'events_revised': 0, 'events_analyzed': 0, 'alerts
+_eligible': 0, 'alerts_sent': 0, 'alerts_suppressed': 0, 'alerts_failed': 0, 'human_review': 0, 'keyword_filtered': 100
+, 'llm_stage_a_calls': 0, 'llm_stage_b_calls': 0, 'llm_verifier_calls': 0, 'failed_sources': [], 'notes': []}
+
+===== run-once 摘要 =====
+{
+  "run_id": "run-009fe8543a",
+  "trace_mode": "production",
+  "status": "OK",
+  "sources_checked": 10,
+  "sources_succeeded": 7,
+  "sources_failed": 0,
+  "sources_disabled": 3,
+  "raw_items_new": 0,
+  "raw_items_duplicate": 13,
+  "events_created": 0,
+  "events_revised": 0,
+  "events_analyzed": 0,
+  "alerts_eligible": 0,
+  "alerts_sent": 0,
+  "alerts_suppressed": 0,
+  "alerts_failed": 0,
+  "human_review": 0,
+  "keyword_filtered": 100,
+  "llm_stage_a_calls": 0,
+  "llm_stage_b_calls": 0,
+  "llm_verifier_calls": 0,
+  "failed_sources": [],
+  "notes": []
+}

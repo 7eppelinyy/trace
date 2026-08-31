@@ -1,0 +1,132 @@
+[
+ {
+  "source_id": "src_bis",
+  "last_success_at": "2026-08-26T13:24:07.093715+00:00",
+  "last_failure_at": null,
+  "last_error": null,
+  "last_error_category": null,
+  "consecutive_failures": 0,
+  "last_item_at": "2026-08-26T00:00:00+00:00",
+  "last_http_status": null
+ },
+ {
+  "source_id": "src_cninfo",
+  "last_success_at": "2026-08-26T13:24:05.030452+00:00",
+  "last_failure_at": null,
+  "last_error": null,
+  "last_error_category": null,
+  "consecutive_failures": 0,
+  "last_item_at": "2026-08-26T16:00:00+00:00",
+  "last_http_status": null
+ },
+ {
+  "source_id": "src_commerce",
+  "last_success_at": "2026-08-26T13:24:09.213179+00:00",
+  "last_failure_at": null,
+  "last_error": null,
+  "last_error_category": null,
+  "consecutive_failures": 0,
+  "last_item_at": "2026-08-26T04:00:00+00:00",
+  "last_http_status": null
+ },
+ {
+  "source_id": "src_csrc",
+  "last_success_at": "2026-08-26T13:24:07.093768+00:00",
+  "last_failure_at": null,
+  "last_error": null,
+  "last_error_category": null,
+  "consecutive_failures": 0,
+  "last_item_at": "2026-08-26T00:00:00+00:00",
+  "last_http_status": null
+ },
+ {
+  "source_id": "src_fed",
+  "last_success_at": "2026-08-26T13:24:09.213247+00:00",
+  "last_failure_at": null,
+  "last_error": null,
+  "last_error_category": null,
+  "consecutive_failures": 0,
+  "last_item_at": "2026-08-26T04:00:00+00:00",
+  "last_http_status": null
+ },
+ {
+  "source_id": "src_federal_register",
+  "last_success_at": "2026-08-26T13:24:09.213303+00:00",
+  "last_failure_at": null,
+  "last_error": null,
+  "last_error_category": null,
+  "consecutive_failures": 0,
+  "last_item_at": "2026-08-26T04:00:00+00:00",
+  "last_http_status": null
+ },
+ {
+  "source_id": "src_micron_ir",
+  "last_success_at": "2026-08-26T13:24:00.655957+00:00",
+  "last_failure_at": "2026-08-26T13:24:00.005116+00:00",
+  "last_error": null,
+  "last_error_category": null,
+  "consecutive_failures": 0,
+  "last_item_at": null,
+  "last_http_status": 404
+ },
+ {
+  "source_id": "src_miit",
+  "last_success_at": "2026-08-26T13:24:07.093843+00:00",
+  "last_failure_at": null,
+  "last_error": null,
+  "last_error_category": null,
+  "consecutive_failures": 0,
+  "last_item_at": "2026-08-26T00:00:00+00:00",
+  "last_http_status": null
+ },
+ {
+  "source_id": "src_mofcom",
+  "last_success_at": "2026-08-26T13:24:07.093892+00:00",
+  "last_failure_at": null,
+  "last_error": null,
+  "last_error_category": null,
+  "consecutive_failures": 0,
+  "last_item_at": "2026-08-26T00:00:00+00:00",
+  "last_http_status": null
+ },
+ {
+  "source_id": "src_nvidia_ir",
+  "last_success_at": "2026-08-26T13:23:54.711546+00:00",
+  "last_failure_at": null,
+  "last_error": null,
+  "last_error_category": null,
+  "consecutive_failures": 0,
+  "last_item_at": "2026-08-25T15:30:48+00:00",
+  "last_http_status": null
+ },
+ {
+  "source_id": "src_sec_edgar",
+  "last_success_at": "2026-08-26T13:23:54.590763+00:00",
+  "last_failure_at": null,
+  "last_error": null,
+  "last_error_category": null,
+  "consecutive_failures": 0,
+  "last_item_at": "2026-08-26T00:00:00+00:00",
+  "last_http_status": null
+ },
+ {
+  "source_id": "src_sndk_ir",
+  "last_success_at": "2026-08-26T13:23:54.884683+00:00",
+  "last_failure_at": null,
+  "last_error": null,
+  "last_error_category": null,
+  "consecutive_failures": 0,
+  "last_item_at": "2026-08-25T00:00:00+00:00",
+  "last_http_status": null
+ },
+ {
+  "source_id": "src_stats_cn",
+  "last_success_at": "2026-08-26T13:24:07.093939+00:00",
+  "last_failure_at": null,
+  "last_error": null,
+  "last_error_category": null,
+  "consecutive_failures": 0,
+  "last_item_at": "2026-08-26T00:00:00+00:00",
+  "last_http_status": null
+ }
+]

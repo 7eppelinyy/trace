@@ -1,0 +1,68 @@
+{
+  "src_sec_edgar": {
+    "url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=NVDA&type=8-K&dateb=&owner=include&count=5&output=atom",
+    "http_status": 403,
+    "latency_ms": 2777,
+    "bytes": 4818
+  },
+  "src_nvidia_ir": {
+    "url": "https://nvidianews.nvidia.com/rss.xml",
+    "http_status": 200,
+    "latency_ms": 931,
+    "bytes": 60004
+  },
+  "src_sndk_ir_sitemap": {
+    "url": "https://www.sandisk.com/sitemap.xml",
+    "http_status": 200,
+    "latency_ms": 2206,
+    "bytes": 50208
+  },
+  "src_micron_ir_newsroom": {
+    "url": "https://www.micron.com/about/newsroom/press-releases",
+    "http_status": 200,
+    "latency_ms": 1366,
+    "bytes": 292457
+  },
+  "src_bis": {
+    "url": "https://www.bis.doc.gov/index.php/policy-focus/press-releases",
+    "http_status": 200,
+    "latency_ms": 1276,
+    "bytes": 75825
+  },
+  "src_federal_register": {
+    "url": "https://www.federalregister.gov/api/v1/documents.rss?conditions%5Bterm%5D=semiconductor",
+    "http_status": 200,
+    "latency_ms": 894,
+    "bytes": 23732
+  },
+  "src_fed": {
+    "url": "https://www.federalreserve.gov/feeds/press_all.xml",
+    "http_status": 200,
+    "latency_ms": 1666,
+    "bytes": 14304
+  },
+  "src_commerce": {
+    "url": "https://public.govdelivery.com/accounts/USDOC/feed.rss",
+    "http_status": 200,
+    "latency_ms": 6575,
+    "bytes": 255589
+  },
+  "src_miit": {
+    "url": "https://www.miit.gov.cn/",
+    "http_status": 200,
+    "latency_ms": 345,
+    "bytes": 68380
+  },
+  "src_mofcom": {
+    "url": "https://www.mofcom.gov.cn/",
+    "http_status": 200,
+    "latency_ms": 92,
+    "bytes": 42092
+  },
+  "src_cninfo": {
+    "url": "http://www.cninfo.com.cn/new/index",
+    "http_status": 200,
+    "latency_ms": 407,
+    "bytes": 109968
+  }
+}

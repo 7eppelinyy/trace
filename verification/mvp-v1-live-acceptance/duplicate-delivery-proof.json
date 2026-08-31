@@ -1,0 +1,36 @@
+{
+  "checked_at": "2026-08-26T05:35:04.219217+00:00",
+  "event_id": "EVT-20260825-7018a4aefcda",
+  "sent_deliveries": [
+    {
+      "delivery_id": "ALD-28b04eba27e54d7f",
+      "user_id": "7166811279",
+      "event_id": "EVT-20260825-7018a4aefcda",
+      "security_id": "SEC-US-NVDA",
+      "event_version": 1,
+      "alert_type": "new_event",
+      "status": "sent",
+      "telegram_message_id": "3",
+      "response_status": "ok",
+      "bootstrap_suppressed": 0
+    },
+    {
+      "delivery_id": "ALD-0507afc614f5417c",
+      "user_id": "7166811279",
+      "event_id": "EVT-20260825-7018a4aefcda",
+      "security_id": "SEC-US-TSM",
+      "event_version": 1,
+      "alert_type": "new_event",
+      "status": "sent",
+      "telegram_message_id": "4",
+      "response_status": "ok",
+      "bootstrap_suppressed": 0
+    }
+  ],
+  "sent_count": 2,
+  "unique_idempotency_keys": 2,
+  "duplicate_sent": 0,
+  "bootstrap_suppressed_records": 0,
+  "second_replay_result": "第二次回放 12 条影响全部被幂等抑制（suppressed=12），重复 Telegram Alert = 0，重复 Event = 0，重复 AlertDelivery = 0",
+  "pass": true
+}

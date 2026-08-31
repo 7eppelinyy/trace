@@ -1,0 +1,22 @@
+{
+  "checked_at": "2026-08-26T05:31:48.169269+00:00",
+  "events": {
+    "stage_b_positive": {
+      "known_evidence_ids": [
+        "RAW-f3bdb7c23c614ee2"
+      ],
+      "output_count": 0,
+      "problems": [],
+      "pass": true
+    },
+    "stage_b_negative_filing_only": {
+      "known_evidence_ids": [
+        "RAW-b3277694ec7641ee"
+      ],
+      "output_count": 0,
+      "problems": [],
+      "pass": true
+    }
+  },
+  "overall_pass": true
+}

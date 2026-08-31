@@ -1,0 +1,21 @@
+{
+  "status": "STOP_TRACE_MVP_V1_TELEGRAM_TOKEN_MISSING",
+  "generated_at": "2026-08-26",
+  "receipts": [],
+  "reason": "当前环境未配置 TELEGRAM_BOT_TOKEN 与 TELEGRAM_DEFAULT_CHAT_ID。任务书明确规定：生产模式没有 Telegram Token 不得宣称投递成功，不得用 Mock/fixture 绕过阻塞，因此本文件如实记录零回执。",
+  "delivery_path_verified_by_tests": [
+    "tests/test_alerts.py::test_delivery_ok_parses_message_id",
+    "tests/test_alerts.py::test_delivery_api_error_not_http200_success",
+    "tests/test_alerts.py::test_delivery_missing_message_id_fails",
+    "tests/test_alerts.py::test_delivery_network_error",
+    "tests/test_alerts.py::test_delivery_missing_token_no_request",
+    "tests/test_alerts.py::test_evaluate_idempotent_across_versions",
+    "tests/test_pipeline.py::test_run_once_then_repeat_is_idempotent"
+  ],
+  "required_env_to_unlock": [
+    "TELEGRAM_BOT_TOKEN",
+    "TELEGRAM_DEFAULT_CHAT_ID",
+    "OPENAI_API_KEY（production 模式 AI 分析）"
+  ],
+  "note": "配置凭据后执行 python -m trace.main run-once 即产生真实回执；本文件将由相同脚本更新为真实 message_id。"
+}
