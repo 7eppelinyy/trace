@@ -13,8 +13,14 @@ LLM 只输出基础维度（directness / magnitude / persistence），
       + 0.20 * persistence
 
     final_score = clamp(
-        base_score + 0.15 * (market_confirmation - 5),
+        base_score + 0.15 * (market_confirmation - 5)
+                 + W_sd * (supply_demand - 5),
         1, 10)
+
+其中 W_sd 为供给-需求权重（默认 0.10，见 config `scoring.supply_demand_weight`）。
+supply_demand 是**确定性文字信号**（trace.scoring.signals），非 LLM 主观分；
+5=中性不加减分。注意：它只是供需拐点强度的弱代理，不单独决定方向，
+方向仍由 Stage B 判定。对周期股须克制（见 supply_demand_signals.yaml）。
 
 所有输入维度取值 1–10。market_confirmation 无行情时取 5（中性，不加减分）。
 Confidence 与 Importance 分离：本引擎不产出 confidence，
@@ -33,6 +39,7 @@ class ScoreInput:
     magnitude: float              # 1-10，LLM 输出
     persistence: float            # 1-10，LLM 输出
     market_confirmation: float = 5.0   # 1-10，行情确认；缺省 5
+    supply_demand: float = 5.0        # 1-10，确定性供需文字信号；缺省 5
 
 
 @dataclass
@@ -45,6 +52,7 @@ class ScoringEngine:
     def __init__(self, config):
         self._weights = config.get("scoring.base_weights", {})
         self._market_weight = float(config.get("scoring.market_confirmation_weight", 0.15))
+        self._sd_weight = float(config.get("scoring.supply_demand_weight", 0.10))
         self._min = float(config.get("scoring.score_min", 1))
         self._max = float(config.get("scoring.score_max", 10))
 
@@ -59,15 +67,18 @@ class ScoringEngine:
         )
         return round(score, 2)
 
-    def final_score(self, base: float, market_confirmation: float = 5.0) -> float:
+    def final_score(self, base: float, market_confirmation: float = 5.0,
+                    supply_demand: float = 5.0) -> float:
         mc = self._clamp_dim(market_confirmation)
-        score = base + self._market_weight * (mc - 5.0)
+        sd = self._clamp_dim(supply_demand)
+        score = base + self._market_weight * (mc - 5.0) \
+            + self._sd_weight * (sd - 5.0)
         return round(max(self._min, min(self._max, score)), 2)
 
     def score(self, inp: ScoreInput) -> ScoreOutput:
         base = self.base_score(inp.source_reliability, inp.directness,
                                inp.magnitude, inp.persistence)
-        final = self.final_score(base, inp.market_confirmation)
+        final = self.final_score(base, inp.market_confirmation, inp.supply_demand)
         return ScoreOutput(base_score=base, final_score=final)
 
     @staticmethod

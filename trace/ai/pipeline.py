@@ -29,6 +29,7 @@ from trace.db.repositories import (
 from trace.domain.models import Event, EventImpact
 from trace.graph.industry_graph import IndustryGraph
 from trace.scoring.engine import ScoreInput, ScoringEngine
+from trace.scoring.signals import detect_supply_demand
 
 logger = logging.getLogger(__name__)
 
@@ -116,6 +117,17 @@ class AnalysisPipeline:
             logger.info("event %s: no graph hits", event.event_id)
             return []
 
+        # 供需景气信号：事件级（标题+摘要），确定性词表匹配。
+        # 只算一次，套用到该事件的所有 impact 上。
+        # 注意：这是供需拐点的弱强度代理（对称：偏紧/过剩都识别），
+        # 不单独决定方向——方向仍由 Stage B 对每个证券独立判定。
+        sd_signal = detect_supply_demand(event.title, event.summary)
+        if sd_signal.has_signal:
+            logger.info(
+                "event %s supply_demand signal: score=%.1f direction=%s "
+                "bull=%s bear=%s", event.event_id, sd_signal.score,
+                sd_signal.direction, sd_signal.bull_matches, sd_signal.bear_matches)
+
         impacts_raw = self.analyzer.analyze(event, hits, evidence_items)
 
         # 来源可靠度：取该事件最权威来源的 base_reliability
@@ -139,6 +151,7 @@ class AnalysisPipeline:
                 magnitude=float(imp.get("magnitude", 5.0)),
                 persistence=float(imp.get("persistence", 5.0)),
                 market_confirmation=market_score,
+                supply_demand=sd_signal.score,
             ))
 
             impact = EventImpact(

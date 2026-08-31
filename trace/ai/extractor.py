@@ -30,6 +30,7 @@ from trace.ai.schemas import (
 from trace.common.modes import ANALYSIS_MODE_LLM, ANALYSIS_MODE_RULE_DEGRADED, TraceMode
 from trace.domain.models import RawItem
 from trace.event_engine.engine import ExtractedEvent
+from trace.scoring.signals import focus_guidance
 
 logger = logging.getLogger(__name__)
 
@@ -58,6 +59,17 @@ SYSTEM_PROMPT = """你是一个金融事件抽取器。从给定的新闻/公告
   "evidence_ids": ["提供的 Evidence ID"]
 }
 event_type 必须从上述枚举中选择，不得自创类型（如合作/融资类归入 supply_chain 或 other）。"""
+
+def _supply_demand_focus() -> str:
+    """把 supply_demand_signals.yaml 的 focus_guidance 作为 Stage A 附加指引。
+
+    空指引时返回空串，不改动原提示（不引入无意义的分隔符/占位）。
+    """
+    text = focus_guidance()
+    if not text:
+        return ""
+    return "\n\n【附加抽取关注（来自供需景气方法论）】\n" + text
+
 
 _TYPE_KEYWORDS = {
     "regulation": ["export control", "restriction", "ban", "制裁", "管制", "限制", "出口管制", "法规", "监管"],
@@ -141,7 +153,8 @@ class EventExtractor:
             f"可用 Evidence ID 列表: {evidence_ids}"
         )
         data = self.llm.complete_json_validated(
-            self.model, SYSTEM_PROMPT, user_prompt, EVENT_EXTRACT_SCHEMA)
+            self.model, SYSTEM_PROMPT + _supply_demand_focus(), user_prompt,
+            EVENT_EXTRACT_SCHEMA)
         validate(data, EVENT_EXTRACT_SCHEMA)
 
         event_time = parse_occurred_at(data.get("occurred_at") or data.get("event_time"))

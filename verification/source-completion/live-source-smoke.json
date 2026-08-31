@@ -1,16 +1,16 @@
 {
-  "generated_at": "2026-08-31T11:00:02.246922+00:00",
+  "generated_at": "2026-08-31T11:53:28.514280+00:00",
   "note": "逐源真实网络 smoke test；items_found 为解析函数实际提取条目数；中国政策源为关键词初筛后的候选数。不含任何 Token/Key。",
   "sources": [
     {
       "source": "src_sec_edgar",
       "url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=NVDA&type=8-K&dateb=&owner=include&count=10&output=atom",
-      "status": "ERROR",
-      "http_status": null,
-      "items_found": 0,
-      "latest_published_at": null,
-      "latency_ms": 31161,
-      "notes": "SEC EDGAR full-text/8-K atom，合规 UA (ReadTimeout: The read operation timed out)"
+      "status": "PASS",
+      "http_status": 200,
+      "items_found": 11,
+      "latest_published_at": "2026-08-31T07:53:02-04:00",
+      "latency_ms": 1771,
+      "notes": "SEC EDGAR full-text/8-K atom，合规 UA"
     },
     {
       "source": "src_nvidia_ir",
@@ -19,7 +19,7 @@
       "http_status": 200,
       "items_found": 20,
       "latest_published_at": "2026-08-27T13:00:00+00:00",
-      "latency_ms": 2006,
+      "latency_ms": 1832,
       "notes": "NVIDIA 官方新闻室 RSS"
     },
     {
@@ -29,7 +29,7 @@
       "http_status": 200,
       "items_found": 54,
       "latest_published_at": "2026-08-27T00:00:00+00:00",
-      "latency_ms": 1296,
+      "latency_ms": 1326,
       "notes": "SanDisk 官方主站 sitemap（press-releases 53 条）；IR RSS 大陆直连超时，官方内容不依赖第三方"
     },
     {
@@ -39,7 +39,7 @@
       "http_status": 200,
       "items_found": 11,
       "latest_published_at": "2026-09-30T00:00:00+00:00",
-      "latency_ms": 2038,
+      "latency_ms": 2708,
       "notes": "Micron 官方新闻室页面（官方 RSS 429 限流的回退路线）"
     },
     {
@@ -49,7 +49,7 @@
       "http_status": 404,
       "items_found": 0,
       "latest_published_at": null,
-      "latency_ms": 1076,
+      "latency_ms": 1328,
       "notes": "官方 RSS 限流现状记录（不作 Gate 依据）"
     },
     {
@@ -59,7 +59,7 @@
       "http_status": 200,
       "items_found": 6,
       "latest_published_at": null,
-      "latency_ms": 1536,
+      "latency_ms": 2157,
       "notes": "BIS press releases 官方页面"
     },
     {
@@ -69,7 +69,7 @@
       "http_status": 200,
       "items_found": 19,
       "latest_published_at": "2026-08-30T20:00:00+00:00",
-      "latency_ms": 997,
+      "latency_ms": 1573,
       "notes": "Federal Register 官方 RSS（semiconductor 条件）"
     },
     {
@@ -79,7 +79,7 @@
       "http_status": 200,
       "items_found": 25,
       "latest_published_at": "2026-03-19T18:13:09+00:00",
-      "latency_ms": 3659,
+      "latency_ms": 3862,
       "notes": "U.S. Commerce 官方站点 403（Cloudflare），GovDelivery 官方订阅 RSS 为真实可用入口"
     },
     {
@@ -89,7 +89,7 @@
       "http_status": 200,
       "items_found": 7,
       "latest_published_at": "2026-08-31T00:00:00+00:00",
-      "latency_ms": 2534,
+      "latency_ms": 2393,
       "notes": "工信部首页要闻；经 cn_policy Level 1 关键词初筛后的条目数"
     },
     {
@@ -99,7 +99,7 @@
       "http_status": 200,
       "items_found": 1,
       "latest_published_at": null,
-      "latency_ms": 1189,
+      "latency_ms": 1112,
       "notes": "商务部首页要闻；经 cn_policy Level 1 关键词初筛后的条目数"
     },
     {
@@ -109,7 +109,7 @@
       "http_status": 200,
       "items_found": 1,
       "latest_published_at": null,
-      "latency_ms": 2751,
+      "latency_ms": 1788,
       "notes": "巨潮 topSearch 接口（证监会指定法定披露平台）"
     }
   ]
