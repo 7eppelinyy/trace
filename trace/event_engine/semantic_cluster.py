@@ -91,14 +91,20 @@ class SemanticCluster:
                      event_time: datetime | None) -> tuple[float, dict]:
         w = self._weights
 
+        # 向量缺失时懒回填并持久化：不落库的话同一事件每轮比较都会
+        # 重新调用 embedder（成本随轮数线性增长）
         ev_title_vec = _blob_to_vec(ev.title_embedding)
-        if not ev_title_vec:
-            ev_title_vec, blob = self.embed_text(ev.title)
-            ev.title_embedding = blob
         ev_summary_vec = _blob_to_vec(ev.summary_embedding)
-        if not ev_summary_vec:
-            ev_summary_vec, blob = self.embed_text(ev.summary)
-            ev.summary_embedding = blob
+        if not ev_title_vec or not ev_summary_vec:
+            if not ev_title_vec:
+                ev_title_vec, blob = self.embed_text(ev.title)
+                ev.title_embedding = blob
+            if not ev_summary_vec:
+                ev_summary_vec, blob = self.embed_text(ev.summary)
+                ev.summary_embedding = blob
+            self.event_repo.update_embeddings(ev.event_id,
+                                              ev.title_embedding,
+                                              ev.summary_embedding)
 
         title_sim = cosine(title_vec, ev_title_vec)
         summary_sim = cosine(summary_vec, ev_summary_vec)

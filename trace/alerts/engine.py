@@ -168,12 +168,13 @@ class AlertEngine:
         return batch
 
     def _target_users(self, security_id: str) -> list[str]:
-        """订阅该证券的用户 + 订阅 all 的用户。"""
-        users = set(self.watch_repo.users_of_security(security_id))
-        for user in self.user_repo.all_users():
-            if self.rule_repo.get_threshold(user.user_id, None) is not None:
-                users.add(user.user_id)
-        return sorted(users)
+        """订阅该证券的用户 + 订阅 all 的用户（单条 SQL，避免逐用户查询）。"""
+        rows = self.db.query(
+            """SELECT user_id FROM watchlist WHERE security_id=?
+               UNION
+               SELECT user_id FROM alert_rule WHERE security_id=?""",
+            (security_id, AlertRuleRepo.ALL_SENTINEL))
+        return sorted(r["user_id"] for r in rows)
 
     def _threshold_for(self, user_id: str, security_id: str) -> float:
         t = self.rule_repo.get_threshold(user_id, security_id)

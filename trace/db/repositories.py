@@ -202,6 +202,13 @@ class EventRepo:
         row = self.db.query_one("SELECT * FROM event WHERE event_id=?", (event_id,))
         return self._to_obj(row) if row else None
 
+    def update_embeddings(self, event_id: str, title_embedding: bytes,
+                          summary_embedding: bytes) -> None:
+        """定向补写向量列（懒回填），不触碰 last_updated_at / version。"""
+        self.db.execute(
+            "UPDATE event SET title_embedding=?, summary_embedding=? WHERE event_id=?",
+            (title_embedding, summary_embedding, event_id))
+
     def recent(self, hours: int = 72, limit: int = 500) -> list[Event]:
         rows = self.db.query(
             """SELECT * FROM event
@@ -512,8 +519,15 @@ class UserRepo:
 
     def all_users(self) -> list[User]:
         rows = self.db.query("SELECT * FROM user")
-        return [self.get(r["user_id"]) or User(user_id=r["user_id"])
-                for r in rows]
+        out: list[User] = []
+        for r in rows:
+            keys = r.keys()
+            out.append(User(
+                user_id=r["user_id"], timezone=r["timezone"],
+                muted_until=_dt(r["muted_until"]), created_at=_dt(r["created_at"]),
+                alert_activation_at=_dt(r["alert_activation_at"])
+                if "alert_activation_at" in keys else None))
+        return out
 
 
 class WatchlistRepo:

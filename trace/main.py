@@ -27,6 +27,7 @@ from pathlib import Path
 from trace.app import create_app
 from trace.bot.delivery import DeliveryReceipt, send_message
 from trace.common.modes import (
+    STATUS_OK,
     STOP_TRACE_MVP_V1_ACCEPTANCE_REPLAY_INVALID,
     STOP_TRACE_MVP_V1_DEEPSEEK_ANALYSIS_FAILED,
     STOP_TRACE_MVP_V1_DEEPSEEK_SCHEMA_FAILED,
@@ -94,7 +95,7 @@ def cmd_run_once() -> None:
     summary = pipeline.run_once()
     print("\n===== run-once 摘要 =====")
     print(json.dumps(summary.as_dict(), ensure_ascii=False, indent=2))
-    if summary.status != "OK":
+    if summary.status != STATUS_OK:
         raise SystemExit(f"run-once finished with status: {summary.status}")
 
 
@@ -161,7 +162,7 @@ def cmd_doctor() -> None:
     # 巨潮联通
     try:
         resp = httpx.post(
-            "http://www.cninfo.com.cn/new/information/topSearch/query",
+            "https://www.cninfo.com.cn/new/information/topSearch/query",
             data={"keyWord": "688981", "maxSecNum": 10, "maxListNum": 5},
             headers={"User-Agent": "Mozilla/5.0", "X-Requested-With": "XMLHttpRequest"},
             timeout=20)
@@ -428,9 +429,10 @@ def cmd_replay_event(event_id: str, acceptance_test: bool) -> None:
     # 真实 LLM（Stage B + 评分）；幂等键使用同一 event_id + version，
     # 重复回放时 evaluate 的 already_sent 会拦截（不得重复投递）。
     pipeline = Pipeline(app)
+    app.pipeline.refresh_caches()
     try:
         impacts = app.pipeline.analyze_event(
-            event, extra_entities=pipeline._event_entity_names(event))
+            event, extra_entities=pipeline.entity_names_for_event(event))
     except SchemaValidationError as exc:
         raise SystemExit(f"{STOP_TRACE_MVP_V1_DEEPSEEK_SCHEMA_FAILED}: {exc}")
     except LLMUnavailableError as exc:
@@ -546,6 +548,13 @@ def cmd_run() -> None:
     if app.config.telegram.enabled:
         # 无 polling 时退回直接 Bot API 投递
         pipeline.alert_sender = _make_alert_sender(app.config.telegram.bot_token)
+    # systemd 以 SIGTERM 停止：转为退出循环而不是直接硬杀
+    import signal
+
+    def _graceful_stop(signum, frame):
+        raise KeyboardInterrupt(f"signal {signum}")
+
+    signal.signal(signal.SIGTERM, _graceful_stop)
     pipeline.run_forever(poll_seconds=60)
 
 

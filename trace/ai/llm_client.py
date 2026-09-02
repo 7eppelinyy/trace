@@ -19,7 +19,9 @@ from __future__ import annotations
 
 import json
 import logging
+import random
 import re
+import time
 from abc import ABC, abstractmethod
 from typing import Any
 
@@ -137,8 +139,12 @@ class GeminiProvider(BaseLLMProvider):
 # ---------------------------------------------------------------------------
 
 class LLMClient:
-    def __init__(self, llm_config):
+    def __init__(self, llm_config, backoff_base: float = 2.0):
         self.config = llm_config
+        self.backoff_base = backoff_base
+        # 真实 API 调用次数（含网络/Schema 重试消耗的每一次调用）：
+        # 任务书 §17 的成本统计必须以此为准，只数成功会低估成本
+        self.call_count: int = 0
         self._provider: BaseLLMProvider | None = None
         self._provider_error: str = ""
 
@@ -169,24 +175,31 @@ class LLMClient:
     def available(self) -> bool:
         return self._provider is not None
 
+    def _backoff(self, attempt: int) -> float:
+        return min(30.0, self.backoff_base * (2 ** attempt)) + random.uniform(0, 1)
+
     # ------------------------------------------------------------------
     def complete_json(self, model: str, system_prompt: str, user_prompt: str) -> dict:
-        """请求 LLM 返回 JSON 对象（带网络层重试）。失败抛异常。"""
+        """请求 LLM 返回 JSON 对象（带指数退避重试）。失败抛异常。"""
         if not self.available:
             raise LLMUnavailableError(
                 self._provider_error
                 or f"LLM not configured (provider={getattr(self.config, 'provider', '')})")
+        max_retries = int(self.config.max_retries)
         last_exc: Exception | None = None
-        for attempt in range(int(self.config.max_retries) + 1):
+        for attempt in range(max_retries + 1):
+            self.call_count += 1
             try:
                 text = self._provider.generate(model, system_prompt, user_prompt)
                 return _extract_json(text)
             except Exception as exc:
                 last_exc = exc
-                if attempt < int(self.config.max_retries):
-                    logger.warning("LLM call failed (attempt %d/%d): %s",
-                                   attempt + 1, int(self.config.max_retries) + 1, exc)
-                    continue
+                if attempt >= max_retries:
+                    break
+                wait = self._backoff(attempt)
+                logger.warning("LLM call failed (attempt %d/%d): %s — retry in %.1fs",
+                               attempt + 1, max_retries + 1, exc, wait)
+                time.sleep(wait)
         raise RuntimeError(f"LLM call failed after retries: {last_exc}") from last_exc
 
     # ------------------------------------------------------------------
@@ -197,8 +210,9 @@ class LLMClient:
         上层收到 SchemaValidationError 后必须进入人工检查状态，
         不允许进入 Alert Engine。
         """
+        max_retries = int(self.config.max_retries)
         last_exc: Exception | None = None
-        for attempt in range(int(self.config.max_retries) + 1):
+        for attempt in range(max_retries + 1):
             data = self.complete_json(model, system_prompt, user_prompt)
             try:
                 validate(data, schema)
@@ -206,7 +220,10 @@ class LLMClient:
             except SchemaValidationError as exc:
                 last_exc = exc
                 logger.warning("LLM schema validation failed (attempt %d/%d): %s",
-                               attempt + 1, int(self.config.max_retries) + 1, exc)
+                               attempt + 1, max_retries + 1, exc)
+                if attempt >= max_retries:
+                    break
+                time.sleep(self._backoff(attempt))
                 # 把校验错误反馈给模型，要求修正
                 user_prompt = (user_prompt + "\n\n你上次的输出不符合要求："
                                + str(exc) + "\n请重新输出符合要求的 JSON。")

@@ -95,12 +95,17 @@ class HttpClient:
                 return resp
             except RateLimitedError as exc:
                 last_exc = exc
+                if attempt >= self.max_retries:
+                    break               # 末次尝试不再空等退避
                 wait = self._backoff(attempt) * 2
                 logger.warning("[%s] rate limited, backoff %.1fs", self.source_id, wait)
                 time.sleep(wait)
             except (AuthError, SourceStructureError, ParseError):
                 raise  # 不重试：重试无意义
             except SourceError as exc:
+                # 404 等普通 4xx（非鉴权/限流）：重试无意义，直接暴露
+                if 400 <= (getattr(exc, "http_status", None) or 0) < 500:
+                    raise
                 last_exc = exc
                 if attempt >= self.max_retries:
                     break
@@ -130,7 +135,10 @@ class HttpClient:
         return self.request("POST", url, **kwargs)
 
     def _backoff(self, attempt: int) -> float:
-        return self.backoff_base * (2 ** attempt) + random.uniform(0, 0.5)
+        # 抖动随退避基数缩放：测试用小基数（如 0.001）时抖动可忽略，
+        # 生产默认 1.5 时抖动 ~0.45s 防惊群
+        return (self.backoff_base * (2 ** attempt)
+                + random.uniform(0, min(0.5, self.backoff_base * 0.3)))
 
     def close(self) -> None:
         self._client.close()

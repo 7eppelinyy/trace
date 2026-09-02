@@ -41,9 +41,9 @@ from trace.domain.models import RawItem
 
 logger = logging.getLogger(__name__)
 
-CNINFO_TOPSEARCH_API = "http://www.cninfo.com.cn/new/information/topSearch/query"
-CNINFO_QUERY_API = "http://www.cninfo.com.cn/new/hisAnnouncement/query"
-CNINFO_STATIC_BASE = "http://static.cninfo.com.cn/"
+CNINFO_TOPSEARCH_API = "https://www.cninfo.com.cn/new/information/topSearch/query"
+CNINFO_QUERY_API = "https://www.cninfo.com.cn/new/hisAnnouncement/query"
+CNINFO_STATIC_BASE = "https://static.cninfo.com.cn/"
 
 # 巨潮站点需要浏览器风格 UA + XHR 标记，否则可能被拒绝
 _BROWSER_HEADERS = {
@@ -84,7 +84,8 @@ class CNINFOCollector(BaseCollector):
                                 headers=dict(_BROWSER_HEADERS))
         try:
             cursor = self.cursor_repo.get(self.cursor_key)
-            seen_ids: set[str] = set(cursor.get("seen_announcement_ids", []))
+            # 插入序 dict：裁剪保留最新（sorted 字典序会把新条目裁掉）
+            seen_ids: dict[str, None] = dict.fromkeys(cursor.get("seen_announcement_ids", []))
             org_cache: dict = dict(cursor.get("org_cache", {}))
 
             repo = SecurityRepo(self.db)
@@ -112,7 +113,7 @@ class CNINFOCollector(BaseCollector):
                 raise ParseError("all cninfo targets failed: " + "; ".join(errors[:5]))
 
             self.cursor_repo.set(self.cursor_key, {
-                "seen_announcement_ids": sorted(seen_ids)[-3000:],
+                "seen_announcement_ids": list(seen_ids)[-3000:],
                 "org_cache": org_cache,
             })
             return items
@@ -202,7 +203,7 @@ class CNINFOCollector(BaseCollector):
                 continue
             if ann_id in seen_ids:
                 continue            # 增量：不重复处理已采集公告
-            seen_ids.add(ann_id)
+            seen_ids[ann_id] = None
 
             url = CNINFO_STATIC_BASE + adj_url if adj_url else ""
             published = None

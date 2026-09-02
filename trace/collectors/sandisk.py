@@ -77,7 +77,8 @@ class SanDiskCollector(BaseCollector):
             if last_modified:
                 next_cursor["last_modified"] = last_modified
 
-            seen: set[str] = set(cursor.get("seen_urls", []))
+            # 插入序 dict：裁剪保留最新（sorted 字典序会把新条目裁掉）
+            seen: dict[str, None] = dict.fromkeys(cursor.get("seen_urls", []))
             first_run = "seen_urls" not in cursor
             cutoff = datetime.now(timezone.utc) - timedelta(days=BOOTSTRAP_DAYS)
 
@@ -85,12 +86,12 @@ class SanDiskCollector(BaseCollector):
             dropped_old = 0
             for title, url, published in entries:
                 if first_run and published is not None and published < cutoff:
-                    seen.add(url)
+                    seen[url] = None
                     dropped_old += 1
                     continue
                 if url in seen:
                     continue
-                seen.add(url)
+                seen[url] = None
                 items.append(RawItem(
                     raw_item_id=raw_item_id(),
                     source_id=SOURCE_ID,
@@ -107,7 +108,7 @@ class SanDiskCollector(BaseCollector):
                     content_hash=content_hash(title),
                 ))
 
-            next_cursor["seen_urls"] = sorted(seen)[-2000:]
+            next_cursor["seen_urls"] = list(seen)[-2000:]
             self.cursor_repo.set(SOURCE_ID, next_cursor)
             if dropped_old:
                 logger.info("[%s] bootstrap dropped=%d (bootstrap_days=%d)",

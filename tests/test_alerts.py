@@ -83,9 +83,46 @@ def test_delivery_missing_message_id_fails(monkeypatch):
 
 def test_delivery_network_error(monkeypatch):
     _patch_post(monkeypatch, httpx.ConnectError("no route"))
-    receipt = send_message("tok", "1", "hello")
+    receipt = send_message("tok", "123", "hello")
     assert receipt.status == "failed"
     assert receipt.response == "network_error"
+
+
+def test_delivery_429_retries_after_retry_after(monkeypatch):
+    """429：按响应 retry_after 等待后重试一次，成功不算 failed。"""
+    sleeps: list[float] = []
+    monkeypatch.setattr("trace.bot.delivery.time.sleep",
+                        lambda s: sleeps.append(s))
+    responses = [
+        _Resp(429, {"ok": False, "parameters": {"retry_after": 2}}),
+        _Resp(200, {"ok": True, "result": {"message_id": 7, "chat": {"id": "123"}}}),
+    ]
+
+    def fake(url, **kw):
+        return responses.pop(0)
+
+    monkeypatch.setattr("trace.bot.delivery.httpx.post", fake)
+    receipt = send_message("tok", "123", "hello")
+    assert receipt.status == "sent"
+    assert receipt.message_id == "7"
+    assert any(s >= 2 for s in sleeps)
+
+
+def test_delivery_429_exhausted_reports_api_error(monkeypatch):
+    """429 重试后仍失败：回执 failed（api_error），不得伪装成功。"""
+    monkeypatch.setattr("trace.bot.delivery.time.sleep", lambda s: None)
+    resp = _Resp(429, {"ok": False, "parameters": {"retry_after": 1},
+                       "description": "Too Many Requests"})
+    calls = []
+
+    def fake(url, **kw):
+        calls.append(url)
+        return resp
+
+    monkeypatch.setattr("trace.bot.delivery.httpx.post", fake)
+    receipt = send_message("tok", "123", "hello")
+    assert receipt.status == "failed"
+    assert len(calls) == 2               # 恰好重试一次
 
 
 def test_delivery_non_json(monkeypatch):

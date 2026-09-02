@@ -2,6 +2,12 @@
 
 无 API Key 时自动降级为 MockUSMarketProvider，保证开发环境可运行。
 未来可替换为 Massive 或其他授权 Provider，业务代码不变。
+
+真实行情必须产出可用于市场确认的字段：
+    - prev_close：snapshot.prevDailyBar（日线级确认的兜底）
+    - change_pct_15m：最近两根 15Min bar（reaction_window 内的方向/幅度）
+任一字段缺失时保持 None，由 MarketConfirmer 退回中性 5 分，
+不得用 Mock 数据补位。
 """
 
 from __future__ import annotations
@@ -9,7 +15,7 @@ from __future__ import annotations
 import logging
 import os
 import random
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 import httpx
 
@@ -39,16 +45,51 @@ class AlpacaProvider(MarketDataProvider):
     def get_quote(self, ticker: str) -> Quote | None:
         try:
             resp = self._http.get(
-                f"{self.base_url}/v2/stocks/{ticker}/quotes/latest",
+                f"{self.base_url}/v2/stocks/{ticker}/snapshot",
                 params={"feed": "iex"})
             resp.raise_for_status()
-            data = resp.json().get("quote", {})
-            price = data.get("ap") or data.get("bp")
+            snap = resp.json()
         except Exception as exc:
-            logger.warning("alpaca quote %s failed: %s", ticker, exc)
+            logger.warning("alpaca snapshot %s failed: %s", ticker, exc)
             return None
-        return Quote(ticker=ticker, ts=datetime.now(timezone.utc),
-                     last_price=float(price) if price else None)
+
+        last_trade = (snap.get("latestTrade") or {}).get("p")
+        daily_close = (snap.get("dailyBar") or {}).get("c")
+        prev_close = (snap.get("prevDailyBar") or {}).get("c")
+        price = last_trade or daily_close
+        quote = Quote(
+            ticker=ticker, ts=datetime.now(timezone.utc),
+            last_price=float(price) if price else None,
+            prev_close=float(prev_close) if prev_close else None,
+        )
+        # 15 分钟变动失败不影响整条 Quote（日线 prev_close 仍可确认）
+        quote.change_pct_15m = self._change_pct_15m(ticker)
+        return quote
+
+    def _change_pct_15m(self, ticker: str) -> float | None:
+        """最近两根 15Min bar：首根开盘 → 末根收盘 的近似 15 分钟变动。"""
+        end = datetime.now(timezone.utc)
+        start = end - timedelta(hours=2)
+        try:
+            resp = self._http.get(
+                f"{self.base_url}/v2/stocks/{ticker}/bars",
+                params={
+                    "feed": "iex", "timeframe": "15Min", "limit": 2,
+                    "sort": "asc",
+                    "start": start.strftime("%Y-%m-%dT%H:%M:%SZ"),
+                    "end": end.strftime("%Y-%m-%dT%H:%M:%SZ"),
+                })
+            resp.raise_for_status()
+            bars = resp.json().get("bars") or []
+        except Exception as exc:
+            logger.debug("alpaca bars %s failed: %s", ticker, exc)
+            return None
+        if len(bars) < 2:
+            return None
+        open_px, close_px = bars[0].get("o"), bars[-1].get("c")
+        if not open_px or not close_px:
+            return None
+        return round((close_px - open_px) / open_px * 100, 2)
 
 
 class MockUSMarketProvider(MarketDataProvider):

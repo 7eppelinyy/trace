@@ -21,6 +21,7 @@ run-once 流程（任务书 §11.2）：
 from __future__ import annotations
 
 import logging
+import re
 import time
 from dataclasses import dataclass, field
 from typing import Callable
@@ -114,6 +115,8 @@ class Pipeline:
     def __init__(self, app: AppContext):
         self.app = app
         self.alert_sender: AlertSender | None = None
+        # 实体别名词典（每轮 run 开始时失效重建，/watch 注册下一轮生效）
+        self._entity_index_cache: list | None = None
 
     def _llm_stop_status(self) -> str:
         """缺 LLM Key 的停止码按当前 Provider 区分：
@@ -124,17 +127,26 @@ class Pipeline:
         return STOP_LLM_KEY_MISSING
 
     # ------------------------------------------------------------------
-    def run_once(self) -> RunSummary:
-        """执行一轮完整的采集→事件→分析→提醒流程，返回运行摘要。"""
+    def run_once(self, *, enforce_intervals: bool = False) -> RunSummary:
+        """执行一轮完整的采集→事件→分析→提醒流程，返回运行摘要。
+
+        enforce_intervals：True 时按 settings.yaml collectors.interval_seconds
+        跳过未到期的采集器（长驻 run/bot 循环用）；run-once 验收默认
+        False，保证每次都真实采集。
+        """
         ctx = self.app
         summary = RunSummary(run_id=new_run_id(), trace_mode=TraceMode.current())
+
+        # 每轮失效缓存：来源/证券主数据可能在两轮之间变化
+        self._entity_index_cache = None
+        ctx.pipeline.refresh_caches()
 
         # 默认接收人：TELEGRAM_DEFAULT_CHAT_ID（仅当该用户从未注册时初始化，
         # 之后用户的 /watch /alert /timezone 设置不会被覆盖）
         self._ensure_default_chat(ctx)
 
         # 1. 采集（失败分类写入 source_health，不吞异常）
-        items, results = ctx.collectors.run_all()
+        items, results = ctx.collectors.run_all(respect_intervals=enforce_intervals)
         summary.sources_checked = len(results)
         for res in results:
             summary.keyword_filtered += res.keyword_filtered
@@ -154,9 +166,10 @@ class Pipeline:
         # 2. 逐条：Level 1 确定性去重（零成本，必须先于 DeepSeek）
         #    → Stage A 抽取 → 语义去重 → Event 创建/修订
         #    任务书 §17：重复条目不得消耗 LLM 调用
+        #    （ingest 内部跳过重复的确定性检查：本层已拦截）
         dedup = ExactDedup(ctx.db)
-        stage_a_before = ctx.pipeline.extractor.llm_calls
-        verifier_before = getattr(ctx.event_engine.verifier, "llm_calls", 0)
+        stage_a_before = ctx.pipeline.extractor.real_llm_calls
+        verifier_before = getattr(ctx.event_engine.verifier, "real_llm_calls", 0)
         pending: dict[str, tuple[Event, bool]] = {}   # event_id -> (event, is_update)
         for item in items:
             normalize_raw_item(item)
@@ -181,7 +194,7 @@ class Pipeline:
                 logger.error("%s", exc)
                 return summary
 
-            decision = ctx.event_engine.ingest(item, extracted)
+            decision = ctx.event_engine.ingest(item, extracted, skip_exact_dedup=True)
             if decision.action == "duplicate" or decision.event is None:
                 summary.raw_items_duplicate += 1
                 continue
@@ -196,11 +209,11 @@ class Pipeline:
             pending[event.event_id] = (decision.event, was_revised)
 
         # 3. 逐事件：Stage B 分析 → 评分 → Alert 评估 → 投递
-        stage_b_before = ctx.pipeline.analyzer.llm_calls
+        stage_b_before = ctx.pipeline.analyzer.real_llm_calls
         for event, is_update in pending.values():
             try:
                 impacts = ctx.pipeline.analyze_event(
-                    event, extra_entities=self._event_entity_names(event))
+                    event, extra_entities=self.entity_names_for_event(event))
             except SchemaValidationError as exc:
                 # Schema 校验失败：进入人工检查状态，不允许进入 Alert Engine
                 event.needs_human_review = True
@@ -231,11 +244,11 @@ class Pipeline:
             for dec in batch.decisions:
                 self._deliver(dec, summary)
 
-        # LLM 成本统计（任务书 §17）：本轮真实调用次数
-        summary.llm_stage_a_calls = ctx.pipeline.extractor.llm_calls - stage_a_before
-        summary.llm_stage_b_calls = ctx.pipeline.analyzer.llm_calls - stage_b_before
+        # LLM 成本统计（任务书 §17）：本轮真实 API 调用次数（含重试）
+        summary.llm_stage_a_calls = ctx.pipeline.extractor.real_llm_calls - stage_a_before
+        summary.llm_stage_b_calls = ctx.pipeline.analyzer.real_llm_calls - stage_b_before
         summary.llm_verifier_calls = (
-            getattr(ctx.event_engine.verifier, "llm_calls", 0) - verifier_before)
+            getattr(ctx.event_engine.verifier, "real_llm_calls", 0) - verifier_before)
 
         # 全部来源失败且无任何数据 → 明确状态（不伪装成功）
         if summary.sources_failed and summary.sources_succeeded == 0 \
@@ -298,8 +311,8 @@ class Pipeline:
                 summary.status = STOP_TELEGRAM_DELIVERY_FAILED
 
     # ------------------------------------------------------------------
-    def _event_entity_names(self, event: Event) -> list[str]:
-        """从事件标题/摘要中用别名表粗提取实体名（供图谱映射）。
+    def _entity_index(self) -> list[tuple[list[str], str]]:
+        """实体别名词典 [(候选名列表, 展示名)]，每轮 run 开始时失效重建。
 
         同时覆盖：
             - 非上市实体/概念节点（entity_alias 表：Samsung、NAND、HBM…）
@@ -307,10 +320,22 @@ class Pipeline:
         A股公告标题通常包含公司名，只查 entity_alias 会导致 A股事件
         找不到任何候选证券。
         """
-        import re
+        if self._entity_index_cache is None:
+            from trace.db.repositories import EntityAliasRepo, SecurityRepo
+            index: list[tuple[list[str], str]] = []
+            for entity in EntityAliasRepo(self.app.db).all_with_aliases():
+                index.append(([entity.name, *entity.aliases], entity.name))
+            for sec in SecurityRepo(self.app.db).list_all():
+                candidates = [sec.company_name_zh, sec.company_name_en,
+                              sec.ticker, *sec.aliases]
+                index.append(
+                    ([c for c in candidates if c],
+                     sec.company_name_zh or sec.company_name_en or sec.ticker))
+            self._entity_index_cache = index
+        return self._entity_index_cache
 
-        from trace.db.repositories import EntityAliasRepo, SecurityRepo
-
+    def entity_names_for_event(self, event: Event) -> list[str]:
+        """从事件标题/摘要中用别名表粗提取实体名（供图谱映射）。"""
         def in_text(name: str) -> bool:
             n = (name or "").strip().lower()
             if not n:
@@ -321,24 +346,25 @@ class Pipeline:
                                  text) is not None
             return n in text
 
-        names: list[str] = []
         text = f"{event.title} {event.summary}".lower()
-        for entity in EntityAliasRepo(self.app.db).all_with_aliases():
-            if in_text(entity.name) or any(in_text(a) for a in entity.aliases):
-                names.append(entity.name)
-        for sec in SecurityRepo(self.app.db).list_all():
-            candidates = [sec.company_name_zh, sec.company_name_en,
-                          sec.ticker, *sec.aliases]
+        names: list[str] = []
+        for candidates, display in self._entity_index():
             if any(in_text(c) for c in candidates):
-                names.append(sec.company_name_zh or sec.company_name_en or sec.ticker)
+                names.append(display)
         return names
 
     # ------------------------------------------------------------------
-    def run_forever(self, poll_seconds: int = 60) -> None:
-        logger.info("pipeline started (poll=%ss)", poll_seconds)
-        while True:
-            try:
-                self.run_once()
-            except Exception:
-                logger.exception("pipeline round failed")
-            time.sleep(poll_seconds)
+    def run_forever(self, poll_seconds: int = 60,
+                    enforce_intervals: bool = True) -> None:
+        """长驻轮询循环：默认按 collectors.interval_seconds 调度采集器。"""
+        logger.info("pipeline started (poll=%ss, enforce_intervals=%s)",
+                    poll_seconds, enforce_intervals)
+        try:
+            while True:
+                try:
+                    self.run_once(enforce_intervals=enforce_intervals)
+                except Exception:
+                    logger.exception("pipeline round failed")
+                time.sleep(poll_seconds)
+        except KeyboardInterrupt:
+            logger.info("pipeline stopped (keyboard interrupt)")

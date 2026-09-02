@@ -85,14 +85,16 @@ class EventEngine:
         self.verifier: SameEventVerifier = verifier or NullVerifier()
 
     # ------------------------------------------------------------------
-    def ingest(self, item: RawItem, extracted: ExtractedEvent) -> EngineDecision:
+    def ingest(self, item: RawItem, extracted: ExtractedEvent, *,
+               skip_exact_dedup: bool = False) -> EngineDecision:
         normalize_raw_item(item)
 
-        # Level 1：确定性去重
-        dup = self.exact_dedup.check(item)
-        if dup.is_duplicate:
-            logger.info("exact dedup hit (%s): %s", dup.reason, item.title)
-            return EngineDecision(action="duplicate", reason=dup.reason)
+        # Level 1：确定性去重（调用方已检查时可跳过，避免每条重复 4 次查询）
+        if not skip_exact_dedup:
+            dup = self.exact_dedup.check(item)
+            if dup.is_duplicate:
+                logger.info("exact dedup hit (%s): %s", dup.reason, item.title)
+                return EngineDecision(action="duplicate", reason=dup.reason)
 
         # Level 2/3：语义聚类（跨语言）
         candidates = self.cluster.find_candidates(

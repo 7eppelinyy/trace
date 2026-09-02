@@ -23,12 +23,15 @@ class LLMSameEventVerifier:
     def __init__(self, llm: LLMClient, llm_config):
         self.llm = llm
         self.model = llm_config.model_same_event_verifier
-        # LLM 成本统计（任务书 §17）
+        # LLM 成本统计（任务书 §17）：llm_calls 为成功业务次数，
+        # real_llm_calls 为真实 API 调用次数（含重试消耗）
         self.llm_calls: int = 0
+        self.real_llm_calls: int = 0
 
     def is_same_event(self, new: ExtractedEvent, existing: Event) -> bool:
         if not self.llm.available:
             return False
+        calls_before = self.llm.call_count
         try:
             user_prompt = (
                 f"事件A 标题: {new.title}\n事件A 摘要: {new.summary}\n"
@@ -36,7 +39,9 @@ class LLMSameEventVerifier:
             )
             data = self.llm.complete_json(self.model, SYSTEM_PROMPT, user_prompt)
             self.llm_calls += 1
+            self.real_llm_calls += self.llm.call_count - calls_before
             return bool(data.get("same_event", False))
         except Exception as exc:
+            self.real_llm_calls += self.llm.call_count - calls_before
             logger.warning("same-event verifier failed: %s", exc)
             return False

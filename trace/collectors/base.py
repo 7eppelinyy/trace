@@ -25,7 +25,9 @@
 from __future__ import annotations
 
 import logging
+import time
 from abc import ABC, abstractmethod
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass, field
 
 from trace.common.http_client import (
@@ -75,6 +77,21 @@ class BaseCollector(ABC):
         self.last_keyword_filtered = 0
         intervals = config.get("collectors.interval_seconds", {})
         self.interval_seconds = int(intervals.get(self.collector_type, 600))
+        # 上次运行的 monotonic 时间戳（仅长驻循环按间隔调度时使用）
+        self._last_run_at: float | None = None
+
+    # ------------------------------------------------------------------
+    def seconds_until_due(self) -> float:
+        """距下次允许采集的秒数（0 = 已到期）。
+
+        interval_seconds <= 0 表示每轮都跑；首次运行视为已到期。
+        """
+        if self.interval_seconds <= 0 or self._last_run_at is None:
+            return 0.0
+        return max(0.0, self._last_run_at + self.interval_seconds - time.monotonic())
+
+    def mark_ran(self) -> None:
+        self._last_run_at = time.monotonic()
 
     # ------------------------------------------------------------------
     @property
@@ -166,8 +183,18 @@ class BaseCollector(ABC):
 
 
 class CollectorRegistry:
-    def __init__(self):
+    """采集器注册表。
+
+    - respect_intervals=True（长驻 run/bot 循环）：未到 interval_seconds 的
+      采集器本轮跳过（不请求、不计入 source 结果），run-once 验收不受影响。
+    - parallel_workers > 1 时并行执行到期的采集器（各采集器内部仍保持
+      自己的 QPS 限速；Database 为 thread-local 连接，SQLite 侧由
+      busy_timeout 兜底并发写）。
+    """
+
+    def __init__(self, parallel_workers: int = 1):
         self._collectors: list[BaseCollector] = []
+        self._parallel_workers = max(1, int(parallel_workers))
 
     def register(self, collector: BaseCollector) -> None:
         self._collectors.append(collector)
@@ -176,18 +203,54 @@ class CollectorRegistry:
     def collectors(self) -> list[BaseCollector]:
         return list(self._collectors)
 
-    def run_all(self) -> tuple[list[RawItem], list[CollectResult]]:
-        items: list[RawItem] = []
-        results: list[CollectResult] = []
+    def run_all(self, *, respect_intervals: bool = False
+                ) -> tuple[list[RawItem], list[CollectResult]]:
+        due: list[BaseCollector] = []
         for c in self._collectors:
-            res = c.run()
-            results.append(res)
+            if respect_intervals and c.seconds_until_due() > 0:
+                logger.info("[scheduler] collector %s skipped (interval=%ss not due)",
+                            c.collector_type, c.interval_seconds)
+                continue
+            due.append(c)
+
+        results: list[CollectResult | None] = [None] * len(due)
+        if self._parallel_workers > 1 and len(due) > 1:
+            with ThreadPoolExecutor(
+                    max_workers=min(self._parallel_workers, len(due))) as pool:
+                futures = {pool.submit(c.run): i for i, c in enumerate(due)}
+                for fut in as_completed(futures):
+                    i = futures[fut]
+                    try:
+                        results[i] = fut.result()
+                    except Exception as exc:  # run() 内部已兜底；此处防御线程级异常
+                        logger.exception("collector %s crashed", due[i].collector_type)
+                        results[i] = CollectResult(
+                            source_ids=sorted(due[i].handled_source_ids),
+                            status="failed", error=str(exc)[:300],
+                            error_category="structure_changed")
+        else:
+            for i, c in enumerate(due):
+                results[i] = c.run()
+
+        for c in due:
+            c.mark_ran()
+        items: list[RawItem] = []
+        final: list[CollectResult] = []
+        for res in results:
+            if res is None:
+                continue
+            final.append(res)
             items.extend(res.items)
-        return items, results
+        return items, final
 
 
 def build_default_registry(db: Database, config) -> CollectorRegistry:
-    """按规划书 §7 注册所有采集器（真实链路）。"""
+    """按规划书 §7 注册所有采集器（真实链路）。
+
+    采集间隔由 settings.yaml collectors.interval_seconds 控制
+    （长驻循环生效，见 CollectorRegistry.run_all）；并行度由
+    collectors.parallel_workers 控制（默认 4，设 1 退回串行）。
+    """
     from trace.collectors.cninfo import CNINFOCollector
     from trace.collectors.industry_media import IndustryMediaCollector
     from trace.collectors.ir import IRCollector
@@ -199,7 +262,8 @@ def build_default_registry(db: Database, config) -> CollectorRegistry:
     from trace.collectors.sse import SSECollector
     from trace.collectors.szse import SZSECollector
 
-    registry = CollectorRegistry()
+    registry = CollectorRegistry(
+        parallel_workers=int(config.get("collectors.parallel_workers", 4)))
     for cls in (SECCollector, IRCollector, SanDiskCollector, MicronCollector,
                 CNINFOCollector, SSECollector, SZSECollector, PolicyCollector,
                 RSSCollector, IndustryMediaCollector):

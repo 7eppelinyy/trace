@@ -114,7 +114,9 @@ class RSSCollector(BaseCollector):
                 next_cursor["etag"] = etag
             if last_modified:
                 next_cursor["last_modified"] = last_modified
-            seen: set[str] = set(cursor.get("seen_item_ids", []))
+            # 插入序 dict（而非 set/sorted）：裁剪时保留最新见过的条目，
+            # 避免字典序截断把新条目裁掉造成重复下发
+            seen: dict[str, None] = dict.fromkeys(cursor.get("seen_item_ids", []))
             first_run = not cursor.get("seen_item_ids")
 
             items: list[RawItem] = []
@@ -140,20 +142,20 @@ class RSSCollector(BaseCollector):
 
                 # bootstrap 回填窗口：首次接入只保留最近 N 天
                 if first_run and published is not None and published < cutoff:
-                    seen.add(entry_id)
+                    seen[entry_id] = None
                     dropped_old += 1
                     continue
 
                 # Level 1 关键词初筛（政府/产业源不得无差别进 LLM）
                 if keyword_filter and not matches_keywords(
                         title, entry.get("summary"), keyword_filter):
-                    seen.add(entry_id)
+                    seen[entry_id] = None
                     dropped_filter += 1
                     continue
 
                 if entry_id in seen:
                     continue
-                seen.add(entry_id)
+                seen[entry_id] = None
 
                 summary = entry.get("summary") or ""
                 items.append(RawItem(
@@ -172,7 +174,7 @@ class RSSCollector(BaseCollector):
                     content_hash=content_hash(summary),
                 ))
 
-            next_cursor["seen_item_ids"] = sorted(seen)[-2000:]
+            next_cursor["seen_item_ids"] = list(seen)[-2000:]
             self.cursor_repo.set(source_id, next_cursor)
             if dropped_old or dropped_filter:
                 logger.info("[%s] bootstrap dropped=%d keyword_dropped=%d "

@@ -27,7 +27,6 @@ from trace.ai.schemas import (
     LLMUnavailableError,
     SchemaValidationError,
     check_evidence_ids,
-    validate,
 )
 from trace.common.modes import ANALYSIS_MODE_LLM, ANALYSIS_MODE_RULE_DEGRADED, TraceMode
 from trace.domain.models import Event, RawItem
@@ -80,8 +79,10 @@ class ImpactAnalyzer:
         self.model = llm_config.model_impact_analyzer
         # 最近一次分析使用的模式（供流水线落库标记）
         self.last_mode: str = ANALYSIS_MODE_LLM
-        # LLM 成本统计（任务书 §17）：Stage B 真实调用次数
+        # LLM 成本统计（任务书 §17）：llm_calls 为成功业务次数，
+        # real_llm_calls 为真实 API 调用次数（含重试消耗）
         self.llm_calls: int = 0
+        self.real_llm_calls: int = 0
 
     def analyze(self, event: Event, hits: list[GraphHit],
                 evidence_items: list[RawItem]) -> list[dict]:
@@ -95,19 +96,23 @@ class ImpactAnalyzer:
             + (f" | {it.reference}" if it.reference else "")
             for it in evidence_items[:5])
         if self.llm.available:
+            calls_before = self.llm.call_count
             try:
                 results = self._analyze_with_llm(event, hits, evidence_text,
                                                  evidence_items)
                 self.last_mode = ANALYSIS_MODE_LLM
                 self.llm_calls += 1
+                self.real_llm_calls += self.llm.call_count - calls_before
                 return results
             except SchemaValidationError:
                 # 校验失败（重试后仍失败）：不得进入 Alert Engine，向上暴露
                 self.last_mode = ANALYSIS_MODE_RULE_DEGRADED
+                self.real_llm_calls += self.llm.call_count - calls_before
                 raise
             except LLMUnavailableError:
                 raise
             except Exception as exc:
+                self.real_llm_calls += self.llm.call_count - calls_before
                 logger.warning("Stage B LLM failed: %s", exc)
         # 生产模式：没有 LLM 不得生成伪分析
         if TraceMode.is_production() and not self.llm.available:
@@ -139,7 +144,6 @@ class ImpactAnalyzer:
         )
         data = self.llm.complete_json_validated(
             self.model, SYSTEM_PROMPT, user_prompt, IMPACT_ANALYZER_SCHEMA)
-        validate(data, IMPACT_ANALYZER_SCHEMA)
 
         hits_by_ticker = {h.security.ticker: h for h in hits}
         results: list[dict] = []

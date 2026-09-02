@@ -54,6 +54,8 @@ scoring:
     persistence: 0.20
   # final_score = clamp(base_score + market_confirmation_weight*(market_confirmation-5), 1, 10)
   market_confirmation_weight: 0.15
+  # 供需景气确定性信号权重（trace/scoring/signals.py，5=中性不加减分）
+  supply_demand_weight: 0.10
   score_min: 1
   score_max: 10
 
@@ -101,10 +103,14 @@ digest:
   send_time: "21:00"
 
 collectors:
-  # 采集间隔（秒），按 collector 类型
+  # 并行采集线程数（1 = 串行；长驻 run/bot 循环生效）
+  parallel_workers: 4
+  # 采集间隔（秒），按 collector 类型；run-once 验收不受影响
   interval_seconds:
     sec: 300
     ir: 600
+    sandisk_ir: 600
+    micron_ir: 600
     cninfo: 300
     exchange_cn: 300
     policy: 600

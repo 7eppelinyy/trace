@@ -115,7 +115,8 @@ class MicronCollector(BaseCollector):
             next_cursor = dict(cursor)
             if resp.headers.get("ETag"):
                 next_cursor["rss_etag"] = resp.headers["ETag"]
-            seen: set[str] = set(cursor.get("seen_urls", []))
+            # 插入序 dict：裁剪保留最新（sorted 字典序会把新条目裁掉）
+            seen: dict[str, None] = dict.fromkeys(cursor.get("seen_urls", []))
             cutoff = datetime.now(timezone.utc) - timedelta(days=BOOTSTRAP_DAYS)
             first_run = "seen_urls" not in cursor
 
@@ -132,14 +133,14 @@ class MicronCollector(BaseCollector):
                         published = datetime.fromtimestamp(mktime(t), tz=timezone.utc)
                         break
                 if first_run and published is not None and published < cutoff:
-                    seen.add(link)
+                    seen[link] = None
                     continue
                 if link in seen:
                     continue
-                seen.add(link)
+                seen[link] = None
                 summary = entry.get("summary") or ""
                 items.append(self._make_item(title, link, published, summary))
-            next_cursor["seen_urls"] = sorted(seen)[-2000:]
+            next_cursor["seen_urls"] = list(seen)[-2000:]
             self.cursor_repo.set(SOURCE_ID, next_cursor)
             return items
         finally:
@@ -159,20 +160,20 @@ class MicronCollector(BaseCollector):
                     "micron newsroom structure changed: no press-release teasers")
 
             cursor = self.cursor_repo.get(SOURCE_ID)
-            seen: set[str] = set(cursor.get("seen_urls", []))
+            seen: dict[str, None] = dict.fromkeys(cursor.get("seen_urls", []))
             cutoff = datetime.now(timezone.utc) - timedelta(days=BOOTSTRAP_DAYS)
             first_run = "seen_urls" not in cursor
 
             items: list[RawItem] = []
             for title, link, published in teasers:
                 if first_run and published is not None and published < cutoff:
-                    seen.add(link)
+                    seen[link] = None
                     continue
                 if link in seen:
                     continue
-                seen.add(link)
+                seen[link] = None
                 items.append(self._make_item(title, link, published, None))
-            cursor["seen_urls"] = sorted(seen)[-2000:]
+            cursor["seen_urls"] = list(seen)[-2000:]
             self.cursor_repo.set(SOURCE_ID, cursor)
             return items
         finally:

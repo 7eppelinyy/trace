@@ -50,30 +50,68 @@ class AnalysisPipeline:
         self.raw_repo = RawItemRepo(db)
         self.security_repo = SecurityRepo(db)
         self.source_repo = SourceRepo(db)
+        # 每轮 run 级缓存：证券/实体/来源主数据在单轮内不变，
+        # 避免逐事件、逐证据重复全表加载（/watch 动态注册由下一轮生效）
+        self._securities_cache: list | None = None
+        self._entities_cache: list | None = None
+        self._sources_cache: dict | None = None
+
+    def refresh_caches(self) -> None:
+        """失效每轮缓存（Pipeline.run_once 开始 / replay 前调用）。"""
+        self._securities_cache = None
+        self._entities_cache = None
+        self._sources_cache = None
+
+    def _cached_securities(self) -> list:
+        if self._securities_cache is None:
+            self._securities_cache = self.security_repo.list_all()
+        return self._securities_cache
+
+    def _cached_entities(self) -> list:
+        if self._entities_cache is None:
+            from trace.db.repositories import EntityAliasRepo
+            self._entities_cache = EntityAliasRepo(self.db).all_with_aliases()
+        return self._entities_cache
+
+    def _cached_sources(self) -> dict:
+        if self._sources_cache is None:
+            self._sources_cache = {s.source_id: s
+                                   for s in self.source_repo.list_all()}
+        return self._sources_cache
 
     # ------------------------------------------------------------------
-    def resolve_entity_nodes(self, entity_names: list[str]) -> list[str]:
+    def resolve_entity_nodes(self, entity_names: list[str], *,
+                             securities: list | None = None,
+                             entities: list | None = None) -> list[str]:
         """把实体名（公司/产品/概念，中英文皆可）映射为产业链图谱节点。
 
         映射顺序：Security Master（graph_node_ids 或 ticker）→
         entity_alias 表（entity_id）→ 原样小写兜底。
+        主数据默认取每轮缓存；调用方可显式传入。
         """
-        from trace.db.repositories import EntityAliasRepo
-        entities = EntityAliasRepo(self.db).all_with_aliases()
+        secs = securities if securities is not None else self._cached_securities()
+        ents = entities if entities is not None else self._cached_entities()
+
+        # 别名 → 对象 的倒排映射（与原逐名全表扫描语义一致：先到先得）
+        sec_by_alias: dict[str, object] = {}
+        for s in secs:
+            for cand in (s.ticker, s.company_name_en, s.company_name_zh, *s.aliases):
+                if cand:
+                    sec_by_alias.setdefault(str(cand).strip().lower(), s)
+        ent_by_name: dict[str, str] = {}
+        for e in ents:
+            ent_by_name.setdefault(e.name.strip().lower(), e.entity_id)
+            for a in e.aliases:
+                ent_by_name.setdefault(str(a).strip().lower(), e.entity_id)
+
         nodes: list[str] = []
         for name in entity_names:
-            sec = self.security_repo.find_by_alias(name)
+            lowered = name.strip().lower()
+            sec = sec_by_alias.get(lowered)
             if sec:
                 nodes.extend(sec.graph_node_ids or [sec.ticker.lower()])
                 continue
-            lowered = name.strip().lower()
-            node = None
-            for ent in entities:
-                if lowered == ent.name.lower() or \
-                        lowered in [a.lower() for a in ent.aliases]:
-                    node = ent.entity_id
-                    break
-            nodes.append(node or lowered)
+            nodes.append(ent_by_name.get(lowered, lowered))
         return nodes
 
     def analyze_event(self, event: Event, entity_nodes: list[str] | None = None,
@@ -89,6 +127,8 @@ class AnalysisPipeline:
         hits = self.graph.find_securities_from_entities(nodes, max_hops=3)
 
         evidence_items = self.raw_repo.list_by_event(event.event_id)
+        sources = self._cached_sources()
+        sec_by_id = {s.security_id: s for s in self._cached_securities()}
 
         # security_map 直接关联（任务书 §9）：公司官方源的公告必须直接
         # 关联其登记证券（如 src_sndk_ir → SEC-US-SNDK），不依赖 LLM 猜
@@ -96,13 +136,13 @@ class AnalysisPipeline:
         # 的是 primary/direct 公司，两者合并后一起进入 Stage B。
         hit_ids = {h.security.security_id for h in hits}
         for item in evidence_items:
-            source = self.source_repo.get(item.source_id)
+            source = sources.get(item.source_id)
             if not source or not source.security_map:
                 continue
             for sec_id in source.security_map:
                 if sec_id in hit_ids:
                     continue
-                security = self.security_repo.get(sec_id)
+                security = sec_by_id.get(sec_id)
                 if security is None:
                     logger.warning("security_map %s → unknown security %s",
                                    source.source_id, sec_id)
@@ -131,7 +171,7 @@ class AnalysisPipeline:
         impacts_raw = self.analyzer.analyze(event, hits, evidence_items)
 
         # 来源可靠度：取该事件最权威来源的 base_reliability
-        primary = self.source_repo.get(event.primary_source_id or "")
+        primary = sources.get(event.primary_source_id or "")
         source_reliability = primary.base_reliability if primary else 5.0
 
         results: list[EventImpact] = []

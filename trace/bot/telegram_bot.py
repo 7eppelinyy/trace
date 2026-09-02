@@ -107,6 +107,9 @@ async def cmd_watch(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             graph_node_ids=[norm.ticker.lower()],
         )
         repo.upsert(sec)
+        # IndustryGraph 的 node→证券映射只在启动时构建；不刷新的话
+        # 长驻 bot 进程中新 /watch 的证券永远无法被图谱命中
+        app.graph.reload()
     from trace.domain.models import WatchlistEntry
     WatchlistRepo(app.db).add(WatchlistEntry(
         user_id=str(update.effective_chat.id), security_id=sec.security_id))

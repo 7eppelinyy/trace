@@ -25,7 +25,6 @@ from trace.ai.schemas import (
     SchemaValidationError,
     check_evidence_ids,
     parse_occurred_at,
-    validate,
 )
 from trace.common.modes import ANALYSIS_MODE_LLM, ANALYSIS_MODE_RULE_DEGRADED, TraceMode
 from trace.domain.models import RawItem
@@ -118,23 +117,29 @@ class EventExtractor:
         self.model = llm_config.model_event_extractor
         # 最近一次抽取使用的模式（llm / rule_based_degraded），供流水线落库标记
         self.last_mode: str = ANALYSIS_MODE_LLM
-        # LLM 成本统计（任务书 §17）：Stage A 真实调用次数
+        # LLM 成本统计（任务书 §17）：llm_calls 为成功业务次数，
+        # real_llm_calls 为真实 API 调用次数（含重试消耗）
         self.llm_calls: int = 0
+        self.real_llm_calls: int = 0
 
     def extract(self, item: RawItem) -> ExtractedEvent:
         if self.llm.available:
+            calls_before = self.llm.call_count
             try:
                 result = self._extract_with_llm(item)
                 self.last_mode = ANALYSIS_MODE_LLM
                 self.llm_calls += 1
+                self.real_llm_calls += self.llm.call_count - calls_before
                 return result
             except SchemaValidationError:
                 # Schema 校验重试后仍失败：不得进入 Alert 链路，向上暴露
                 self.last_mode = ANALYSIS_MODE_RULE_DEGRADED
+                self.real_llm_calls += self.llm.call_count - calls_before
                 raise
             except LLMUnavailableError:
                 raise
             except Exception as exc:
+                self.real_llm_calls += self.llm.call_count - calls_before
                 logger.warning("Stage A LLM failed: %s", exc)
         # 生产模式：没有 LLM 不得生成伪 AI 分析
         if TraceMode.is_production() and not self.llm.available:
@@ -155,7 +160,6 @@ class EventExtractor:
         data = self.llm.complete_json_validated(
             self.model, SYSTEM_PROMPT + _supply_demand_focus(), user_prompt,
             EVENT_EXTRACT_SCHEMA)
-        validate(data, EVENT_EXTRACT_SCHEMA)
 
         event_time = parse_occurred_at(data.get("occurred_at") or data.get("event_time"))
         return ExtractedEvent(

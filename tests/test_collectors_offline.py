@@ -164,7 +164,7 @@ def test_cninfo_parse_fixture(db, config, monkeypatch):
     assert len(items) == 5
     item = next(i for i in items if "688981" in i.source_item_id)
     assert "<em>" not in item.title
-    assert item.url.startswith("http://static.cninfo.com.cn/")
+    assert item.url.startswith("https://static.cninfo.com.cn/")
     assert item.published_at.year == 2025 and item.published_at.month == 8
     assert item.language == "zh"
     assert item.source_id == "src_cninfo"
@@ -307,6 +307,14 @@ def test_http_auth_error_no_retry():
     assert stub.calls == 1                     # 鉴权失败不重试
 
 
+def test_http_404_no_retry():
+    """404 等普通 4xx：重试无意义，必须立即暴露（1 次请求）。"""
+    client, stub = _http([_Resp(404)] * 5, max_retries=3)
+    with pytest.raises(SourceUnavailableError):
+        client.get("https://x.test/a")
+    assert stub.calls == 1
+
+
 def test_http_5xx_exhausted_raises_unavailable():
     client, stub = _http([_Resp(500)] * 10, max_retries=1)
     with pytest.raises(SourceUnavailableError):
@@ -392,3 +400,80 @@ def test_registry_run_all_aggregates_failures(db, config):
     assert items == []
     assert results[0].status == "failed"
     assert results[0].source_ids == ["src_boom"]
+
+
+# ---------------------------------------------------------------------------
+# 采集调度：interval_seconds（长驻循环）与并行执行
+# ---------------------------------------------------------------------------
+
+class _CountingCollector(BaseCollector):
+    collector_type = "sched"          # settings.yaml 无该类型 → 默认间隔 600s
+
+    def __init__(self, db, config, counter: dict):
+        super().__init__(db, config)
+        self._counter = counter
+
+    @property
+    def handled_source_ids(self):
+        return {"src_boom"}
+
+    def collect(self):
+        self._counter["n"] += 1
+        return []
+
+
+def test_registry_interval_scheduling(db, config):
+    """长驻循环按 interval 跳过未到期采集器；run-once（默认）不受影响。"""
+    _enable_boom(db)
+    counter = {"n": 0}
+    registry = CollectorRegistry()
+    collector = _CountingCollector(db, config, counter)
+    registry.register(collector)
+
+    # 默认（run-once 验收语义）：每轮都真实采集（运行时间戳同样被记录）
+    registry.run_all()
+    registry.run_all()
+    assert counter["n"] == 2
+
+    # 长驻循环（respect_intervals=True）：间隔内的运行被跳过 ——
+    # 手动 run-once 之后同样计入间隔，避免服务启动立刻重复请求
+    registry.run_all(respect_intervals=True)
+    assert counter["n"] == 2
+
+    # 间隔流逝后恢复采集，随后再次跳过
+    collector._last_run_at -= collector.interval_seconds + 1
+    registry.run_all(respect_intervals=True)
+    assert counter["n"] == 3
+    registry.run_all(respect_intervals=True)
+    assert counter["n"] == 3
+
+
+def test_registry_parallel_preserves_items_and_order(db, config):
+    """并行采集：结果按注册顺序聚合，条目不丢。"""
+    from trace.domain.models import RawItem
+    from trace.common.ids import raw_item_id as _rid
+
+    class _Items(BaseCollector):
+        collector_type = "par"
+        def __init__(self, db, config, tag):
+            super().__init__(db, config)
+            self._tag = tag
+        @property
+        def handled_source_ids(self):
+            return {f"src_{self._tag}"}
+        def collect(self):
+            return [RawItem(raw_item_id=_rid(), source_id=f"src_{self._tag}",
+                            source_item_id=f"{self._tag}-1",
+                            title=f"{self._tag}", url=f"https://x.test/{self._tag}",
+                            language="en")]
+
+    registry = CollectorRegistry(parallel_workers=4)
+    registry.register(_Items(db, config, "a"))
+    registry.register(_Items(db, config, "b"))
+    # run() 只采集 source_registry 中已启用的来源
+    for tag in ("a", "b"):
+        SourceRepo(db).upsert(Source(source_id=f"src_{tag}", source_name=tag.upper(),
+                                     source_type="official", enabled=True))
+    items, results = registry.run_all()
+    assert [r.source_ids for r in results] == [["src_a"], ["src_b"]]
+    assert sorted(i.source_id for i in items) == ["src_a", "src_b"]

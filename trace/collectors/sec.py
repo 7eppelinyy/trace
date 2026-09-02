@@ -49,7 +49,8 @@ class SECCollector(BaseCollector):
         )
         try:
             cursor = self.cursor_repo.get("src_sec_edgar")
-            seen: set[str] = set(cursor.get("seen_accessions", []))
+            # 插入序 dict：裁剪保留最新（sorted 字典序会把新条目裁掉）
+            seen: dict[str, None] = dict.fromkeys(cursor.get("seen_accessions", []))
 
             repo = SecurityRepo(self.db)
             targets = [s for s in repo.list_all()
@@ -63,7 +64,7 @@ class SECCollector(BaseCollector):
 
             # 更新游标（保留最近 2000 条防膨胀）
             self.cursor_repo.set("src_sec_edgar", {
-                "seen_accessions": sorted(seen)[-2000:],
+                "seen_accessions": list(seen)[-2000:],
             })
             return items
         finally:
@@ -100,7 +101,7 @@ class SECCollector(BaseCollector):
             accession = accessions[i]
             if accession in seen:
                 continue  # 增量游标：不重复处理已采集的 filing
-            seen.add(accession)
+            seen[accession] = None
 
             doc = primary_docs[i] if i < len(primary_docs) else ""
             item_url = (f"{EDGAR_ARCHIVES_BASE}/{resp_cik.lstrip('0')}/"

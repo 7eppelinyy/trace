@@ -15,6 +15,10 @@ from trace.db.connection import Database
 from trace.db.migration import apply_migrations
 from trace.data.seed import load_all_seeds
 
+# verification/ 是验收证据目录（含模块级执行真实网络请求的一次性脚本），
+# 不得被 pytest 收集；默认测试套件必须离线可运行
+collect_ignore_glob = ["verification/*"]
+
 # 测试会话内隔离的环境变量名单（真实凭据与 Provider 选择）
 _ISOLATED_VARS = (
     "LLM_PROVIDER", "GEMINI_API_KEY", "GEMINI_MODEL",
@@ -34,6 +38,18 @@ def _isolate_env(monkeypatch):
         monkeypatch.delenv(name, raising=False)
     monkeypatch.setenv("TRACE_MODE", "offline")
     yield
+
+
+@pytest.fixture(autouse=True)
+def _no_backoff_sleeps(monkeypatch):
+    """单元测试不等真实退避：LLM/Telegram 重试逻辑照常执行，sleep 置零；
+    并清空 Telegram 投递的按 chat 限速状态（跨测试隔离）。"""
+    monkeypatch.setattr("trace.ai.llm_client.time.sleep", lambda s: None)
+    monkeypatch.setattr("trace.bot.delivery.time.sleep", lambda s: None)
+    from trace.bot import delivery as _delivery
+    _delivery.reset_rate_limit_state()
+    yield
+    _delivery.reset_rate_limit_state()
 
 
 @pytest.fixture()
