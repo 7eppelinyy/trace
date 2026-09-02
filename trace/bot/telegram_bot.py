@@ -23,18 +23,24 @@ from __future__ import annotations
 import logging
 import re
 from datetime import datetime, timedelta, timezone
+from pathlib import Path
 
 from telegram import Update
 from telegram.ext import Application, CommandHandler, ContextTypes
 
 from trace.app import AppContext
+from trace.common.modes import TraceMode
 from trace.common.tickers import TickerParseError, normalize_ticker
+from trace.db.health import SourceHealthRepo, derive_health_status
 from trace.db.repositories import (
     AlertRuleRepo,
+    DailyDigestRepo,
     EventRepo,
     EventSourceRepo,
     RawItemRepo,
+    RunHistoryRepo,
     SecurityRepo,
+    SourceRepo,
     UserRepo,
     WatchlistRepo,
 )
@@ -78,6 +84,8 @@ async def cmd_help(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         "/event <EVENT_ID> — 事件详情\n"
         "/sources <EVENT_ID> — 事件来源\n"
         "/digest — 每日摘要\n"
+        "/accuracy — 预测回测命中率\n"
+        "/status — 系统运行状态\n"
         "/timezone Asia/Tokyo — 设置时区\n"
         "/ask SNDK 今天为什么跌 — 事件解释"
     )
@@ -273,6 +281,62 @@ async def cmd_ask(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await update.message.reply_text(answer.text)
 
 
+async def cmd_accuracy(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """/accuracy：预测回测账本（方向预测 vs 事后真实行情）。"""
+    app: AppContext = context.bot_data["app"]
+    if not _allowed(update, app):
+        return
+    await update.message.reply_text(app.ledger.render_summary())
+
+
+async def cmd_status(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """/status：最近一轮运行 + 来源健康 + 回测/摘要/备份一览。"""
+    app: AppContext = context.bot_data["app"]
+    if not _allowed(update, app):
+        return
+    lines = ["🩺 系统状态", f"TRACE_MODE: {TraceMode.current()}"]
+
+    runs = RunHistoryRepo(app.db).recent(1)
+    if runs:
+        r = runs[0]
+        lines.append(f"最近一轮: {r['run_id']}（{(r['started_at'] or '')[:19]}Z）{r['status']}")
+        lines.append(f"来源 {r['sources_succeeded']}/{r['sources_checked']} 成功 ｜ "
+                     f"新事件 {r['events_created']} ｜ 投递 {r['alerts_sent']} ｜ "
+                     f"初筛拦截 {r['keyword_filtered']}")
+        if r["failed_sources"]:
+            lines.append("失败来源: " + ", ".join(r["failed_sources"][:5]))
+    else:
+        lines.append("最近一轮: 尚无记录（等待长驻循环落库）")
+
+    health_rows = {row["source_id"]: row for row in SourceHealthRepo(app.db).all()}
+    counts: dict[str, int] = {}
+    for source in SourceRepo(app.db).list_all():
+        status = derive_health_status(health_rows.get(source.source_id) or {},
+                                      enabled=source.enabled)
+        counts[status] = counts.get(status, 0) + 1
+    lines.append("来源健康: " + " ｜ ".join(f"{k} {v}" for k, v in sorted(counts.items())))
+
+    s = app.ledger.summary()
+    if s["hits"] + s["misses"] > 0:
+        rate = f"{s['hit_rate'] * 100:.0f}%" if s["hit_rate"] is not None else "-"
+        lines.append(f"预测回测: 命中率 {rate}（{s['hits']}/{s['hits'] + s['misses']}）｜ "
+                     f"待核对 {s['pending']}")
+    else:
+        lines.append(f"预测回测: 暂无样本 ｜ 待核对 {s['pending']}")
+
+    import pytz
+    tz = pytz.timezone(app.config.telegram.default_user_timezone)
+    today = datetime.now(timezone.utc).astimezone(tz).date().isoformat()
+    digest_sent = DailyDigestRepo(app.db).get(today) is not None
+    lines.append(f"今日摘要: {'已推送' if digest_sent else '未推送'}")
+
+    from trace.db.backup import latest_backup
+    backup = latest_backup(Path(app.config.db_path).parent / "backups")
+    lines.append(f"最近备份: {backup.name if backup else '尚无'}")
+
+    await update.message.reply_text("\n".join(lines))
+
+
 def build_application(app: AppContext) -> Application:
     application = Application.builder().token(
         app.config.telegram.bot_token).build()
@@ -284,6 +348,7 @@ def build_application(app: AppContext) -> Application:
         ("mute", cmd_mute), ("unmute", cmd_unmute),
         ("event", cmd_event), ("sources", cmd_sources),
         ("digest", cmd_digest), ("timezone", cmd_timezone), ("ask", cmd_ask),
+        ("accuracy", cmd_accuracy), ("status", cmd_status),
     ]:
         application.add_handler(CommandHandler(name, handler))
     return application

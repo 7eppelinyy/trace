@@ -352,3 +352,25 @@ class DailyDigest:
     date_str: str                            # YYYY-MM-DD
     content_markdown: str = ""
     sent_at: datetime | None = None
+
+
+@dataclass
+class ForecastCheck:
+    """预测回测账本单条记录：影响预测 vs 事后真实行情。
+
+    方向核对基准（确定性规则，不走 LLM）：
+        actual_direction 由实际涨跌幅度与 move_threshold_pct 决定；
+        outcome = hit（方向一致）/ miss（方向相反）/ neutral（实际无方向）。
+    """
+    check_id: str
+    impact_id: str
+    event_id: str
+    security_id: str
+    predicted_direction: str                 # bullish / bearish
+    predicted_score: float = 0.0
+    confidence: float = 0.0
+    actual_change_pct: float | None = None
+    actual_direction: str = ""               # bullish / bearish / neutral
+    outcome: str = ""                        # hit / miss / neutral
+    horizon_hours: float = 24.0
+    evaluated_at: datetime | None = None

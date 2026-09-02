@@ -24,6 +24,8 @@ import logging
 import re
 import time
 from dataclasses import dataclass, field
+from datetime import datetime, timezone
+from pathlib import Path
 from typing import Callable
 
 from trace.ai.schemas import LLMUnavailableError, SchemaValidationError
@@ -59,6 +61,7 @@ AlertSender = Callable[[str, str, str | None], DeliveryReceipt]
 class RunSummary:
     """一轮流水线的结构化摘要（任务书 §15）。"""
     run_id: str = ""
+    started_at: str = ""                 # UTC ISO（运行历史落库用）
     trace_mode: str = ""
     status: str = STATUS_OK
     sources_checked: int = 0
@@ -86,6 +89,7 @@ class RunSummary:
     def as_dict(self) -> dict:
         return {
             "run_id": self.run_id,
+            "started_at": self.started_at,
             "trace_mode": self.trace_mode,
             "status": self.status,
             "sources_checked": self.sources_checked,
@@ -132,10 +136,23 @@ class Pipeline:
 
         enforce_intervals：True 时按 settings.yaml collectors.interval_seconds
         跳过未到期的采集器（长驻 run/bot 循环用）；run-once 验收默认
-        False，保证每次都真实采集。
+        False，保证每次都真实采集。结束后摘要落库到 run_history。
         """
+        summary = self._run_once(enforce_intervals=enforce_intervals)
+        try:
+            from trace.db.repositories import RunHistoryRepo
+            history = RunHistoryRepo(self.app.db)
+            history.insert(summary)
+            history.prune(keep=int(self.app.config.get("ops.run_history_keep", 500)))
+        except Exception:
+            logger.exception("run history persistence failed")
+        return summary
+
+    def _run_once(self, *, enforce_intervals: bool) -> RunSummary:
         ctx = self.app
-        summary = RunSummary(run_id=new_run_id(), trace_mode=TraceMode.current())
+        summary = RunSummary(run_id=new_run_id(),
+                             started_at=datetime.now(timezone.utc).isoformat(),
+                             trace_mode=TraceMode.current())
 
         # 每轮失效缓存：来源/证券主数据可能在两轮之间变化
         self._entity_index_cache = None
@@ -356,7 +373,8 @@ class Pipeline:
     # ------------------------------------------------------------------
     def run_forever(self, poll_seconds: int = 60,
                     enforce_intervals: bool = True) -> None:
-        """长驻轮询循环：默认按 collectors.interval_seconds 调度采集器。"""
+        """长驻轮询循环：按 collectors.interval_seconds 调度采集器，
+        每轮后执行运营维护（预测回测 / 每日摘要 / 每日备份）。"""
         logger.info("pipeline started (poll=%ss, enforce_intervals=%s)",
                     poll_seconds, enforce_intervals)
         try:
@@ -365,6 +383,78 @@ class Pipeline:
                     self.run_once(enforce_intervals=enforce_intervals)
                 except Exception:
                     logger.exception("pipeline round failed")
+                try:
+                    self._maintenance()
+                except Exception:
+                    logger.exception("pipeline maintenance failed")
                 time.sleep(poll_seconds)
         except KeyboardInterrupt:
             logger.info("pipeline stopped (keyboard interrupt)")
+
+    # ------------------------------------------------------------------
+    def _maintenance(self) -> None:
+        """长驻循环每轮的运营维护：预测回测 → 每日摘要 → 每日备份。
+
+        全部幂等：每天/每个 impact 只执行一次，重复触发是空操作。
+        """
+        self._run_forecast_checks()
+        self._maybe_send_digest()
+        self._maybe_backup()
+
+    def _run_forecast_checks(self) -> None:
+        """预测回测：对到期的方向预测用真实行情核对并落账。"""
+        if not self.app.config.get("forecast.enabled", True):
+            return
+        try:
+            self.app.ledger.run_due_checks()
+        except Exception:
+            logger.exception("forecast ledger check failed")
+
+    def _maybe_send_digest(self) -> None:
+        """每日摘要：到达配置时间（用户时区）后生成并推送，每天一次。"""
+        import pytz
+
+        ctx = self.app
+        if not ctx.config.get("digest.enabled", True):
+            return
+        tz = pytz.timezone(ctx.config.telegram.default_user_timezone)
+        now_local = datetime.now(timezone.utc).astimezone(tz)
+        if now_local.strftime("%H:%M") < str(ctx.config.get("digest.send_time", "21:00")):
+            return
+        today = now_local.date().isoformat()
+        if ctx.digest_builder.digest_repo.get(today):
+            return          # 今日摘要已生成（幂等）
+
+        # 生产模式无投递通道：不生成（避免"已推送"的伪装记录）
+        if self.alert_sender is None and TraceMode.is_production():
+            logger.error("production mode without telegram channel: "
+                         "daily digest skipped (refuse fake delivery)")
+            return
+
+        digest = ctx.digest_builder.build(today)
+        logger.info("daily digest built for %s", today)
+        if self.alert_sender is None:
+            logger.info("[DIGEST]\n%s", digest.content_markdown)
+            return
+        receipt = self.alert_sender(ctx.config.telegram.default_chat_id,
+                                    digest.content_markdown, None)
+        logger.info("daily digest sent: status=%s response=%s",
+                    receipt.status, receipt.response)
+
+    def _maybe_backup(self) -> None:
+        """每日 SQLite 备份（幂等：同一天只备一份），带轮换。"""
+        from trace.db.backup import create_backup, latest_backup
+
+        ctx = self.app
+        if not ctx.config.get("backup.enabled", True):
+            return
+        backup_dir = Path(ctx.config.db_path).parent / "backups"
+        today = datetime.now(timezone.utc).strftime("%Y%m%d")
+        latest = latest_backup(backup_dir)
+        if latest is not None and latest.name.startswith(f"trace-{today}"):
+            return
+        try:
+            create_backup(ctx.config.db_path, backup_dir,
+                          keep=int(ctx.config.get("backup.keep", 7)))
+        except Exception:
+            logger.exception("daily backup failed")

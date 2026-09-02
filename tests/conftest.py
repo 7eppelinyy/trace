@@ -64,3 +64,20 @@ def db(tmp_path, config):
     load_all_seeds(database)
     yield database
     database.close()
+
+
+@pytest.fixture()
+def app(tmp_path, monkeypatch):
+    """独立临时数据库的 AppContext（与 .env 真实凭据完全隔离）。"""
+    monkeypatch.setenv("GEMINI_API_KEY", "")
+    monkeypatch.setenv("OPENAI_API_KEY", "")
+
+    import trace.app as appmod
+
+    def fake_load(path=None):
+        cfg = load_config()
+        cfg.db_path = tmp_path / "app.db"
+        return cfg
+
+    monkeypatch.setattr(appmod, "load_config", fake_load)
+    return appmod.create_app()

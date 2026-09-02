@@ -167,7 +167,7 @@ class _ScriptedLLM(LLMClient):
         self._outputs = outputs
         self.call_count = 0
 
-    def complete_json(self, model, system_prompt, user_prompt):
+    def complete_json(self, model, system_prompt, user_prompt, schema=None):
         out = self._outputs[min(self.call_count, len(self._outputs) - 1)]
         self.call_count += 1
         if isinstance(out, Exception):

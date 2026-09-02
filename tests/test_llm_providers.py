@@ -110,6 +110,46 @@ def test_gemini_generate_request_format():
     assert body["generationConfig"]["responseMimeType"] == "application/json"
 
 
+def test_gemini_generate_pushes_response_schema():
+    """传入 schema 时必须下推为 API 级 responseSchema（类型/必填/枚举强制）。"""
+    provider = GeminiProvider(_LLMCfg())
+    fake = _FakeHTTP([_FakeResponse(200, _gemini_payload('{"title": "ok"}'))])
+    provider._http = fake
+    schema = {
+        "type": "object",
+        "properties": {
+            "title": {"type": "string", "minLength": 1},
+            "occurred_at": {"type": ["string", "null"]},
+            "event_type": {"type": "string", "enum": ["earnings", "pricing"]},
+        },
+        "required": ["title"],
+    }
+    provider.generate("m", "s", "u", schema=schema)
+
+    rs = fake.calls[0]["json"]["generationConfig"]["responseSchema"]
+    assert rs["type"] == "OBJECT"
+    assert rs["required"] == ["title"]
+    assert rs["properties"]["title"]["type"] == "STRING"
+    # 联合类型拆为 nullable；Gemini 不支持的约束被丢弃
+    assert rs["properties"]["occurred_at"]["type"] == "STRING"
+    assert rs["properties"]["occurred_at"]["nullable"] is True
+    assert rs["properties"]["event_type"]["enum"] == ["earnings", "pricing"]
+    assert "minLength" not in rs["properties"]["title"]
+
+
+def test_client_passes_schema_down_to_provider():
+    """complete_json_validated 必须把 schema 透传给 Provider。"""
+    client = LLMClient(_LLMCfg(provider="gemini", max_retries=1))
+    fake = _FakeHTTP([_FakeResponse(200, _gemini_payload('{"title": "ok"}'))])
+    client._provider._http = fake
+    schema = {"type": "object", "properties": {"title": {"type": "string"}},
+              "required": ["title"]}
+    data = client.complete_json_validated("m", "sys", "user", schema)
+    assert data == {"title": "ok"}
+    body = fake.calls[0]["json"]
+    assert body["generationConfig"]["responseSchema"]["type"] == "OBJECT"
+
+
 def test_gemini_generate_merges_multiple_parts():
     provider = GeminiProvider(_LLMCfg())
     provider._http = _FakeHTTP([_FakeResponse(

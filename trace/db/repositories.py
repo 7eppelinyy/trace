@@ -19,6 +19,7 @@ from trace.domain.models import (
     EventImpact,
     EventRevision,
     EventSource,
+    ForecastCheck,
     IndustryEdge,
     LicenseMode,
     MarketSnapshot,
@@ -701,3 +702,106 @@ class DailyDigestRepo:
             return None
         return DailyDigest(digest_id=row["digest_id"], date_str=row["date_str"],
                            content_markdown=row["content_markdown"], sent_at=_dt(row["sent_at"]))
+
+
+class RunHistoryRepo:
+    """运行历史：每轮 run_once 的结构化摘要（可观测性/事后审计）。"""
+
+    def __init__(self, db: Database):
+        self.db = db
+
+    def insert(self, s) -> None:
+        d = s.as_dict() if hasattr(s, "as_dict") else s
+        self.db.execute(
+            """INSERT INTO run_history (run_id, started_at, trace_mode, status,
+                   sources_checked, sources_succeeded, sources_failed, sources_disabled,
+                   raw_items_new, raw_items_duplicate, events_created, events_revised,
+                   events_analyzed, alerts_eligible, alerts_sent, alerts_suppressed,
+                   alerts_failed, human_review, keyword_filtered,
+                   llm_stage_a_calls, llm_stage_b_calls, llm_verifier_calls,
+                   failed_sources, notes)
+               VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+               ON CONFLICT(run_id) DO UPDATE SET status=excluded.status""",
+            (d.get("run_id", ""), d.get("started_at") or _now(),
+             d.get("trace_mode", ""), d.get("status", ""),
+             int(d.get("sources_checked", 0)), int(d.get("sources_succeeded", 0)),
+             int(d.get("sources_failed", 0)), int(d.get("sources_disabled", 0)),
+             int(d.get("raw_items_new", 0)), int(d.get("raw_items_duplicate", 0)),
+             int(d.get("events_created", 0)), int(d.get("events_revised", 0)),
+             int(d.get("events_analyzed", 0)), int(d.get("alerts_eligible", 0)),
+             int(d.get("alerts_sent", 0)), int(d.get("alerts_suppressed", 0)),
+             int(d.get("alerts_failed", 0)), int(d.get("human_review", 0)),
+             int(d.get("keyword_filtered", 0)),
+             int(d.get("llm_stage_a_calls", 0)), int(d.get("llm_stage_b_calls", 0)),
+             int(d.get("llm_verifier_calls", 0)),
+             json.dumps(d.get("failed_sources", []), ensure_ascii=False),
+             json.dumps(d.get("notes", []), ensure_ascii=False)),
+        )
+
+    def recent(self, limit: int = 5) -> list[dict]:
+        rows = self.db.query(
+            "SELECT * FROM run_history ORDER BY started_at DESC LIMIT ?", (limit,))
+        out = []
+        for r in rows:
+            d = dict(r)
+            d["failed_sources"] = json.loads(d.get("failed_sources") or "[]")
+            d["notes"] = json.loads(d.get("notes") or "[]")
+            out.append(d)
+        return out
+
+    def prune(self, keep: int = 500) -> int:
+        """只保留最近 keep 轮，防止表无限膨胀。返回删除行数。"""
+        cur = self.db.execute(
+            """DELETE FROM run_history WHERE run_id NOT IN (
+                   SELECT run_id FROM run_history ORDER BY started_at DESC LIMIT ?)""",
+            (keep,))
+        return cur.rowcount
+
+
+class ForecastCheckRepo:
+    """预测回测账本仓库。impact_id UNIQUE：每个 impact 只核对一次。"""
+
+    def __init__(self, db: Database):
+        self.db = db
+
+    def record(self, c: ForecastCheck) -> None:
+        self.db.execute(
+            """INSERT INTO forecast_check (check_id, impact_id, event_id, security_id,
+                   predicted_direction, predicted_score, confidence,
+                   actual_change_pct, actual_direction, outcome, horizon_hours,
+                   evaluated_at)
+               VALUES (?,?,?,?,?,?,?,?,?,?,?,?)
+               ON CONFLICT(impact_id) DO NOTHING""",
+            (c.check_id, c.impact_id, c.event_id, c.security_id,
+             c.predicted_direction, c.predicted_score, c.confidence,
+             c.actual_change_pct, c.actual_direction, c.outcome,
+             c.horizon_hours, _dts(c.evaluated_at) or _now()),
+        )
+
+    def summary(self) -> dict:
+        """聚合：hit/miss/neutral 计数与命中率（方向可判定的子集）。"""
+        row = self.db.query_one(
+            """SELECT COUNT(*) AS total,
+                      SUM(CASE WHEN outcome='hit' THEN 1 ELSE 0 END) AS hits,
+                      SUM(CASE WHEN outcome='miss' THEN 1 ELSE 0 END) AS misses,
+                      SUM(CASE WHEN outcome='neutral' THEN 1 ELSE 0 END) AS neutrals
+               FROM forecast_check""")
+        total = row["total"] or 0 if row else 0
+        hits = row["hits"] or 0 if row else 0
+        misses = row["misses"] or 0 if row else 0
+        neutrals = row["neutrals"] or 0 if row else 0
+        directed = hits + misses
+        return {
+            "total": total, "hits": hits, "misses": misses, "neutrals": neutrals,
+            "hit_rate": round(hits / directed, 4) if directed else None,
+        }
+
+    def pending_count(self) -> int:
+        """待核对的影响数（有方向、过了 horizon、尚未落账）。"""
+        row = self.db.query_one(
+            """SELECT COUNT(*) AS n
+               FROM event_impact i JOIN event e ON e.event_id = i.event_id
+               LEFT JOIN forecast_check f ON f.impact_id = i.impact_id
+               WHERE f.impact_id IS NULL
+                 AND i.direction IN ('bullish','bearish')""")
+        return (row["n"] or 0) if row else 0

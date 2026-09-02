@@ -17,8 +17,9 @@ trace/
 ├── graph/               # 产业链图谱（SQLite 邻接表 + BFS）
 ├── scoring/             # 集中评分引擎 + 供需景气确定性信号
 ├── alerts/              # 阈值/幂等/首次同步保护 + Telegram 模板 + 每日摘要 + /ask
+├── feedback/            # 预测回测账本：方向预测 vs 事后真实行情（/accuracy 查看）
 ├── bot/                 # Telegram Bot 命令 + 投递回执
-├── db/                  # SQLite(WAL) + Repository 层 + migration + source_health
+├── db/                  # SQLite(WAL) + Repository 层 + migration + source_health + 每日备份轮换
 ├── market_time/         # 跨市场交易日历
 ├── common/              # http 客户端(重试/退避/限流) / hashing / 模式门禁 / 可观测性
 ├── pipeline.py          # run-once / 长驻循环编排
@@ -63,9 +64,15 @@ python -m trace.main digest           # 生成今日摘要
 - **生产门禁**：production 模式不得生成伪分析 / 伪投递 / Mock 行情，全部显式 STOP 或降级标记
   （`analysis_mode=rule_based_degraded`、`market_data_mode=mock|unavailable`）。
 - **成本控制**：Level 1 确定性去重零成本拦截在 LLM 之前；真实 API 调用次数（含重试）
-  记入 run 摘要的 `llm_stage_a_calls / llm_stage_b_calls / llm_verifier_calls`。
+  记入 run 摘要的 `llm_stage_a_calls / llm_stage_b_calls / llm_verifier_calls`；
+  Gemini 走 API 级 `responseSchema` 结构化约束，减少校验失败重试。
 - **采集调度**：长驻 `run` / `bot` 循环按 `settings.yaml → collectors.interval_seconds`
   跳过未到期采集器并并行执行（`collectors.parallel_workers`）；`run-once` 验收不受影响。
+- **运营闭环**（长驻循环每轮自动维护，全部幂等）：
+  - 预测回测账本：事件 24h 后用真实行情核对方向预测，`/accuracy` 查看命中率；
+  - 每日摘要：到 `digest.send_time`（用户时区）自动推送，每天一次；
+  - 每日备份：SQLite 一致性快照到 `data/backups/`，保留 `backup.keep` 份；
+  - 运行历史：每轮摘要落库，`/status` 查看最近运行 / 来源健康 / 回测 / 备份状态。
 - **合规**：`license_mode=unknown` 的来源只做事实重述 + 链接，不重发正文；
   SEC 访问使用 `sec_contact` 配置的公平访问 User-Agent。
 

@@ -99,8 +99,23 @@ telegram:
   default_user_timezone: Asia/Taipei
 
 digest:
+  enabled: true                 # 长驻循环到点自动推送每日摘要
   # 每日摘要生成时间（用户默认时区）
   send_time: "21:00"
+
+forecast:
+  # 预测回测账本：事件后 horizon 小时用真实行情核对方向预测（/accuracy 查看）
+  enabled: true
+  horizon_hours: 24
+  move_threshold_pct: 1.0       # 实际涨跌超过 ±1% 才算有方向
+
+backup:
+  # SQLite 每日备份（data/backups/，同一天一份）与轮换
+  enabled: true
+  keep: 7
+
+ops:
+  run_history_keep: 500         # run_history 表保留的最近轮数
 
 collectors:
   # 并行采集线程数（1 = 串行；长驻 run/bot 循环生效）

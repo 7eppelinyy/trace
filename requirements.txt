@@ -7,6 +7,9 @@ lxml>=5.0
 # 语义相似度（跨语言 Event 聚类，默认模型可配置；缺失时自动降级为 hash 伪向量）
 sentence-transformers>=2.7
 
+# 语义聚类矩阵加速（batch 余弦；缺失时自动回退纯 Python 逐对计算）
+numpy>=1.26
+
 # LLM Structured Output（可插拔 Provider：默认 Gemini 走 REST/httpx，无 SDK 硬依赖；
 # OpenAI Provider 保持兼容，非必需依赖）
 openai>=1.30

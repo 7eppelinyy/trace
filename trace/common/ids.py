@@ -31,3 +31,7 @@ def alert_delivery_id() -> str:
 def digest_id() -> str:
     date = datetime.now(timezone.utc).strftime("%Y%m%d")
     return f"DGST-{date}-{_short_uuid(8)}"
+
+
+def forecast_check_id() -> str:
+    return f"FCK-{_short_uuid()}"

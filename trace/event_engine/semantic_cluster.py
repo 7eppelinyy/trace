@@ -23,7 +23,7 @@ from datetime import datetime, timezone
 from trace.db.connection import Database
 from trace.db.repositories import EventRepo
 from trace.domain.models import Event
-from trace.event_engine.embeddings import Embedder, cosine
+from trace.event_engine.embeddings import Embedder, cosine, pairwise_cosines
 
 
 @dataclass
@@ -70,15 +70,52 @@ class SemanticCluster:
     def find_candidates(self, title: str, summary: str, entities: list[str],
                         event_type: str, event_time: datetime | None,
                         language: str = "") -> list[MatchCandidate]:
-        """对时间窗口内的近期 Event 计算 merge_score，按分数降序返回。"""
+        """对时间窗口内的近期 Event 计算 merge_score，按分数降序返回。
+
+        向量一次预取（含懒回填批量持久化）后用 batch 余弦算相似度：
+        热路径是 每条新 item × 窗口内全部事件 × 2 向量，逐对纯 Python
+        点积在事件量增长后会成为瓶颈。
+        """
         title_vec, _ = self.embed_text(title)
         summary_vec, _ = self.embed_text(summary)
+        events = self.event_repo.recent(hours=int(self._window_hours))
+
+        # 懒回填：窗口内向量缺失的事件补算，并批量持久化
+        # （不落库的话同一事件每轮比较都会重新调用 embedder）
+        title_vecs: list[list[float]] = []
+        summary_vecs: list[list[float]] = []
+        backfilled: list[Event] = []
+        for ev in events:
+            changed = False
+            tv = _blob_to_vec(ev.title_embedding)
+            if not tv:
+                tv, blob = self.embed_text(ev.title)
+                ev.title_embedding = blob
+                changed = True
+            sv = _blob_to_vec(ev.summary_embedding)
+            if not sv:
+                sv, blob = self.embed_text(ev.summary)
+                ev.summary_embedding = blob
+                changed = True
+            if changed:
+                backfilled.append(ev)
+            title_vecs.append(tv)
+            summary_vecs.append(sv)
+        if backfilled:
+            with self.event_repo.db.transaction():
+                for ev in backfilled:
+                    self.event_repo.update_embeddings(
+                        ev.event_id, ev.title_embedding, ev.summary_embedding)
+
+        title_sims = pairwise_cosines(title_vec, title_vecs)
+        summary_sims = pairwise_cosines(summary_vec, summary_vecs)
 
         candidates: list[MatchCandidate] = []
-        for ev in self.event_repo.recent(hours=int(self._window_hours)):
+        for ev, t_sim, s_sim in zip(events, title_sims, summary_sims):
             score, breakdown = self._merge_score(
                 ev, title, summary, title_vec, summary_vec,
-                entities, event_type, event_time)
+                entities, event_type, event_time,
+                title_sim=t_sim, summary_sim=s_sim)
             if score >= self.verifier_min_threshold * 0.8:  # 只对接近阈值的候选保留
                 candidates.append(MatchCandidate(event=ev, merge_score=score, breakdown=breakdown))
         candidates.sort(key=lambda c: c.merge_score, reverse=True)
@@ -88,26 +125,31 @@ class SemanticCluster:
     def _merge_score(self, ev: Event, title: str, summary: str,
                      title_vec: list[float], summary_vec: list[float],
                      entities: list[str], event_type: str,
-                     event_time: datetime | None) -> tuple[float, dict]:
+                     event_time: datetime | None, *,
+                     title_sim: float | None = None,
+                     summary_sim: float | None = None) -> tuple[float, dict]:
         w = self._weights
 
-        # 向量缺失时懒回填并持久化：不落库的话同一事件每轮比较都会
-        # 重新调用 embedder（成本随轮数线性增长）
-        ev_title_vec = _blob_to_vec(ev.title_embedding)
-        ev_summary_vec = _blob_to_vec(ev.summary_embedding)
-        if not ev_title_vec or not ev_summary_vec:
-            if not ev_title_vec:
-                ev_title_vec, blob = self.embed_text(ev.title)
-                ev.title_embedding = blob
-            if not ev_summary_vec:
-                ev_summary_vec, blob = self.embed_text(ev.summary)
-                ev.summary_embedding = blob
-            self.event_repo.update_embeddings(ev.event_id,
-                                              ev.title_embedding,
-                                              ev.summary_embedding)
+        # 向量缺失时懒回填并持久化（find_candidates 已批量处理，
+        # 此处兜底直接调用路径）：不落库会每轮重复 embed
+        if title_sim is None or summary_sim is None:
+            ev_title_vec = _blob_to_vec(ev.title_embedding)
+            ev_summary_vec = _blob_to_vec(ev.summary_embedding)
+            if not ev_title_vec or not ev_summary_vec:
+                if not ev_title_vec:
+                    ev_title_vec, blob = self.embed_text(ev.title)
+                    ev.title_embedding = blob
+                if not ev_summary_vec:
+                    ev_summary_vec, blob = self.embed_text(ev.summary)
+                    ev.summary_embedding = blob
+                self.event_repo.update_embeddings(ev.event_id,
+                                                  ev.title_embedding,
+                                                  ev.summary_embedding)
+            if title_sim is None:
+                title_sim = cosine(title_vec, ev_title_vec)
+            if summary_sim is None:
+                summary_sim = cosine(summary_vec, ev_summary_vec)
 
-        title_sim = cosine(title_vec, ev_title_vec)
-        summary_sim = cosine(summary_vec, ev_summary_vec)
         entity_overlap = _entity_overlap(entities, ev)
         type_match = 1.0 if (event_type or "other") == (ev.event_type or "other") else 0.0
         time_prox = _time_proximity(event_time, ev)

@@ -1,0 +1,24 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      # sentence-transformers 依赖 torch（体积巨大且非必需，
+      # 缺失时自动降级 hash embedder），与服务器部署口径一致
+      - name: Install dependencies
+        run: pip install httpx feedparser beautifulsoup4 lxml openai python-telegram-bot pyyaml python-dotenv pytz numpy pytest
+      - name: Run tests
+        run: pytest -q
+        env:
+          TRACE_MODE: offline

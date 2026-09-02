@@ -22,6 +22,7 @@ from trace.db.connection import Database, get_database
 from trace.db.migration import apply_migrations
 from trace.data.seed import load_all_seeds
 from trace.event_engine.engine import EventEngine
+from trace.feedback.ledger import ForecastLedger
 from trace.graph.industry_graph import IndustryGraph
 from trace.market_time.calendar import MarketCalendar
 from trace.scoring.engine import ScoringEngine
@@ -42,6 +43,7 @@ class AppContext:
     alert_renderer: AlertRenderer
     digest_builder: DigestBuilder
     ask_engine: AskEngine
+    ledger: ForecastLedger
 
 
 def create_app(config_path=None) -> AppContext:
@@ -73,4 +75,5 @@ def create_app(config_path=None) -> AppContext:
         alert_renderer=AlertRenderer(db),
         digest_builder=DigestBuilder(db, config, confirmer),
         ask_engine=AskEngine(db, graph),
+        ledger=ForecastLedger(db, config, confirmer),
     )

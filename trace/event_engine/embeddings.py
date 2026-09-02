@@ -12,6 +12,11 @@ import math
 
 logger = logging.getLogger(__name__)
 
+try:  # 可选加速：缺失时自动回退纯 Python，任何环境可运行
+    import numpy as _np
+except ImportError:  # pragma: no cover
+    _np = None
+
 
 class Embedder:
     def encode(self, texts: list[str]) -> list[list[float]]:
@@ -53,10 +58,44 @@ def cosine(a: list[float], b: list[float]) -> float:
         return 0.0
     dot = sum(x * y for x, y in zip(a, b))
     na = math.sqrt(sum(x * x for x in a))
-    nb = math.sqrt(sum(y * y for y in b))
+    nb = math.sqrt(sum(x * x for x in b))
     if na == 0 or nb == 0:
         return 0.0
     return max(0.0, min(1.0, dot / (na * nb)))
+
+
+def pairwise_cosines(q: list[float], vecs: list[list[float]]) -> list[float]:
+    """q 与每个 vec 的余弦。
+
+    numpy 可用时一次矩阵乘法算完（聚类热路径：每条新 item × 近 72h 全部
+    事件 × 2 向量），缺失或向量维度不齐时回退逐对纯 Python 计算。
+    """
+    n = len(vecs)
+    if not q or n == 0:
+        return [0.0] * n
+    if _np is not None:
+        try:
+            qv = _np.asarray(q, dtype=float)
+            qn = float(_np.linalg.norm(qv))
+            idx: list[int] = []
+            rows: list[list[float]] = []
+            for i, v in enumerate(vecs):
+                if v and len(v) == len(q):
+                    idx.append(i)
+                    rows.append(v)
+            out = [0.0] * n
+            if rows:
+                m = _np.asarray(rows, dtype=float)
+                norms = _np.linalg.norm(m, axis=1)
+                denom = norms * qn
+                safe = _np.where(denom > 0, denom, 1.0)
+                sims = _np.clip((m @ qv) / safe, 0.0, 1.0)
+                for i, s in zip(idx, sims):
+                    out[i] = float(s)
+            return out
+        except Exception as exc:  # 数值/维度异常：回退逐对计算
+            logger.debug("pairwise_cosines numpy path failed, fallback: %s", exc)
+    return [cosine(q, v) for v in vecs]
 
 
 def build_embedder(config) -> Embedder:

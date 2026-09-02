@@ -41,8 +41,14 @@ class BaseLLMProvider(ABC):
     name: str = "base"
 
     @abstractmethod
-    def generate(self, model: str, system_prompt: str, user_prompt: str) -> str:
-        """发送一次生成请求，返回模型输出文本。网络/服务错误直接抛异常。"""
+    def generate(self, model: str, system_prompt: str, user_prompt: str,
+                 schema: dict | None = None) -> str:
+        """发送一次生成请求，返回模型输出文本。网络/服务错误直接抛异常。
+
+        schema：结构化输出约束（项目内 JSON Schema 子集）；
+        支持的 Provider 应将其下推为 API 级强制（Gemini responseSchema），
+        不支持的 Provider 可忽略（由 LLMClient 事后校验兜底）。
+        """
 
 
 class OpenAIProvider(BaseLLMProvider):
@@ -70,8 +76,11 @@ class OpenAIProvider(BaseLLMProvider):
     def ready(self) -> bool:
         return self._client is not None
 
-    def generate(self, model: str, system_prompt: str, user_prompt: str) -> str:
+    def generate(self, model: str, system_prompt: str, user_prompt: str,
+                 schema: dict | None = None) -> str:
         assert self._client is not None
+        # strict json_schema 要求全部字段 required，与现有 Schema 形态不匹配；
+        # 保持 json_object + LLMClient 事后校验兜底
         resp = self._client.chat.completions.create(
             model=model,
             temperature=self._temperature,
@@ -102,18 +111,24 @@ class GeminiProvider(BaseLLMProvider):
     def ready(self) -> bool:
         return bool(self._api_key)
 
-    def generate(self, model: str, system_prompt: str, user_prompt: str) -> str:
+    def generate(self, model: str, system_prompt: str, user_prompt: str,
+                 schema: dict | None = None) -> str:
         url = self.ENDPOINT.format(model=model)
+        generation_config: dict[str, Any] = {
+            "temperature": self._temperature,
+            # Structured Output：要求模型只输出 JSON 对象
+            "responseMimeType": "application/json",
+        }
+        if schema:
+            # API 级结构化约束：字段类型/枚举/必填在解码层强制，
+            # 而不是只靠提示词祈祷 + 事后校验
+            generation_config["responseSchema"] = _to_gemini_schema(schema)
         payload = {
             "systemInstruction": {"parts": [{"text": system_prompt}]},
             "contents": [
                 {"role": "user", "parts": [{"text": user_prompt}]},
             ],
-            "generationConfig": {
-                "temperature": self._temperature,
-                # Structured Output：要求模型只输出 JSON 对象
-                "responseMimeType": "application/json",
-            },
+            "generationConfig": generation_config,
         }
         resp = self._http.post(
             url, json=payload,
@@ -179,8 +194,12 @@ class LLMClient:
         return min(30.0, self.backoff_base * (2 ** attempt)) + random.uniform(0, 1)
 
     # ------------------------------------------------------------------
-    def complete_json(self, model: str, system_prompt: str, user_prompt: str) -> dict:
-        """请求 LLM 返回 JSON 对象（带指数退避重试）。失败抛异常。"""
+    def complete_json(self, model: str, system_prompt: str, user_prompt: str,
+                      schema: dict | None = None) -> dict:
+        """请求 LLM 返回 JSON 对象（带指数退避重试）。失败抛异常。
+
+        schema 会下推给支持的 Provider 做 API 级结构化约束。
+        """
         if not self.available:
             raise LLMUnavailableError(
                 self._provider_error
@@ -190,7 +209,8 @@ class LLMClient:
         for attempt in range(max_retries + 1):
             self.call_count += 1
             try:
-                text = self._provider.generate(model, system_prompt, user_prompt)
+                text = self._provider.generate(model, system_prompt, user_prompt,
+                                               schema=schema)
                 return _extract_json(text)
             except Exception as exc:
                 last_exc = exc
@@ -213,7 +233,8 @@ class LLMClient:
         max_retries = int(self.config.max_retries)
         last_exc: Exception | None = None
         for attempt in range(max_retries + 1):
-            data = self.complete_json(model, system_prompt, user_prompt)
+            data = self.complete_json(model, system_prompt, user_prompt,
+                                      schema=schema)
             try:
                 validate(data, schema)
                 return data
@@ -241,3 +262,35 @@ def _extract_json(text: str) -> dict:
     if start < 0 or end <= start:
         raise ValueError("no JSON object in LLM output")
     return json.loads(text[start:end + 1])
+
+
+def _to_gemini_schema(node: dict) -> dict:
+    """把项目内 JSON Schema 子集转换为 Gemini responseSchema 结构。
+
+    - type 数组 ["string","null"] → type=STRING + nullable=true
+      （Gemini 不接受联合类型；nullable 字段必须拆出来标）
+    - type 转大写（Type 枚举名：STRING/NUMBER/INTEGER/BOOLEAN/ARRAY/OBJECT）
+    - 丢弃 Gemini 不支持的约束（minLength 等），保留 enum/required/items
+    """
+    if not isinstance(node, dict):
+        return {}
+    out: dict[str, Any] = {}
+    t = node.get("type")
+    if isinstance(t, list):
+        non_null = [x for x in t if x != "null"]
+        out["type"] = str((non_null or ["string"])[0]).upper()
+        if "null" in t:
+            out["nullable"] = True
+    elif isinstance(t, str):
+        out["type"] = t.upper()
+    for key in ("enum", "description"):
+        if key in node:
+            out[key] = node[key]
+    if "items" in node:
+        out["items"] = _to_gemini_schema(node["items"])
+    if "properties" in node:
+        out["properties"] = {k: _to_gemini_schema(v)
+                             for k, v in node["properties"].items()}
+    if "required" in node:
+        out["required"] = list(node["required"])
+    return out
