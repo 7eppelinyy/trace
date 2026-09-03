@@ -254,6 +254,7 @@ def build_default_registry(db: Database, config) -> CollectorRegistry:
     from trace.collectors.cninfo import CNINFOCollector
     from trace.collectors.industry_media import IndustryMediaCollector
     from trace.collectors.ir import IRCollector
+    from trace.collectors.jin10 import Jin10Collector
     from trace.collectors.micron import MicronCollector
     from trace.collectors.policy import PolicyCollector
     from trace.collectors.rss import RSSCollector
@@ -266,6 +267,6 @@ def build_default_registry(db: Database, config) -> CollectorRegistry:
         parallel_workers=int(config.get("collectors.parallel_workers", 4)))
     for cls in (SECCollector, IRCollector, SanDiskCollector, MicronCollector,
                 CNINFOCollector, SSECollector, SZSECollector, PolicyCollector,
-                RSSCollector, IndustryMediaCollector):
+                RSSCollector, IndustryMediaCollector, Jin10Collector):
         registry.register(cls(db, config))
     return registry

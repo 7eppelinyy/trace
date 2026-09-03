@@ -323,3 +323,18 @@ sources:
     license_mode: unknown
     enabled: false
     poll_interval_seconds: 600
+
+  # 金十数据（MCP 智能开放平台，官方 Bearer token 授权）。
+  # 合规依据：金十官方 MCP 智能开放平台授予在 AI 应用内使用其快讯/数据/行情的
+  # 授权（license_mode=licensed_ai_analysis），token 来自环境变量 JIN10_BEARER_TOKEN。
+  # 仅用于内部 AI 分析，不对外转卖/重新分发。快讯量大，走 jin10 关键词初筛控 LLM 成本。
+  # 默认禁用：采集器验证（本地 collect 实测通过）后再置 true。
+  - source_id: src_jin10
+    source_name: 金十数据（快讯）
+    source_type: financial_media
+    authority_level: financial_media
+    priority: 4
+    base_reliability: 7.0
+    license_mode: licensed_ai_analysis
+    enabled: false
+    poll_interval_seconds: 600

@@ -131,6 +131,13 @@ collectors:
     policy: 600
     rss: 600
     industry_media: 600
+    jin10: 600
+  # 金十数据（MCP 官方授权）采集配置
+  jin10:
+    keyword_filter: jin10        # Level 1 关键词初筛词表（source_filters.yaml）
+    max_pages: 3                 # 每次采集最多翻页数（每页 20 条）
+    max_items: 60                # 单轮最多进入下游的条目数（控 LLM 量）
+    bootstrap_days: 7            # 首次接入只回填最近 N 天
   http:
     timeout_seconds: 30
     user_agent: "TraceEventRadar/0.1 (research use)"
