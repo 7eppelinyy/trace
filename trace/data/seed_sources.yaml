@@ -336,5 +336,5 @@ sources:
     priority: 4
     base_reliability: 7.0
     license_mode: licensed_ai_analysis
-    enabled: false
+    enabled: true
     poll_interval_seconds: 600
