@@ -1,0 +1,80 @@
+# ============================================================
+# 种子数据：产业链边（industry_edge）
+# LLM 不得凭空永久修改产业图谱；长期关系必须来自
+# 公司公告 / SEC / IR / 官方资料 / 高可信产业资料 / 人工批准
+# ============================================================
+
+edges:
+  # ---- 存储厂商生产/供应 ----
+  - {from_node: sndk, to_node: nand, edge_type: produces, confidence: 0.98, evidence_source: seed/company_ir, direction_rule: positive}
+  - {from_node: sndk, to_node: enterprise_ssd, edge_type: produces, confidence: 0.95, evidence_source: seed/company_ir, direction_rule: positive}
+  - {from_node: mu, to_node: dram, edge_type: produces, confidence: 0.98, evidence_source: seed/company_ir, direction_rule: positive}
+  - {from_node: mu, to_node: nand, edge_type: produces, confidence: 0.95, evidence_source: seed/company_ir, direction_rule: positive}
+  - {from_node: mu, to_node: hbm, edge_type: produces, confidence: 0.95, evidence_source: seed/company_ir, direction_rule: positive}
+  - {from_node: samsung, to_node: nand, edge_type: produces, confidence: 0.98, evidence_source: seed/industry, direction_rule: positive}
+  - {from_node: samsung, to_node: dram, edge_type: produces, confidence: 0.98, evidence_source: seed/industry, direction_rule: positive}
+  - {from_node: samsung, to_node: hbm, edge_type: produces, confidence: 0.90, evidence_source: seed/industry, direction_rule: positive}
+  - {from_node: sk_hynix, to_node: dram, edge_type: produces, confidence: 0.98, evidence_source: seed/industry, direction_rule: positive}
+  - {from_node: sk_hynix, to_node: hbm, edge_type: produces, confidence: 0.95, evidence_source: seed/industry, direction_rule: positive}
+  - {from_node: ymtc, to_node: nand, edge_type: produces, confidence: 0.95, evidence_source: seed/industry, direction_rule: positive}
+  - {from_node: cxmt, to_node: dram, edge_type: produces, confidence: 0.90, evidence_source: seed/industry, direction_rule: positive}
+  - {from_node: kioxia, to_node: nand, edge_type: produces, confidence: 0.95, evidence_source: seed/industry, direction_rule: positive}
+
+  # ---- 竞争 ----
+  - {from_node: sndk, to_node: mu, edge_type: competes_with, confidence: 0.90, evidence_source: seed/industry, direction_rule: contextual}
+  - {from_node: sndk, to_node: samsung, edge_type: competes_with, confidence: 0.90, evidence_source: seed/industry, direction_rule: contextual}
+  - {from_node: mu, to_node: samsung, edge_type: competes_with, confidence: 0.90, evidence_source: seed/industry, direction_rule: contextual}
+  - {from_node: mu, to_node: sk_hynix, edge_type: competes_with, confidence: 0.90, evidence_source: seed/industry, direction_rule: contextual}
+  - {from_node: nvda, to_node: amd, edge_type: competes_with, confidence: 0.95, evidence_source: seed/industry, direction_rule: contextual}
+
+  # ---- 消费关系：AI 服务器/数据中心消费 GPU/HBM/企业级SSD ----
+  - {from_node: ai_server, to_node: gpu, edge_type: consumes, confidence: 0.95, evidence_source: seed/industry, direction_rule: positive}
+  - {from_node: ai_server, to_node: hbm, edge_type: consumes, confidence: 0.95, evidence_source: seed/industry, direction_rule: positive}
+  - {from_node: ai_datacenter, to_node: ai_server, edge_type: consumes, confidence: 0.95, evidence_source: seed/industry, direction_rule: positive}
+  - {from_node: ai_datacenter, to_node: enterprise_ssd, edge_type: consumes, confidence: 0.90, evidence_source: seed/industry, direction_rule: positive}
+
+  # ---- GPU 绑定 HBM ----
+  - {from_node: gpu, to_node: hbm, edge_type: consumes, confidence: 0.95, evidence_source: seed/industry, direction_rule: positive}
+  - {from_node: nvda, to_node: gpu, edge_type: produces, confidence: 0.98, evidence_source: seed/company_ir, direction_rule: positive}
+  - {from_node: nvda, to_node: hbm, edge_type: consumes, confidence: 0.90, evidence_source: seed/industry, direction_rule: positive}
+
+  # ---- Hyperscaler CapEx → AI 数据中心 ----
+  - {from_node: msft, to_node: ai_datacenter, edge_type: depends_on, confidence: 0.90, evidence_source: seed/company_ir, direction_rule: positive}
+  - {from_node: meta, to_node: ai_datacenter, edge_type: depends_on, confidence: 0.90, evidence_source: seed/company_ir, direction_rule: positive}
+  - {from_node: googl, to_node: ai_datacenter, edge_type: depends_on, confidence: 0.90, evidence_source: seed/company_ir, direction_rule: positive}
+  - {from_node: amzn, to_node: ai_datacenter, edge_type: depends_on, confidence: 0.90, evidence_source: seed/company_ir, direction_rule: positive}
+
+  # ---- Apple 采购 NAND ----
+  - {from_node: apple, to_node: nand, edge_type: consumes, confidence: 0.95, evidence_source: seed/industry, direction_rule: positive}
+  - {from_node: apple, to_node: sndk, edge_type: customer_of, confidence: 0.70, evidence_source: seed/industry, direction_rule: contextual}
+
+  # ---- 价格传导 ----
+  - {from_node: memory_contract_price, to_node: nand, edge_type: exposed_to, confidence: 0.90, evidence_source: seed/industry, direction_rule: contextual}
+  - {from_node: memory_contract_price, to_node: dram, edge_type: exposed_to, confidence: 0.90, evidence_source: seed/industry, direction_rule: contextual}
+  - {from_node: memory_spot_price, to_node: nand, edge_type: exposed_to, confidence: 0.85, evidence_source: seed/industry, direction_rule: contextual}
+  - {from_node: memory_spot_price, to_node: dram, edge_type: exposed_to, confidence: 0.85, evidence_source: seed/industry, direction_rule: contextual}
+  - {from_node: sndk, to_node: memory_contract_price, edge_type: exposed_to, confidence: 0.90, evidence_source: seed/industry, direction_rule: positive}
+  - {from_node: mu, to_node: memory_contract_price, edge_type: exposed_to, confidence: 0.90, evidence_source: seed/industry, direction_rule: positive}
+
+  # ---- A股映射 ----
+  - {from_node: biwin, to_node: nand, edge_type: consumes, confidence: 0.90, evidence_source: seed/industry, direction_rule: positive}
+  - {from_node: longsys, to_node: nand, edge_type: consumes, confidence: 0.90, evidence_source: seed/industry, direction_rule: positive}
+  - {from_node: montage, to_node: dram, edge_type: depends_on, confidence: 0.85, evidence_source: seed/company_ir, direction_rule: positive}
+  - {from_node: inspur, to_node: ai_server, edge_type: produces, confidence: 0.95, evidence_source: seed/company_ir, direction_rule: positive}
+  - {from_node: fii, to_node: ai_server, edge_type: produces, confidence: 0.95, evidence_source: seed/company_ir, direction_rule: positive}
+  - {from_node: sugon, to_node: ai_server, edge_type: produces, confidence: 0.90, evidence_source: seed/company_ir, direction_rule: positive}
+  - {from_node: innolight, to_node: ai_datacenter, edge_type: benefits_from, confidence: 0.90, evidence_source: seed/industry, direction_rule: positive}
+  - {from_node: eoptolink, to_node: ai_datacenter, edge_type: benefits_from, confidence: 0.90, evidence_source: seed/industry, direction_rule: positive}
+  - {from_node: tfc, to_node: ai_datacenter, edge_type: benefits_from, confidence: 0.85, evidence_source: seed/industry, direction_rule: positive}
+  - {from_node: hygon, to_node: gpu, edge_type: produces, confidence: 0.75, evidence_source: seed/industry, direction_rule: positive}
+  - {from_node: cambricon, to_node: gpu, edge_type: produces, confidence: 0.85, evidence_source: seed/industry, direction_rule: positive}
+
+  # ---- 监管 ----
+  - {from_node: nvda, to_node: us_gov, edge_type: regulated_by, confidence: 0.95, evidence_source: seed/official, direction_rule: contextual}
+  - {from_node: mu, to_node: us_gov, edge_type: regulated_by, confidence: 0.95, evidence_source: seed/official, direction_rule: contextual}
+  - {from_node: sndk, to_node: us_gov, edge_type: regulated_by, confidence: 0.95, evidence_source: seed/official, direction_rule: contextual}
+  - {from_node: smic, to_node: us_gov, edge_type: exposed_to, confidence: 0.85, evidence_source: seed/official, direction_rule: contextual}
+
+  # ---- TSMC 关联 ----
+  - {from_node: tsmc, to_node: nvda, edge_type: supplier_of, confidence: 0.95, evidence_source: seed/industry, direction_rule: positive}
+  - {from_node: tsmc, to_node: amd, edge_type: supplier_of, confidence: 0.95, evidence_source: seed/industry, direction_rule: positive}

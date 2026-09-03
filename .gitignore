@@ -3,7 +3,8 @@ __pycache__/
 .venv/
 venv/
 .env
-data/
+# 运行时数据目录（仓库根的 data/＝SQLite db + 备份）。必须根锚定，否则会误伤源码目录 trace/data/。
+/data/
 *.db
 *.db-wal
 *.db-shm

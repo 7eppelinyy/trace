@@ -1,0 +1,325 @@
+# ============================================================
+# 种子数据：数据源登记（source_registry）
+# 合规要求：未获得正式授权的商业媒体一律 enabled: false
+# Source Completion Gate V1：authority_level / poll_interval_seconds /
+# security_map 集中配置，禁止散落硬编码（任务书 §7/§9/§11）
+# ============================================================
+
+sources:
+  # ---------------- P0：美股官方 ----------------
+  - source_id: src_sec_edgar
+    source_name: SEC EDGAR
+    source_type: official
+    authority_level: official_regulator
+    priority: 1
+    base_reliability: 10.0
+    license_mode: public
+    enabled: true
+    poll_interval_seconds: 120
+
+  # SanDisk IR：官方 RSS（2026-08-26 真实验证可用：200 + 10 entries，
+  # 含 ETag/Last-Modified，支持条件请求）。
+  - source_id: src_sndk_ir
+    source_name: Sandisk Investor Relations
+    source_type: ir
+    authority_level: official_company
+    priority: 2
+    base_reliability: 9.5
+    license_mode: public
+    enabled: true
+    poll_interval_seconds: 120
+    security_map: [SEC-US-SNDK]
+
+  # Micron IR：官方 RSS 端点被 Cloudflare 限流（429，2026-08-26 实测），
+  # 备用路线 = 官网新闻室页面（www.micron.com/about/newsroom/press-releases，
+  # 2026-08-26 真实验证可用）+ 低频 + 退避；不使用第三方内容替代官方公告。
+  - source_id: src_micron_ir
+    source_name: Micron Investor Relations
+    source_type: ir
+    authority_level: official_company
+    priority: 2
+    base_reliability: 9.5
+    license_mode: public
+    enabled: true
+    poll_interval_seconds: 120
+    security_map: [SEC-US-MU]
+
+  - source_id: src_nvidia_ir
+    source_name: NVIDIA Investor Relations
+    source_type: ir
+    authority_level: official_company
+    priority: 2
+    base_reliability: 9.5
+    license_mode: public
+    enabled: true
+    poll_interval_seconds: 120
+    security_map: [SEC-US-NVDA]
+
+  - source_id: src_fed
+    source_name: Federal Reserve
+    source_type: official
+    authority_level: official_government
+    priority: 1
+    base_reliability: 10.0
+    license_mode: public
+    enabled: true
+    poll_interval_seconds: 300
+
+  - source_id: src_bis
+    source_name: Bureau of Industry and Security
+    source_type: official
+    authority_level: official_government
+    priority: 1
+    base_reliability: 9.8
+    license_mode: public
+    enabled: true
+    poll_interval_seconds: 300
+
+  # U.S. Commerce Department：官方站点被 Cloudflare 挑战（403），
+  # 真实可用入口 = GovDelivery 官方订阅 RSS（2026-08-26 验证：200，
+  # 25 条官方公告，含半导体/芯片出口相关内容）。
+  # 与 BIS / Federal Register 的同一事件由 Event Engine 去重合并
+  # （same Event / different Evidence），不会重复轰炸。
+  - source_id: src_commerce
+    source_name: U.S. Department of Commerce
+    source_type: official
+    authority_level: official_government
+    priority: 1
+    base_reliability: 9.8
+    license_mode: public
+    enabled: true
+    poll_interval_seconds: 300
+
+  - source_id: src_federal_register
+    source_name: Federal Register
+    source_type: official
+    authority_level: official_regulator
+    priority: 1
+    base_reliability: 9.8
+    license_mode: public
+    enabled: true
+    poll_interval_seconds: 300
+
+  # ---------------- P0：A股官方 ----------------
+  # 路线B（任务书 §5.2）：巨潮是证监会指定的沪深两市统一法定披露平台，
+  # src_cninfo 统一入口已覆盖沪深两市公告。
+  - source_id: src_cninfo
+    source_name: 巨潮资讯
+    source_type: official
+    authority_level: official_regulator
+    priority: 1
+    base_reliability: 9.5
+    license_mode: public
+    enabled: true
+    poll_interval_seconds: 300
+
+  - source_id: src_sse
+    source_name: 上海证券交易所
+    source_type: official
+    authority_level: official_regulator
+    priority: 1
+    base_reliability: 9.5
+    license_mode: public
+    enabled: false               # 路线B适配器：默认由 src_cninfo 统一覆盖
+    poll_interval_seconds: 300
+
+  - source_id: src_szse
+    source_name: 深圳证券交易所
+    source_type: official
+    authority_level: official_regulator
+    priority: 1
+    base_reliability: 9.5
+    license_mode: public
+    enabled: false               # 路线B适配器：默认由 src_cninfo 统一覆盖
+    poll_interval_seconds: 300
+
+  # ---------------- P0：中国政策官方源（2026-08-26 真实验证） ----------------
+  # 首页列表选择器已实测（标题-日期-链接配对），关键词初筛在
+  # trace/data/source_filters.yaml，不得对整个政府网站无差别进入 LLM。
+  - source_id: src_miit
+    source_name: 工业和信息化部
+    source_type: official
+    authority_level: official_government
+    priority: 2
+    base_reliability: 9.8
+    license_mode: public
+    enabled: true
+    poll_interval_seconds: 300
+
+  - source_id: src_mofcom
+    source_name: 商务部
+    source_type: official
+    authority_level: official_government
+    priority: 2
+    base_reliability: 9.8
+    license_mode: public
+    enabled: true
+    poll_interval_seconds: 300
+
+  - source_id: src_csrc
+    source_name: 中国证监会
+    source_type: official
+    authority_level: official_regulator
+    priority: 1
+    base_reliability: 9.5
+    license_mode: public
+    enabled: false               # 页面选择器未验证，本轮不纳入关键路径
+    poll_interval_seconds: 300
+
+  - source_id: src_stats_cn
+    source_name: 国家统计局
+    source_type: official
+    authority_level: official_government
+    priority: 3
+    base_reliability: 9.0
+    license_mode: public
+    enabled: false
+    poll_interval_seconds: 600
+
+  # ---------------- P1：产业媒体（RSS/公开页面） ----------------
+  # TrendForce：授权未明确（robots 未禁止但无正式许可），
+  # 本轮仅登记为 disabled_candidate，不进入生产抓取链路（任务书 §6）。
+  - source_id: src_trendforce
+    source_name: TrendForce
+    source_type: industry_media
+    authority_level: industry_media
+    priority: 3
+    base_reliability: 7.5
+    # 2026-08-31 从生产 VM 实测：官方 feed /news/rss → 301 → /news/feed_v2/ 200（20 条），
+    # 但该 feed **最后更新为 2026-07-01**，已停更约 61 天；其余候选路径（/rss、
+    # /presscenter/rss、/news/feed/、/feed/、/insights/feed_v2/）全 404。
+    # 官方 feed 停更 → 无法获得实时产业信号，启用只会造成"健康但零产出"的假覆盖。
+    # 按任务书 §6 保持 enabled=false，仅作 disabled_candidate。
+    # （若后续接入其新闻，可参照 SanDiskCollector 用官方 sitemap.xml 路线重建。）
+    license_mode: unknown
+    enabled: false
+    poll_interval_seconds: 600
+
+  - source_id: src_digitimes
+    source_name: DIGITIMES
+    source_type: industry_media
+    authority_level: industry_media
+    priority: 4
+    base_reliability: 7.0
+    # 2026-08-31 实测：/rss/ 为 403，官方每日 feed /rss/daily.xml → 200 / 55 条，
+    # robots.txt 允许。仅做事实重述 + 摘要 + 链接。
+    license_mode: public
+    enabled: true
+    poll_interval_seconds: 600
+
+  - source_id: src_eetimes
+    source_name: EE Times
+    source_type: industry_media
+    authority_level: industry_media
+    priority: 4
+    base_reliability: 7.0
+    # 2026-08-31 实测：官方 feed https://www.eetimes.com/feed/ → 200 / 10 条，
+    # robots.txt 允许。仅做事实重述 + 摘要 + 链接。
+    license_mode: public
+    enabled: true
+    poll_interval_seconds: 600
+
+  - source_id: src_eetimes_china
+    source_name: EE Times China
+    source_type: industry_media
+    authority_level: industry_media
+    priority: 4
+    base_reliability: 7.0
+    license_mode: unknown
+    # 2026-08-31 实测：/rss/news.xml、/rss.xml、/feed 均 404，站点已无公开 feed。
+    enabled: false
+    poll_interval_seconds: 600
+
+  - source_id: src_jw_insights
+    source_name: 集微网
+    source_type: industry_media
+    authority_level: industry_media
+    priority: 4
+    base_reliability: 6.5
+    license_mode: unknown
+    enabled: false
+    poll_interval_seconds: 600
+
+  - source_id: src_chipwise
+    source_name: 芯智讯
+    source_type: industry_media
+    authority_level: industry_media
+    priority: 5
+    base_reliability: 6.0
+    license_mode: unknown
+    enabled: false
+    poll_interval_seconds: 600
+
+  # ---------------- P1/P2：财经媒体（无授权一律关闭） ----------------
+  - source_id: src_reuters
+    source_name: Reuters
+    source_type: financial_media
+    authority_level: financial_media
+    priority: 2
+    base_reliability: 9.0
+    license_mode: licensed_ai_analysis
+    enabled: false                 # 无正式 API / License 前禁止抓取
+    poll_interval_seconds: 600
+
+  - source_id: src_bloomberg
+    source_name: Bloomberg
+    source_type: financial_media
+    authority_level: financial_media
+    priority: 2
+    base_reliability: 9.0
+    license_mode: licensed_ai_analysis
+    enabled: false
+    poll_interval_seconds: 600
+
+  - source_id: src_dowjones
+    source_name: Dow Jones / Factiva
+    source_type: financial_media
+    authority_level: financial_media
+    priority: 2
+    base_reliability: 9.0
+    license_mode: licensed_ai_analysis
+    enabled: false
+    poll_interval_seconds: 600
+
+  - source_id: src_ft
+    source_name: Financial Times
+    source_type: financial_media
+    authority_level: financial_media
+    priority: 3
+    base_reliability: 8.5
+    license_mode: licensed_ai_analysis
+    enabled: false
+    poll_interval_seconds: 600
+
+  - source_id: src_cnbc
+    source_name: CNBC
+    source_type: financial_media
+    authority_level: financial_media
+    priority: 3
+    base_reliability: 7.5
+    license_mode: unknown
+    # 2026-08-31 实测：官方 RSS 技术上可用（200 / 30 条），但 robots.txt 对该
+    # 路径 Disallow（allow_ua=False, allow_*=False）→ 按任务书 §6 保持关闭。
+    # 「能取到」不等于「获授权」，不得因技术可行而启用。
+    enabled: false
+    poll_interval_seconds: 600
+
+  - source_id: src_cls
+    source_name: 财联社
+    source_type: financial_media
+    authority_level: financial_media
+    priority: 3
+    base_reliability: 7.5
+    license_mode: unknown
+    enabled: false
+    poll_interval_seconds: 600
+
+  - source_id: src_eastmoney
+    source_name: 东方财富 / Choice
+    source_type: financial_media
+    authority_level: financial_media
+    priority: 3
+    base_reliability: 7.0
+    license_mode: unknown
+    enabled: false
+    poll_interval_seconds: 600

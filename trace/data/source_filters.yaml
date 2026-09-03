@@ -1,0 +1,132 @@
+# ============================================================
+# 来源关键词初筛（Level 1 廉价过滤，任务书 §10）
+# 政府 / 产业来源必须先过关键词，再进入 Event Engine / DeepSeek。
+# 命中任一关键词（大小写不敏感；中文按子串）即放行。
+# ============================================================
+
+filters:
+  # ---- 美国政策源（Commerce / BIS / Federal Register） ----
+  us_policy:
+    - semiconductor
+    - semiconductors
+    - chip
+    - chips
+    - memory
+    - nand
+    - dram
+    - hbm
+    - storage
+    - gpu
+    - ai chip
+    - advanced computing
+    - data center
+    - data-center
+    - export control
+    - entity list
+    - tariff
+    - tariffs
+    - china
+    - technology restriction
+    - foundry
+    - lithography
+    - artificial intelligence
+    - intel
+    - micron
+    - sandisk
+    - nvidia
+    - tsmc
+
+  # ---- 中国政策源（工信部 / 商务部 / 发改委等） ----
+  cn_policy:
+    - 半导体
+    - 集成电路
+    - 芯片
+    - 存储
+    - 存储器
+    - 人工智能
+    - 算力
+    - 服务器
+    - 数据中心
+    - 出口管制
+    - 出口限制
+    - 产业基金
+    - 税收优惠
+    - 国产替代
+    - 先进封装
+    - 光模块
+    - 晶圆
+    - 设备
+    - 材料
+    - 美光
+    - 英伟达
+    - 闪迪
+    - 台积电
+    - 中芯
+    - 华虹
+    - 长江存储
+    - 长鑫
+    - 兆易
+    - 澜起
+    - 江波龙
+    - 浪潮
+    - 富联
+    - 曙光
+    - 旭创
+    - 新易盛
+    - 北方华创
+    - 中微
+    - 韦尔
+
+  # ---- 产业媒体（TrendForce / DIGITIMES / EE Times，2026-08-31 启用） ----
+  # 设计意图：只放行「存储/半导体供需与价格」相关条目，其余只入游标不进 LLM。
+  # 词表偏窄是刻意的——DIGITIMES 每轮 55 条，全量进 Stage A 会浪费 LLM 预算。
+  industry_media:
+    # 产品与器件
+    - nand
+    - dram
+    - hbm
+    - hbm3
+    - hbm4
+    - ssd
+    - enterprise ssd
+    - ddr4
+    - ddr5
+    - memory
+    - flash
+    - nor flash
+    - wafer
+    - 存储
+    - 内存
+    - 闪存
+    # 供需与价格信号（对应「量价齐升」判据）
+    - memory price
+    - contract price
+    - contract prices
+    - spot price
+    - spot prices
+    - price hike
+    - price increase
+    - price rise
+    - oversupply
+    - undersupply
+    - shortage
+    - tight supply
+    - capacity
+    - utilization
+    - inventory
+    - 涨价
+    - 合约价
+    - 现货价
+    - 供不应求
+    - 缺货
+    - 产能
+    - 利用率
+    - 库存
+    - 减产
+    - 扩产
+    # 需求侧
+    - ai server
+    - ai servers
+    - data center
+    - 服务器
+    - 算力

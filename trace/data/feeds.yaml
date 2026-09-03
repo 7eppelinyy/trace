@@ -1,0 +1,85 @@
+# ============================================================
+# RSS / Feed 配置：政策源、IR 页面
+# 没有正式授权的付费媒体不得加入此文件
+# ============================================================
+
+feeds:
+  # ---------- IR（公司投资者关系，官方 RSS/Newsroom） ----------
+  # NVIDIA 官方新闻室 RSS（2026-08-25 真实探测可用，20 条 item）
+  - feed_id: ir_nvidia
+    source_id: src_nvidia_ir
+    url: https://nvidianews.nvidia.com/rss.xml
+    language: en
+
+  # SanDisk：IR RSS（investor.sandisk.com/rss.xml）大陆直连超时、依赖代理，
+  # 2026-08-26 起由 SanDiskCollector 的官方主站 sitemap 路线覆盖
+  # （www.sandisk.com/sitemap.xml 直连 200，53 条官方 press-releases），
+  # 不在 feeds 中登记（避免无代理环境下持续失败）。
+
+  # Micron：官方 RSS（investors.micron.com/rss.xml）实测被 Cloudflare
+  # 限流 429（2026-08-26），由 MicronCollector 的页面回退路线覆盖，
+  # 不在 feeds 中登记（避免 429 阻塞）。
+
+  # ---------- 美国官方政策源 ----------
+  - feed_id: federal_register
+    source_id: src_federal_register
+    url: https://www.federalregister.gov/api/v1/documents.rss?conditions%5Bterm%5D=semiconductor
+    language: en
+
+  - feed_id: fed_news
+    source_id: src_fed
+    url: https://www.federalreserve.gov/feeds/press_all.xml
+    language: en
+
+  # U.S. Commerce：官方站点被 Cloudflare 挑战（403，2026-08-26），
+  # 真实可用入口 = GovDelivery 官方订阅 RSS（2026-08-26 验证 200，
+  # 25 条官方公告，含芯片/半导体相关内容）。
+  - feed_id: commerce_govdelivery
+    source_id: src_commerce
+    url: https://public.govdelivery.com/accounts/USDOC/feed.rss
+    language: en
+    bootstrap_days: 14
+    # Level 1 关键词初筛（政府源不得无差别进 LLM；词表见 source_filters.yaml）
+    keyword_filter: us_policy
+
+  # ---------- 产业媒体（P1）----------
+  # 启用依据（2026-08-31 从生产 VM 实测，证据：
+  #   verification/industry-media-activation/media-feed-probe.json）：
+  #   站点自行发布官方 RSS = 明示授权程序化访问 → license_mode 由 unknown 升级为 public。
+  #   robots.txt 均 200 且对本 UA / * 允许抓取该 feed 路径。
+  # 合规约束不变：仅做 事实重述 + AI 摘要 + 来源名称 + 原文链接，不重发全文。
+  # 三者统一挂 keyword_filter=industry_media（存储/供需信号词），
+  # 未命中条目只入游标、不进 Event Engine / LLM（控成本，任务书 §10）。
+  # bootstrap_days=7：新源首次接入只回填最近 7 天，避免一次性灌入历史条目。
+
+  # TrendForce：官方 feed（/news/rss → 301 → /news/feed_v2/）已于 2026-07-01
+  # 停更（2026-08-31 实测最后条目 61 天前），其余候选路径均 404。
+  # 停更 feed 无法提供实时产业信号 → 不登记（避免"健康但零产出"假覆盖），
+  # 在 seed_sources.yaml 中保持 enabled=false，仅作 disabled_candidate。
+  # 若后续需接入其新闻，可参照 SanDiskCollector 用官方 sitemap.xml 路线重建。
+  # DIGITIMES：/rss/ 对程序化请求返回 403，官方每日 feed 为 /rss/daily.xml
+  # （实测 200，55 条，9 条命中存储关键词）。
+  - feed_id: digitimes
+    source_id: src_digitimes
+    url: https://www.digitimes.com/rss/daily.xml
+    language: en
+    keyword_filter: industry_media
+    bootstrap_days: 7
+
+  - feed_id: eetimes
+    source_id: src_eetimes
+    url: https://www.eetimes.com/feed/
+    language: en
+    keyword_filter: industry_media
+    bootstrap_days: 7
+
+  # EE Times China：/rss/news.xml、/rss.xml、/feed 三条路径 2026-08-31 实测均 404，
+  # 站点已无公开 feed → 不登记（避免每轮持续失败污染 source_health）。
+  # src_eetimes_china 在 seed_sources.yaml 保持 enabled=false。
+  #
+  # 集微网（laoyaoba/jiweinet）、芯智讯（icsmart.cn）：无可解析 feed
+  # （0 条 / 连接超时 / 服务端断开）→ 保持 enabled=false。
+  #
+  # CNBC：官方 RSS 可用（30 条），但 robots.txt 对该路径 Disallow
+  # （allow_ua=False, allow_*=False）→ 按任务书 §6 保守策略保持 enabled=false，
+  # 不因「技术上能取到」而启用。

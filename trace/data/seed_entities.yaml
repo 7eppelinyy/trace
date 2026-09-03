@@ -1,0 +1,91 @@
+# ============================================================
+# 种子数据：非上市实体（产业图节点）
+# Samsung / SK hynix / YMTC / CXMT / TSMC 等必须作为事件传播链节点
+# ============================================================
+
+entities:
+  - entity_id: samsung
+    name: Samsung Electronics
+    aliases: [三星, 三星电子, Samsung Semiconductor]
+    entity_type: company
+
+  - entity_id: sk_hynix
+    name: SK hynix
+    aliases: [海力士, SK海力士, SK 海力士]
+    entity_type: company
+
+  - entity_id: ymtc
+    name: YMTC
+    aliases: [长江存储, 长江存储科技]
+    entity_type: company
+
+  - entity_id: cxmt
+    name: CXMT
+    aliases: [长鑫存储, 合肥长鑫]
+    entity_type: company
+
+  - entity_id: kioxia
+    name: Kioxia
+    aliases: [铠侠]
+    entity_type: company
+
+  - entity_id: apple
+    name: Apple
+    aliases: [苹果, 苹果公司]
+    entity_type: company
+
+  - entity_id: us_gov
+    name: US Government
+    aliases: [美国政府, 美国商务部, BIS]
+    entity_type: agency
+
+  - entity_id: cn_gov
+    name: 中国政府
+    aliases: [国务院, 工信部, 商务部]
+    entity_type: agency
+
+  # ---------------- 概念/产品节点（事件传播链中间节点） ----------------
+  - entity_id: nand
+    name: NAND Flash
+    aliases: [NAND, 闪存]
+    entity_type: concept
+
+  - entity_id: dram
+    name: DRAM
+    aliases: [DRAM, 动态内存]
+    entity_type: concept
+
+  - entity_id: hbm
+    name: HBM
+    aliases: [高带宽内存, High Bandwidth Memory]
+    entity_type: concept
+
+  - entity_id: enterprise_ssd
+    name: Enterprise SSD
+    aliases: [企业级SSD, 数据中心SSD]
+    entity_type: concept
+
+  - entity_id: ai_server
+    name: AI Server
+    aliases: [AI服务器, 人工智能服务器]
+    entity_type: concept
+
+  - entity_id: ai_datacenter
+    name: AI Data Center
+    aliases: [AI数据中心, 智算中心]
+    entity_type: concept
+
+  - entity_id: gpu
+    name: GPU
+    aliases: [图形处理器, AI芯片]
+    entity_type: concept
+
+  - entity_id: memory_contract_price
+    name: Memory Contract Price
+    aliases: [存储合约价, 存储合约价格]
+    entity_type: concept
+
+  - entity_id: memory_spot_price
+    name: Memory Spot Price
+    aliases: [存储现货价, 存储现货价格]
+    entity_type: concept

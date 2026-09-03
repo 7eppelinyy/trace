@@ -1,0 +1,421 @@
+# ============================================================
+# 种子数据：Security Master（美股 + A股统一管理）
+# 产业映射不硬编码在业务代码中，统一在此配置，可扩展
+# ============================================================
+
+securities:
+  # ---------------- 美股核心 Watchlist ----------------
+  - ticker: SNDK
+    market: US
+    exchange: NASDAQ
+    company_name_en: Sandisk Corporation
+    company_name_zh: 闪迪
+    aliases: [SanDisk, San Disk, 闪迪公司]
+    # 已通过 SEC company_tickers.json 官方核验：CIK 2023554
+    cik: "0002023554"
+    products: [NAND, SSD, Enterprise SSD]
+    industry_tags: [memory, nand, storage]
+    is_watchlist_default: true
+    graph_node_ids: [sndk]
+
+  - ticker: MU
+    market: US
+    exchange: NASDAQ
+    company_name_en: Micron Technology
+    company_name_zh: 美光科技
+    aliases: [Micron, 美光]
+    cik: "0000723125"
+    products: [DRAM, NAND, HBM, SSD]
+    industry_tags: [memory, dram, nand, hbm]
+    is_watchlist_default: true
+    graph_node_ids: [mu]
+
+  - ticker: NVDA
+    market: US
+    exchange: NASDAQ
+    company_name_en: NVIDIA Corporation
+    company_name_zh: 英伟达
+    aliases: [NVIDIA, 英伟达公司]
+    cik: "0001045810"
+    products: [GPU, AI Accelerator, Networking]
+    industry_tags: [gpu, ai, datacenter]
+    is_watchlist_default: true
+    graph_node_ids: [nvda]
+
+  # ---------------- 美股 Context Universe ----------------
+  - ticker: WDC
+    market: US
+    company_name_en: Western Digital
+    company_name_zh: 西部数据
+    products: [HDD, NAND]
+    industry_tags: [storage, hdd, nand]
+    is_context_universe: true
+    graph_node_ids: [wdc]
+
+  - ticker: STX
+    market: US
+    company_name_en: Seagate Technology
+    company_name_zh: 希捷科技
+    products: [HDD]
+    industry_tags: [storage, hdd]
+    is_context_universe: true
+    graph_node_ids: [stx]
+
+  - ticker: AMD
+    market: US
+    company_name_en: Advanced Micro Devices
+    company_name_zh: 超威半导体
+    products: [CPU, GPU, AI Accelerator]
+    industry_tags: [cpu, gpu, ai]
+    is_context_universe: true
+    graph_node_ids: [amd]
+
+  - ticker: AAPL
+    market: US
+    company_name_en: Apple Inc.
+    company_name_zh: 苹果
+    products: [Smartphone, PC, Consumer Electronics]
+    industry_tags: [consumer, nand_buyer]
+    is_context_universe: true
+    graph_node_ids: [apple]
+
+  - ticker: MSFT
+    market: US
+    company_name_en: Microsoft Corporation
+    company_name_zh: 微软
+    products: [Cloud, AI, Software]
+    industry_tags: [cloud, ai, hyperscaler]
+    is_context_universe: true
+    graph_node_ids: [msft]
+
+  - ticker: META
+    market: US
+    company_name_en: Meta Platforms
+    company_name_zh: Meta
+    products: [Social, AI Infrastructure]
+    industry_tags: [cloud, ai, hyperscaler]
+    is_context_universe: true
+    graph_node_ids: [meta]
+
+  - ticker: GOOGL
+    market: US
+    company_name_en: Alphabet Inc.
+    company_name_zh: 谷歌
+    aliases: [GOOG, Google, Alphabet]
+    products: [Search, Cloud, AI]
+    industry_tags: [cloud, ai, hyperscaler]
+    is_context_universe: true
+    graph_node_ids: [googl]
+
+  - ticker: AMZN
+    market: US
+    company_name_en: Amazon.com
+    company_name_zh: 亚马逊
+    products: [E-commerce, Cloud]
+    industry_tags: [cloud, ai, hyperscaler]
+    is_context_universe: true
+    graph_node_ids: [amzn]
+
+  - ticker: TSM
+    market: US
+    exchange: NYSE
+    company_name_en: Taiwan Semiconductor Manufacturing (ADR)
+    company_name_zh: 台积电
+    products: [Foundry]
+    industry_tags: [foundry]
+    is_context_universe: true
+    graph_node_ids: [tsmc]
+
+  - ticker: AVGO
+    market: US
+    company_name_en: Broadcom Inc.
+    company_name_zh: 博通
+    products: [Networking, Custom ASIC]
+    industry_tags: [networking, asic, ai]
+    is_context_universe: true
+    graph_node_ids: [avgo]
+
+  - ticker: INTC
+    market: US
+    company_name_en: Intel Corporation
+    company_name_zh: 英特尔
+    products: [CPU, Foundry]
+    industry_tags: [cpu, foundry]
+    is_context_universe: true
+    graph_node_ids: [intc]
+
+  - ticker: ARM
+    market: US
+    company_name_en: Arm Holdings
+    company_name_zh: Arm
+    products: [CPU IP]
+    industry_tags: [ip, cpu]
+    is_context_universe: true
+    graph_node_ids: [arm]
+
+  - ticker: MRVL
+    market: US
+    company_name_en: Marvell Technology
+    company_name_zh: 迈威尔科技
+    products: [Networking, Custom ASIC, Storage Controller]
+    industry_tags: [networking, asic, storage]
+    is_context_universe: true
+    graph_node_ids: [mrvl]
+
+  - ticker: AMAT
+    market: US
+    company_name_en: Applied Materials
+    company_name_zh: 应用材料
+    products: [Semiconductor Equipment]
+    industry_tags: [equipment]
+    is_context_universe: true
+    graph_node_ids: [amat]
+
+  - ticker: LRCX
+    market: US
+    company_name_en: Lam Research
+    company_name_zh: 泛林集团
+    products: [Semiconductor Equipment]
+    industry_tags: [equipment]
+    is_context_universe: true
+    graph_node_ids: [lrcx]
+
+  # ---------------- A股第一批：AI / 半导体 / 存储 / 服务器 / 光通信 / 设备材料 ----------------
+  - ticker: 688981.SH
+    market: CN
+    exchange: SSE
+    company_name_en: SMIC
+    company_name_zh: 中芯国际
+    products: [Foundry]
+    industry_tags: [foundry, cn_semi]
+    is_watchlist_default: true
+    graph_node_ids: [smic]
+
+  - ticker: 688347.SH
+    market: CN
+    exchange: SSE
+    company_name_en: Hua Hong Semiconductor
+    company_name_zh: 华虹公司
+    products: [Foundry]
+    industry_tags: [foundry, cn_semi]
+    graph_node_ids: [hua_hong]
+
+  - ticker: 688041.SH
+    market: CN
+    exchange: SSE
+    company_name_en: Hygon Information Technology
+    company_name_zh: 海光信息
+    products: [CPU, DCU]
+    industry_tags: [cpu, gpu, cn_semi, ai]
+    graph_node_ids: [hygon]
+
+  - ticker: 688256.SH
+    market: CN
+    exchange: SSE
+    company_name_en: Cambricon Technologies
+    company_name_zh: 寒武纪
+    products: [AI Accelerator]
+    industry_tags: [gpu, ai, cn_semi]
+    graph_node_ids: [cambricon]
+
+  - ticker: 603986.SH
+    market: CN
+    exchange: SSE
+    company_name_en: GigaDevice Semiconductor
+    company_name_zh: 兆易创新
+    products: [NOR Flash, MCU, DRAM]
+    industry_tags: [memory, nor, cn_semi]
+    is_watchlist_default: true
+    graph_node_ids: [gigadevice]
+
+  - ticker: 688008.SH
+    market: CN
+    exchange: SSE
+    company_name_en: Montage Technology
+    company_name_zh: 澜起科技
+    products: [Memory Interface, DDR5, CXL]
+    industry_tags: [memory, interface, ai_server]
+    is_watchlist_default: true
+    graph_node_ids: [montage]
+
+  - ticker: 688525.SH
+    market: CN
+    exchange: SSE
+    company_name_en: Biwin Storage Technology
+    company_name_zh: 佰维存储
+    products: [NAND Module, SSD, Embedded Storage]
+    industry_tags: [storage, nand, cn_semi]
+    graph_node_ids: [biwin]
+
+  - ticker: 301308.SZ
+    market: CN
+    exchange: SZSE
+    company_name_en: Longsys Electronics
+    company_name_zh: 江波龙
+    products: [NAND Module, SSD, Embedded Storage]
+    industry_tags: [storage, nand, cn_semi]
+    is_watchlist_default: true
+    graph_node_ids: [longsys]
+
+  - ticker: 300475.SZ
+    market: CN
+    exchange: SZSE
+    company_name_en: Shenzhen Shannon Semiconductor
+    company_name_zh: 香农芯创
+    products: [Memory Distribution]
+    industry_tags: [storage, distribution]
+    graph_node_ids: [shannon]
+
+  - ticker: 000021.SZ
+    market: CN
+    exchange: SZSE
+    company_name_en: Shenzhen Kaifa Technology
+    company_name_zh: 深科技
+    products: [Storage Packaging & Test]
+    industry_tags: [storage, osat]
+    graph_node_ids: [kaifa]
+
+  - ticker: 600584.SH
+    market: CN
+    exchange: SSE
+    company_name_en: JCET Group
+    company_name_zh: 长电科技
+    products: [OSAT, Advanced Packaging]
+    industry_tags: [osat, packaging]
+    graph_node_ids: [jcet]
+
+  - ticker: 002156.SZ
+    market: CN
+    exchange: SZSE
+    company_name_en: Tongfu Microelectronics
+    company_name_zh: 通富微电
+    products: [OSAT, Advanced Packaging]
+    industry_tags: [osat, packaging]
+    graph_node_ids: [tongfu]
+
+  - ticker: 000977.SZ
+    market: CN
+    exchange: SZSE
+    company_name_en: Inspur Electronic Information
+    company_name_zh: 浪潮信息
+    products: [Server, AI Server]
+    industry_tags: [server, ai_server]
+    is_watchlist_default: true
+    graph_node_ids: [inspur]
+
+  - ticker: 601138.SH
+    market: CN
+    exchange: SSE
+    company_name_en: Foxconn Industrial Internet
+    company_name_zh: 工业富联
+    products: [AI Server, Networking Equipment]
+    industry_tags: [server, ai_server, networking]
+    graph_node_ids: [fii]
+
+  - ticker: 603019.SH
+    market: CN
+    exchange: SSE
+    company_name_en: Sugon Information Industry
+    company_name_zh: 中科曙光
+    products: [Server, HPC]
+    industry_tags: [server, ai_server, hpc]
+    graph_node_ids: [sugon]
+
+  - ticker: 000938.SZ
+    market: CN
+    exchange: SZSE
+    company_name_en: Unisplendour Corporation
+    company_name_zh: 紫光股份
+    products: [Server, Networking, ICT]
+    industry_tags: [server, networking]
+    graph_node_ids: [unisplendour]
+
+  - ticker: 300308.SZ
+    market: CN
+    exchange: SZSE
+    company_name_en: Zhongji Innolight
+    company_name_zh: 中际旭创
+    products: [Optical Module]
+    industry_tags: [optical_module, ai_datacenter]
+    graph_node_ids: [innolight]
+
+  - ticker: 300502.SZ
+    market: CN
+    exchange: SZSE
+    company_name_en: Eoptolink Technology
+    company_name_zh: 新易盛
+    products: [Optical Module]
+    industry_tags: [optical_module, ai_datacenter]
+    graph_node_ids: [eoptolink]
+
+  - ticker: 300394.SZ
+    market: CN
+    exchange: SZSE
+    company_name_en: Suzhou TFC Optical Communication
+    company_name_zh: 天孚通信
+    products: [Optical Components]
+    industry_tags: [optical_module, ai_datacenter]
+    graph_node_ids: [tfc]
+
+  - ticker: 002371.SZ
+    market: CN
+    exchange: SZSE
+    company_name_en: NAURA Technology Group
+    company_name_zh: 北方华创
+    products: [Semiconductor Equipment]
+    industry_tags: [equipment, cn_semi]
+    graph_node_ids: [naura]
+
+  - ticker: 688012.SH
+    market: CN
+    exchange: SSE
+    company_name_en: AMEC
+    company_name_zh: 中微公司
+    products: [Etch Equipment]
+    industry_tags: [equipment, cn_semi]
+    graph_node_ids: [amec]
+
+  - ticker: 688072.SH
+    market: CN
+    exchange: SSE
+    company_name_en: Piotech
+    company_name_zh: 拓荆科技
+    products: [Deposition Equipment]
+    industry_tags: [equipment, cn_semi]
+    graph_node_ids: [piotech]
+
+  - ticker: 688120.SH
+    market: CN
+    exchange: SSE
+    company_name_en: HWATSING Technology
+    company_name_zh: 华海清科
+    products: [CMP Equipment]
+    industry_tags: [equipment, cn_semi]
+    graph_node_ids: [hwatsing]
+
+  - ticker: 688019.SH
+    market: CN
+    exchange: SSE
+    company_name_en: Anji Microelectronics Technology
+    company_name_zh: 安集科技
+    products: [CMP Slurry, Semiconductor Materials]
+    industry_tags: [materials, cn_semi]
+    graph_node_ids: [anji]
+
+  - ticker: 002409.SZ
+    market: CN
+    exchange: SZSE
+    company_name_en: Yoke Technology
+    company_name_zh: 雅克科技
+    products: [Precursors, Semiconductor Materials]
+    industry_tags: [materials, cn_semi]
+    graph_node_ids: [yoke]
+
+  - ticker: 603501.SH
+    market: CN
+    exchange: SSE
+    company_name_en: Will Semiconductor
+    company_name_zh: 韦尔股份
+    products: [CIS, Analog]
+    industry_tags: [cis, cn_semi]
+    graph_node_ids: [will_semi]
