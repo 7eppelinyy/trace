@@ -62,6 +62,19 @@ class IndustryGraph:
     def neighbors(self, node: str) -> list[IndustryEdge]:
         return self._adj.get(node, [])
 
+    def securities_at(self, node: str) -> list[Security]:
+        """挂在该图节点上的证券（预建倒排，O(1)）。
+
+        调用方不得再用 "遍历全部 security 看 graph_node_ids 是否含 node"
+        的写法：那在图遍历的内层循环里就是每节点一次全表扫描。
+        """
+        return self._node_to_securities.get(node.lower(), [])
+
+    def neighbor_nodes(self, node: str) -> set[str]:
+        """与该节点直接相邻的节点集合（无向）。"""
+        return {e.to_node if e.from_node == node else e.from_node
+                for e in self.neighbors(node)}
+
     # ------------------------------------------------------------------
     def find_securities_from_entities(self, entity_nodes: list[str],
                                       max_hops: int = 3) -> list[GraphHit]:

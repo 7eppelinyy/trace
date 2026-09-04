@@ -85,6 +85,11 @@ class EventEngine:
         self.verifier: SameEventVerifier = verifier or NullVerifier()
 
     # ------------------------------------------------------------------
+    def refresh_caches(self) -> None:
+        """失效按轮缓存（Pipeline.run_once 每轮开始调用）。"""
+        self.cluster.refresh_caches()
+
+    # ------------------------------------------------------------------
     def ingest(self, item: RawItem, extracted: ExtractedEvent, *,
                skip_exact_dedup: bool = False) -> EngineDecision:
         normalize_raw_item(item)
@@ -132,14 +137,16 @@ class EventEngine:
             ev.event_id, item, new_status=new_status, official_source=official)
         logger.info("merged into %s (reason=%s, official=%s)",
                     ev.event_id, result.revision_type, official)
+        # 窗口缓存里的事件对象换成修订后的版本（标题/摘要未变，向量沿用）
+        self.cluster.remember(result.event)
         action = "revised" if result.material_update else "merged"
         return EngineDecision(action=action, event=result.event, reason=result.revision_type)
 
     def _create_event(self, item: RawItem, extracted: ExtractedEvent) -> EngineDecision:
         self.raw_repo.insert(item)
         now = datetime.now(timezone.utc)
-        _, title_blob = self.cluster.embed_text(extracted.title)
-        _, summary_blob = self.cluster.embed_text(extracted.summary)
+        title_vec, title_blob = self.cluster.embed_text(extracted.title)
+        summary_vec, summary_blob = self.cluster.embed_text(extracted.summary)
 
         ev = Event(
             event_id=new_event_id(),
@@ -162,5 +169,7 @@ class EventEngine:
         self.raw_repo.link_event(item.raw_item_id, ev.event_id)
         self.source_repo.add(EventSource(event_id=ev.event_id,
                                          raw_item_id=item.raw_item_id, role="first"))
+        # 同一轮的后续 item 必须能与刚建的事件聚类（否则缓存会拆分同一事件）
+        self.cluster.remember(ev, title_vec, summary_vec)
         logger.info("created event %s: %s", ev.event_id, ev.title)
         return EngineDecision(action="created", event=ev)

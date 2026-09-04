@@ -157,6 +157,24 @@ class RawItemRepo:
         rows = self.db.query("SELECT * FROM raw_item WHERE event_id=? ORDER BY published_at", (event_id,))
         return [self._to_obj(r) for r in rows]
 
+    def urls_by_events(self, event_ids: list[str], *,
+                       per_event: int = 3) -> dict[str, list[str]]:
+        """批量取多个事件的原文链接（/ask 展示证据用，避免逐事件一次查询）。"""
+        ids = [e for e in dict.fromkeys(event_ids) if e]
+        if not ids:
+            return {}
+        placeholders = ",".join("?" * len(ids))
+        rows = self.db.query(
+            f"""SELECT event_id, url FROM raw_item
+                WHERE event_id IN ({placeholders}) AND url <> ''
+                ORDER BY published_at""", tuple(ids))
+        out: dict[str, list[str]] = {}
+        for r in rows:
+            bucket = out.setdefault(r["event_id"], [])
+            if len(bucket) < per_event:
+                bucket.append(r["url"])
+        return out
+
     def _to_obj(self, r) -> RawItem:
         return RawItem(
             raw_item_id=r["raw_item_id"], source_id=r["source_id"], source_item_id=r["source_item_id"],
@@ -202,6 +220,16 @@ class EventRepo:
     def get(self, event_id: str) -> Event | None:
         row = self.db.query_one("SELECT * FROM event WHERE event_id=?", (event_id,))
         return self._to_obj(row) if row else None
+
+    def get_many(self, event_ids: list[str]) -> dict[str, Event]:
+        """批量取事件（避免逐 impact 一次 get 的 N+1）。"""
+        ids = [e for e in dict.fromkeys(event_ids) if e]
+        if not ids:
+            return {}
+        placeholders = ",".join("?" * len(ids))
+        rows = self.db.query(
+            f"SELECT * FROM event WHERE event_id IN ({placeholders})", tuple(ids))
+        return {r["event_id"]: self._to_obj(r) for r in rows}
 
     def update_embeddings(self, event_id: str, title_embedding: bytes,
                           summary_embedding: bytes) -> None:
@@ -425,6 +453,12 @@ class EventImpactRepo:
         rows = self.db.query("SELECT * FROM event_impact WHERE event_id=?", (event_id,))
         return [self._to_obj(r) for r in rows]
 
+    def exists_for_event(self, event_id: str) -> bool:
+        """该事件是否已有分析结果（判断是否需要再跑 Stage B）。"""
+        return self.db.query_one(
+            "SELECT 1 FROM event_impact WHERE event_id=? LIMIT 1",
+            (event_id,)) is not None
+
     def list_by_security(self, security_id: str, since: str | None = None) -> list[EventImpact]:
         sql = "SELECT * FROM event_impact WHERE security_id=?"
         params: tuple = (security_id,)
@@ -438,6 +472,27 @@ class EventImpactRepo:
             "SELECT * FROM event_impact WHERE event_id=? AND security_id=?",
             (event_id, security_id))
         return self._to_obj(row) if row else None
+
+    def list_by_securities(self, security_ids: list[str], *,
+                           per_security: int = 20) -> dict[str, list[EventImpact]]:
+        """一次取回多个证券的影响，按 security_id 分组（每组最多 per_security 条）。
+
+        /ask 的图谱扩展会命中几十个证券，逐个 list_by_security 就是 N 次查询。
+        排序与 list_by_security 一致（created_at DESC），保证"最近 N 条"语义。
+        """
+        ids = [s for s in dict.fromkeys(security_ids) if s]
+        if not ids:
+            return {}
+        placeholders = ",".join("?" * len(ids))
+        rows = self.db.query(
+            f"""SELECT * FROM event_impact WHERE security_id IN ({placeholders})
+                ORDER BY created_at DESC""", tuple(ids))
+        out: dict[str, list[EventImpact]] = {}
+        for r in rows:
+            bucket = out.setdefault(r["security_id"], [])
+            if len(bucket) < per_security:
+                bucket.append(self._to_obj(r))
+        return out
 
     def _to_obj(self, r) -> EventImpact:
         return EventImpact(
@@ -717,10 +772,10 @@ class RunHistoryRepo:
                    sources_checked, sources_succeeded, sources_failed, sources_disabled,
                    raw_items_new, raw_items_duplicate, events_created, events_revised,
                    events_analyzed, alerts_eligible, alerts_sent, alerts_suppressed,
-                   alerts_failed, human_review, keyword_filtered,
+                   alerts_failed, human_review, keyword_filtered, stage_b_skipped,
                    llm_stage_a_calls, llm_stage_b_calls, llm_verifier_calls,
                    failed_sources, notes)
-               VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+               VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
                ON CONFLICT(run_id) DO UPDATE SET status=excluded.status""",
             (d.get("run_id", ""), d.get("started_at") or _now(),
              d.get("trace_mode", ""), d.get("status", ""),
@@ -731,7 +786,7 @@ class RunHistoryRepo:
              int(d.get("events_analyzed", 0)), int(d.get("alerts_eligible", 0)),
              int(d.get("alerts_sent", 0)), int(d.get("alerts_suppressed", 0)),
              int(d.get("alerts_failed", 0)), int(d.get("human_review", 0)),
-             int(d.get("keyword_filtered", 0)),
+             int(d.get("keyword_filtered", 0)), int(d.get("stage_b_skipped", 0)),
              int(d.get("llm_stage_a_calls", 0)), int(d.get("llm_stage_b_calls", 0)),
              int(d.get("llm_verifier_calls", 0)),
              json.dumps(d.get("failed_sources", []), ensure_ascii=False),

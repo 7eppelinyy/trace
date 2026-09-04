@@ -80,6 +80,7 @@ class RunSummary:
     human_review: int = 0
     # DeepSeek 成本控制（任务书 §17）：新增来源不得导致 LLM 调用线性暴增
     keyword_filtered: int = 0            # Level 1 关键词初筛拦截数
+    stage_b_skipped: int = 0             # 仅补充佐证的合并，跳过的 Stage B 次数
     llm_stage_a_calls: int = 0
     llm_stage_b_calls: int = 0
     llm_verifier_calls: int = 0
@@ -107,6 +108,7 @@ class RunSummary:
             "alerts_failed": self.alerts_failed,
             "human_review": self.human_review,
             "keyword_filtered": self.keyword_filtered,
+            "stage_b_skipped": self.stage_b_skipped,
             "llm_stage_a_calls": self.llm_stage_a_calls,
             "llm_stage_b_calls": self.llm_stage_b_calls,
             "llm_verifier_calls": self.llm_verifier_calls,
@@ -115,12 +117,25 @@ class RunSummary:
         }
 
 
+@dataclass
+class _PendingEvent:
+    """本轮待处理事件的聚合状态（同一事件可能被多条 item 命中）。"""
+    event: Event
+    is_update: bool = False          # 有实质更新 → alert_type=event_update
+    needs_analysis: bool = False     # 是否需要跑 Stage B
+
+
 class Pipeline:
     def __init__(self, app: AppContext):
         self.app = app
         self.alert_sender: AlertSender | None = None
         # 实体别名词典（每轮 run 开始时失效重建，/watch 注册下一轮生效）
         self._entity_index_cache: list | None = None
+        # 仅补充佐证的合并（action="merged"）默认不重跑 Stage B：
+        # 事件 version 未变，重算出的 impact 会被 Alert 幂等键拦下，
+        # 用户看不到任何变化，却实打实消耗一次 LLM 调用（任务书 §17）。
+        self._reanalyze_on_merge = bool(
+            app.config.get("ai.reanalyze_on_non_material_merge", False))
 
     def _llm_stop_status(self) -> str:
         """缺 LLM Key 的停止码按当前 Provider 区分：
@@ -154,9 +169,10 @@ class Pipeline:
                              started_at=datetime.now(timezone.utc).isoformat(),
                              trace_mode=TraceMode.current())
 
-        # 每轮失效缓存：来源/证券主数据可能在两轮之间变化
+        # 每轮失效缓存：来源/证券主数据、聚类时间窗口可能在两轮之间变化
         self._entity_index_cache = None
         ctx.pipeline.refresh_caches()
+        ctx.event_engine.refresh_caches()
 
         # 默认接收人：TELEGRAM_DEFAULT_CHAT_ID（仅当该用户从未注册时初始化，
         # 之后用户的 /watch /alert /timezone 设置不会被覆盖）
@@ -187,7 +203,8 @@ class Pipeline:
         dedup = ExactDedup(ctx.db)
         stage_a_before = ctx.pipeline.extractor.real_llm_calls
         verifier_before = getattr(ctx.event_engine.verifier, "real_llm_calls", 0)
-        pending: dict[str, tuple[Event, bool]] = {}   # event_id -> (event, is_update)
+        impact_repo = ctx.pipeline.impact_repo
+        pending: dict[str, _PendingEvent] = {}
         for item in items:
             normalize_raw_item(item)
             if dedup.check(item).is_duplicate:
@@ -216,18 +233,36 @@ class Pipeline:
                 summary.raw_items_duplicate += 1
                 continue
             summary.raw_items_new += 1
-            event, was_revised = pending.get(
-                decision.event.event_id, (decision.event, False))
+            entry = pending.get(decision.event.event_id)
+            if entry is None:
+                entry = _PendingEvent(event=decision.event)
+                pending[decision.event.event_id] = entry
+            entry.event = decision.event      # 保留最新版本
+
             if decision.action == "created":
                 summary.events_created += 1
+                entry.needs_analysis = True
             elif decision.action == "revised":
-                was_revised = True
                 summary.events_revised += 1
-            pending[event.event_id] = (decision.event, was_revised)
+                entry.is_update = True
+                entry.needs_analysis = True
+            elif not entry.needs_analysis:
+                # merged：只是多了一条佐证，事件本体没有实质变化。
+                # 唯一必须补跑的情况是该事件还没有任何分析结果
+                # （上一轮 Stage B 失败 / 当时无图谱命中）。
+                entry.needs_analysis = (
+                    self._reanalyze_on_merge
+                    or not impact_repo.exists_for_event(decision.event.event_id))
 
         # 3. 逐事件：Stage B 分析 → 评分 → Alert 评估 → 投递
         stage_b_before = ctx.pipeline.analyzer.real_llm_calls
-        for event, is_update in pending.values():
+        for entry in pending.values():
+            event, is_update = entry.event, entry.is_update
+            if not entry.needs_analysis:
+                summary.stage_b_skipped += 1
+                logger.info("event %s: evidence-only merge, Stage B skipped",
+                            event.event_id)
+                continue
             try:
                 impacts = ctx.pipeline.analyze_event(
                     event, extra_entities=self.entity_names_for_event(event))

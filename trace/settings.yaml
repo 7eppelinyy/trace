@@ -24,6 +24,12 @@ llm:
       same_event_verifier: gpt-4o-mini
   temperature: 0.0
 
+ai:
+  # 仅补充佐证的合并（事件无实质更新、version 不变）是否重跑 Stage B。
+  # 默认 false：重算结果会被 Alert 幂等键拦下，用户看不到变化，
+  # 却真实消耗一次 LLM 调用。事件尚无任何分析结果时仍会补跑（不受此开关影响）。
+  reanalyze_on_non_material_merge: false
+
 embedding:
   # 跨语言聚类使用；开发/离线环境可切到 hash 伪向量
   provider: sentence-transformers

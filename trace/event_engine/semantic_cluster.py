@@ -51,37 +51,55 @@ class SemanticCluster:
         self._weights = config.get("event_engine.merge_weights", {})
         self._thresholds = config.get("event_engine.merge_thresholds", {})
         self._window_hours = float(config.get("event_engine.time_window_hours", 72))
+        # 时间窗口内事件的 run 级缓存：(events, title_vecs, summary_vecs)。
+        # 每轮 run 开始时由 EventEngine.refresh_caches() 失效；本轮内新建/更新的
+        # 事件通过 remember() 增量进入，保证同一轮的后续条目仍能与之聚类。
+        self._window: tuple[list[Event], list[list[float]], list[list[float]]] | None = None
+        self._window_index: dict[str, int] = {}
 
     # ------------------------------------------------------------------
-    @property
-    def auto_merge_threshold(self) -> float:
-        return float(self._thresholds.get("auto_merge", 0.82))
+    def refresh_caches(self) -> None:
+        """失效窗口缓存（每轮 run 开始调用）。"""
+        self._window = None
+        self._window_index = {}
 
-    @property
-    def verifier_min_threshold(self) -> float:
-        return float(self._thresholds.get("verifier_min", 0.72))
+    def remember(self, event: Event, title_vec: list[float] | None = None,
+                 summary_vec: list[float] | None = None) -> None:
+        """把本轮新建/更新的事件放进窗口缓存。
 
-    # ------------------------------------------------------------------
-    def embed_text(self, text: str) -> tuple[list[float], bytes]:
-        vec = self.embedder.encode([text or ""])[0]
-        return vec, _vec_to_blob(vec)
+        必须做：同一轮里前一条 item 刚创建的事件，后一条 item 要能与它聚类，
+        否则缓存会把同一事件拆成多个 Event（正确性回归，不只是性能问题）。
 
-    # ------------------------------------------------------------------
-    def find_candidates(self, title: str, summary: str, entities: list[str],
-                        event_type: str, event_time: datetime | None,
-                        language: str = "") -> list[MatchCandidate]:
-        """对时间窗口内的近期 Event 计算 merge_score，按分数降序返回。
-
-        向量一次预取（含懒回填批量持久化）后用 batch 余弦算相似度：
-        热路径是 每条新 item × 窗口内全部事件 × 2 向量，逐对纯 Python
-        点积在事件量增长后会成为瓶颈。
+        省略向量时从事件自身的 embedding blob 还原。
         """
-        title_vec, _ = self.embed_text(title)
-        summary_vec, _ = self.embed_text(summary)
-        events = self.event_repo.recent(hours=int(self._window_hours))
+        if self._window is None:
+            return
+        if title_vec is None:
+            title_vec = _blob_to_vec(event.title_embedding)
+        if summary_vec is None:
+            summary_vec = _blob_to_vec(event.summary_embedding)
+        events, title_vecs, summary_vecs = self._window
+        idx = self._window_index.get(event.event_id)
+        if idx is None:
+            self._window_index[event.event_id] = len(events)
+            events.append(event)
+            title_vecs.append(title_vec)
+            summary_vecs.append(summary_vec)
+        else:
+            events[idx] = event
+            title_vecs[idx] = title_vec
+            summary_vecs[idx] = summary_vec
 
-        # 懒回填：窗口内向量缺失的事件补算，并批量持久化
-        # （不落库的话同一事件每轮比较都会重新调用 embedder）
+    def _load_window(self) -> tuple[list[Event], list[list[float]], list[list[float]]]:
+        """取时间窗口内的事件及其向量（缺失向量懒回填并批量持久化）。
+
+        此前每条新 item 都会重新拉取整个窗口（默认 500 条）并逐条解包 blob；
+        一轮 200 条新闻就是 200 次全量拉取。
+        """
+        if self._window is not None:
+            return self._window
+
+        events = self.event_repo.recent(hours=int(self._window_hours))
         title_vecs: list[list[float]] = []
         summary_vecs: list[list[float]] = []
         backfilled: list[Event] = []
@@ -106,6 +124,38 @@ class SemanticCluster:
                 for ev in backfilled:
                     self.event_repo.update_embeddings(
                         ev.event_id, ev.title_embedding, ev.summary_embedding)
+
+        self._window = (events, title_vecs, summary_vecs)
+        self._window_index = {ev.event_id: i for i, ev in enumerate(events)}
+        return self._window
+
+    # ------------------------------------------------------------------
+    @property
+    def auto_merge_threshold(self) -> float:
+        return float(self._thresholds.get("auto_merge", 0.82))
+
+    @property
+    def verifier_min_threshold(self) -> float:
+        return float(self._thresholds.get("verifier_min", 0.72))
+
+    # ------------------------------------------------------------------
+    def embed_text(self, text: str) -> tuple[list[float], bytes]:
+        vec = self.embedder.encode([text or ""])[0]
+        return vec, _vec_to_blob(vec)
+
+    # ------------------------------------------------------------------
+    def find_candidates(self, title: str, summary: str, entities: list[str],
+                        event_type: str, event_time: datetime | None,
+                        language: str = "") -> list[MatchCandidate]:
+        """对时间窗口内的近期 Event 计算 merge_score，按分数降序返回。
+
+        窗口事件与向量按轮缓存（_load_window），再用 batch 余弦算相似度：
+        热路径是 每条新 item × 窗口内全部事件 × 2 向量，逐对纯 Python
+        点积在事件量增长后会成为瓶颈。
+        """
+        title_vec, _ = self.embed_text(title)
+        summary_vec, _ = self.embed_text(summary)
+        events, title_vecs, summary_vecs = self._load_window()
 
         title_sims = pairwise_cosines(title_vec, title_vecs)
         summary_sims = pairwise_cosines(summary_vec, summary_vecs)

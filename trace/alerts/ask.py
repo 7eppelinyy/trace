@@ -23,6 +23,9 @@ from trace.graph.industry_graph import IndustryGraph
 
 logger = logging.getLogger(__name__)
 
+# 每个证券最多取回的近期影响条数（与旧实现的 direct 上限一致）
+_PER_SECURITY_IMPACTS = 20
+
 
 @dataclass
 class AskEvidence:
@@ -55,56 +58,70 @@ class AskEngine:
         if security is None:
             return None
 
-        candidates: list[AskEvidence] = []
+        # 1) 证券 → 关系/衰减：direct 优先，其次 1-hop，再 2-hop
+        #    （同一证券可能从多条路径到达，取最近的那条）
+        relations = self._reachable_securities(security)
 
-        # 1) Direct Events
-        for impact in self.impact_repo.list_by_security(security.security_id)[:20]:
-            ev = self.event_repo.get(impact.event_id)
-            if ev is None:
-                continue
-            candidates.append(AskEvidence(
-                event=ev, impact=impact, relation="direct",
-                distance_score=impact.final_score,
-                evidence_urls=self._urls(ev.event_id)))
+        # 2) 一次取回所有相关证券的 impact，再一次取回涉及的 event
+        #    （此前是：图遍历内层每节点全表扫 security + 逐 impact 一次 get）
+        impacts_by_sec = self.impact_repo.list_by_securities(
+            list(relations), per_security=_PER_SECURITY_IMPACTS)
+        event_ids = [imp.event_id for imps in impacts_by_sec.values() for imp in imps]
+        events = self.event_repo.get_many(event_ids)
 
-        # 2) 1-hop / 2-hop Industry Events（按图距离扩展）
-        for node in security.graph_node_ids or [security.ticker.lower()]:
-            for edge in self.graph.neighbors(node):
-                other = edge.to_node if edge.from_node == node else edge.from_node
-                candidates.extend(self._events_of_node(other, relation="1-hop", decay=0.8))
-                for edge2 in self.graph.neighbors(other):
-                    node2 = edge2.to_node if edge2.from_node == other else edge2.from_node
-                    candidates.extend(self._events_of_node(node2, relation="2-hop", decay=0.6))
-
-        # 排序：distance_score 降序；去重（同 event 保留最高分）
+        # 3) 同 event 去重，保留最高相关度
         best: dict[str, AskEvidence] = {}
-        for c in candidates:
-            key = c.event.event_id
-            if key not in best or c.distance_score > best[key].distance_score:
-                best[key] = c
-        ranked = sorted(best.values(), key=lambda c: c.distance_score, reverse=True)[:limit]
+        for security_id, (relation, decay) in relations.items():
+            for impact in impacts_by_sec.get(security_id, []):
+                ev = events.get(impact.event_id)
+                if ev is None:
+                    continue
+                score = impact.final_score * decay
+                current = best.get(ev.event_id)
+                if current is None or score > current.distance_score:
+                    best[ev.event_id] = AskEvidence(
+                        event=ev, impact=impact, relation=relation,
+                        distance_score=score)
+
+        ranked = sorted(best.values(), key=lambda c: c.distance_score,
+                        reverse=True)[:limit]
+
+        # 4) 证据链接只对最终入选的候选取（此前对每个候选都查一次，
+        #    绝大多数在排序后被丢弃）
+        urls = self.raw_repo.urls_by_events([c.event.event_id for c in ranked])
+        for c in ranked:
+            c.evidence_urls = urls.get(c.event.event_id, [])
 
         return AskAnswer(security=security, candidates=ranked,
                          text=self._render(security, question, ranked))
 
     # ------------------------------------------------------------------
-    def _events_of_node(self, node: str, relation: str, decay: float) -> list[AskEvidence]:
-        out: list[AskEvidence] = []
-        secs = [s for s in self.security_repo.list_all()
-                if node in (s.graph_node_ids or [])]
-        for sec in secs:
-            for impact in self.impact_repo.list_by_security(sec.security_id)[:5]:
-                ev = self.event_repo.get(impact.event_id)
-                if ev is None:
-                    continue
-                out.append(AskEvidence(
-                    event=ev, impact=impact, relation=relation,
-                    distance_score=impact.final_score * decay,
-                    evidence_urls=self._urls(ev.event_id)))
-        return out
+    def _reachable_securities(self, security: Security) -> dict[str, tuple[str, float]]:
+        """security_id → (关系, 相关度衰减)，按图距离两跳内展开。
 
-    def _urls(self, event_id: str) -> list[str]:
-        return [it.url for it in self.raw_repo.list_by_event(event_id) if it.url][:3]
+        用 IndustryGraph 预建的 node→securities 倒排；节点按跳数分层去重，
+        同一节点不会因为多条路径被重复展开。
+        """
+        own_nodes = {n.lower() for n in
+                     (security.graph_node_ids or [security.ticker.lower()])}
+
+        hop1: set[str] = set()
+        for node in own_nodes:
+            hop1 |= self.graph.neighbor_nodes(node)
+        hop1 -= own_nodes
+
+        hop2: set[str] = set()
+        for node in hop1:
+            hop2 |= self.graph.neighbor_nodes(node)
+        hop2 -= own_nodes | hop1
+
+        relations: dict[str, tuple[str, float]] = {
+            security.security_id: ("direct", 1.0)}
+        for nodes, relation, decay in ((hop1, "1-hop", 0.8), (hop2, "2-hop", 0.6)):
+            for node in nodes:
+                for sec in self.graph.securities_at(node):
+                    relations.setdefault(sec.security_id, (relation, decay))
+        return relations
 
     def _render(self, security: Security, question: str,
                 candidates: list[AskEvidence]) -> str:
