@@ -16,10 +16,11 @@ from trace.ai.pipeline import AnalysisPipeline
 from trace.collectors.base import CollectorRegistry, build_default_registry
 from trace.collectors.market_data.alpaca import build_us_provider
 from trace.collectors.market_data.cn import build_cn_provider
-from trace.collectors.market_data.confirmation import MarketConfirmer
+from trace.collectors.market_data.confirmation import MarketConfirmer, build_confirmer
 from trace.config import AppConfig, load_config
 from trace.db.connection import Database, get_database
 from trace.db.migration import apply_migrations
+from trace.db.repositories import MarketSnapshotRepo
 from trace.data.seed import load_all_seeds
 from trace.event_engine.engine import EventEngine
 from trace.feedback.ledger import ForecastLedger
@@ -55,7 +56,11 @@ def create_app(config_path=None) -> AppContext:
     graph = IndustryGraph(db)
     calendar = MarketCalendar(config)
     scoring = ScoringEngine(config)
-    confirmer = MarketConfirmer(build_us_provider(), build_cn_provider())
+    # 行情确认接交易日历（休市/过期不得把无关涨跌算作市场确认）
+    # 与快照仓库（价格历史供事件锚定回测与事后审计）
+    confirmer = build_confirmer(
+        build_us_provider(), build_cn_provider(), config,
+        calendar=calendar, snapshot_repo=MarketSnapshotRepo(db))
 
     ai_pipeline = AnalysisPipeline(db, config, graph, confirmer)
 

@@ -68,8 +68,8 @@ def test_alpaca_quote_has_confirmation_fields():
     from trace.collectors.market_data.cn import MockCNMarketProvider
     from trace.collectors.market_data.confirmation import MarketConfirmer
     confirmer = MarketConfirmer(provider, MockCNMarketProvider())
-    score, quote = confirmer.score_for("US", "MU", "bullish")
-    assert score > 5.0 and quote is not None
+    c = confirmer.confirm("US", "MU", "bullish")
+    assert c.score > 5.0 and c.quote is not None
 
 
 def test_alpaca_quote_tolerates_missing_bars():
@@ -101,6 +101,7 @@ def test_market_confirmer_neutral_when_no_quote():
     from trace.collectors.market_data.confirmation import MarketConfirmer
     confirmer = MarketConfirmer(UnavailableMarketProvider("US"),
                                 UnavailableMarketProvider("CN"))
-    score, quote = confirmer.score_for("US", "MU", "bullish")
-    assert score == 5.0 and quote is None
+    c = confirmer.confirm("US", "MU", "bullish")
+    assert c.score == 5.0 and c.quote is None
+    assert c.mode == "unavailable"
     assert confirmer.data_mode("US") == "unavailable"

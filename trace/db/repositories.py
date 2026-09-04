@@ -533,6 +533,25 @@ class MarketSnapshotRepo:
             (security_id,))
         return self._to_obj(row) if row else None
 
+    def nearest(self, security_id: str, ts: datetime,
+                max_delta_hours: float) -> MarketSnapshot | None:
+        """离指定时刻最近的快照（超出 max_delta_hours 返回 None）。
+
+        回测账本用它取事件锚点价：拿不到就是拿不到，不得用别的时刻的价格
+        冒充事件时刻的价格。
+        """
+        target = _dts(ts)
+        if not target:
+            return None
+        row = self.db.query_one(
+            """SELECT *, ABS(julianday(ts) - julianday(?)) * 24.0 AS delta_hours
+               FROM market_snapshot
+               WHERE security_id=?
+                 AND ABS(julianday(ts) - julianday(?)) * 24.0 <= ?
+               ORDER BY delta_hours LIMIT 1""",
+            (target, security_id, target, float(max_delta_hours)))
+        return self._to_obj(row) if row else None
+
     def _to_obj(self, r) -> MarketSnapshot:
         return MarketSnapshot(
             security_id=r["security_id"], ts=_dt(r["ts"]), last_price=r["last_price"],
@@ -824,30 +843,40 @@ class ForecastCheckRepo:
             """INSERT INTO forecast_check (check_id, impact_id, event_id, security_id,
                    predicted_direction, predicted_score, confidence,
                    actual_change_pct, actual_direction, outcome, horizon_hours,
-                   evaluated_at)
-               VALUES (?,?,?,?,?,?,?,?,?,?,?,?)
+                   evaluated_at, anchor_price, anchor_ts, exit_price,
+                   elapsed_hours, note)
+               VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
                ON CONFLICT(impact_id) DO NOTHING""",
             (c.check_id, c.impact_id, c.event_id, c.security_id,
              c.predicted_direction, c.predicted_score, c.confidence,
              c.actual_change_pct, c.actual_direction, c.outcome,
-             c.horizon_hours, _dts(c.evaluated_at) or _now()),
+             c.horizon_hours, _dts(c.evaluated_at) or _now(),
+             c.anchor_price, _dts(c.anchor_ts), c.exit_price,
+             c.elapsed_hours, c.note),
         )
 
     def summary(self) -> dict:
-        """聚合：hit/miss/neutral 计数与命中率（方向可判定的子集）。"""
+        """聚合：hit/miss/neutral 计数与命中率（方向可判定的子集）。
+
+        unmeasurable（拿不到事件锚点价 / 核对严重超时）单独计数，
+        不进 total、不进命中率：它们不是"预测错了"，是"测不了"。
+        """
         row = self.db.query_one(
-            """SELECT COUNT(*) AS total,
-                      SUM(CASE WHEN outcome='hit' THEN 1 ELSE 0 END) AS hits,
+            """SELECT SUM(CASE WHEN outcome='hit' THEN 1 ELSE 0 END) AS hits,
                       SUM(CASE WHEN outcome='miss' THEN 1 ELSE 0 END) AS misses,
-                      SUM(CASE WHEN outcome='neutral' THEN 1 ELSE 0 END) AS neutrals
+                      SUM(CASE WHEN outcome='neutral' THEN 1 ELSE 0 END) AS neutrals,
+                      SUM(CASE WHEN outcome='unmeasurable' THEN 1 ELSE 0 END)
+                          AS unmeasurable
                FROM forecast_check""")
-        total = row["total"] or 0 if row else 0
-        hits = row["hits"] or 0 if row else 0
-        misses = row["misses"] or 0 if row else 0
-        neutrals = row["neutrals"] or 0 if row else 0
+        hits = (row["hits"] or 0) if row else 0
+        misses = (row["misses"] or 0) if row else 0
+        neutrals = (row["neutrals"] or 0) if row else 0
+        unmeasurable = (row["unmeasurable"] or 0) if row else 0
         directed = hits + misses
         return {
-            "total": total, "hits": hits, "misses": misses, "neutrals": neutrals,
+            "total": hits + misses + neutrals,
+            "hits": hits, "misses": misses, "neutrals": neutrals,
+            "unmeasurable": unmeasurable,
             "hit_rate": round(hits / directed, 4) if directed else None,
         }
 

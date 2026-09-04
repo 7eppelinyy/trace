@@ -173,6 +173,7 @@ class Pipeline:
         self._entity_index_cache = None
         ctx.pipeline.refresh_caches()
         ctx.event_engine.refresh_caches()
+        ctx.confirmer.invalidate_cache()
 
         # 默认接收人：TELEGRAM_DEFAULT_CHAT_ID（仅当该用户从未注册时初始化，
         # 之后用户的 /watch /alert /timezone 设置不会被覆盖）

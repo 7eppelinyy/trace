@@ -182,15 +182,20 @@ class AnalysisPipeline:
             if security is None:
                 continue
             ds = directness_score(imp.get("directness", "conditional"))
-            market_score, quote = self.confirmer.score_for(
-                security.market, security.ticker, imp.get("direction", "uncertain"))
+            # 市场确认必须锚定事件时间：事件之后市场还没开过盘、或早已过了
+            # 反应窗口时，当前报价反映的是与本事件无关的涨跌，一律取中性。
+            confirmation = self.confirmer.confirm(
+                security.market, security.ticker,
+                imp.get("direction", "uncertain"),
+                event_time=event.event_time,
+                security_id=security.security_id)
 
             score_out = self.scoring.score(ScoreInput(
                 source_reliability=source_reliability,
                 directness=ds,
                 magnitude=float(imp.get("magnitude", 5.0)),
                 persistence=float(imp.get("persistence", 5.0)),
-                market_confirmation=market_score,
+                market_confirmation=confirmation.score,
                 supply_demand=sd_signal.score,
             ))
 
@@ -210,11 +215,13 @@ class AnalysisPipeline:
                 evidence_ids=[it.raw_item_id for it in evidence_items[:5]],
                 source_reliability=source_reliability,
                 base_score=score_out.base_score,
-                market_confirmation=market_score,
+                market_confirmation=confirmation.score,
                 final_score=score_out.final_score,
                 # 任务书 §7：降级必须显式标记，不得包装成完整真实分析
                 analysis_mode=self.analyzer.last_mode,
-                market_data_mode=self.confirmer.data_mode(security.market),
+                # 逐条确认的实际模式（real/mock/unavailable 或休市/过期原因），
+                # 比按市场取的 data_mode 更精确
+                market_data_mode=confirmation.mode,
             )
             self.impact_repo.upsert(impact)
             results.append(impact)

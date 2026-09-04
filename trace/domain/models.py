@@ -371,6 +371,12 @@ class ForecastCheck:
     confidence: float = 0.0
     actual_change_pct: float | None = None
     actual_direction: str = ""               # bullish / bearish / neutral
-    outcome: str = ""                        # hit / miss / neutral
+    outcome: str = ""                        # hit / miss / neutral / unmeasurable
     horizon_hours: float = 24.0
     evaluated_at: datetime | None = None
+    # 事件锚定区间收益的可复算依据（0009）
+    anchor_price: float | None = None        # 事件时刻附近的快照价
+    anchor_ts: datetime | None = None
+    exit_price: float | None = None          # 核对时刻价格
+    elapsed_hours: float | None = None       # 事件到核对的真实间隔
+    note: str = ""                           # unmeasurable 的原因

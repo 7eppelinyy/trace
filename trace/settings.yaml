@@ -99,6 +99,12 @@ markets:
         close: "15:00"
   # 事件后的市场反应观察窗口（分钟）
   reaction_window_minutes: 30
+  # 市场确认的有效期（小时）：从「事件时刻（若当时开盘）或事件后首次开盘」起算，
+  # 超过则当前报价不再算作对该事件的反应，市场确认返回中性 5.0。
+  # 盘后/周末事件按"首次开盘"起算，不会因跨周末被误判为过期。
+  confirmation_max_age_hours: 24
+  # 行情缓存 TTL（秒）：同一轮里同一 ticker 会被 Stage B / 日报 / 回测反复请求
+  quote_cache_ttl_seconds: 60
 
 telegram:
   # run-once 验收投递的默认接收人（环境变量 TELEGRAM_DEFAULT_CHAT_ID 覆盖）
@@ -110,10 +116,17 @@ digest:
   send_time: "21:00"
 
 forecast:
-  # 预测回测账本：事件后 horizon 小时用真实行情核对方向预测（/accuracy 查看）
+  # 预测回测账本：用「事件时刻锚点价 → horizon 小时后价格」的区间收益
+  # 核对方向预测（/accuracy 查看）。锚点价来自 market_snapshot。
   enabled: true
   horizon_hours: 24
-  move_threshold_pct: 1.0       # 实际涨跌超过 ±1% 才算有方向
+  move_threshold_pct: 1.0       # 区间收益超过 ±1% 才算有方向
+  # 锚点快照与事件时间的最大允许偏差（小时）：超出则判为无法核对，
+  # 不得用其他时刻的价格顶替事件时刻的价格
+  anchor_tolerance_hours: 6
+  # 超过 horizon 这么多小时仍未核对（如服务停机）→ 测到的已不是 horizon
+  # 收益，落账为 unmeasurable 而不是当作有效样本
+  max_delay_hours: 24
 
 backup:
   # SQLite 每日备份（data/backups/，同一天一份）与轮换

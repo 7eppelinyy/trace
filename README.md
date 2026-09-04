@@ -65,7 +65,20 @@ python -m trace.main digest           # 生成今日摘要
   （`analysis_mode=rule_based_degraded`、`market_data_mode=mock|unavailable`）。
 - **成本控制**：Level 1 确定性去重零成本拦截在 LLM 之前；真实 API 调用次数（含重试）
   记入 run 摘要的 `llm_stage_a_calls / llm_stage_b_calls / llm_verifier_calls`；
-  Gemini 走 API 级 `responseSchema` 结构化约束，减少校验失败重试。
+  Gemini 走 API 级 `responseSchema` 结构化约束，减少校验失败重试；
+  仅补充佐证的合并（事件无实质更新）默认不重跑 Stage B，省下的次数记入
+  `stage_b_skipped`（开关 `ai.reanalyze_on_non_material_merge`）。
+- **市场确认的时段门禁**：`change_pct_from_prev()` 只是"当前价 vs 上一收盘"。
+  事件之后市场还没开过盘（盘后/周末/节假日公告），或已超过
+  `markets.confirmation_max_age_hours`，当前报价就与该事件无关 —— 市场确认
+  一律取中性 5.0 并在 `market_data_mode` 标记原因，不把无关涨跌以 0.15 的
+  权重掺进 `final_score`。参考时刻取「事件时刻（若当时开盘）或事件后首次开盘」，
+  盘后事件不会因跨周末被误判为过期。
+- **回测口径**：`/accuracy` 的命中率基于**事件锚定区间收益**
+  （事件时刻快照价 → horizon 后价格），不是核对时刻的当日涨跌。
+  拿不到事件锚点价、或服务停机导致核对严重超时的样本落账为 `unmeasurable`，
+  不计入命中率、也不滞留在"待核对"。每条核对都保留
+  `anchor_price / anchor_ts / exit_price / elapsed_hours` 供复算。
 - **采集调度**：长驻 `run` / `bot` 循环按 `settings.yaml → collectors.interval_seconds`
   跳过未到期采集器并并行执行（`collectors.parallel_workers`）；`run-once` 验收不受影响。
 - **运营闭环**（长驻循环每轮自动维护，全部幂等）：

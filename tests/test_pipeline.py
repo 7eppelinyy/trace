@@ -168,7 +168,11 @@ def test_run_once_offline_marks_degraded(app, monkeypatch):
     assert rows
     for r in rows:
         assert r["analysis_mode"] == "rule_based_degraded"
-        assert r["market_data_mode"] in ("mock", "none", "real")
+        # 行情来源必须显式标记：真实/Mock/不可用，或时段门禁抑制的原因
+        # （事件后市场尚未开盘 / 已过反应窗口 → 市场确认取中性，不掺无关涨跌）
+        assert r["market_data_mode"] in (
+            "mock", "none", "real", "unavailable", "no_quote",
+            "market_not_opened_since_event", "reaction_window_expired")
 
 
 def test_production_without_llm_stops(app, monkeypatch):

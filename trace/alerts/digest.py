@@ -63,7 +63,9 @@ class DigestBuilder:
         # Watchlist 涨跌（行情未接入时不得显示 Mock 数据）
         lines.append("【Watchlist 行情】")
         for sec in self.security_repo.list_watchlist_defaults():
-            score, quote = self.confirmer.score_for(sec.market, sec.ticker, "neutral")
+            # 日报只展示当日涨跌，不做事件确认：不传 event_time（无需时段门禁）
+            quote = self.confirmer.quote(sec.market, sec.ticker,
+                                         security_id=sec.security_id)
             if quote is None:
                 mode = self.confirmer.data_mode(sec.market)
                 label = "行情确认：暂未接入" if mode == "unavailable" else "无行情数据"

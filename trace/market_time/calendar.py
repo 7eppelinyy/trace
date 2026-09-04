@@ -38,6 +38,10 @@ class MarketCalendar:
         self.reaction_window_minutes = int(config.get("markets.reaction_window_minutes", 30))
 
     # ------------------------------------------------------------------
+    def knows_market(self, market: str) -> bool:
+        """该市场是否有交易时段配置（无配置时调用方不应做时段门禁）。"""
+        return bool(self._markets.get(market, {}).get("sessions"))
+
     def market_tz(self, market: str) -> pytz.BaseTzInfo:
         tz_name = self._markets.get(market, {}).get("timezone", "UTC")
         return pytz.timezone(tz_name)
