@@ -94,6 +94,7 @@ class RunSummary:
     keyword_filtered: int = 0            # Level 1 关键词初筛拦截数
     stage_b_skipped: int = 0             # 仅补充佐证的合并，跳过的 Stage B 次数
     rescored_events: int = 0             # 开盘后补算市场确认导致分数实质变化的事件数
+    cursors_committed: int = 0           # 本轮提交的采集游标数（0 = 中途退出未提交）
     llm_stage_a_calls: int = 0
     llm_stage_b_calls: int = 0
     llm_verifier_calls: int = 0
@@ -123,6 +124,7 @@ class RunSummary:
             "keyword_filtered": self.keyword_filtered,
             "stage_b_skipped": self.stage_b_skipped,
             "rescored_events": self.rescored_events,
+            "cursors_committed": self.cursors_committed,
             "llm_stage_a_calls": self.llm_stage_a_calls,
             "llm_stage_b_calls": self.llm_stage_b_calls,
             "llm_verifier_calls": self.llm_verifier_calls,
@@ -189,6 +191,13 @@ class Pipeline:
         ctx.pipeline.refresh_caches()
         ctx.event_engine.refresh_caches()
         ctx.confirmer.invalidate_cache()
+        # 上一轮若中途退出，采集器上还挂着未提交的游标。必须丢弃后再采：
+        # 否则本轮 get() 读到的是"已跳过"的暂存值，那批条目照样丢。
+        dropped = ctx.collectors.discard_cursors()
+        if dropped:
+            logger.warning("discarded %d uncommitted collector cursor(s) from "
+                           "an aborted round: their items will be re-collected",
+                           dropped)
 
         # 默认接收人：TELEGRAM_DEFAULT_CHAT_ID（仅当该用户从未注册时初始化，
         # 之后用户的 /watch /alert /timezone 设置不会被覆盖）
@@ -280,6 +289,12 @@ class Pipeline:
                 entry.needs_analysis = (
                     self._reanalyze_on_merge
                     or not impact_repo.exists_for_event(decision.event.event_id))
+
+        # 2.5 采集游标提交点：本轮采到的条目已全部走完 ingest（RawItem 已落库
+        #     或被明确判为重复/送人工检查），此刻推进游标才是安全的。
+        #     上面循环里的任何 return（预算耗尽 / 缺 Key）都会跳过这里，
+        #     游标保持原位，下一轮重新采集 —— 否则条目既没进库又被永久跳过。
+        summary.cursors_committed = ctx.collectors.commit_cursors()
 
         # 3. 逐事件：Stage B 分析 → 评分 → Alert 评估 → 投递
         stage_b_before = ctx.pipeline.analyzer.real_llm_calls

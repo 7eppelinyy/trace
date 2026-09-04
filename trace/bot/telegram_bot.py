@@ -315,6 +315,8 @@ async def cmd_status(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
                      f"初筛拦截 {r['keyword_filtered']} ｜ "
                      f"省下 Stage B {r['stage_b_skipped']} ｜ "
                      f"开盘补算 {r['rescored_events']}")
+        if r["raw_items_new"] and not r["cursors_committed"]:
+            lines.append("⚠️ 上一轮中途退出，采集游标未推进（这批条目会重新采集）")
         if r["failed_sources"]:
             lines.append("失败来源: " + ", ".join(r["failed_sources"][:5]))
     else:

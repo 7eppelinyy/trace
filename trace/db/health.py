@@ -126,6 +126,58 @@ class CursorRepo:
             (source_id, json.dumps(cursor), _now()))
 
 
+class StagedCursorRepo:
+    """缓冲游标写入，直到流水线确认条目已落库。
+
+    采集器的增量游标（seen_accessions / seen_item_ids / etag …）此前在
+    collect() 里就直接落库，而 RawItem 的持久化发生在流水线的后续阶段。
+    两者之间只要中断 —— LLM 预算耗尽 STOP、生产模式缺 Key、进程重启、
+    未捕获异常 —— 这批条目就**既没进库、又被游标永久跳过**，再也采不回来。
+    对 SEC 8-K 这种一次性事件来说是不可恢复的数据丢失。
+
+    改成两阶段：collect() 期间的 set() 只写进内存，流水线走完 ingest 循环
+    （RawItem 已落库）才 commit()；中途退出则 discard()，下一轮重新采集
+    （重复条目由 Level 1 确定性去重零成本拦掉）。
+
+    注意不能简单改成"查 raw_item 判断是否已处理"：游标里还记着
+    bootstrap 窗口外、关键词初筛掉的条目 —— 那些是**故意没采**的决策，
+    数据库里查不到，丢掉会导致老新闻被重新灌进来。
+    """
+
+    def __init__(self, repo: CursorRepo):
+        self._repo = repo
+        self._pending: dict[str, dict] = {}
+
+    def get(self, source_id: str) -> dict:
+        # 本轮内 set 过的以内存值为准（同一轮里 get→set→get 要自洽）
+        if source_id in self._pending:
+            return json.loads(json.dumps(self._pending[source_id]))
+        return self._repo.get(source_id)
+
+    def set(self, source_id: str, cursor: dict) -> None:
+        self._pending[source_id] = cursor
+
+    def commit(self) -> int:
+        """条目已落库：把本轮游标真正写下去。返回提交的游标数。"""
+        count = len(self._pending)
+        if count:
+            with self._repo.db.transaction():
+                for source_id, cursor in self._pending.items():
+                    self._repo.set(source_id, cursor)
+            self._pending.clear()
+        return count
+
+    def discard(self) -> int:
+        """本轮中途退出：丢弃未提交的游标，下一轮重新采集。"""
+        count = len(self._pending)
+        self._pending.clear()
+        return count
+
+    @property
+    def pending_count(self) -> int:
+        return len(self._pending)
+
+
 class HumanReviewRepo:
     def __init__(self, db: Database):
         self.db = db

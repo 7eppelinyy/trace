@@ -825,9 +825,10 @@ class RunHistoryRepo:
                    raw_items_new, raw_items_duplicate, events_created, events_revised,
                    events_analyzed, alerts_eligible, alerts_sent, alerts_suppressed,
                    alerts_failed, human_review, keyword_filtered, stage_b_skipped,
-                   rescored_events, llm_stage_a_calls, llm_stage_b_calls,
+                   rescored_events, cursors_committed,
+                   llm_stage_a_calls, llm_stage_b_calls,
                    llm_verifier_calls, failed_sources, notes)
-               VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+               VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
                ON CONFLICT(run_id) DO UPDATE SET status=excluded.status""",
             (d.get("run_id", ""), d.get("started_at") or _now(),
              d.get("trace_mode", ""), d.get("status", ""),
@@ -839,7 +840,7 @@ class RunHistoryRepo:
              int(d.get("alerts_sent", 0)), int(d.get("alerts_suppressed", 0)),
              int(d.get("alerts_failed", 0)), int(d.get("human_review", 0)),
              int(d.get("keyword_filtered", 0)), int(d.get("stage_b_skipped", 0)),
-             int(d.get("rescored_events", 0)),
+             int(d.get("rescored_events", 0)), int(d.get("cursors_committed", 0)),
              int(d.get("llm_stage_a_calls", 0)), int(d.get("llm_stage_b_calls", 0)),
              int(d.get("llm_verifier_calls", 0)),
              json.dumps(d.get("failed_sources", []), ensure_ascii=False),

@@ -40,7 +40,7 @@ from trace.common.http_client import (
     SourceStructureError,
 )
 from trace.db.connection import Database
-from trace.db.health import CursorRepo, SourceHealthRepo
+from trace.db.health import CursorRepo, SourceHealthRepo, StagedCursorRepo
 from trace.db.repositories import SourceRepo
 from trace.domain.models import RawItem
 
@@ -72,7 +72,9 @@ class BaseCollector(ABC):
         self.config = config
         self.source_repo = SourceRepo(db)
         self.health_repo = SourceHealthRepo(db)
-        self.cursor_repo = CursorRepo(db)
+        # 游标走两阶段：collect() 期间只写内存，流水线确认 RawItem 落库后
+        # 才提交。否则中途 STOP 会让条目既没进库又被游标永久跳过。
+        self.cursor_repo = StagedCursorRepo(CursorRepo(db))
         # Level 1 关键词初筛拦截计数（每次 collect 后由 run 归零）
         self.last_keyword_filtered = 0
         intervals = config.get("collectors.interval_seconds", {})
@@ -202,6 +204,19 @@ class CollectorRegistry:
     @property
     def collectors(self) -> list[BaseCollector]:
         return list(self._collectors)
+
+    # ------------------------------------------------------------------
+    def commit_cursors(self) -> int:
+        """本轮条目已落库：提交所有采集器的增量游标。
+
+        由流水线在 ingest 循环正常走完后调用。中途 STOP（预算耗尽 / 缺 Key /
+        异常）时不调用，游标保持原位，下一轮重新采集这批条目。
+        """
+        return sum(c.cursor_repo.commit() for c in self._collectors)
+
+    def discard_cursors(self) -> int:
+        """本轮中途退出：丢弃未提交的游标。"""
+        return sum(c.cursor_repo.discard() for c in self._collectors)
 
     def run_all(self, *, respect_intervals: bool = False
                 ) -> tuple[list[RawItem], list[CollectResult]]:

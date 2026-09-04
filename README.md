@@ -82,6 +82,11 @@ python -m trace.main review --resolve <REVIEW_ID>   # 标记已处理
   次日开盘由 `scoring.rescore_on_market_open` 重算 `final_score`（零 LLM 成本：
   `base_score` 已落库、供需信号是确定性函数）。此前低于阈值的事件可能因此
   跨过阈值并首次推送；已推送过的被幂等键拦下，不会重复打扰。
+- **采集游标崩溃安全**：增量游标（`seen_accessions` / `etag` …）采用两阶段
+  提交——`collect()` 期间只写内存，流水线走完 ingest 循环（RawItem 已落库）
+  才推进。中途 STOP（预算耗尽 / 缺 Key / 进程重启）时游标保持原位，
+  下一轮重新采集，重复条目由 Level 1 去重零成本拦掉。
+  Schema 校验失败属于"走完了这一轮"，照常推进（否则每轮重烧一次 LLM）。
 - **人工检查队列**：Schema 校验重试后仍失败的样本进 `human_review`，
   **不进入 Alert 链路**。用 `/review` 或 `python -m trace.main review` 查看
   （按失败类型聚合，是发现 prompt 退化的主要信号）。
