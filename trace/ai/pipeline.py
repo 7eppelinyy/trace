@@ -15,6 +15,7 @@ import logging
 import uuid
 
 from trace.ai.analyzer import ImpactAnalyzer, directness_score
+from trace.ai.budget import LLMBudget
 from trace.ai.extractor import EventExtractor
 from trace.ai.llm_client import LLMClient
 from trace.ai.verifier import LLMSameEventVerifier
@@ -42,7 +43,9 @@ class AnalysisPipeline:
         self.graph = graph
         self.confirmer = confirmer
         self.scoring = ScoringEngine(config)
-        self.llm = LLMClient(config.llm)
+        # 成本熔断：每次真实 API 调用（含重试）前检查当日预算
+        self.budget = LLMBudget(db, int(config.get("llm.daily_call_budget", 0)))
+        self.llm = LLMClient(config.llm, budget=self.budget)
         self.extractor = EventExtractor(self.llm, config.llm)
         self.analyzer = ImpactAnalyzer(self.llm, config.llm)
         self.verifier = LLMSameEventVerifier(self.llm, config.llm)

@@ -23,6 +23,12 @@ llm:
       impact_analyzer: gpt-4o-mini
       same_event_verifier: gpt-4o-mini
   temperature: 0.0
+  # 每日真实 API 调用上限（UTC 日切，含重试消耗的每一次）。0 = 不限制。
+  # 事前熔断，防止来源改版导致去重穿透后配额被一夜打光；超限本轮返回
+  # STOP_LLM_BUDGET_EXCEEDED，不得静默降级成 rule_based_degraded。
+  # 参考量级：首次全量回填一轮约 400 次（222 Stage A + 160 Stage B + 26 verifier），
+  # 稳态每轮远低于此。3000 留了足够余量，同时能挡住数量级级别的失控。
+  daily_call_budget: 3000
 
 ai:
   # 仅补充佐证的合并（事件无实质更新、version 不变）是否重跑 Stage B。

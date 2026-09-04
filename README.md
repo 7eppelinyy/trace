@@ -47,6 +47,8 @@ python -m trace.main run-once         # 单次真实流水线（验收用）
 python -m trace.main bot              # Telegram Bot（long polling）+ 流水线长驻循环
 python -m trace.main run              # 仅流水线循环（systemd 部署用）
 python -m trace.main digest           # 生成今日摘要
+python -m trace.main review           # 人工检查队列（Schema 校验失败样本）
+python -m trace.main review --resolve <REVIEW_ID>   # 标记已处理
 ```
 
 ### 关键环境变量（详见 .env.example）
@@ -68,6 +70,21 @@ python -m trace.main digest           # 生成今日摘要
   Gemini 走 API 级 `responseSchema` 结构化约束，减少校验失败重试；
   仅补充佐证的合并（事件无实质更新）默认不重跑 Stage B，省下的次数记入
   `stage_b_skipped`（开关 `ai.reanalyze_on_non_material_merge`）。
+- **成本熔断**：`llm.daily_call_budget`（默认 3000，UTC 日切，0=不限制）在
+  **每次真实 API 调用前**检查当日累计（含重试）。超限本轮返回
+  `STOP_LLM_BUDGET_EXCEEDED` —— 停止而非静默降级成 `rule_based_degraded`。
+  计数落库（`llm_usage` 表），重启不清零；`doctor` 与 `/status` 展示当日用量。
+- **复推规则**：`alerts.revision_resend_rules` 是**白名单**——实质更新照常
+  让 `event.version` +1（审计轨迹），但是否再次推送由白名单决定。
+  `key_number_changed` 依赖持久化的 `event.key_numbers`；
+  `direction_changed` / `score_delta_ge_1` 在 Stage B 之后比对前后结论得出。
+- **开盘后补算**：盘后事件当时拿不到市场确认（见时段门禁），
+  次日开盘由 `scoring.rescore_on_market_open` 重算 `final_score`（零 LLM 成本：
+  `base_score` 已落库、供需信号是确定性函数）。此前低于阈值的事件可能因此
+  跨过阈值并首次推送；已推送过的被幂等键拦下，不会重复打扰。
+- **人工检查队列**：Schema 校验重试后仍失败的样本进 `human_review`，
+  **不进入 Alert 链路**。用 `/review` 或 `python -m trace.main review` 查看
+  （按失败类型聚合，是发现 prompt 退化的主要信号）。
 - **市场确认的时段门禁**：`change_pct_from_prev()` 只是"当前价 vs 上一收盘"。
   事件之后市场还没开过盘（盘后/周末/节假日公告），或已超过
   `markets.confirmation_max_age_hours`，当前报价就与该事件无关 —— 市场确认

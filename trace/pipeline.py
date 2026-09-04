@@ -28,6 +28,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Callable
 
+from trace.ai.budget import LLMBudgetExceededError
 from trace.ai.schemas import LLMUnavailableError, SchemaValidationError
 from trace.alerts.engine import AlertDecision, DeliveryReceipt
 from trace.app import AppContext
@@ -38,6 +39,7 @@ from trace.collectors.market_data.confirmation import (
 from trace.common.ids import revision_id
 from trace.common.modes import (
     STATUS_OK,
+    STOP_LLM_BUDGET_EXCEEDED,
     STOP_LLM_KEY_MISSING,
     STOP_SOURCE_UNAVAILABLE,
     STOP_TELEGRAM_CREDENTIALS_MISSING,
@@ -235,6 +237,13 @@ class Pipeline:
                 logger.warning("stage A schema validation failed for %s → human review",
                                item.raw_item_id)
                 continue
+            except LLMBudgetExceededError as exc:
+                # 预算耗尽：本轮到此为止。已处理的条目保留，下一个 UTC 日
+                # 自动恢复；不得继续消耗配额，也不得降级伪装成完整分析。
+                summary.status = STOP_LLM_BUDGET_EXCEEDED
+                summary.notes.append(f"STOP: {exc}")
+                logger.error("%s", exc)
+                return summary
             except LLMUnavailableError as exc:
                 # 生产模式无 LLM：整轮停止，不得生成伪分析
                 summary.status = self._llm_stop_status()
@@ -297,6 +306,11 @@ class Pipeline:
                 logger.warning("stage B schema validation failed for %s → human review",
                                event.event_id)
                 continue
+            except LLMBudgetExceededError as exc:
+                summary.status = STOP_LLM_BUDGET_EXCEEDED
+                summary.notes.append(f"STOP: {exc}")
+                logger.error("%s", exc)
+                return summary
             except LLMUnavailableError as exc:
                 summary.status = self._llm_stop_status()
                 summary.notes.append(f"STOP: {exc}")

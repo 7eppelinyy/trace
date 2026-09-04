@@ -9,6 +9,7 @@ from __future__ import annotations
 import logging
 
 from trace.ai.llm_client import LLMClient
+from trace.ai.schemas import LLMUnavailableError
 from trace.domain.models import Event
 from trace.event_engine.engine import ExtractedEvent
 
@@ -41,6 +42,11 @@ class LLMSameEventVerifier:
             self.llm_calls += 1
             self.real_llm_calls += self.llm.call_count - calls_before
             return bool(data.get("same_event", False))
+        except LLMUnavailableError:
+            # 含预算耗尽：向上抛而不是"当作不同事件"。静默返回 False 会在
+            # 配额用尽时把同一事件拆成一堆重复 Event，污染事件库。
+            self.real_llm_calls += self.llm.call_count - calls_before
+            raise
         except Exception as exc:
             self.real_llm_calls += self.llm.call_count - calls_before
             logger.warning("same-event verifier failed: %s", exc)

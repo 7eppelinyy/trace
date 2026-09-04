@@ -86,6 +86,7 @@ async def cmd_help(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         "/digest — 每日摘要\n"
         "/accuracy — 预测回测命中率\n"
         "/status — 系统运行状态\n"
+        "/review — 待人工检查队列（Schema 校验失败样本）\n"
         "/timezone Asia/Tokyo — 设置时区\n"
         "/ask SNDK 今天为什么跌 — 事件解释"
     )
@@ -289,6 +290,15 @@ async def cmd_accuracy(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     await update.message.reply_text(app.ledger.render_summary())
 
 
+async def cmd_review(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """/review：Schema 校验失败、未进入 Alert 链路的待人工检查条目。"""
+    app: AppContext = context.bot_data["app"]
+    if not _allowed(update, app):
+        return
+    from trace.db.health import HumanReviewRepo
+    await update.message.reply_text(HumanReviewRepo(app.db).render())
+
+
 async def cmd_status(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """/status：最近一轮运行 + 来源健康 + 回测/摘要/备份一览。"""
     app: AppContext = context.bot_data["app"]
@@ -309,6 +319,13 @@ async def cmd_status(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
             lines.append("失败来源: " + ", ".join(r["failed_sources"][:5]))
     else:
         lines.append("最近一轮: 尚无记录（等待长驻循环落库）")
+
+    lines.append("LLM 预算: " + app.pipeline.budget.render())
+
+    from trace.db.health import HumanReviewRepo
+    review_pending = HumanReviewRepo(app.db).pending_count()
+    lines.append(f"待人工检查: {review_pending}"
+                 + ("（/review 查看）" if review_pending else ""))
 
     health_rows = {row["source_id"]: row for row in SourceHealthRepo(app.db).all()}
     counts: dict[str, int] = {}
@@ -351,6 +368,7 @@ def build_application(app: AppContext) -> Application:
         ("event", cmd_event), ("sources", cmd_sources),
         ("digest", cmd_digest), ("timezone", cmd_timezone), ("ask", cmd_ask),
         ("accuracy", cmd_accuracy), ("status", cmd_status),
+        ("review", cmd_review),
     ]:
         application.add_handler(CommandHandler(name, handler))
     return application

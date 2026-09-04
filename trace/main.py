@@ -182,6 +182,12 @@ def cmd_doctor() -> None:
           f"provider={provider}, {env_name} {'已配置' if has_key else '未配置'} "
           f"(model={app.config.llm.model_event_extractor})")
 
+    # 每日调用预算：未耗尽为 OK；已耗尽是真实故障（本轮会 STOP）
+    budget = app.pipeline.budget
+    check("llm_budget",
+          None if not budget.enabled else (budget.remaining() or 0) > 0,
+          budget.render())
+
     # Telegram Token 与 Bot 身份
     has_token = bool(app.config.telegram.bot_token)
     check("telegram_token", has_token if TraceMode.is_production() else None,
@@ -584,23 +590,49 @@ def cmd_digest() -> None:
     print(digest.content_markdown)
 
 
+def cmd_review(resolve: str = "", resolve_all: bool = False) -> None:
+    """人工检查队列：Schema 校验失败、未进入 Alert 链路的样本。
+
+    这些是唯一能看出 prompt / 模型输出退化的信号，也是 few-shot 语料来源。
+    """
+    from trace.db.health import HumanReviewRepo
+
+    app = create_app()
+    repo = HumanReviewRepo(app.db)
+    if resolve_all:
+        print(f"已标记 {repo.resolve_all()} 条为已处理")
+        return
+    if resolve:
+        print("已标记为已处理" if repo.resolve(resolve)
+              else f"未找到待处理项：{resolve}")
+        return
+    print(repo.render())
+
+
 def main() -> None:
     setup_logging(logging.INFO)
     parser = argparse.ArgumentParser(description="美股+A股重大事件智能雷达")
     parser.add_argument("command", choices=[
         "init", "doctor", "run-once", "verify-securities",
         "telegram-init-user", "telegram-test", "replay-event",
-        "run", "bot", "digest"])
+        "run", "bot", "digest", "review"])
     parser.add_argument("--event-id", default="",
                         help="replay-event：要回放的事件 ID")
     parser.add_argument("--acceptance-test", action="store_true",
                         help="replay-event：验收模式（仅绕过 freshness gate，"
                              "其余门禁保持真实）")
+    parser.add_argument("--resolve", default="",
+                        help="review：把指定 review_id 标记为已处理")
+    parser.add_argument("--resolve-all", action="store_true",
+                        help="review：把全部待处理项标记为已处理")
     args = parser.parse_args()
     if args.command == "replay-event":
         if not args.event_id:
             raise SystemExit("replay-event 需要 --event-id <REAL_EVENT_ID>")
         cmd_replay_event(args.event_id, args.acceptance_test)
+        return
+    if args.command == "review":
+        cmd_review(resolve=args.resolve, resolve_all=args.resolve_all)
         return
     {
         "init": cmd_init,

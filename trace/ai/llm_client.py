@@ -154,9 +154,11 @@ class GeminiProvider(BaseLLMProvider):
 # ---------------------------------------------------------------------------
 
 class LLMClient:
-    def __init__(self, llm_config, backoff_base: float = 2.0):
+    def __init__(self, llm_config, backoff_base: float = 2.0, budget=None):
         self.config = llm_config
         self.backoff_base = backoff_base
+        # 每日调用预算（trace.ai.budget.LLMBudget）：事前熔断，None 表示不设护栏
+        self.budget = budget
         # 真实 API 调用次数（含网络/Schema 重试消耗的每一次调用）：
         # 任务书 §17 的成本统计必须以此为准，只数成功会低估成本
         self.call_count: int = 0
@@ -207,7 +209,13 @@ class LLMClient:
         max_retries = int(self.config.max_retries)
         last_exc: Exception | None = None
         for attempt in range(max_retries + 1):
+            # 预算检查必须在每次真实请求之前，且重试也算数：
+            # 失控场景里绝大部分开销正是来自重试
+            if self.budget is not None:
+                self.budget.check()
             self.call_count += 1
+            if self.budget is not None:
+                self.budget.consume(1)
             try:
                 text = self._provider.generate(model, system_prompt, user_prompt,
                                                schema=schema)

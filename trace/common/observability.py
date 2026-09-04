@@ -13,6 +13,7 @@ from __future__ import annotations
 import contextvars
 import logging
 import re
+import sys
 import uuid
 
 run_id_var: contextvars.ContextVar[str] = contextvars.ContextVar("trace_run_id", default="-")
@@ -55,7 +56,26 @@ class SecretRedactionFilter(logging.Filter):
         return True
 
 
+def use_utf8_console() -> None:
+    """把 stdout/stderr 切到 UTF-8。
+
+    Windows 控制台默认是 GBK 之类的本地代码页，遇到 CLI 输出里的 emoji
+    （摘要的 📊、人工检查队列的 🔎、回测账本的 📈）会直接抛
+    UnicodeEncodeError 让命令崩掉 —— 不是显示成乱码，是整条命令失败。
+    errors="replace" 保证即使目标编码仍不支持某些字符也只是显示降级。
+    """
+    for stream in (sys.stdout, sys.stderr):
+        reconfigure = getattr(stream, "reconfigure", None)
+        if reconfigure is None:
+            continue
+        try:
+            reconfigure(encoding="utf-8", errors="replace")
+        except (ValueError, OSError):
+            pass        # 被重定向到不支持重配置的流：保持原样
+
+
 def setup_logging(level: int = logging.INFO) -> None:
+    use_utf8_console()
     handler = logging.StreamHandler()
     handler.setFormatter(logging.Formatter(
         "%(asctime)s %(levelname)s [%(run_id)s] %(name)s: %(message)s"))

@@ -137,6 +137,70 @@ class HumanReviewRepo:
             " VALUES (?,?,?,?,?)",
             (review_id, event_id, raw_item_id, reason[:500], _now()))
 
-    def pending(self) -> list[dict]:
-        rows = self.db.query("SELECT * FROM human_review WHERE status='pending'")
-        return [dict(r) for r in rows]
+    def pending(self, limit: int | None = None) -> list[dict]:
+        sql = ("SELECT * FROM human_review WHERE status='pending'"
+               " ORDER BY created_at DESC")
+        params: tuple = ()
+        if limit is not None:
+            sql += " LIMIT ?"
+            params = (int(limit),)
+        return [dict(r) for r in self.db.query(sql, params)]
+
+    def pending_count(self) -> int:
+        row = self.db.query_one(
+            "SELECT COUNT(*) AS n FROM human_review WHERE status='pending'")
+        return int(row["n"]) if row else 0
+
+    def reason_breakdown(self) -> list[tuple[str, int]]:
+        """按失败类型聚合待处理项（发现 prompt 退化的主要信号）。
+
+        reason 形如 "stage_a_schema_validation_failed: <详情>"，
+        详情里带具体字段名，按冒号前的类型归并才看得出趋势。
+        """
+        counts: dict[str, int] = {}
+        for row in self.pending():
+            kind = str(row.get("reason") or "unknown").split(":", 1)[0].strip()
+            counts[kind] = counts.get(kind, 0) + 1
+        return sorted(counts.items(), key=lambda kv: kv[1], reverse=True)
+
+    def resolve(self, review_id: str) -> bool:
+        """标记为已处理。返回是否命中一条 pending 记录。"""
+        cur = self.db.execute(
+            "UPDATE human_review SET status='resolved'"
+            " WHERE review_id=? AND status='pending'", (review_id,))
+        return cur.rowcount > 0
+
+    def resolve_all(self) -> int:
+        cur = self.db.execute(
+            "UPDATE human_review SET status='resolved' WHERE status='pending'")
+        return cur.rowcount
+
+    # ------------------------------------------------------------------
+    def render(self, limit: int = 10) -> str:
+        """人工检查队列摘要（/review 与 CLI 共用同一份文案）。
+
+        这些是 Schema 校验重试后仍然失败的样本 —— 唯一能看出 prompt 或模型
+        输出退化的信号，此前只进不出（写进表里没有任何界面能看到）。
+        """
+        total = self.pending_count()
+        lines = ["🔎 人工检查队列", ""]
+        if total == 0:
+            lines.append("没有待处理项：Stage A/B 的结构化输出全部通过校验。")
+            return "\n".join(lines)
+
+        lines.append(f"待处理: {total} 条")
+        breakdown = self.reason_breakdown()
+        if breakdown:
+            lines.append("按类型: " + " ｜ ".join(f"{k} {n}" for k, n in breakdown))
+        lines.append("")
+        for row in self.pending(limit=limit):
+            target = row.get("event_id") or row.get("raw_item_id") or "-"
+            created = str(row.get("created_at") or "")[:19]
+            lines.append(f"- [{created}] {target}")
+            lines.append(f"  {str(row.get('reason') or '')[:200]}")
+        if total > limit:
+            lines.append(f"…… 另有 {total - limit} 条未显示")
+        lines.append("")
+        lines.append("这些条目没有进入 Alert 链路（Schema 校验失败不得推送）。")
+        lines.append("处理完可用 `python -m trace.main review --resolve <id>` 标记。")
+        return "\n".join(lines)
