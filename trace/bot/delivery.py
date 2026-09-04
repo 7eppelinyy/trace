@@ -35,13 +35,30 @@ _send_lock = threading.Lock()
 
 
 def _throttle(chat_id: str) -> None:
-    """同一 chat 的连续发送之间保持最小间隔。"""
+    """同一 chat 的连续发送之间保持最小间隔。
+
+    锁内**预约发送时隙**而不是记录进入时刻。早期实现把 _last_send_at 记成
+    "进入节流器的那一刻"，于是下一个调用者是拿"上一个调用者开始等待的时间"
+    做基准，而不是它实际发出的时间 —— 实测连发 5 条的间隔是
+    [1.047, 0.016, 1.047, 0.015]，每隔一条就在 16ms 后发出，正好撞上本模块
+    想避免的 429。
+
+    预约式在并发下也成立：时隙在锁内被领走，后来者只能排到更晚的位置。
+    """
     with _send_lock:
-        wait = (_last_send_at.get(chat_id, 0.0) + _PER_CHAT_MIN_INTERVAL
-                - time.monotonic())
-        _last_send_at[chat_id] = time.monotonic()
+        now = time.monotonic()
+        slot = max(now, _last_send_at.get(chat_id, 0.0) + _PER_CHAT_MIN_INTERVAL)
+        _last_send_at[chat_id] = slot
+    wait = slot - now
     if wait > 0:
         time.sleep(wait)
+
+
+def _defer_next_send(chat_id: str, seconds: float) -> None:
+    """把该 chat 的下一个可用时隙至少推迟 seconds（429 retry_after 用）。"""
+    with _send_lock:
+        _last_send_at[chat_id] = max(
+            _last_send_at.get(chat_id, 0.0), time.monotonic() + seconds)
 
 
 def reset_rate_limit_state() -> None:
@@ -80,7 +97,11 @@ def send_message(bot_token: str, chat_id: str, text: str,
             if retry_after is not None:
                 logger.warning("telegram 429 for chat %s, retry after %.1fs",
                                chat_id, retry_after)
-                _throttle(str(chat_id))
+                # 服务端已经明确要等多久：把该 chat 的下一个时隙整体后移，
+                # 再等这一次。此前这里又调了一次 _throttle，等于在
+                # retry_after 之外叠加一次本地节流，而且后续消息的基准时间
+                # 还是错的。
+                _defer_next_send(str(chat_id), retry_after)
                 time.sleep(retry_after)
                 resp = _post_send_message(url, chat_id, text, timeout)
     except httpx.HTTPError as exc:

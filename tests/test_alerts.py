@@ -18,6 +18,7 @@ import pytest
 
 from trace.alerts.engine import AlertEngine, AlertDecision, DeliveryReceipt
 from trace.alerts.template import AlertRenderer
+from trace.bot import delivery
 from trace.bot.delivery import get_me, send_message
 from trace.domain.models import AlertDelivery, Event, EventImpact, WatchlistEntry
 from trace.db.repositories import AlertRuleRepo, SecurityRepo, UserRepo, WatchlistRepo
@@ -146,6 +147,110 @@ def test_get_me_parses_identity(monkeypatch):
     monkeypatch.setattr("trace.bot.delivery.httpx.get", fake)
     me = get_me("tok")
     assert me and me["username"] == "trace_bot"
+
+
+# ---------------------------------------------------------------------------
+# 单聊限速（Telegram ~1 msg/s/chat）
+# ---------------------------------------------------------------------------
+
+class _FakeClock:
+    """可控时钟：把 sleep 变成时间推进，测限速逻辑不用真的等。"""
+
+    def __init__(self, monkeypatch, start: float = 1000.0):
+        self.t = start
+        monkeypatch.setattr(delivery.time, "monotonic", lambda: self.t)
+        monkeypatch.setattr(delivery.time, "sleep", self._sleep)
+
+    def _sleep(self, seconds: float) -> None:
+        self.t += max(0.0, seconds)
+
+    def send(self, chat_id: str, rtt: float = 0.01) -> float:
+        """走一次节流并模拟一次 HTTP 往返，返回实际发送时刻。"""
+        delivery._throttle(chat_id)
+        sent_at = self.t
+        self.t += rtt
+        return sent_at
+
+
+def test_throttle_keeps_min_interval_between_sends(monkeypatch):
+    """一轮命中多只自选股会连发多条：实际发送间隔必须都 >= 最小间隔。
+
+    早期实现记录的是"进入节流器的时刻"而非实际发送时刻，于是下一条拿的是
+    上一条**开始等待**的时间做基准 —— 实测间隔 [1.047, 0.016, 1.047, 0.015]，
+    每隔一条就在 16ms 后发出，正好撞上这里想避免的 429。
+    """
+    delivery.reset_rate_limit_state()
+    clock = _FakeClock(monkeypatch)
+    sends = [clock.send("chat1") for _ in range(5)]
+
+    gaps = [b - a for a, b in zip(sends, sends[1:])]
+    assert all(g >= delivery._PER_CHAT_MIN_INTERVAL - 1e-9 for g in gaps), gaps
+
+
+def test_throttle_is_per_chat(monkeypatch):
+    """不同 chat 之间互不阻塞（限制是 per-chat，不是全局）。"""
+    delivery.reset_rate_limit_state()
+    clock = _FakeClock(monkeypatch)
+    start = clock.t
+    clock.send("chatA")
+    clock.send("chatB")
+    assert clock.t - start < delivery._PER_CHAT_MIN_INTERVAL
+
+
+def test_every_market_mode_has_user_facing_note(db, config):
+    """每个非 real 的 market_data_mode 都必须在消息里有说明（§7 降级显式标记）。
+
+    市场确认被时段门禁抑制时，分数里的该项其实是中性占位。消息里不写，
+    用户看到的就是一个没有任何限定条件的"重要度 7.4 / 10"。
+    """
+    from trace.alerts.template import _MARKET_MODE_NOTES
+    from trace.collectors.market_data import confirmation as conf
+
+    gate_modes = {conf.MODE_NO_QUOTE, conf.MODE_MARKET_NOT_OPENED,
+                  conf.MODE_WINDOW_EXPIRED}
+    missing = gate_modes - set(_MARKET_MODE_NOTES)
+    assert not missing, f"这些行情模式在告警里没有任何提示: {missing}"
+
+    renderer = AlertRenderer(db)
+    now = datetime.now(timezone.utc)
+    event = Event(event_id="e-mode", title="盘后公告", summary="盘后 8-K",
+                  version=1, first_seen_at=now, last_updated_at=now, event_time=now)
+    sec = SecurityRepo(db).get_by_ticker("SNDK")
+    for mode, note in _MARKET_MODE_NOTES.items():
+        text, _ = renderer.render(event, EventImpact(
+            impact_id="i", event_id="e-mode", security_id=sec.security_id,
+            direction="bullish", directness="direct", confidence=0.8,
+            final_score=7.4, base_score=7.4,
+            analysis_mode="llm", market_data_mode=mode), "Asia/Taipei")
+        assert note in text, f"market_data_mode={mode} 没有出现在消息里"
+
+
+def test_real_market_mode_adds_no_noise(db, config):
+    """行情正常时不该多出任何降级提示。"""
+    renderer = AlertRenderer(db)
+    now = datetime.now(timezone.utc)
+    sec = SecurityRepo(db).get_by_ticker("SNDK")
+    text, _ = renderer.render(
+        Event(event_id="e-ok", title="t", summary="s", version=1,
+              first_seen_at=now, last_updated_at=now, event_time=now),
+        EventImpact(impact_id="i", event_id="e-ok", security_id=sec.security_id,
+                    direction="bullish", directness="direct", confidence=0.8,
+                    final_score=7.4, base_score=7.4,
+                    analysis_mode="llm", market_data_mode="real"), "Asia/Taipei")
+    assert "未计入市场确认" not in text
+    assert "行情" not in text
+
+
+def test_defer_next_send_pushes_slot(monkeypatch):
+    """429 的 retry_after 必须把该 chat 的下一个时隙整体后移。"""
+    delivery.reset_rate_limit_state()
+    clock = _FakeClock(monkeypatch)
+    clock.send("chat1")
+    delivery._defer_next_send("chat1", 10.0)
+
+    before = clock.t
+    clock.send("chat1")
+    assert clock.t - before >= 10.0 - 1e-9
 
 
 # ---------------------------------------------------------------------------

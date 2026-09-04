@@ -280,7 +280,11 @@ class EventImpact:
     final_score: float = 5.0
     # 生产门禁降级标记（不得把降级包装成完整真实分析）
     analysis_mode: str = "llm"                      # llm / rule_based_degraded
-    market_data_mode: str = "real"                  # real / mock / none / unavailable
+    # real / mock / none / unavailable / no_quote /
+    # market_not_opened_since_event / reaction_window_expired
+    # （后三者来自行情时段门禁，见 collectors/market_data/confirmation.py；
+    #  每个取值都必须在 alerts/template.py 有对应说明文案）
+    market_data_mode: str = "real"
     created_at: datetime | None = None
 
 

@@ -15,7 +15,9 @@
 from __future__ import annotations
 
 import logging
-from datetime import date, datetime, timezone
+from datetime import date, datetime, time, timedelta, timezone
+
+import pytz
 
 from trace.collectors.market_data.confirmation import MarketConfirmer
 from trace.db.connection import Database
@@ -42,9 +44,28 @@ class DigestBuilder:
         self.security_repo = SecurityRepo(db)
 
     # ------------------------------------------------------------------
-    def build(self, date_str: str | None = None) -> DailyDigest:
-        d = date_str or date.today().isoformat()
-        top_events = self.event_repo.top_of_day(d, limit=10)
+    def local_day_bounds(self, date_str: str,
+                         timezone_name: str | None = None) -> tuple[datetime, datetime]:
+        """把"用户时区的某一天"折算成 [start_utc, end_utc) 区间。
+
+        日报标题、daily_digest 主键用的都是**用户本地日期**，而事件时间存的是
+        UTC。不做这一步换算就会漏掉本地日凌晨的事件（Asia/Taipei 是当地
+        00:00–08:00，恰好是美股收盘到盘后的窗口）。
+        """
+        tz = pytz.timezone(timezone_name
+                           or self.config.telegram.default_user_timezone)
+        local_start = tz.localize(
+            datetime.combine(date.fromisoformat(date_str), time.min))
+        return (local_start.astimezone(pytz.utc),
+                (local_start + timedelta(days=1)).astimezone(pytz.utc))
+
+    def build(self, date_str: str | None = None,
+              timezone_name: str | None = None) -> DailyDigest:
+        tz_name = timezone_name or self.config.telegram.default_user_timezone
+        d = date_str or datetime.now(timezone.utc).astimezone(
+            pytz.timezone(tz_name)).date().isoformat()
+        start_utc, end_utc = self.local_day_bounds(d, tz_name)
+        top_events = self.event_repo.top_between(start_utc, end_utc, limit=10)
 
         lines = [f"📊 美股 + A股每日事件摘要（{d}）", ""]
 
@@ -97,7 +118,12 @@ class DigestBuilder:
 
         # 合规声明：不预测涨跌
         lines.append("说明：本摘要只描述已发生事件与风险点，不构成涨跌预测。")
-        lines.append(f"数据截止时间：{datetime.now(timezone.utc).isoformat(timespec='minutes')}")
+        # 标题用的是本地日期，截止时间也按同一时区显示（此前是 UTC，同一份
+        # 摘要里两个时区口径，读者无从判断"今天"到底截到哪一刻）
+        now_local = datetime.now(timezone.utc).astimezone(pytz.timezone(tz_name))
+        lines.append(f"数据截止时间：{now_local.strftime('%Y-%m-%d %H:%M')} {tz_name}")
+        lines.append(f"统计区间（UTC）：{start_utc.strftime('%m-%d %H:%M')} – "
+                     f"{end_utc.strftime('%m-%d %H:%M')}")
 
         digest = DailyDigest(
             digest_id=digest_id(),

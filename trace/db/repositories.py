@@ -249,14 +249,21 @@ class EventRepo:
         )
         return [self._to_obj(r) for r in rows]
 
-    def top_of_day(self, date_str: str, limit: int = 20) -> list[Event]:
-        """当日按 final_score 最高的事件（取该事件最高 impact 分）。"""
+    def top_between(self, start_utc: datetime, end_utc: datetime,
+                    limit: int = 20) -> list[Event]:
+        """[start_utc, end_utc) 区间内按 final_score 最高的事件。
+
+        刻意接受 UTC 区间而不是 date(first_seen_at)=？：first_seen_at 存的是
+        UTC，而"今天"是用户时区的概念。两者直接比较会丢掉本地日凌晨那几个
+        小时的事件 —— 对 Asia/Taipei(+8) 就是当地 00:00–08:00，正好覆盖
+        美股收盘到盘后，是这套系统最不该漏的窗口。
+        """
         rows = self.db.query(
             """SELECT e.*, MAX(i.final_score) AS top_score
                FROM event e JOIN event_impact i ON i.event_id = e.event_id
-               WHERE date(e.first_seen_at) = ?
+               WHERE e.first_seen_at >= ? AND e.first_seen_at < ?
                GROUP BY e.event_id ORDER BY top_score DESC LIMIT ?""",
-            (date_str, limit),
+            (_dts(start_utc), _dts(end_utc), limit),
         )
         return [self._to_obj(r) for r in rows]
 

@@ -26,6 +26,21 @@ _DIRECTION_EMOJI = {
     "uncertain": "❓ 不确定",
 }
 
+# market_data_mode → 给用户看的说明（任务书 §7：降级必须显式标记）。
+# "real" 不在表内（无需说明）。缺了任何一个取值，用户看到的就是一个
+# 没有任何限定条件的重要度分数 —— 分数里的市场确认项其实是中性占位。
+_MARKET_MODE_NOTES = {
+    "mock": "行情为模拟数据（mock），市场确认仅供参考",
+    "none": "无行情数据，未进行市场确认",
+    # 生产模式未真实接入行情：禁止 Mock，只显示未接入
+    "unavailable": "行情确认：暂未接入",
+    "no_quote": "暂时取不到行情，本次未计入市场确认",
+    # 交易时段门禁：事件之后市场还没开过盘 / 已过反应窗口，
+    # 当前涨跌与本事件无关，市场确认取中性（见 market_data/confirmation.py）
+    "market_not_opened_since_event": "市场尚未开盘，本次未计入市场确认（开盘后会重算）",
+    "reaction_window_expired": "已超过事件反应窗口，本次未计入市场确认",
+}
+
 
 class AlertRenderer:
     def __init__(self, db: Database):
@@ -96,18 +111,14 @@ class AlertRenderer:
         degraded: list[str] = []
         if impact.analysis_mode == "rule_based_degraded":
             degraded.append("本次为规则降级分析（无 LLM），置信度受限")
-        if impact.market_data_mode == "mock":
-            degraded.append("行情为模拟数据（mock），市场确认仅供参考")
-        elif impact.market_data_mode == "none":
-            degraded.append("无行情数据，未进行市场确认")
-        elif impact.market_data_mode == "unavailable":
-            # 生产模式未真实接入行情：禁止 Mock，只显示未接入
-            degraded.append("行情确认：暂未接入")
+        market_note = _MARKET_MODE_NOTES.get(impact.market_data_mode)
+        if market_note:
+            degraded.append(market_note)
         if degraded:
             lines += ["", "⚠️ " + "；".join(degraded)]
 
         # 来源：名称 + 时间 + 链接（只给链接，不重发正文）
-        source_line, primary_url = self._source_line(event)
+        source_line, primary_url = self._source_line(event, user_timezone)
         if source_line:
             lines += ["", "来源", source_line]
         lines += ["", f"🕒 {user_time} 用户本地时间", "", f"Event ID: {event.event_id}"]
@@ -115,7 +126,8 @@ class AlertRenderer:
         return "\n".join(lines), primary_url
 
     # ------------------------------------------------------------------
-    def _source_line(self, event: Event) -> tuple[str, str | None]:
+    def _source_line(self, event: Event,
+                     user_timezone: str) -> tuple[str, str | None]:
         primary = self.source_repo.get(event.primary_source_id or "")
         first = self.source_repo.get(event.first_source_id or "")
         names = []
@@ -130,9 +142,13 @@ class AlertRenderer:
                 url = item.url
                 if es.role in ("primary", "first"):
                     break
+        # 来源时间也按用户时区显示：此前直接 strftime 出的是 UTC，
+        # 却紧挨着下面那行"用户本地时间"，同一条消息里两个时区口径
         time_part = ""
         if event.first_seen_at:
-            time_part = " · " + event.first_seen_at.strftime("%H:%M")
+            local = self._local_time(event.first_seen_at, user_timezone)
+            if local:
+                time_part = " · " + local[-5:]        # HH:MM
         return (" · ".join(names) + time_part if names else "", url)
 
     def _local_time(self, dt_utc: datetime | None, user_timezone: str) -> str:
