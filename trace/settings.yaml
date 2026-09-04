@@ -64,6 +64,10 @@ scoring:
   supply_demand_weight: 0.10
   score_min: 1
   score_max: 10
+  # 开盘后补算此前拿不到的市场确认（盘后/周末事件在分析当时被时段门禁判为
+  # "市场还没开过盘"，只能取中性 5.0）。零 LLM 成本：base_score 已落库，
+  # 供需信号是确定性函数，只有行情是新的。分数实质变化才升版本并再次评估投递。
+  rescore_on_market_open: true
 
 alerts:
   default_threshold: 7          # final_score >= 7 才即时提醒

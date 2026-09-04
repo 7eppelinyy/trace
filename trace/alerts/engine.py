@@ -125,15 +125,28 @@ class AlertEngine:
     # ------------------------------------------------------------------
     def evaluate(self, event: Event, impacts: list[EventImpact],
                  is_update: bool = False,
-                 bypass_freshness: bool = False) -> AlertBatch:
+                 bypass_freshness: bool = False,
+                 resend_allowed: bool = True) -> AlertBatch:
         """评估事件的投递决策。
 
         bypass_freshness 仅供验收回放（replay-event --acceptance-test）使用：
         允许绕过首次同步保护的 freshness/activation 检查，其余门禁
         （阈值 / 置信度 / 静音 / 幂等）保持真实，不得放宽。
+
+        resend_allowed=False：事件确有实质更新（version 已 +1，审计轨迹保留），
+        但修订原因不在 alerts.revision_resend_rules 白名单内 —— 不再推送。
+        这是让那份配置真正生效的地方；此前无论什么原因都会推。
         """
         batch = AlertBatch()
         alert_type = AlertType.EVENT_UPDATE.value if is_update else AlertType.NEW_EVENT.value
+
+        if is_update and not resend_allowed:
+            batch.suppressed += sum(
+                len(self._target_users(imp.security_id)) for imp in impacts)
+            logger.info("event %s updated but resend not allowed by "
+                        "revision_resend_rules: %d impacts suppressed",
+                        event.event_id, len(impacts))
+            return batch
 
         for impact in impacts:
             for user_id in self._target_users(impact.security_id):

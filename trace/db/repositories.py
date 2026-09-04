@@ -194,12 +194,13 @@ class EventRepo:
             """INSERT INTO event (event_id, title, summary, event_type, status, version,
                    first_seen_at, last_updated_at, event_time, language, first_source_id,
                    primary_source_id, all_source_ids, material_update, needs_human_review,
-                   title_embedding, summary_embedding)
-               VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                   key_numbers, title_embedding, summary_embedding)
+               VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
             (e.event_id, e.title, e.summary, e.event_type, e.status, e.version,
              _dts(e.first_seen_at), _dts(e.last_updated_at), _dts(e.event_time), e.language,
              e.first_source_id, e.primary_source_id, json.dumps(e.all_source_ids),
              int(e.material_update), int(e.needs_human_review),
+             json.dumps(e.key_numbers, ensure_ascii=False),
              e.title_embedding, e.summary_embedding),
         )
 
@@ -208,12 +209,13 @@ class EventRepo:
             """UPDATE event SET title=?, summary=?, event_type=?, status=?, version=?,
                    last_updated_at=?, event_time=?, language=?, first_source_id=?,
                    primary_source_id=?, all_source_ids=?, material_update=?, needs_human_review=?,
-                   title_embedding=?, summary_embedding=?
+                   key_numbers=?, title_embedding=?, summary_embedding=?
                WHERE event_id=?""",
             (e.title, e.summary, e.event_type, e.status, e.version,
              _dts(e.last_updated_at), _dts(e.event_time), e.language,
              e.first_source_id, e.primary_source_id, json.dumps(e.all_source_ids),
              int(e.material_update), int(e.needs_human_review),
+             json.dumps(e.key_numbers, ensure_ascii=False),
              e.title_embedding, e.summary_embedding, e.event_id),
         )
 
@@ -268,6 +270,9 @@ class EventRepo:
             all_source_ids=json.loads(r["all_source_ids"] or "[]"),
             material_update=bool(r["material_update"]),
             needs_human_review=bool(r["needs_human_review"]),
+            # top_of_day 等查询走 SELECT e.*，列存在；防御旧行/投影缺列
+            key_numbers=json.loads(
+                (r["key_numbers"] if "key_numbers" in r.keys() else None) or "[]"),
             title_embedding=r["title_embedding"], summary_embedding=r["summary_embedding"],
         )
 
@@ -451,6 +456,27 @@ class EventImpactRepo:
 
     def list_by_event(self, event_id: str) -> list[EventImpact]:
         rows = self.db.query("SELECT * FROM event_impact WHERE event_id=?", (event_id,))
+        return [self._to_obj(r) for r in rows]
+
+    def list_pending_confirmation(self, modes: list[str], *,
+                                  since_hours: float = 48.0,
+                                  limit: int = 200) -> list[EventImpact]:
+        """取回当时拿不到市场确认的影响（等开盘后重算用）。
+
+        盘后/周末事件在分析当时被时段门禁判为"市场还没开过盘"，
+        market_confirmation 只能取中性 5.0。开盘后这个分数才真正可得。
+        """
+        if not modes:
+            return []
+        placeholders = ",".join("?" * len(modes))
+        rows = self.db.query(
+            f"""SELECT i.* FROM event_impact i
+                JOIN event e ON e.event_id = i.event_id
+                WHERE i.market_data_mode IN ({placeholders})
+                  AND COALESCE(e.event_time, e.first_seen_at)
+                      >= datetime('now', ?)
+                ORDER BY i.final_score DESC LIMIT ?""",
+            (*modes, f"-{float(since_hours)} hours", limit))
         return [self._to_obj(r) for r in rows]
 
     def exists_for_event(self, event_id: str) -> bool:
@@ -792,9 +818,9 @@ class RunHistoryRepo:
                    raw_items_new, raw_items_duplicate, events_created, events_revised,
                    events_analyzed, alerts_eligible, alerts_sent, alerts_suppressed,
                    alerts_failed, human_review, keyword_filtered, stage_b_skipped,
-                   llm_stage_a_calls, llm_stage_b_calls, llm_verifier_calls,
-                   failed_sources, notes)
-               VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+                   rescored_events, llm_stage_a_calls, llm_stage_b_calls,
+                   llm_verifier_calls, failed_sources, notes)
+               VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
                ON CONFLICT(run_id) DO UPDATE SET status=excluded.status""",
             (d.get("run_id", ""), d.get("started_at") or _now(),
              d.get("trace_mode", ""), d.get("status", ""),
@@ -806,6 +832,7 @@ class RunHistoryRepo:
              int(d.get("alerts_sent", 0)), int(d.get("alerts_suppressed", 0)),
              int(d.get("alerts_failed", 0)), int(d.get("human_review", 0)),
              int(d.get("keyword_filtered", 0)), int(d.get("stage_b_skipped", 0)),
+             int(d.get("rescored_events", 0)),
              int(d.get("llm_stage_a_calls", 0)), int(d.get("llm_stage_b_calls", 0)),
              int(d.get("llm_verifier_calls", 0)),
              json.dumps(d.get("failed_sources", []), ensure_ascii=False),

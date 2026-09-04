@@ -31,6 +31,10 @@ from typing import Callable
 from trace.ai.schemas import LLMUnavailableError, SchemaValidationError
 from trace.alerts.engine import AlertDecision, DeliveryReceipt
 from trace.app import AppContext
+from trace.collectors.market_data.confirmation import (
+    MODE_MARKET_NOT_OPENED,
+    MODE_NO_QUOTE,
+)
 from trace.common.ids import revision_id
 from trace.common.modes import (
     STATUS_OK,
@@ -48,6 +52,12 @@ from trace.event_engine.exact_dedup import ExactDedup
 from trace.event_engine.normalize import normalize_raw_item
 
 logger = logging.getLogger(__name__)
+
+# 这些 market_data_mode 表示"当时拿不到可用的市场确认"，开盘后值得重算
+_PENDING_CONFIRMATION_MODES = [
+    MODE_MARKET_NOT_OPENED,
+    MODE_NO_QUOTE,
+]
 
 AlertSender = Callable[[str, str, str | None], DeliveryReceipt]
 """(user_id, text, url) -> DeliveryReceipt。
@@ -81,6 +91,7 @@ class RunSummary:
     # DeepSeek 成本控制（任务书 §17）：新增来源不得导致 LLM 调用线性暴增
     keyword_filtered: int = 0            # Level 1 关键词初筛拦截数
     stage_b_skipped: int = 0             # 仅补充佐证的合并，跳过的 Stage B 次数
+    rescored_events: int = 0             # 开盘后补算市场确认导致分数实质变化的事件数
     llm_stage_a_calls: int = 0
     llm_stage_b_calls: int = 0
     llm_verifier_calls: int = 0
@@ -109,6 +120,7 @@ class RunSummary:
             "human_review": self.human_review,
             "keyword_filtered": self.keyword_filtered,
             "stage_b_skipped": self.stage_b_skipped,
+            "rescored_events": self.rescored_events,
             "llm_stage_a_calls": self.llm_stage_a_calls,
             "llm_stage_b_calls": self.llm_stage_b_calls,
             "llm_verifier_calls": self.llm_verifier_calls,
@@ -123,6 +135,7 @@ class _PendingEvent:
     event: Event
     is_update: bool = False          # 有实质更新 → alert_type=event_update
     needs_analysis: bool = False     # 是否需要跑 Stage B
+    resend_allowed: bool = True      # 修订原因是否在复推白名单内
 
 
 class Pipeline:
@@ -245,6 +258,10 @@ class Pipeline:
                 entry.needs_analysis = True
             elif decision.action == "revised":
                 summary.events_revised += 1
+                # 同一事件被多条 item 修订时：任一次原因在白名单内即允许复推
+                entry.resend_allowed = (
+                    decision.resend_allowed if not entry.is_update
+                    else entry.resend_allowed or decision.resend_allowed)
                 entry.is_update = True
                 entry.needs_analysis = True
             elif not entry.needs_analysis:
@@ -264,6 +281,8 @@ class Pipeline:
                 logger.info("event %s: evidence-only merge, Stage B skipped",
                             event.event_id)
                 continue
+            # Stage B 会 upsert 覆盖旧结论：先留一份用于事后比对方向/分数变化
+            previous_impacts = impact_repo.list_by_event(event.event_id)
             try:
                 impacts = ctx.pipeline.analyze_event(
                     event, extra_entities=self.entity_names_for_event(event))
@@ -285,7 +304,23 @@ class Pipeline:
                 return summary
 
             summary.events_analyzed += 1
-            batch = ctx.alert_engine.evaluate(event, impacts, is_update=is_update)
+
+            # Stage B 结论实质变化（方向反转 / 分数跳变）→ 版本 +1 允许再次推送。
+            # 这两条复推规则依赖新分数与新方向，而修订发生在 Stage B 之前，
+            # 只能在这里补判；已因状态变化升过版的事件不再重复升。
+            resend_allowed = entry.resend_allowed
+            if not is_update:
+                change_reasons = ctx.event_engine.reviser.analysis_change_reasons(
+                    previous_impacts, impacts)
+                if change_reasons:
+                    result = ctx.event_engine.reviser.apply_analysis_change(
+                        event, change_reasons)
+                    event, is_update = result.event, True
+                    resend_allowed = result.resend_allowed
+                    summary.events_revised += 1
+
+            batch = ctx.alert_engine.evaluate(event, impacts, is_update=is_update,
+                                              resend_allowed=resend_allowed)
             summary.alerts_eligible += len(batch.decisions)
             summary.alerts_suppressed += batch.suppressed
 
@@ -296,6 +331,9 @@ class Pipeline:
 
             for dec in batch.decisions:
                 self._deliver(dec, summary)
+
+        # 4. 开盘后补算此前拿不到的市场确认（零 LLM 成本）
+        self._rescore_market_confirmations(summary, set(pending))
 
         # LLM 成本统计（任务书 §17）：本轮真实 API 调用次数（含重试）
         summary.llm_stage_a_calls = ctx.pipeline.extractor.real_llm_calls - stage_a_before
@@ -310,6 +348,121 @@ class Pipeline:
             summary.notes.append("all enabled sources failed")
         logger.info("run summary: %s", summary.as_dict())
         return summary
+
+    # ------------------------------------------------------------------
+    def _rescore_market_confirmations(self, summary: RunSummary,
+                                      analyzed_ids: set[str]) -> None:
+        """对此前因休市／无行情而只能取中性确认的事件重新计分。
+
+        盘后公告在分析当时拿不到市场确认（见行情时段门禁），
+        market_confirmation 只能是中性 5.0。等次日开盘，这个分数才真正可得 ——
+        没有这一步，score_delta_ge_1 与 first_cross_threshold 两条复推规则
+        在默认配置下永远不会触发（佐证性合并跳过 Stage B，状态类修订又已升版）。
+
+        零 LLM 成本：base_score 已落库，供需信号是确定性词表函数，
+        只有行情是新的。分数实质变化才升版本并再次评估投递。
+        """
+        ctx = self.app
+        if not ctx.config.get("scoring.rescore_on_market_open", True):
+            return
+
+        impacts = ctx.pipeline.impact_repo.list_pending_confirmation(
+            _PENDING_CONFIRMATION_MODES,
+            since_hours=float(ctx.config.get("markets.confirmation_max_age_hours", 24)) * 2)
+        if not impacts:
+            return
+
+        score_delta = float(ctx.config.get("alerts.score_resend_delta", 1.0))
+        by_event: dict[str, list] = {}
+        for imp in impacts:
+            if imp.event_id in analyzed_ids:
+                continue          # 本轮刚分析过，用的就是最新行情
+            by_event.setdefault(imp.event_id, []).append(imp)
+        if not by_event:
+            return
+
+        events = ctx.event_engine.event_repo.get_many(list(by_event))
+        for event_id, group in by_event.items():
+            event = events.get(event_id)
+            if event is None:
+                continue
+            try:
+                rescored, materially_changed = self._rescore_event(
+                    event, group, score_delta)
+            except Exception:
+                logger.exception("rescore failed for event %s", event_id)
+                continue
+            if not rescored:
+                continue          # 仍然拿不到确认：下轮再试
+
+            summary.rescored_events += 1
+            if materially_changed:
+                # 分数跳变达到复推阈值：升版本，已推送过的也允许作为更新再推
+                result = ctx.event_engine.reviser.apply_analysis_change(
+                    event, ["score_delta_ge_1"])
+                event, is_update = result.event, True
+                resend_allowed = result.resend_allowed
+            else:
+                # 更常见的情况：这是该事件**第一次**拿到真实市场确认，
+                # 不是内容更新。按 new_event 评估即可 —— 之前因低于阈值
+                # 而没推过的，此刻跨过阈值会自然推送（first_cross_threshold）；
+                # 已经推过的会被幂等键拦下，不会重复打扰。
+                is_update, resend_allowed = False, True
+
+            batch = ctx.alert_engine.evaluate(
+                event, rescored, is_update=is_update,
+                resend_allowed=resend_allowed)
+            summary.alerts_eligible += len(batch.decisions)
+            summary.alerts_suppressed += batch.suppressed
+            for suppression in batch.bootstrap_suppressions:
+                ctx.alert_engine.mark_bootstrap_suppressed(suppression)
+                summary.alerts_suppressed += 1
+            for dec in batch.decisions:
+                self._deliver(dec, summary)
+
+    def _rescore_event(self, event: Event, impacts: list,
+                       score_delta: float) -> tuple[list, bool]:
+        """用当前行情重算该事件各 impact 的 final_score。
+
+        返回 (成功重算的 impact 列表, 是否有分数跳变达到 score_resend_delta)。
+
+        注意量级：市场确认对分数的影响上限是
+        market_confirmation_weight × 5（默认 0.15×5 = 0.75），**低于**默认的
+        score_resend_delta = 1.0。也就是说单靠行情确认几乎不可能触发
+        score_delta_ge_1 —— 重算的真正价值在于让此前低于阈值的事件跨过阈值
+        （first_cross_threshold），而那条路径不需要升版本。
+        """
+        from trace.scoring.signals import detect_supply_demand
+
+        ctx = self.app
+        # 供需信号是确定性词表函数：对同一事件重算必然得到同一结果
+        sd_score = detect_supply_demand(event.title, event.summary).score
+        rescored: list = []
+        materially_changed = False
+        for imp in impacts:
+            security = ctx.pipeline.security_repo.get(imp.security_id)
+            if security is None:
+                continue
+            confirmation = ctx.confirmer.confirm(
+                security.market, security.ticker, imp.direction,
+                event_time=event.event_time, security_id=security.security_id)
+            if confirmation.mode in _PENDING_CONFIRMATION_MODES:
+                continue          # 仍然拿不到：保持原样，下轮再试
+
+            new_score = ctx.pipeline.scoring.final_score(
+                imp.base_score, confirmation.score, sd_score)
+            old_score = imp.final_score
+            imp.final_score = new_score
+            imp.market_confirmation = confirmation.score
+            imp.market_data_mode = confirmation.mode
+            ctx.pipeline.impact_repo.upsert(imp)
+            logger.info("rescored %s: %.2f → %.2f (market_confirmation=%.1f, %s)",
+                        imp.impact_id, old_score, new_score,
+                        confirmation.score, confirmation.mode)
+            rescored.append(imp)
+            if abs(new_score - old_score) >= score_delta:
+                materially_changed = True
+        return rescored, materially_changed
 
     # ------------------------------------------------------------------
     def _ensure_default_chat(self, ctx: AppContext) -> None:

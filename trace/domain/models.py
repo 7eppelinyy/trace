@@ -175,6 +175,9 @@ class Event:
     all_source_ids: list[str] = field(default_factory=list)
     material_update: bool = False
     needs_human_review: bool = False
+    # Stage A 抽取的关键数字（金额/产能/份额…）。修订时用于判定
+    # key_number_changed —— 关键数字变了属于实质更新，允许再次推送。
+    key_numbers: list[str] = field(default_factory=list)
     # 聚类辅助字段
     title_embedding: bytes | None = None
     summary_embedding: bytes | None = None

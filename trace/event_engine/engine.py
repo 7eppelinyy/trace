@@ -64,6 +64,10 @@ class EngineDecision:
     action: str                     # "duplicate" | "merged" | "created" | "revised"
     event: Event | None = None
     reason: str = ""
+    # 本次修订原因是否在 alerts.revision_resend_rules 白名单内。
+    # 实质更新会让 event.version +1（审计轨迹），但是否**再次推送**由这里决定：
+    # 配置把某条规则移出白名单时必须真的生效，而不是写了不算。
+    resend_allowed: bool = True
 
 
 class EventEngine:
@@ -110,10 +114,10 @@ class EventEngine:
         if candidates:
             top = candidates[0]
             if top.merge_score >= self.cluster.auto_merge_threshold:
-                return self._merge_into(top.event, item)
+                return self._merge_into(top.event, item, extracted)
             if top.merge_score >= self.cluster.verifier_min_threshold:
                 if self.verifier.is_same_event(extracted, top.event):
-                    return self._merge_into(top.event, item)
+                    return self._merge_into(top.event, item, extracted)
 
         # 创建新 Event
         return self._create_event(item, extracted)
@@ -126,7 +130,8 @@ class EventEngine:
         source = self.registry.get(source_id)
         return bool(source and source.authority_level in OFFICIAL_AUTHORITIES)
 
-    def _merge_into(self, ev: Event, item: RawItem) -> EngineDecision:
+    def _merge_into(self, ev: Event, item: RawItem,
+                    extracted: ExtractedEvent | None = None) -> EngineDecision:
         self.raw_repo.insert(item)
         # 官方来源晚于媒体/其他来源出现：官方确认修订（任务书 §8）
         # reported → official_confirmed，event_version += 1，仅 material update 允许再推送
@@ -134,13 +139,17 @@ class EventEngine:
         new_status = ("official_confirmed"
                       if official and ev.status != "official_confirmed" else None)
         result: RevisionResult = self.reviser.apply_update(
-            ev.event_id, item, new_status=new_status, official_source=official)
+            ev.event_id, item, new_status=new_status, official_source=official,
+            # 关键数字变化由 reviser 比对（"投资 100 亿" → "投资 300 亿"）
+            new_key_numbers=list(extracted.key_numbers or []) if extracted else None)
         logger.info("merged into %s (reason=%s, official=%s)",
                     ev.event_id, result.revision_type, official)
         # 窗口缓存里的事件对象换成修订后的版本（标题/摘要未变，向量沿用）
         self.cluster.remember(result.event)
         action = "revised" if result.material_update else "merged"
-        return EngineDecision(action=action, event=result.event, reason=result.revision_type)
+        return EngineDecision(action=action, event=result.event,
+                              reason=result.revision_type,
+                              resend_allowed=result.resend_allowed)
 
     def _create_event(self, item: RawItem, extracted: ExtractedEvent) -> EngineDecision:
         self.raw_repo.insert(item)
@@ -162,6 +171,7 @@ class EventEngine:
             first_source_id=item.source_id,
             primary_source_id=item.source_id,
             all_source_ids=[item.source_id] if item.source_id else [],
+            key_numbers=list(extracted.key_numbers or []),
             title_embedding=title_blob,
             summary_embedding=summary_blob,
         )

@@ -19,7 +19,7 @@ from datetime import datetime, timezone
 from trace.db.connection import Database
 from trace.db.repositories import EventRepo, EventRevisionRepo, EventSourceRepo, RawItemRepo
 from trace.common.ids import revision_id
-from trace.domain.models import Event, EventRevision, EventSource, RawItem
+from trace.domain.models import Event, EventImpact, EventRevision, EventSource, RawItem
 
 logger = logging.getLogger(__name__)
 
@@ -55,6 +55,7 @@ class EventReviser:
                      new_summary: str | None = None,
                      new_status: str | None = None,
                      new_event_type: str | None = None,
+                     new_key_numbers: list[str] | None = None,
                      official_source: bool = False,
                      direction_changed: bool = False,
                      key_number_changed: bool = False,
@@ -66,6 +67,11 @@ class EventReviser:
             raise ValueError(f"event not found: {event_id}")
 
         reasons: list[str] = []
+
+        # 关键数字变化（"投资 100 亿" → "投资 300 亿"）：调用方给出新抽取结果时
+        # 由本模块判定，不再要求调用方自己比对
+        if new_key_numbers is not None and not key_number_changed:
+            key_number_changed = _key_numbers_changed(ev.key_numbers, new_key_numbers)
 
         # rumor_to_confirmed
         old_rank = _STATUS_RANK.get(ev.status, 1)
@@ -100,6 +106,9 @@ class EventReviser:
             ev.summary = new_summary
         if new_event_type:
             ev.event_type = new_event_type
+        if new_key_numbers:
+            # 合并而非覆盖：后续报道往往只提到部分数字
+            ev.key_numbers = sorted({*ev.key_numbers, *new_key_numbers})
         if official_source and raw_item.source_id:
             ev.primary_source_id = raw_item.source_id
         if raw_item.source_id and raw_item.source_id not in ev.all_source_ids:
@@ -141,3 +150,72 @@ class EventReviser:
         return RevisionResult(event=ev, revision_type=revision_type,
                               material_update=material_update,
                               resend_allowed=resend_allowed, reasons=reasons)
+
+    # ------------------------------------------------------------------
+    def analysis_change_reasons(self, previous: list[EventImpact],
+                                current: list[EventImpact]) -> list[str]:
+        """比对同一事件前后两次 Stage B 结果，给出实质变化原因。
+
+        direction_changed / score_delta_ge_1 这两条复推规则依赖新分数与新方向，
+        而修订发生在 Stage B **之前** —— 那时它们还不存在。所以必须在分析之后
+        补一次判定，否则这两条规则永远是死的（配置里写着，实际从不触发）。
+
+        只看两次都出现的证券：新增证券本身不算"结论变了"。
+        """
+        if not previous or not current:
+            return []
+        before = {i.security_id: i for i in previous}
+        reasons: set[str] = set()
+        for imp in current:
+            old = before.get(imp.security_id)
+            if old is None:
+                continue
+            if old.direction != imp.direction and "uncertain" not in (
+                    old.direction, imp.direction):
+                # uncertain ↔ 明确方向 属于证据补强，不当作方向反转
+                reasons.add("direction_changed")
+            if abs(imp.final_score - old.final_score) >= self._score_delta:
+                reasons.add("score_delta_ge_1")
+        return sorted(reasons)
+
+    def apply_analysis_change(self, event: Event, reasons: list[str]) -> RevisionResult:
+        """Stage B 结论实质变化 → 事件版本 +1（幂等键随之变化，允许再次推送）。"""
+        now = datetime.now(timezone.utc)
+        event.version += 1
+        event.material_update = True
+        event.last_updated_at = now
+        self.event_repo.update(event)
+
+        revision_type = reasons[0] if reasons else "analysis_changed"
+        self.revision_repo.add(EventRevision(
+            revision_id=revision_id(),
+            event_id=event.event_id,
+            version=event.version,
+            revision_type=revision_type,
+            material_update=True,
+            note=";".join(reasons),
+            created_at=now,
+        ))
+        logger.info("event %s analysis changed (%s) → version %d",
+                    event.event_id, ",".join(reasons), event.version)
+        return RevisionResult(
+            event=event, revision_type=revision_type, material_update=True,
+            resend_allowed=any(r in self._resend_rules for r in reasons),
+            reasons=reasons)
+
+
+def _key_numbers_changed(old: list[str], new: list[str]) -> bool:
+    """关键数字是否发生实质变化。
+
+    只在**两边都有**数字时比较：从无到有是证据补充（第一次抽到数字），
+    不是"数字变了"；否则每个事件第一次被修订都会误报。
+    """
+    old_set = {_normalize_number(x) for x in old if str(x).strip()}
+    new_set = {_normalize_number(x) for x in new if str(x).strip()}
+    if not old_set or not new_set:
+        return False
+    return bool(new_set - old_set)
+
+
+def _normalize_number(value) -> str:
+    return str(value).strip().lower().replace(" ", "")

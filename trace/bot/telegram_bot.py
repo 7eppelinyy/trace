@@ -303,7 +303,8 @@ async def cmd_status(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
         lines.append(f"来源 {r['sources_succeeded']}/{r['sources_checked']} 成功 ｜ "
                      f"新事件 {r['events_created']} ｜ 投递 {r['alerts_sent']} ｜ "
                      f"初筛拦截 {r['keyword_filtered']} ｜ "
-                     f"省下 Stage B {r['stage_b_skipped']}")
+                     f"省下 Stage B {r['stage_b_skipped']} ｜ "
+                     f"开盘补算 {r['rescored_events']}")
         if r["failed_sources"]:
             lines.append("失败来源: " + ", ".join(r["failed_sources"][:5]))
     else:
