@@ -77,7 +77,10 @@ class Jin10Collector(BaseCollector):
         source_id = "src_jin10"
         cursor = self.cursor_repo.get(source_id) or {}
         seen: dict[str, None] = dict.fromkeys(cursor.get("seen_ids", []))
-        next_cursor = cursor.get("next_cursor")
+        # 每轮一律从 feed 头部（cursor=None）取最新页：金十的 cursor 是"历史定位"
+        # 翻页 token，不是"增量续传位"。若拿上轮存下的 next_cursor 续翻，会一路翻进
+        # 历史深处、永远回不到头部的新条目，后果就是"健康但零产出"。新条目用
+        # seen_ids 去重即可，无须依赖续传位。
 
         cfg = self.config.get("collectors.jin10", {}) or {}
         max_pages = int(cfg.get("max_pages", _DEFAULT_MAX_PAGES))
@@ -88,8 +91,8 @@ class Jin10Collector(BaseCollector):
         first_run = not bool(cursor.get("seen_ids"))
 
         try:
-            raw_items, next_cursor_out = asyncio.run(
-                self._fetch_flash(token, next_cursor, max_pages))
+            raw_items, _ = asyncio.run(
+                self._fetch_flash(token, None, max_pages))
         except SourceError:
             raise
         except Exception as exc:  # mcp/httpx 等未分类异常 → 来源不可用
@@ -139,11 +142,11 @@ class Jin10Collector(BaseCollector):
             if len(items) >= max_items:
                 break
 
-        next_cursor = dict(cursor)
-        next_cursor["seen_ids"] = list(seen)[-2000:]
-        if next_cursor_out:
-            next_cursor["next_cursor"] = next_cursor_out
-        self.cursor_repo.set(source_id, next_cursor)
+        persisted = dict(cursor)
+        persisted["seen_ids"] = list(seen)[-2000:]
+        # 不再持久化 next_cursor 作为续传点（见上方注释）；游标仅保留 seen_ids 用于去重。
+        persisted.pop("next_cursor", None)
+        self.cursor_repo.set(source_id, persisted)
 
         if dropped_old or dropped_filter or dropped_dup:
             logger.info(

@@ -37,3 +37,32 @@ def test_parse_flash_json():
     items = parse_flash_json(text)
     assert len(items) == 1
     assert items[0]["url"].endswith("20260903211159272800")
+
+
+def test_jin10_fetches_from_feed_head_each_run(db, config, monkeypatch):
+    """回归：每轮必须从 feed 头部(cursor=None)取最新页，而不得拿存下的
+    next_cursor 续翻 —— 续翻会一路翻进历史深处、永远回不到头部的新条目，
+    导致"采集器健康但零产出"。见 jin10.py collect() 的注释。"""
+    from trace.collectors.jin10 import Jin10Collector
+
+    monkeypatch.setenv("JIN10_BEARER_TOKEN", "test-token")
+    collector = Jin10Collector(db, config)
+    # 预置一个"上轮存下的位置"游标；若采集器拿它当续传起点就是 bug
+    collector.cursor_repo.set(
+        "src_jin10", {"seen_ids": ["old"], "next_cursor": "1788307413690"})
+
+    captured = {}
+
+    async def fake_fetch(token, cursor, max_pages):
+        captured["cursor"] = cursor
+        return [], None
+
+    monkeypatch.setattr(collector, "_fetch_flash", fake_fetch)
+
+    items = collector.collect()
+    assert items == []
+    assert captured["cursor"] is None, "必须从 feed 头部取，忽略 stored next_cursor"
+    # 持久化的游标不再保存 next_cursor（续传位已废弃）
+    persisted = collector.cursor_repo.get("src_jin10")
+    assert "next_cursor" not in persisted
+    assert "seen_ids" in persisted
