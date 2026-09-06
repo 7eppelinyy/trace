@@ -76,7 +76,7 @@ scoring:
   rescore_on_market_open: true
 
 alerts:
-  default_threshold: 7          # final_score >= 7 才即时提醒
+  default_threshold: 6          # final_score >= 6 才即时提醒（用户级 __ALL__ 规则优先，见 alert_rule）
   minimum_confidence: 0.0       # 默认不设最低置信度（重要度/置信度分离）
   # 首次同步保护：只允许事件在 freshness_window_hours 内发生且
   # 晚于该用户的 alert_activation_at 才作为即时 Alert 推送，
