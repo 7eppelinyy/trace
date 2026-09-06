@@ -160,7 +160,8 @@ collectors:
     policy: 600
     rss: 600
     industry_media: 600
-    jin10: 600
+    jin10: 120
+    # 泛科技词表放宽后金十命中率上升，轮询调快以更快捕获新快讯
   # 金十数据（MCP 官方授权）采集配置
   jin10:
     keyword_filter: jin10        # Level 1 关键词初筛词表（source_filters.yaml）

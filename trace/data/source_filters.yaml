@@ -185,3 +185,123 @@ filters:
     - 供不应求
     - 扩产
     - 减产
+    # 泛科技（用户要求：与科技有关内容都过初筛）。英文用较长词避免
+    # 'ai'/'ar'/'ev' 这类短子串误命中；中文用语义明确的词。
+    - 科技
+    - 人工智能
+    - 机器人
+    - 自动驾驶
+    - 智能驾驶
+    - 新能源汽车
+    - 动力电池
+    - 锂电池
+    - 光伏
+    - 储能
+    - 云计算
+    - 云服务
+    - 消费电子
+    - 智能手机
+    - 面板
+    - 显示屏
+    - 物联网
+    - 量子
+    - 大模型
+    - 智算
+    - 晶圆
+    - 光刻
+    - 光刻机
+    - 先进封装
+    - 封测
+    - 半导体设备
+    - 苹果
+    - 微软
+    - 谷歌
+    - 亚马逊
+    - 特斯拉
+    - 比亚迪
+    - 宁德
+    - 华为
+    - 小米
+    - 三星
+    - 高通
+    - 博通
+    - 阿斯麦
+    - 应用材料
+    - 泛林
+    - 海力士
+    - 铠侠
+    - 中芯国际
+    - 华虹
+    - 长江存储
+    - 长鑫
+    - 寒武纪
+    - 海光
+    - 字节
+    - 腾讯
+    - 阿里
+    - 百度
+    - 京东
+    - 联想
+    - 立讯
+    - 歌尔
+    - 京东方
+    - technology
+    - software
+    - hardware
+    - cloud computing
+    - data center
+    - computer
+    - device
+    - chipmaker
+    - foundry
+    - wafer
+    - euv
+    - lithography
+    - robot
+    - artificial intelligence
+    - machine learning
+    - deep learning
+    - language model
+    - openai
+    - anthropic
+    - quantum
+    - smartphone
+    - consumer electronics
+    - nvidia
+    - micron
+    - intel
+    - amd
+    - qualcomm
+    - broadcom
+    - apple
+    - microsoft
+    - google
+    - alphabet
+    - amazon
+    - tesla
+    - samsung
+    - hynix
+    - kioxia
+    - western digital
+    - seagate
+    - asml
+    - applied materials
+    - lam research
+    - smic
+    - tsmc
+    # 航天/无人机/太空科技（补充，'space' 太泛不用）
+    - 卫星
+    - 航天
+    - 火箭
+    - 太空
+    - 无人机
+    - 星链
+    - 低轨
+    - nasa
+    - spacex
+    - satellite
+    - rocket
+    - drone
+    - aerospace
+    - aviation
+    - aircraft
