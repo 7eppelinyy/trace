@@ -572,7 +572,9 @@ def cmd_bot() -> None:
 
     holder: dict = {}
     pipeline = Pipeline(app)
-    pipeline.alert_sender = _make_bot_alert_sender(holder)
+    # 走裸 httpx 投递（与 run-once / cmd_run 一致，已验证可靠），
+    # 不依赖 PTB application.loop —— 后者在批量投递时稳定返回 network_error。
+    pipeline.alert_sender = _make_alert_sender(app.config.telegram.bot_token)
 
     threading.Thread(target=pipeline.run_forever, kwargs={"poll_seconds": 60},
                      daemon=True).start()
