@@ -11,6 +11,7 @@
     python -m trace.main bot                启动 Telegram Bot（long polling）+ 流水线
     python -m trace.main run                仅流水线循环
     python -m trace.main digest             生成今日摘要并打印
+    python -m trace.main serve              启动 FastAPI RESTful API 服务（Swagger: /docs）
 
 Phase 1：只做事件发现与解释，禁止自动交易。
 """
@@ -611,13 +612,21 @@ def cmd_review(resolve: str = "", resolve_all: bool = False) -> None:
     print(repo.render())
 
 
+def cmd_serve(host: str = "0.0.0.0", port: int = 8000, reload: bool = False) -> None:
+    """启动 FastAPI RESTful API 服务。"""
+    import uvicorn
+
+    print(f"启动 Trace API 服务: http://{host}:{port} (Swagger: http://{host}:{port}/docs)")
+    uvicorn.run("trace.api.app:app", host=host, port=port, reload=reload)
+
+
 def main() -> None:
     setup_logging(logging.INFO)
     parser = argparse.ArgumentParser(description="美股+A股重大事件智能雷达")
     parser.add_argument("command", choices=[
         "init", "doctor", "run-once", "verify-securities",
         "telegram-init-user", "telegram-test", "replay-event",
-        "run", "bot", "digest", "review"])
+        "run", "bot", "digest", "review", "serve"])
     parser.add_argument("--event-id", default="",
                         help="replay-event：要回放的事件 ID")
     parser.add_argument("--acceptance-test", action="store_true",
@@ -627,6 +636,12 @@ def main() -> None:
                         help="review：把指定 review_id 标记为已处理")
     parser.add_argument("--resolve-all", action="store_true",
                         help="review：把全部待处理项标记为已处理")
+    parser.add_argument("--host", default="0.0.0.0",
+                        help="serve：绑定主机地址（默认 0.0.0.0）")
+    parser.add_argument("--port", type=int, default=8000,
+                        help="serve：绑定端口（默认 8000）")
+    parser.add_argument("--reload", action="store_true",
+                        help="serve：开启热重载（开发用）")
     args = parser.parse_args()
     if args.command == "replay-event":
         if not args.event_id:
@@ -635,6 +650,9 @@ def main() -> None:
         return
     if args.command == "review":
         cmd_review(resolve=args.resolve, resolve_all=args.resolve_all)
+        return
+    if args.command == "serve":
+        cmd_serve(host=args.host, port=args.port, reload=args.reload)
         return
     {
         "init": cmd_init,
@@ -651,3 +669,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
