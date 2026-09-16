@@ -19,3 +19,6 @@ build/
 **/env.server
 .deploy/trace-deploy.zip
 *.zip
+
+# local acceptance artifacts
+.acceptance/

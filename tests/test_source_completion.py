@@ -151,6 +151,14 @@ def test_micron_429_fallback_to_newsroom(db, config, monkeypatch):
     )
     monkeypatch.setattr(collector, "http_client", lambda *a, **k: fake)
 
+    # 冻结测试参考时间，避免真实时间流逝导致 August 10 样本超过 30 天 bootstrap 窗口
+    class _FrozenDatetime(datetime):
+        @classmethod
+        def now(cls, tz=None):
+            return datetime(2026, 8, 26, 12, 0, tzinfo=timezone.utc)
+
+    monkeypatch.setattr("trace.collectors.micron.datetime", _FrozenDatetime)
+
     items = collector.collect()
     # newsroom 回退成功，拿到 2 条
     assert len(items) == 2
