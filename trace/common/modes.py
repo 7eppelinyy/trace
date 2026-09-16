@@ -74,6 +74,10 @@ class TraceMode:
         return TraceMode.current() == "production"
 
     @staticmethod
+    def is_test() -> bool:
+        return TraceMode.current() == "test"
+
+    @staticmethod
     def validate() -> str:
         mode = TraceMode.current()
         if mode not in ("test", "offline", "production"):
