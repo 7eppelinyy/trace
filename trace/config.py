@@ -38,6 +38,7 @@ class LLMConfig:
     model_event_extractor: str = DEFAULT_GEMINI_MODEL
     model_impact_analyzer: str = DEFAULT_GEMINI_MODEL
     model_same_event_verifier: str = DEFAULT_GEMINI_MODEL
+    model_ask: str = DEFAULT_GEMINI_MODEL
     temperature: float = 0.0
     timeout_seconds: float = 60.0
     max_retries: int = 2
@@ -89,16 +90,32 @@ class AppConfig:
 
 
 def load_config(settings_path: Path | None = None) -> AppConfig:
-    path = settings_path or SETTINGS_PATH
+    path = settings_path or (Path(os.environ["TRACE_SETTINGS_PATH"]) if os.environ.get("TRACE_SETTINGS_PATH") else SETTINGS_PATH)
     raw: dict[str, Any] = {}
     if path.exists():
         with open(path, "r", encoding="utf-8") as f:
             raw = yaml.safe_load(f) or {}
 
-    if load_dotenv is not None:
+    if load_dotenv is not None and os.environ.get('TRACE_LOAD_DOTENV', '1') != '0':
         load_dotenv(PROJECT_ROOT / ".env")
 
-    db_rel = raw.get("database", {}).get("path", "data/trace.db")
+    from trace.common.modes import TraceMode
+    TraceMode.validate()
+
+    overrides = {
+        "LLM_DAILY_CALL_BUDGET": ("llm", "daily_call_budget", int),
+        "LLM_ASK_DAILY_BUDGET": ("llm", "ask_daily_budget", int),
+        "LLM_ASK_USER_DAILY_BUDGET": ("llm", "ask_user_daily_budget", int),
+        "LLM_PIPELINE_RESERVED_CALLS": ("llm", "pipeline_reserved_calls", int),
+        "TRACE_BACKUP_DIR": ("backup", "directory", str),
+        "TRACE_BACKUP_KEEP": ("backup", "keep", int),
+        "MARKET_QUOTE_CACHE_TTL_SECONDS": ("markets", "quote_cache_ttl_seconds", int),
+    }
+    for name, (section, key, cast) in overrides.items():
+        if os.environ.get(name):
+            raw.setdefault(section, {})[key] = cast(os.environ[name])
+
+    db_rel = _env("TRACE_DB_PATH") or raw.get("database", {}).get("path", "data/trace.db")
     db_path = (PROJECT_ROOT / db_rel).resolve()
 
     llm_raw = raw.get("llm", {})
@@ -133,6 +150,7 @@ def load_config(settings_path: Path | None = None) -> AppConfig:
         model_event_extractor=env_model or defaults.get("event_extractor", default_model),
         model_impact_analyzer=env_model or defaults.get("impact_analyzer", default_model),
         model_same_event_verifier=env_model or defaults.get("same_event_verifier", default_model),
+        model_ask=env_model or defaults.get("ask", default_model),
         temperature=float(llm_raw.get("temperature", 0.0)),
         timeout_seconds=float(timeout_env or 60),
         max_retries=int(retries_env or 2),

@@ -1,0 +1,34 @@
+<view class="research">
+  <view class="heading">{{shared ? '研究分享快照' : '我的研究'}}</view>
+  <view class="secondary">{{shared ? '这是用户的假设与判断，不代表已核实事实。' : '记录假设、核对新证据。内容默认私有。'}}</view>
+  <view wx:if="{{error}}" class="error" role="alert">{{error}}</view>
+  <view wx:if="{{loading}}" class="secondary">正在加载…</view>
+  <view wx:if="{{!shared}}" class="actions">
+    <button size="mini" bindtap="newQuestion">新建假设</button><button size="mini" bindtap="load">刷新</button><button size="mini" bindtap="exportAll">导出全部</button>
+  </view>
+  <view wx:if="{{!shared && !loading && (!items || items.length === 0)}}" class="empty">还没有研究记录。可从事件详情保存待验证的问题。</view>
+  <view wx:for="{{items}}" wx:key="question_id" class="row" data-id="{{item.question_id}}" bindtap="select">
+    <view class="title">{{item.title}}</view><view class="secondary">{{item.stateLabel}} · {{item.evidenceCount}} 条可能相关证据，需复核{{item.due ? ' · 已到核验日期' : ''}}</view>
+  </view>
+  <view wx:if="{{selected}}" class="editor">
+    <text class="label">研究标题</text><input value="{{title}}" data-field="title" bindinput="input" disabled="{{shared}}" maxlength="200" />
+    <text class="label">待验证假设</text><textarea value="{{hypothesis}}" data-field="hypothesis" bindinput="input" disabled="{{shared}}" maxlength="3000" auto-height />
+    <text class="label">支持条件（每行一个）</text><textarea value="{{supporting}}" data-field="supporting" bindinput="input" disabled="{{shared}}" maxlength="5000" auto-height />
+    <text class="label">反证条件（每行一个）</text><textarea value="{{contradicting}}" data-field="contradicting" bindinput="input" disabled="{{shared}}" maxlength="5000" auto-height />
+    <view wx:if="{{selected.event_id}}" class="link" bindtap="openEvidence">打开关联事件与原文证据</view>
+    <view wx:if="{{selected.matched_evidence_ids && selected.matched_evidence_ids.length > 0}}" class="secondary">新证据仅表示可能相关，结论仍由你复核。</view>
+    <view wx:for="{{selected.matched_evidence_ids}}" wx:key="*this" class="evidence">{{item}}</view>
+    <block wx:if="{{!shared}}">
+      <text class="label">私有备注（不进入分享）</text><textarea value="{{userNotes}}" data-field="userNotes" bindinput="input" maxlength="10000" auto-height />
+      <picker mode="date" value="{{nextDate}}" bindchange="date"><view class="link">下次核验：{{nextDate || '选择日期'}}（UTC）</view></picker>
+      <button bindtap="save" loading="{{saving}}" disabled="{{saving}}">保存研究</button>
+      <view wx:if="{{selected.question_id}}" class="actions">
+        <button size="mini" data-state="confirmed" bindtap="save" disabled="{{saving}}">我已验证</button><button size="mini" data-state="falsified" bindtap="save" disabled="{{saving}}">我已证伪</button><button size="mini" data-state="archived" bindtap="save" disabled="{{saving}}">归档</button>
+      </view>
+      <view wx:if="{{selected.question_id}}" class="sharing">
+        <view class="secondary">分享将公开当前标题、假设和条件的快照，有效期 7 天，不含私有备注。</view>
+        <button size="mini" bindtap="enableShare">生成限时分享</button><button wx:if="{{sharePath}}" size="mini" open-type="share">发送分享</button><button size="mini" bindtap="revokeShare">撤销全部分享</button>
+      </view>
+    </block>
+  </view>
+</view>

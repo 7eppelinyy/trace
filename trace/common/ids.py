@@ -35,3 +35,16 @@ def digest_id() -> str:
 
 def forecast_check_id() -> str:
     return f"FCK-{_short_uuid()}"
+
+
+def forecast_snapshot_id() -> str:
+    return f"SNP-{_short_uuid()}"
+
+
+def research_question_id() -> str:
+    return f"RQ-{_short_uuid()}"
+
+
+def alert_feedback_id() -> str:
+    return f"AFB-{_short_uuid()}"
+

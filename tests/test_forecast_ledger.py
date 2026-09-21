@@ -43,7 +43,7 @@ class _FakeConfirmer:
         if self.change_pct is None:
             return None
         last = ANCHOR_PRICE * (1 + self.change_pct / 100)
-        return Quote(ticker=ticker, ts=datetime.now(timezone.utc),
+        return Quote(ticker=ticker, ts=datetime.now(timezone.utc), market_timestamp=datetime.now(timezone.utc),
                      last_price=round(last, 4),
                      prev_close=self.prev_close if self.prev_close is not None else last)
 
@@ -70,6 +70,17 @@ def _seed_impact(db, *, direction="bullish", age_hours=30.0,
             security_id="SEC-US-MU",
             ts=event_time + timedelta(hours=anchor_offset_hours),
             last_price=anchor_price, prev_close=anchor_price))
+    # Record the prediction at the fixture's known analysis time. Never ask
+    # production code to infer that timestamp from mutable legacy impacts.
+    from trace.domain.models import ForecastSnapshot
+    from trace.db.repositories import ForecastSnapshotRepo
+    valid_anchor = anchor_price if abs(anchor_offset_hours) <= 6 and anchor_offset_hours <= 0 else None
+    ForecastSnapshotRepo(db).insert(ForecastSnapshot(
+        snapshot_id='SNAP-' + impact_id, impact_id=impact_id,event_id=event_id,security_id='SEC-US-MU',
+        predicted_direction=direction, predicted_score=8,confidence=.7,
+        analysis_created_at=event_time,published_at=event_time,anchor_price=valid_anchor,
+        anchor_ts=(event_time+timedelta(hours=anchor_offset_hours)) if valid_anchor is not None else None,
+        due_at=event_time+timedelta(hours=24),created_at=event_time))
     return event_time
 
 

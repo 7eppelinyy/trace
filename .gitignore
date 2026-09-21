@@ -22,3 +22,7 @@ build/
 
 # local acceptance artifacts
 .acceptance/
+
+# Scratch & private developer configs
+scratch/
+project.private.config.json

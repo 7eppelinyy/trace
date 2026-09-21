@@ -1,0 +1,111 @@
+{
+  "auth_modes": {
+    "production_dev_grant": 403,
+    "real_dev_grant": 200,
+    "real_issued_subject": "audit-victim",
+    "real_is_production": false,
+    "real_validation_error": "invalid TRACE_MODE: real (expect test|offline|production)"
+  },
+  "private_share": {
+    "created_status": 200,
+    "anonymous_share_status": 200,
+    "anonymous_hypothesis": "Private acquisition research hypothesis",
+    "notes_removed": true,
+    "nonexistent_evidence_status": 200,
+    "nonexistent_evidence_saved": true
+  },
+  "ask_real_budget_integration": {
+    "status": "degraded",
+    "fake_provider_calls": 0,
+    "budget_used": 0
+  },
+  "macro_ask": {
+    "exception": "AttributeError: 'EventRepo' object has no attribute 'list_recent'"
+  },
+  "cursor_roundtrip": {
+    "first_total": 3,
+    "first_has_more": true,
+    "second_items": 0,
+    "cursor": "2026-09-20T04:20:50.397448+00:00:EVT-INDEPENDENT-AUDIT"
+  },
+  "stable_source_id_correction": {
+    "content_changed": true,
+    "is_duplicate": true,
+    "is_revision": false,
+    "reason": "source_item_id"
+  },
+  "index_timestamp_parsing": [
+    {
+      "status": "real",
+      "market_timestamp": "None",
+      "as_of": "2026-09-20 04:20:50.436510+00:00"
+    },
+    {
+      "status": "real",
+      "market_timestamp": "None",
+      "as_of": "2026-09-20 04:20:50.436510+00:00"
+    },
+    {
+      "status": "real",
+      "market_timestamp": "None",
+      "as_of": "2026-09-20 04:20:50.436510+00:00"
+    },
+    {
+      "status": "real",
+      "market_timestamp": "None",
+      "as_of": "2026-09-20 04:20:50.436510+00:00"
+    }
+  ],
+  "processing_crash_recovery": {
+    "jobs_after_crash": [
+      {
+        "target_id": "EVT-20260920-ce7cb53dba1f",
+        "status": "processing"
+      }
+    ],
+    "recovered_analysis_calls": 0,
+    "jobs_after_next_round": [
+      {
+        "target_id": "EVT-20260920-ce7cb53dba1f",
+        "status": "processing"
+      }
+    ]
+  },
+  "blocked_budget_positive_control": {
+    "first_status": "STOP_LLM_BUDGET_EXCEEDED",
+    "recovered_calls": 1
+  },
+  "official_denial_merge": {
+    "extracted_status": "contradicted",
+    "stored_status": "official_confirmed"
+  },
+  "disable_after_enqueue": {
+    "global_preference_enabled": false,
+    "fake_sender_calls": 1,
+    "drain_stats": {
+      "claimed": 1,
+      "sent": 1,
+      "failed": 0,
+      "suppressed": 0
+    }
+  },
+  "restore_foreign_key_violation": {
+    "drill_status": "PASS",
+    "source_fk": "1 violations",
+    "target_fk": "1 violations",
+    "checked_tables": [
+      "event",
+      "event_impact",
+      "forecast_check",
+      "forecast_snapshot",
+      "raw_item",
+      "schema_version",
+      "security",
+      "source"
+    ]
+  },
+  "compose_runner_command": {
+    "exit_code": 2,
+    "stderr": "usage: main.py [-h] [--event-id EVENT_ID] [--acceptance-test]\n               [--resolve RESOLVE] [--resolve-all] [--host HOST] [--port PORT]\n               [--reload]\n               {init,doctor,run-once,verify-securities,telegram-init-user,telegram-test,replay-event,run,bot,digest,review,serve}\nmain.py: error: the following arguments are required: command"
+  }
+}

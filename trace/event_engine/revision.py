@@ -28,6 +28,8 @@ _STATUS_RANK = {
     "reported": 1,
     "partially_confirmed": 2,
     "official_confirmed": 3,
+    "contradicted": 4,
+    "retracted": 5,
 }
 
 
@@ -52,6 +54,7 @@ class EventReviser:
         self._score_delta = float(config.get("alerts.score_resend_delta", 1.0))
 
     def apply_update(self, event_id: str, raw_item: RawItem, *,
+                     new_title: str | None = None, document_changed: bool = False,
                      new_summary: str | None = None,
                      new_status: str | None = None,
                      new_event_type: str | None = None,
@@ -67,6 +70,8 @@ class EventReviser:
             raise ValueError(f"event not found: {event_id}")
 
         reasons: list[str] = []
+        if document_changed:
+            reasons.append('document_corrected')
 
         # 关键数字变化（"投资 100 亿" → "投资 300 亿"）：调用方给出新抽取结果时
         # 由本模块判定，不再要求调用方自己比对
@@ -82,8 +87,19 @@ class EventReviser:
         )
         if rumor_to_confirmed:
             reasons.append("rumor_to_confirmed")
-        if official_source:
+        if official_source and raw_item.source_id not in ev.all_source_ids:
             reasons.append("official_source_appeared")
+
+        # 官方否认或撤回属于重大实质修订（F11 / F14）
+        if new_status in ("contradicted", "retracted") and new_status != ev.status:
+            reasons.append(f"status_{new_status}")
+            reasons.append("denial_or_retraction")
+
+        # 官方否认/撤回后再次获得官方确认（恢复确认状态机）
+        if ev.status in ("contradicted", "retracted") and new_status == "official_confirmed":
+            reasons.append("recovery_to_confirmed")
+            reasons.append("rumor_to_confirmed")
+
         if direction_changed:
             reasons.append("direction_changed")
         if key_number_changed:
@@ -102,8 +118,14 @@ class EventReviser:
         ev.material_update = material_update
         if new_status:
             ev.status = new_status
-        if new_summary:
+        if new_title and new_title != ev.title:
+            ev.title = new_title
+            ev.title_embedding = None
+            ev.embedding_model = None
+        if new_summary and material_update and new_summary != ev.summary:
             ev.summary = new_summary
+            ev.summary_embedding = None
+            ev.embedding_model = None
         if new_event_type:
             ev.event_type = new_event_type
         if new_key_numbers:

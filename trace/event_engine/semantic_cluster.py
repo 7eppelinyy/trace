@@ -48,6 +48,7 @@ class SemanticCluster:
     def __init__(self, db: Database, embedder: Embedder, config):
         self.event_repo = EventRepo(db)
         self.embedder = embedder
+        self.embedding_identity = f'{type(embedder).__name__}:{embedder.model_name}:{getattr(embedder,"revision","unversioned")}:{embedder.dim}'
         self._weights = config.get("event_engine.merge_weights", {})
         self._thresholds = config.get("event_engine.merge_thresholds", {})
         self._window_hours = float(config.get("event_engine.time_window_hours", 72))
@@ -103,15 +104,16 @@ class SemanticCluster:
         title_vecs: list[list[float]] = []
         summary_vecs: list[list[float]] = []
         backfilled: list[Event] = []
+        current_dim = getattr(self.embedder, "dim", None)
         for ev in events:
             changed = False
             tv = _blob_to_vec(ev.title_embedding)
-            if not tv:
+            if not tv or ev.embedding_model != self.embedding_identity or (current_dim and len(tv) != current_dim):
                 tv, blob = self.embed_text(ev.title)
                 ev.title_embedding = blob
                 changed = True
             sv = _blob_to_vec(ev.summary_embedding)
-            if not sv:
+            if not sv or ev.embedding_model != self.embedding_identity or (current_dim and len(sv) != current_dim):
                 sv, blob = self.embed_text(ev.summary)
                 ev.summary_embedding = blob
                 changed = True
@@ -123,7 +125,7 @@ class SemanticCluster:
             with self.event_repo.db.transaction():
                 for ev in backfilled:
                     self.event_repo.update_embeddings(
-                        ev.event_id, ev.title_embedding, ev.summary_embedding)
+                        ev.event_id, ev.title_embedding, ev.summary_embedding, self.embedding_identity)
 
         self._window = (events, title_vecs, summary_vecs)
         self._window_index = {ev.event_id: i for i, ev in enumerate(events)}
@@ -149,9 +151,11 @@ class SemanticCluster:
                         language: str = "") -> list[MatchCandidate]:
         """对时间窗口内的近期 Event 计算 merge_score，按分数降序返回。
 
-        窗口事件与向量按轮缓存（_load_window），再用 batch 余弦算相似度：
-        热路径是 每条新 item × 窗口内全部事件 × 2 向量，逐对纯 Python
-        点积在事件量增长后会成为瓶颈。
+        双通道召回策略（F12）：
+        - 通道 1（向量）：title 与 summary 的语义相似度
+        - 通道 2（符号）：实体重合 + 事件类型 + 时间接近度
+        当 embedding 处于降级模式或跨语言难以直接向量匹配时，符号通道确保候选
+        依然能进入候选池由 SameEventVerifier 进行精确核验，避免跨语言漏检。
         """
         title_vec, _ = self.embed_text(title)
         summary_vec, _ = self.embed_text(summary)
@@ -161,13 +165,25 @@ class SemanticCluster:
         summary_sims = pairwise_cosines(summary_vec, summary_vecs)
 
         candidates: list[MatchCandidate] = []
+        is_degraded = getattr(self.embedder, "is_degraded", False)
         for ev, t_sim, s_sim in zip(events, title_sims, summary_sims):
             score, breakdown = self._merge_score(
                 ev, title, summary, title_vec, summary_vec,
                 entities, event_type, event_time,
                 title_sim=t_sim, summary_sim=s_sim)
-            if score >= self.verifier_min_threshold * 0.8:  # 只对接近阈值的候选保留
-                candidates.append(MatchCandidate(event=ev, merge_score=score, breakdown=breakdown))
+
+            ent_overlap = breakdown.get("entity_overlap", 0.0)
+            t_match = breakdown.get("event_type_match", 0.0)
+            t_prox = breakdown.get("time_proximity", 0.0)
+            symbolic_hit = (ent_overlap >= 0.5 and t_match == 1.0 and t_prox >= 0.5)
+
+            if score >= self.verifier_min_threshold * 0.8 or symbolic_hit:
+                effective_score = score
+                if symbolic_hit and (is_degraded or score < self.verifier_min_threshold):
+                    # 符号通道命中：赋予不低于 verifier_min_threshold 的审核资格
+                    effective_score = max(score, self.verifier_min_threshold)
+                candidates.append(MatchCandidate(event=ev, merge_score=effective_score, breakdown=breakdown))
+
         candidates.sort(key=lambda c: c.merge_score, reverse=True)
         return candidates
 
@@ -203,6 +219,19 @@ class SemanticCluster:
         entity_overlap = _entity_overlap(entities, ev)
         type_match = 1.0 if (event_type or "other") == (ev.event_type or "other") else 0.0
         time_prox = _time_proximity(event_time, ev)
+
+        # 财务期间/季度冲突检查（如 Q1 vs Q2，January vs February）：
+        # 即使同公司同事件类型，不同季度也是独立事件，严禁合并（F11 / F12）
+        if _has_conflicting_period(f"{title} {summary}", f"{ev.title} {ev.summary}"):
+            breakdown = {
+                "title_semantic_similarity": round(title_sim, 4),
+                "summary_semantic_similarity": round(summary_sim, 4),
+                "entity_overlap": round(entity_overlap, 4),
+                "event_type_match": type_match,
+                "time_proximity": round(time_prox, 4),
+                "period_conflict": True,
+            }
+            return 0.0, breakdown
 
         score = (
             float(w.get("title_semantic_similarity", 0.35)) * title_sim
@@ -244,3 +273,29 @@ def _time_proximity(event_time: datetime | None, ev: Event) -> float:
     if hours >= 72:
         return 0.0
     return 1.0 - (hours - 24) / 48.0
+
+
+_QUARTERS = {"q1", "q2", "q3", "q4"}
+_MONTHS = {
+    "january", "february", "march", "april", "may", "june",
+    "july", "august", "september", "october", "november", "december"
+}
+
+
+def _has_conflicting_period(text_a: str, text_b: str) -> bool:
+    """判定两段文本是否指向明确冲突的财务报告周期或月份。"""
+    import re
+    tokens_a = set(re.findall(r"\b(?:q[1-4]|january|february|march|april|may|june|july|august|september|october|november|december)\b", text_a.lower()))
+    tokens_b = set(re.findall(r"\b(?:q[1-4]|january|february|march|april|may|june|july|august|september|october|november|december)\b", text_b.lower()))
+
+    q_a = tokens_a & _QUARTERS
+    q_b = tokens_b & _QUARTERS
+    if q_a and q_b and not (q_a & q_b):
+        return True
+
+    m_a = tokens_a & _MONTHS
+    m_b = tokens_b & _MONTHS
+    if m_a and m_b and not (m_a & m_b):
+        return True
+
+    return False

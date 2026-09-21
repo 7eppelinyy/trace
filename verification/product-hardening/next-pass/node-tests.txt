@@ -1,0 +1,14 @@
+﻿=== Running T01 Detail Mapping & Authenticity Tests ===
+鉁?A01 Passed: No fake change_pct generated for bullish impact without quote
+鉁?A02 Passed: Missing score does not default to 7.0
+鉁?A03 Passed: Unconfirmed event does not claim official verification or cross check
+鉁?A04 Passed: Failed real event does not fallback to Apple NAND mock
+鉁?A05 Passed: getMockDetailById does not silently fallback to Apple NAND
+鉁?A06 Passed: Direct-only event strictly outputs 2-level topology chain
+鉁?A07 Passed: Rich evidence, claims, and uncertainties correctly mapped
+
+=== All Detail Mapping & Authenticity Tests Passed! ===
+
+
+
+Session, token refresh, and research client contracts passed (device guest, token rotation, cache isolation, public capabilities).

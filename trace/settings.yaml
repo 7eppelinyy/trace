@@ -84,7 +84,10 @@ alerts:
   freshness_window_hours: 168   # 7 天
   # 允许再次推送的 event revision 条件
   revision_resend_rules:
+    - document_corrected
+    - denial_or_retraction
     - rumor_to_confirmed
+    - recovery_to_confirmed
     - official_source_appeared
     - direction_changed
     - key_number_changed

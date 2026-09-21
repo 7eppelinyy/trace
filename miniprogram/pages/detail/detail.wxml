@@ -1,0 +1,172 @@
+<!-- pages/detail/detail.wxml - 产业链全景推演与证据工作台 -->
+<view class="detail-container">
+
+  <!-- 加载状态 -->
+  <view class="detail-card state-card" wx:if="{{loading}}">
+    <view class="fact-title state-title">正在加载事件推演图谱...</view>
+    <view class="fact-summary">正在核验多源证据链、提取事实与产业链传导拓扑</view>
+  </view>
+
+  <!-- 加载异常与未找到事件 -->
+  <view class="detail-card state-card error-card" wx:elif="{{loadError}}">
+    <view class="source-label color-error">加载中断</view>
+    <view class="fact-title state-title">{{errorMessage || '无法获取事件推演图谱'}}</view>
+    <view class="fact-summary">事件 ID: {{eventId || '未知'}}</view>
+    <view class="state-action-box">
+      <view class="retry-btn btn-press" bindtap="retryLoad">重试加载</view>
+    </view>
+  </view>
+
+  <!-- 正常渲染内容 -->
+  <block wx:elif="{{event}}">
+    <!-- 演示数据提醒横幅 (仅在 mock 案例中出现) -->
+    <view class="demo-banner" wx:if="{{event.is_mock}}">
+      <text class="demo-badge">演示案例</text>
+      <text class="demo-tip">该内容为离线预设演示图谱，非当前实时事实数据</text>
+    </view>
+
+    <!-- 1. 事实与关联卡片 -->
+    <view class="detail-card">
+      <view class="event-header-row">
+        <view class="source-label">{{event.source_label}}</view>
+        <view class="event-meta-tags">
+          <text class="event-id-tag tnum">{{event.id}}</text>
+          <text class="event-ver-tag tnum">v{{event.version}}</text>
+          <text class="event-status-pill">{{event.statusLabel}}</text>
+        </view>
+      </view>
+
+      <view class="fact-title">{{event.title}}</view>
+      <view class="fact-summary">{{event.summary}}</view>
+
+      <!-- 关联标的变动 (真实行情与研判方向清晰分离) -->
+      <view class="securities-bar tnum" wx:if="{{event.securities && event.securities.length > 0}}">
+        <block wx:for="{{event.securities}}" wx:key="ticker">
+          <view class="sec-stat">
+            <text class="sec-code">{{item.name || item.ticker}}</text>
+            <text class="sec-val {{item.change_pct !== null ? (item.change_pct >= 0 ? 'color-up' : 'color-down') : 'color-muted'}}">{{item.change_pct !== null ? (item.change_pct >= 0 ? '+' : '') + item.change_pct + '%' : '--'}}</text>
+            <text class="sec-dir-badge {{item.direction === 'bullish' ? 'dir-up' : (item.direction === 'bearish' ? 'dir-down' : 'dir-neutral')}}">{{item.directionLabel || '中性'}}</text>
+          </view>
+        </block>
+      </view>
+    </view>
+
+    <!-- 2. 事实与推断 Claims 卡片 -->
+    <view class="detail-card" wx:if="{{event.claims && event.claims.length > 0}}">
+      <view class="chain-header">核心事实与逻辑推断</view>
+      <view class="claims-wrap">
+        <block wx:for="{{event.claims}}" wx:key="id">
+          <view class="claim-item">
+            <view class="claim-top">
+              <text class="claim-kind-pill {{item.kind === 'fact' ? 'pill-fact' : (item.kind === 'inference' ? 'pill-inference' : 'pill-scenario')}}">{{item.kindLabel}}</text>
+            </view>
+            <view class="claim-text">{{item.text}}</view>
+            <view class="claim-conditions" wx:if="{{item.assumptions.length > 0 || item.counterEvidence.length > 0}}">
+              <view class="condition-line" wx:if="{{item.assumptions.length > 0}}">
+                <text class="cond-label">成立前提：</text>
+                <text>{{item.assumptions[0]}}</text>
+              </view>
+              <view class="condition-line" wx:if="{{item.counterEvidence.length > 0}}">
+                <text class="cond-label">反证指标：</text>
+                <text>{{item.counterEvidence[0]}}</text>
+              </view>
+            </view>
+          </view>
+        </block>
+      </view>
+    </view>
+
+    <!-- 3. 原文证据与信源卡片 (支持复制原文链接) -->
+    <view class="detail-card" wx:if="{{event.evidences && event.evidences.length > 0}}">
+      <view class="chain-header">核验信源与原文证据 ({{event.evidences.length}})</view>
+      <view class="evidence-list">
+        <block wx:for="{{event.evidences}}" wx:key="raw_item_id">
+          <view class="evidence-card">
+            <view class="evidence-left">
+              <view class="evidence-meta-row">
+                <text class="evidence-role">{{item.role}}</text>
+                <text class="evidence-time tnum" wx:if="{{item.published_at}}">{{item.published_at}}</text>
+              </view>
+              <view class="evidence-title">{{item.title}}</view>
+              <view class="evidence-url tnum" wx:if="{{item.url}}">{{item.url}}</view>
+            </view>
+            <view class="copy-url-btn btn-press" wx:if="{{item.url}}" bindtap="copyEvidenceUrl" data-url="{{item.url}}">复制链接</view>
+          </view>
+        </block>
+      </view>
+    </view>
+
+    <!-- 4. 动态产业链拓扑推演链路 (Apple Inset 垂直时间线) -->
+    <view class="detail-card">
+      <view class="chain-header">产业链传导与推演</view>
+      <view class="timeline-wrap">
+        <view class="timeline-line"></view>
+        <block wx:for="{{event.chain}}" wx:key="level">
+          <view class="timeline-node">
+            <view class="timeline-marker">
+              <view class="marker-dot"></view>
+            </view>
+            <view class="node-body">
+              <view class="node-header">
+                <text class="node-level-pill tnum">L{{item.level}}</text>
+                <text class="node-title">{{item.title}}</text>
+              </view>
+              <view class="node-desc">{{item.desc}}</view>
+            </view>
+          </view>
+        </block>
+      </view>
+    </view>
+
+    <!-- 5. 尚不清楚与待验证点 -->
+    <view class="detail-card" wx:if="{{event.uncertainties && event.uncertainties.length > 0}}">
+      <view class="chain-header">尚不清楚 / 待证实点</view>
+      <view class="bullet-list">
+        <block wx:for="{{event.uncertainties}}" wx:key="*this">
+          <view class="bullet-item">
+            <view class="bullet-dot"></view>
+            <text class="bullet-text">{{item}}</text>
+          </view>
+        </block>
+      </view>
+    </view>
+
+    <!-- 6. 下一步验证 -->
+    <view class="detail-card" wx:if="{{event.next_checks && event.next_checks.length > 0}}">
+      <view class="chain-header">买方下一步跟踪与验证</view>
+      <view class="bullet-list">
+        <block wx:for="{{event.next_checks}}" wx:key="*this">
+          <view class="bullet-item">
+            <view class="bullet-dot bullet-dot-check"></view>
+            <text class="bullet-text">{{item}}</text>
+          </view>
+        </block>
+      </view>
+    </view>
+
+    <!-- 7. 修订时间线 (若有修订) -->
+    <view class="detail-card" wx:if="{{event.revisions && event.revisions.length > 0}}">
+      <view class="chain-header">版本修订记录</view>
+      <view class="revision-list">
+        <block wx:for="{{event.revisions}}" wx:key="version">
+          <view class="revision-card">
+            <text class="rev-ver tnum">v{{item.version}}</text>
+            <text class="rev-note">{{item.note}}</text>
+            <text class="rev-time tnum" wx:if="{{item.created_at}}">{{item.created_at}}</text>
+          </view>
+        </block>
+      </view>
+    </view>
+
+    <button wx:if="{{!event.is_mock}}" class="research-track-btn" bindtap="trackResearch">建立研究假设并跟踪证据</button>
+  <!-- 底部固定操作栏 -->
+    <view class="bottom-bar">
+      <view class="ask-btn btn-press" bindtap="askAboutEvent">
+        <image class="ask-btn-icon" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><path d='M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z'/></svg>"></image>
+        <text>发起针对该事件的产业链追问</text>
+      </view>
+    </view>
+  </block>
+
+</view>
+

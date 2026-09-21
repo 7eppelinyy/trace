@@ -209,6 +209,8 @@ def test_reason_outside_whitelist_is_not_resendable(db):
 def _setup_watcher(db) -> str:
     user_id = "u-resend"
     UserRepo(db).ensure(user_id, "Asia/Taipei")
+    from trace.db.repositories import ChannelBindingRepo
+    ChannelBindingRepo(db).bind(user_id,"telegram",user_id)
     WatchlistRepo(db).add(WatchlistEntry(user_id=user_id, security_id="SEC-US-MU"))
     AlertRuleRepo(db).set_threshold(user_id, "SEC-US-MU", 5.0)
     db.execute("UPDATE user SET alert_activation_at=? WHERE user_id=?",
@@ -248,8 +250,8 @@ def _pending_confirmation_impact(db, *, base_score: float, final_score: float,
         event_id="EV-RS", title="Micron 盘后公告扩产", summary="盘后公告",
         event_type="regulation", status="reported", version=1,
         first_seen_at=event_time, last_updated_at=event_time,
-        event_time=event_time, first_source_id="src_reuters",
-        primary_source_id="src_reuters", all_source_ids=["src_reuters"]))
+        event_time=event_time, first_source_id="src_micron_ir",
+        primary_source_id="src_micron_ir", all_source_ids=["src_micron_ir"]))
     EventImpactRepo(db).upsert(EventImpact(
         impact_id="IMP-RS", event_id="EV-RS", security_id="SEC-US-MU",
         direction="bullish", directness="direct", magnitude=6.0, persistence=5.0,

@@ -21,6 +21,8 @@ collect_ignore_glob = ["verification/*"]
 
 # 测试会话内隔离的环境变量名单（真实凭据与 Provider 选择）
 _ISOLATED_VARS = (
+    "TRACE_DB_PATH", "TRACE_SETTINGS_PATH", "TRACE_ADMIN_USER_IDS", "TRACE_CORS_ORIGINS",
+    "TRACE_BACKUP_DIR", "LLM_DAILY_CALL_BUDGET", "LLM_ASK_DAILY_BUDGET", "LLM_ASK_USER_DAILY_BUDGET",
     "LLM_PROVIDER", "GEMINI_API_KEY", "GEMINI_MODEL",
     "OPENAI_API_KEY", "OPENAI_BASE_URL", "OPENAI_MODEL",
     "OPENAI_TIMEOUT_SECONDS", "OPENAI_MAX_RETRIES",
@@ -37,6 +39,35 @@ def _isolate_env(monkeypatch):
     for name in _ISOLATED_VARS:
         monkeypatch.delenv(name, raising=False)
     monkeypatch.setenv("TRACE_MODE", "offline")
+    # Test identities require an explicit opt-in; never enabled by offline mode alone.
+    monkeypatch.setenv("TRACE_ALLOW_DEV_AUTH", "1")
+    yield
+
+
+@pytest.fixture(autouse=True)
+def _block_external_network(request, monkeypatch):
+    """阻断所有默认单元测试对公网外部主机的套接字连接（允许本地 loopback）。
+
+    包含 live 标记的测试例外放行。
+    """
+    if "live" in request.keywords:
+        yield
+        return
+
+    import socket
+    orig_connect = socket.socket.connect
+
+    def _guarded_connect(self, address):
+        host = address[0] if isinstance(address, tuple) else address
+        if isinstance(host, str):
+            if host in ("127.0.0.1", "localhost", "::1", "0.0.0.0", "testserver"):
+                return orig_connect(self, address)
+            raise RuntimeError(
+                f"External network connection to {host} is blocked during offline unit tests (F07/T07)."
+            )
+        return orig_connect(self, address)
+
+    monkeypatch.setattr(socket.socket, "connect", _guarded_connect)
     yield
 
 
@@ -50,6 +81,19 @@ def _no_backoff_sleeps(monkeypatch):
     _delivery.reset_rate_limit_state()
     yield
     _delivery.reset_rate_limit_state()
+
+
+@pytest.fixture(autouse=True)
+def _explicit_offline_app_providers(monkeypatch):
+    """Application fixtures never resolve vendor hosts or download an embedding model.
+
+    Provider-specific contract tests instantiate their own controlled transports.
+    """
+    from trace.collectors.market_data.base import UnavailableMarketProvider
+    from trace.event_engine.embeddings import HashEmbedder
+    monkeypatch.setattr('trace.app.build_us_provider', lambda: UnavailableMarketProvider('US'))
+    monkeypatch.setattr('trace.app.build_cn_provider', lambda: UnavailableMarketProvider('CN'))
+    monkeypatch.setattr('trace.event_engine.embeddings.build_embedder', lambda config: HashEmbedder())
 
 
 @pytest.fixture()

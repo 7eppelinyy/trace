@@ -7,18 +7,28 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
           cache: pip
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
       # sentence-transformers 依赖 torch（体积巨大且非必需，
-      # 缺失时自动降级 hash embedder），与服务器部署口径一致
+      # 缺失时自动降级 hash embedder），与服务器轻量部署口径一致
       - name: Install dependencies
-        run: pip install httpx feedparser beautifulsoup4 lxml openai python-telegram-bot pyyaml python-dotenv pytz numpy pytest
-      - name: Run tests
+        run: pip install --require-hashes -r requirements-core.lock
+      - name: Run Python tests
         run: pytest -q
         env:
           TRACE_MODE: offline
+      - name: Run MiniProgram tests
+        run: |
+          node miniprogram/tests/detail_mapping.test.js
+          node miniprogram/tests/session_research.test.js

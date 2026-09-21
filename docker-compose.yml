@@ -1,0 +1,44 @@
+version: "3.8"
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: trace-api
+    restart: unless-stopped
+    ports:
+      - "${PORT:-8000}:8000"
+    env_file:
+      - .env
+    volumes:
+      - trace_data:/app/data
+      - trace_logs:/app/logs
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/ready"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+  runner:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: trace-runner
+    restart: unless-stopped
+    command: ["python", "-m", "trace.main", "run"]
+    env_file:
+      - .env
+    volumes:
+      - trace_data:/app/data
+      - trace_logs:/app/logs
+    depends_on:
+      api:
+        condition: service_healthy
+
+volumes:
+  trace_data:
+    name: trace_data
+  trace_logs:
+    name: trace_logs

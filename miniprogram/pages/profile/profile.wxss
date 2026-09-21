@@ -1,0 +1,157 @@
+/** pages/profile/profile.wxss **/
+
+.account-card {
+  background-color: #FFFFFF;
+  border: 1rpx solid #E2E8F0;
+  border-radius: 28rpx;
+  padding: 32rpx;
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  margin-bottom: 32rpx;
+  box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.02);
+}
+
+.avatar-badge {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 50%;
+  background-color: #0F172A;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36rpx;
+  font-weight: 800;
+}
+
+.account-info {
+  flex: 1;
+}
+
+.account-name {
+  font-size: 32rpx;
+  font-weight: 800;
+  color: #0F172A;
+}
+
+.account-id {
+  font-size: 22rpx;
+  color: #94A3B8;
+  margin-top: 6rpx;
+}
+
+.status-badge {
+  background-color: #ECFDF5;
+  color: #059669;
+  font-size: 20rpx;
+  font-weight: 700;
+  padding: 8rpx 16rpx;
+  border-radius: 12rpx;
+}
+
+/* 分组标题 */
+.group-title {
+  font-size: 22rpx;
+  font-weight: 700;
+  color: #94A3B8;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 12rpx;
+  padding-left: 4rpx;
+}
+
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.setting-name {
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #1E293B;
+}
+
+.setting-desc {
+  font-size: 22rpx;
+  color: #94A3B8;
+  margin-top: 4rpx;
+}
+
+.param-label {
+  font-size: 26rpx;
+  color: #475569;
+}
+
+.param-val {
+  font-size: 24rpx;
+  font-weight: 700;
+  color: #0F172A;
+}
+
+/* Apple 极简物理 Switch */
+.apple-switch {
+  width: 64rpx;
+  height: 36rpx;
+  border-radius: 9999rpx;
+  padding: 4rpx;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  transition: background-color 200ms ease;
+}
+
+.switch-on {
+  background-color: #0F172A;
+  justify-content: flex-end;
+}
+
+.switch-off {
+  background-color: #CBD5E1;
+  justify-content: flex-start;
+}
+
+.switch-dot {
+  width: 28rpx;
+  height: 28rpx;
+  background-color: #FFFFFF;
+  border-radius: 50%;
+  box-shadow: 0 1rpx 3rpx rgba(0, 0, 0, 0.2);
+}
+
+/* 工具操作按钮 */
+.action-btn-wrap {
+  margin-top: 32rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.tool-btn {
+  background-color: #FFFFFF;
+  border: 1rpx solid #E2E8F0;
+  border-radius: 24rpx;
+  padding: 24rpx;
+  text-align: center;
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #334155;
+}
+
+.tool-btn.btn-primary {
+  background-color: #0F172A;
+  color: #FFFFFF;
+  border-color: #0F172A;
+  box-shadow: 0 4rpx 12rpx rgba(15, 23, 42, 0.15);
+}
+
+.status-badge.status-online {
+  background-color: #ECFDF5;
+  color: #059669;
+}
+
+.status-badge.status-offline {
+  background-color: #FEF2F2;
+  color: #DC2626;
+}

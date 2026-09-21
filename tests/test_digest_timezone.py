@@ -23,7 +23,7 @@ TAIPEI = pytz.timezone("Asia/Taipei")
 def _seed(db, event_id: str, when_utc: datetime, *, score: float = 9.0,
           title: str = "SanDisk 盘后 8-K") -> None:
     EventRepo(db).insert(Event(
-        event_id=event_id, title=title, summary=title, version=1,
+        event_id=event_id, title=title, summary=title, version=1, first_source_id="src_sec_edgar",
         first_seen_at=when_utc, last_updated_at=when_utc, event_time=when_utc))
     EventImpactRepo(db).upsert(EventImpact(
         impact_id=f"IMP-{event_id}", event_id=event_id,

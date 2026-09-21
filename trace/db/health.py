@@ -227,6 +227,42 @@ class HumanReviewRepo:
             "UPDATE human_review SET status='resolved' WHERE status='pending'")
         return cur.rowcount
 
+    def retry(self, review_id: str) -> bool:
+        """Explicitly requeue a reviewed payload; resolving alone never fabricates success."""
+        with self.db.transaction(mode='IMMEDIATE'):
+            review = self.db.query_one('SELECT * FROM human_review WHERE review_id=?', (review_id,))
+            if not review:
+                return False
+            stage = 'stage_a_extract' if review['raw_item_id'] else 'stage_b_analyze'
+            target = review['raw_item_id'] or review['event_id']
+            if review['raw_item_id'] and not self.db.query_one('SELECT 1 FROM raw_item WHERE raw_item_id=?', (target,)):
+                raise ValueError('Original payload is missing; cannot retry')
+            if review['event_id'] and not self.db.query_one('SELECT 1 FROM event WHERE event_id=?', (target,)):
+                raise ValueError('Original payload is missing; cannot retry')
+            job = self.db.query_one("""SELECT job_id FROM processing_job WHERE job_type=? AND target_id=?
+                AND status IN ('human_review','dead_letter') ORDER BY input_version DESC LIMIT 1""", (stage,target))
+            if not job:
+                raise ValueError('No reviewable job found; running/completed jobs cannot be overwritten')
+            self.db.execute("""UPDATE processing_job SET status='pending',retry_count=0,last_error=NULL,
+                next_retry_at=NULL,lease_owner=NULL,lease_until=NULL,updated_at=? WHERE job_id=?""", (_now(),job['job_id']))
+            if review['event_id']:
+                self.db.execute('UPDATE event SET needs_human_review=0 WHERE event_id=?', (review['event_id'],))
+            self.db.execute("UPDATE human_review SET status='retried' WHERE review_id=?", (review_id,))
+            return True
+
+    def get_with_raw(self, review_id: str) -> dict | None:
+        """获取人审记录及关联的原始采集内容（Probe 11.2 / T03）。"""
+        row = self.db.query_one(
+            """SELECT h.*, r.title AS raw_title, r.content AS raw_content,
+                      r.source_id AS raw_source_id, r.url AS raw_url,
+                      r.published_at AS raw_published_at
+               FROM human_review h
+               LEFT JOIN raw_item r ON h.raw_item_id = r.raw_item_id
+               WHERE h.review_id = ?""",
+            (review_id,),
+        )
+        return dict(row) if row else None
+
     # ------------------------------------------------------------------
     def render(self, limit: int = 10) -> str:
         """人工检查队列摘要（/review 与 CLI 共用同一份文案）。

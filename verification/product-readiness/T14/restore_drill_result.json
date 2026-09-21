@@ -1,0 +1,39 @@
+{
+  "drill_status": "PASS",
+  "timestamp": "2026-09-19T09:10:07.365398+00:00",
+  "duration_seconds": 0.248,
+  "source_db": "data\\test_drill_source.db",
+  "backup_file": "data\\test_backups\\trace-20260919-091007.db",
+  "drill_target": "data\\test_drill_target.db",
+  "source_verification": {
+    "integrity_check": "ok",
+    "foreign_key_check": "ok",
+    "table_counts": {
+      "event": 0,
+      "event_impact": 0,
+      "raw_item": 0,
+      "forecast_snapshot": 0,
+      "forecast_check": 0,
+      "security": 44,
+      "source": 29,
+      "schema_version": 20
+    },
+    "latest_event_time": null
+  },
+  "target_verification": {
+    "integrity_check": "ok",
+    "foreign_key_check": "ok",
+    "table_counts": {
+      "event": 0,
+      "event_impact": 0,
+      "raw_item": 0,
+      "forecast_snapshot": 0,
+      "forecast_check": 0,
+      "security": 44,
+      "source": 29,
+      "schema_version": 20
+    },
+    "latest_event_time": null
+  },
+  "mismatches": []
+}

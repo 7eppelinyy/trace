@@ -244,10 +244,11 @@ def test_same_round_items_still_cluster_into_one_event(db, config):
 
 def test_evidence_only_merge_skips_stage_b(app, monkeypatch):
     """merged（无实质更新）且事件已有分析结果 → 不再跑 Stage B。"""
+    app.db.execute("UPDATE source SET can_store=1,can_display=1 WHERE source_id='src_reuters'")
     pipeline = Pipeline(app)
     analyzed: list[str] = []
 
-    def spy(event, entity_nodes=None, extra_entities=None):
+    def spy(event, entity_nodes=None, extra_entities=None, **kwargs):
         analyzed.append(event.event_id)
         return []
 
@@ -261,7 +262,9 @@ def test_evidence_only_merge_skips_stage_b(app, monkeypatch):
         event_time=now, first_source_id="src_reuters",
         primary_source_id="src_reuters", all_source_ids=["src_reuters"])
     EventRepo(app.db).insert(event)
-    # 事件已有分析结果 → 仅补充佐证时无需重算
+    from trace.db.jobs import ProcessingJobRepo
+    ProcessingJobRepo(app.db).create_or_update('stage_b_analyze','EV-MERGE',status='completed')
+    # 事件已有持久化完成回执 → 仅补充佐证时无需重算
     EventImpactRepo(app.db).upsert(EventImpact(
         impact_id="IMP-MERGE", event_id="EV-MERGE", security_id="SEC-US-MU",
         direction="bullish", directness="direct", magnitude=6.0, persistence=5.0,
@@ -287,6 +290,7 @@ def test_evidence_only_merge_skips_stage_b(app, monkeypatch):
 
 def test_merge_without_prior_analysis_still_runs_stage_b(app, monkeypatch):
     """事件还没有任何分析结果时，合并必须补跑 Stage B（不能被优化掉）。"""
+    app.db.execute("UPDATE source SET can_store=1,can_display=1 WHERE source_id='src_reuters'")
     pipeline = Pipeline(app)
     analyzed: list[str] = []
     monkeypatch.setattr(app.pipeline, "analyze_event",

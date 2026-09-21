@@ -26,6 +26,11 @@ from trace.pipeline import Pipeline
 # ---------------------------------------------------------------------------
 
 def _make_db(path) -> None:
+    from trace.db.connection import Database
+    from trace.db.migration import apply_migrations
+    database = Database(path)
+    apply_migrations(database)
+    database.close()
     conn = sqlite3.connect(str(path))
     with conn:
         conn.execute("CREATE TABLE t (x INTEGER)")

@@ -6,6 +6,7 @@
 """
 
 from __future__ import annotations
+from datetime import datetime, timezone
 
 import pytest
 
@@ -49,7 +50,7 @@ def _provider(snapshot: dict, bars) -> AlpacaProvider:
 
 
 _SNAP = {
-    "latestTrade": {"p": 101.5},
+    "latestTrade": {"p": 101.5, "t": datetime.now(timezone.utc).isoformat()},
     "dailyBar": {"c": 101.0},
     "prevDailyBar": {"c": 100.0},
 }
@@ -57,13 +58,13 @@ _SNAP = {
 
 def test_alpaca_quote_has_confirmation_fields():
     """真实 quote：prev_close 来自 prevDailyBar，15m 变动来自 15Min bars。"""
-    provider = _provider(_SNAP, [{"o": 100.0, "c": 101.0},
-                                 {"o": 101.0, "c": 102.0}])
+    provider = _provider(_SNAP, [{"o": 100.0, "c": 101.0, "t": "2026-09-18T19:30:00Z"},
+                                 {"o": 101.0, "c": 102.0, "t": "2026-09-18T19:45:00Z"}])
     q = provider.get_quote("MU")
     assert q.last_price == 101.5
     assert q.prev_close == 100.0
     # 首根开盘 100.0 → 末根收盘 102.0
-    assert q.change_pct_15m == pytest.approx(2.0)
+    assert q.change_pct_15m == pytest.approx(0.99)
     # 市场确认不再恒为中性：15m 变动可产生非 5 分
     from trace.collectors.market_data.cn import MockCNMarketProvider
     from trace.collectors.market_data.confirmation import MarketConfirmer

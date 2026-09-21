@@ -140,6 +140,7 @@ def test_client_stops_at_budget_limit(db):
 
 def test_pipeline_stops_on_budget_exhaustion(app, monkeypatch):
     """预算耗尽：整轮返回 STOP_LLM_BUDGET_EXCEEDED，不产出任何降级分析。"""
+    app.db.execute("UPDATE source SET can_store=1 WHERE source_id='src_reuters'")
     pipeline = Pipeline(app)
     now = datetime.now(timezone.utc)
     item = RawItem(raw_item_id=raw_item_id(), source_id="src_reuters",
@@ -165,6 +166,7 @@ def test_pipeline_stops_on_budget_exhaustion(app, monkeypatch):
 
 def test_budget_stop_is_distinct_from_missing_key(app, monkeypatch):
     """预算耗尽与缺 Key 是两回事，状态码不得混用（排障口径）。"""
+    app.db.execute("UPDATE source SET can_store=1 WHERE source_id='src_reuters'")
     pipeline = Pipeline(app)
     now = datetime.now(timezone.utc)
     item = RawItem(raw_item_id=raw_item_id(), source_id="src_reuters",

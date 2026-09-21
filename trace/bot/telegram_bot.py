@@ -37,6 +37,7 @@ from trace.db.repositories import (
     DailyDigestRepo,
     EventRepo,
     EventSourceRepo,
+    NotificationPreferenceRepo,
     RawItemRepo,
     RunHistoryRepo,
     SecurityRepo,
@@ -167,9 +168,12 @@ async def cmd_alert(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         await update.message.reply_text("阈值必须是 1–10 的数字")
         return
     _ensure_user(app, update.effective_chat.id)
+    uid = str(update.effective_chat.id)
     rules = AlertRuleRepo(app.db)
+    prefs = NotificationPreferenceRepo(app.db)
     if target.lower() == "all":
-        rules.set_threshold(str(update.effective_chat.id), None, value)
+        rules.set_threshold(uid, None, value)
+        prefs.set_preference(uid, None, threshold=value)
         await update.message.reply_text(f"全部证券提醒阈值设为 {value}")
         return
     try:
@@ -181,7 +185,8 @@ async def cmd_alert(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     if sec is None:
         await update.message.reply_text(f"{norm.ticker} 不在证券库中，请先 /watch")
         return
-    rules.set_threshold(str(update.effective_chat.id), sec.security_id, value)
+    rules.set_threshold(uid, sec.security_id, value)
+    prefs.set_preference(uid, sec.security_id, threshold=value)
     await update.message.reply_text(f"{sec.ticker} 提醒阈值设为 {value}")
 
 
@@ -220,6 +225,10 @@ async def cmd_event(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     if ev is None:
         await update.message.reply_text("未找到该事件")
         return
+    from trace.common.source_policy import event_permitted
+    if not event_permitted(app.db, ev.event_id, "display") or not event_permitted(app.db, ev.event_id, "forward"):
+        await update.message.reply_text("该事件来源受策略限制，不可展示或转发")
+        return
     await update.message.reply_text(
         f"{ev.title}\n\n{ev.summary}\n\n"
         f"类型: {ev.event_type} | 状态: {ev.status} | 版本: v{ev.version}\n"
@@ -230,6 +239,10 @@ async def cmd_sources(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
     app: AppContext = context.bot_data["app"]
     if not _allowed(update, app) or not context.args:
         await update.message.reply_text("用法：/sources <EVENT_ID>")
+        return
+    from trace.common.source_policy import event_permitted
+    if not event_permitted(app.db, context.args[0], "display") or not event_permitted(app.db, context.args[0], "forward"):
+        await update.message.reply_text("该事件来源受策略限制，不可展示或转发")
         return
     raw_repo = RawItemRepo(app.db)
     lines = []

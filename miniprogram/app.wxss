@@ -1,0 +1,150 @@
+/** app.wxss - Apple Design System & Quiet Craftsmanship **/
+
+page {
+  background-color: #F2F4F8;
+  color: #0F172A;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  font-size: 28rpx;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+  box-sizing: border-box;
+}
+
+/* 等宽数字排印规范（防止行情跳动） */
+.tnum {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+/* 页面通用内边距 */
+.page-container {
+  padding: 24rpx 32rpx calc(140rpx + env(safe-area-inset-bottom)) 32rpx;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+/* 顶部 Header */
+.page-header {
+  padding: 16rpx 0 24rpx 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.page-title {
+  font-size: 40rpx;
+  font-weight: 700;
+  color: #0F172A;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+}
+
+.page-subtitle {
+  font-size: 23rpx;
+  color: #64748B;
+  margin-top: 8rpx;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+/* Apple Inset Group 一体式无缝分组列表 (无厚重边框，靠背景明暗自然分层) */
+.apple-group {
+  background-color: #FFFFFF;
+  border-radius: 28rpx;
+  border: 1rpx solid rgba(15, 23, 42, 0.05);
+  box-shadow: 0 4rpx 20rpx -2rpx rgba(15, 23, 42, 0.03);
+  overflow: hidden;
+  margin-bottom: 24rpx;
+}
+
+.apple-cell {
+  padding: 28rpx 32rpx;
+  position: relative;
+  background-color: #FFFFFF;
+  transition: background-color 80ms ease-out;
+}
+
+.apple-cell:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 32rpx;
+  right: 0;
+  bottom: 0;
+  height: 1rpx;
+  background-color: rgba(15, 23, 42, 0.04);
+}
+
+/* 列表行与卡片点击反馈：仅背景微高亮，绝不全卡片缩放缩微！ */
+.apple-cell:active, .card-active:active {
+  background-color: #F8FAFC !important;
+}
+
+/* 仅针对独立小按钮的微弱物理按压（禁止大面积卡片缩放） */
+.btn-press {
+  transition: transform 100ms ease-out, opacity 100ms ease-out;
+}
+
+.btn-press:active {
+  transform: scale(0.98);
+  opacity: 0.94;
+}
+
+/* 权威沉稳的金融涨跌配色 (Apple Stocks 调色盘) */
+.color-up {
+  color: #16A34A;
+}
+
+.color-down {
+  color: #DC2626;
+}
+
+.bg-up {
+  background-color: rgba(22, 163, 74, 0.08);
+}
+
+.bg-down {
+  background-color: rgba(220, 38, 38, 0.08);
+}
+
+/* 极简深色主按钮 */
+.btn-primary {
+  background-color: #0F172A;
+  color: #FFFFFF;
+  border-radius: 9999rpx;
+  padding: 14rpx 32rpx;
+  font-size: 25rpx;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+/* 极简浅灰次级按钮 */
+.btn-secondary {
+  background-color: rgba(15, 23, 42, 0.05);
+  color: #334155;
+  border-radius: 9999rpx;
+  padding: 14rpx 28rpx;
+  font-size: 25rpx;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.2;
+}
+
+/* 截断辅助类 */
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}

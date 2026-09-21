@@ -41,9 +41,9 @@ def normalize_title(title: str) -> str:
     """标题规范化：小写、压缩空白、去掉常见前缀标记。"""
     t = (title or "").strip().lower()
     t = _WS_RE.sub(" ", t)
-    # 去掉形如 [Reuters] / BREAKING: / 突发： 的前缀
-    t = re.sub(r"^[\[【]?[a-z0-9 .:\u4e00-\u9fff]{0,20}[\]】]?\s*[:：]\s*", "", t)
-    t = re.sub(r"^(breaking|update\s*\d*|突发|快讯|最新)\s*[:：]?\s*", "", t)
+    # 去掉形如 [Reuters] / 【路透社】 的前缀，但保留 "Company: ..." 实体前缀
+    t = re.sub(r"^[\[【][^\]】]{1,20}[\]】]\s*[:：]?\s*", "", t)
+    t = re.sub(r"^(breaking|update\s*\d*|flash|alert|exclusive|突发|快讯|最新|独家|早报|晚报)\s*[:：]?\s*", "", t)
     return t.strip()
 
 

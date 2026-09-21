@@ -45,9 +45,13 @@ class LLMBudget:
     这样即使关闭护栏也能看到用量，便于给上限选一个合适的值。
     """
 
-    def __init__(self, db: Database, daily_limit: int = 0):
+    def __init__(self, db: Database, daily_limit: int = 0, *, ask_limit: int = 300,
+                 ask_user_limit: int = 30, pipeline_reserve: int | None = None):
         self.db = db
         self.daily_limit = int(daily_limit)
+        self.ask_limit = ask_limit
+        self.ask_user_limit = ask_user_limit
+        self.pipeline_reserve = max(0, daily_limit // 3 if pipeline_reserve is None else pipeline_reserve)
 
     # ------------------------------------------------------------------
     @staticmethod
@@ -71,6 +75,12 @@ class LLMBudget:
         return self.daily_limit > 0
 
     # ------------------------------------------------------------------
+    def allow_call(self, n: int = 1) -> bool:
+        """非破坏性检查今日剩余配额是否充足（不增加调用计数）。"""
+        if not self.enabled:
+            return True
+        return (self.used() + n) <= self.daily_limit
+
     def check(self) -> None:
         """调用前检查。超限抛 LLMBudgetExceededError。"""
         if not self.enabled:
@@ -81,16 +91,53 @@ class LLMBudget:
                 f"daily LLM call budget exhausted: {used}/{self.daily_limit} "
                 f"(UTC {self._today()}); raise llm.daily_call_budget or wait for reset")
 
+    def try_consume(self, n: int = 1, *, usage_type: str = "pipeline", user_id: str | None = None) -> bool:
+        """原子检查并扣减预算。若超限返回 False（不扣减），否则扣减成功并返回 True。"""
+        if type(n) is not int or n <= 0:
+            raise ValueError("Budget reservation must be a positive integer")
+        if usage_type not in ("pipeline", "ask") or (usage_type == "ask" and not user_id):
+            raise ValueError("Ask reservations require an authenticated user")
+        today = self._today()
+        with self.db.transaction(mode="IMMEDIATE"):
+            row = self.db.query_one("SELECT calls FROM llm_usage WHERE date_str=?", (today,))
+            current = int(row["calls"]) if row else 0
+            if self.enabled and current + n > self.daily_limit:
+                return False
+            scopes = [usage_type]
+            if usage_type == "ask":
+                import hashlib
+                scopes.append("ask-user:" + hashlib.sha256(user_id.encode()).hexdigest())
+                # Interactive calls cannot consume the background reserve.
+                if self.enabled and current + n > max(0, self.daily_limit - self.pipeline_reserve):
+                    return False
+                for scope, limit in zip(scopes, (self.ask_limit, self.ask_user_limit)):
+                    used = self.db.query_one("SELECT calls FROM llm_usage_scope WHERE date_str=? AND scope=?", (today, scope))
+                    if limit <= 0 or (int(used['calls']) if used else 0) + n > limit:
+                        return False
+            self.db.execute(
+                """INSERT INTO llm_usage (date_str, calls, updated_at) VALUES (?,?,?)
+                   ON CONFLICT(date_str) DO UPDATE SET
+                     calls = calls + excluded.calls, updated_at = excluded.updated_at""",
+                (today, int(n), datetime.now(timezone.utc).isoformat()),
+            )
+            for scope in scopes:
+                self.db.execute("""INSERT INTO llm_usage_scope VALUES (?,?,?)
+                    ON CONFLICT(date_str,scope) DO UPDATE SET calls=calls+excluded.calls""", (today, scope, n))
+            return True
+
     def consume(self, n: int = 1) -> int:
         """记录 n 次真实 API 调用（含重试消耗的每一次），返回当日累计。"""
+        if n <= 0:
+            return self.used()
         today = self._today()
-        self.db.execute(
-            """INSERT INTO llm_usage (date_str, calls, updated_at) VALUES (?,?,?)
-               ON CONFLICT(date_str) DO UPDATE SET
-                 calls = calls + excluded.calls, updated_at = excluded.updated_at""",
-            (today, int(n), datetime.now(timezone.utc).isoformat()))
+        with self.db.transaction(mode="IMMEDIATE"):
+            self.db.execute(
+                """INSERT INTO llm_usage (date_str, calls, updated_at) VALUES (?,?,?)
+                   ON CONFLICT(date_str) DO UPDATE SET
+                     calls = calls + excluded.calls, updated_at = excluded.updated_at""",
+                (today, int(n), datetime.now(timezone.utc).isoformat()))
         used = self.used(today)
-        if self.enabled and used == self.daily_limit:
+        if self.enabled and used >= self.daily_limit:
             logger.warning("daily LLM call budget reached: %d/%d",
                            used, self.daily_limit)
         return used

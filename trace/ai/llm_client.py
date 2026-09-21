@@ -27,6 +27,7 @@ from typing import Any
 
 import httpx
 
+from trace.ai.budget import LLMBudgetExceededError
 from trace.ai.schemas import LLMUnavailableError, SchemaValidationError, validate
 
 logger = logging.getLogger(__name__)
@@ -49,6 +50,12 @@ class BaseLLMProvider(ABC):
         支持的 Provider 应将其下推为 API 级强制（Gemini responseSchema），
         不支持的 Provider 可忽略（由 LLMClient 事后校验兜底）。
         """
+
+    @abstractmethod
+    def generate_text(self, model: str, system_prompt: str, user_prompt: str,
+                      messages: list[dict] | None = None, max_tokens: int = 2000,
+                      temperature: float | None = None) -> str:
+        """发送对话文本生成请求（自由文本格式）。返回模型输出纯文本。"""
 
 
 class OpenAIProvider(BaseLLMProvider):
@@ -91,6 +98,32 @@ class OpenAIProvider(BaseLLMProvider):
             ],
         )
         return resp.choices[0].message.content or "{}"
+
+    def generate_text(self, model: str, system_prompt: str, user_prompt: str,
+                      messages: list[dict] | None = None, max_tokens: int = 2000,
+                      temperature: float | None = None) -> str:
+        assert self._client is not None
+        chat_messages: list[dict[str, str]] = []
+        if system_prompt:
+            chat_messages.append({"role": "system", "content": system_prompt})
+        if messages:
+            for m in messages:
+                role = m.get("role", "user")
+                content = m.get("content", "")
+                if role in ("system", "user", "assistant") and content:
+                    chat_messages.append({"role": role, "content": content})
+        if user_prompt:
+            if not chat_messages or chat_messages[-1].get("content") != user_prompt:
+                chat_messages.append({"role": "user", "content": user_prompt})
+
+        temp = temperature if temperature is not None else self._temperature
+        resp = self._client.chat.completions.create(
+            model=model,
+            temperature=temp,
+            messages=chat_messages,
+            max_tokens=max_tokens,
+        )
+        return resp.choices[0].message.content or ""
 
 
 class GeminiProvider(BaseLLMProvider):
@@ -148,6 +181,40 @@ class GeminiProvider(BaseLLMProvider):
             raise RuntimeError("gemini api returned empty content")
         return text
 
+    def generate_text(self, model: str, system_prompt: str, user_prompt: str,
+                      messages: list[dict] | None = None, max_tokens: int = 2000,
+                      temperature: float | None = None) -> str:
+        url = self.ENDPOINT.format(model=model)
+        temp = temperature if temperature is not None else self._temperature
+        generation_config: dict[str, Any] = {
+            "temperature": temp,
+            "maxOutputTokens": max_tokens,
+        }
+        contents: list[dict[str, Any]] = []
+        if messages:
+            for m in messages:
+                role = "user" if m.get("role") == "user" else "model"
+                contents.append({"role": role, "parts": [{"text": m.get("content", "")}]})
+        if user_prompt:
+            if not contents or contents[-1]["parts"][0]["text"] != user_prompt:
+                contents.append({"role": "user", "parts": [{"text": user_prompt}]})
+        payload = {
+            "systemInstruction": {"parts": [{"text": system_prompt}]},
+            "contents": contents,
+            "generationConfig": generation_config,
+        }
+        resp = self._http.post(
+            url, json=payload,
+            headers={"x-goog-api-key": self._api_key, "Content-Type": "application/json"})
+        if resp.status_code != 200:
+            raise RuntimeError(f"gemini api http {resp.status_code}: {resp.text[:200]}")
+        data = resp.json()
+        try:
+            parts = data["candidates"][0]["content"]["parts"]
+            return "".join(p.get("text", "") for p in parts)
+        except Exception:
+            return ""
+
 
 # ---------------------------------------------------------------------------
 # LLMClient：统一入口，按 provider 选择实现
@@ -186,7 +253,7 @@ class LLMClient:
 
     @property
     def provider_name(self) -> str:
-        return self._provider.name if self._provider else ""
+        return getattr(self._provider, "name", "") if self._provider else ""
 
     @property
     def available(self) -> bool:
@@ -197,7 +264,8 @@ class LLMClient:
 
     # ------------------------------------------------------------------
     def complete_json(self, model: str, system_prompt: str, user_prompt: str,
-                      schema: dict | None = None) -> dict:
+                      schema: dict | None = None, *, usage_type: str = "pipeline", user_id: str | None = None,
+                      max_retries: int | None = None) -> dict:
         """请求 LLM 返回 JSON 对象（带指数退避重试）。失败抛异常。
 
         schema 会下推给支持的 Provider 做 API 级结构化约束。
@@ -206,51 +274,59 @@ class LLMClient:
             raise LLMUnavailableError(
                 self._provider_error
                 or f"LLM not configured (provider={getattr(self.config, 'provider', '')})")
-        max_retries = int(self.config.max_retries)
+        if len(system_prompt) + len(user_prompt) > 100_000:
+            raise ValueError("Input prompt exceeds maximum allowed characters (100,000)")
+        retries = int(self.config.max_retries if max_retries is None else max_retries)
         last_exc: Exception | None = None
-        for attempt in range(max_retries + 1):
-            # 预算检查必须在每次真实请求之前，且重试也算数：
-            # 失控场景里绝大部分开销正是来自重试
+        for attempt in range(retries + 1):
             if self.budget is not None:
-                self.budget.check()
+                if not self.budget.try_consume(1, usage_type=usage_type, user_id=user_id):
+                    raise LLMBudgetExceededError(
+                        f"daily LLM call budget exhausted: limit={self.budget.daily_limit} "
+                        f"(UTC {self.budget._today()}); raise llm.daily_call_budget or wait for reset")
             self.call_count += 1
-            if self.budget is not None:
-                self.budget.consume(1)
             try:
                 text = self._provider.generate(model, system_prompt, user_prompt,
                                                schema=schema)
                 return _extract_json(text)
             except Exception as exc:
                 last_exc = exc
-                if attempt >= max_retries:
+                if attempt >= retries:
                     break
                 wait = self._backoff(attempt)
                 logger.warning("LLM call failed (attempt %d/%d): %s — retry in %.1fs",
-                               attempt + 1, max_retries + 1, exc, wait)
+                               attempt + 1, retries + 1, exc, wait)
                 time.sleep(wait)
         raise RuntimeError(f"LLM call failed after retries: {last_exc}") from last_exc
 
     # ------------------------------------------------------------------
     def complete_json_validated(self, model: str, system_prompt: str,
-                                user_prompt: str, schema: dict) -> dict:
+                                user_prompt: str, schema: dict,
+                                *, usage_type: str = "pipeline", user_id: str | None = None,
+                                max_retries: int | None = None) -> dict:
         """请求并做严格 Schema 校验；校验失败必须重试，重试后仍失败抛异常。
 
         上层收到 SchemaValidationError 后必须进入人工检查状态，
         不允许进入 Alert Engine。
+        内层网络重试上限收紧为 1，防止外层校验重试与内层网络重试发生笛卡尔积爆炸。
         """
-        max_retries = int(self.config.max_retries)
+        retries = int(self.config.max_retries if max_retries is None else max_retries)
         last_exc: Exception | None = None
-        for attempt in range(max_retries + 1):
-            data = self.complete_json(model, system_prompt, user_prompt,
-                                      schema=schema)
+        for attempt in range(retries + 1):
+            try:
+                data = self.complete_json(model, system_prompt, user_prompt,
+                                          schema=schema, usage_type=usage_type, user_id=user_id,
+                                          max_retries=1)
+            except TypeError:
+                data = self.complete_json(model, system_prompt, user_prompt, schema=schema)
             try:
                 validate(data, schema)
                 return data
             except SchemaValidationError as exc:
                 last_exc = exc
                 logger.warning("LLM schema validation failed (attempt %d/%d): %s",
-                               attempt + 1, max_retries + 1, exc)
-                if attempt >= max_retries:
+                               attempt + 1, retries + 1, exc)
+                if attempt >= retries:
                     break
                 time.sleep(self._backoff(attempt))
                 # 把校验错误反馈给模型，要求修正
@@ -258,6 +334,51 @@ class LLMClient:
                                + str(exc) + "\n请重新输出符合要求的 JSON。")
         raise SchemaValidationError(
             f"LLM output failed schema validation after retries: {last_exc}") from last_exc
+
+    # ------------------------------------------------------------------
+    def complete_text(self, model: str, system_prompt: str, user_prompt: str = "",
+                      messages: list[dict] | None = None, max_tokens: int = 2000,
+                      temperature: float | None = None,
+                      *, usage_type: str = "pipeline", user_id: str | None = None,
+                      max_retries: int | None = None) -> str:
+        """请求 LLM 进行自由文本/对话推理（带预算熔断与指数退避重试）。"""
+        if not self.available:
+            raise LLMUnavailableError(
+                self._provider_error
+                or f"LLM not configured (provider={getattr(self.config, 'provider', '')})")
+        total_prompt_len = len(system_prompt) + len(user_prompt)
+        if messages:
+            total_prompt_len += sum(len(m.get("content", "")) for m in messages)
+        if total_prompt_len > 100_000:
+            raise ValueError("Input prompt exceeds maximum allowed characters (100,000)")
+        retries = int(self.config.max_retries if max_retries is None else max_retries)
+        last_exc: Exception | None = None
+        for attempt in range(retries + 1):
+            if self.budget is not None:
+                if not self.budget.try_consume(1, usage_type=usage_type, user_id=user_id):
+                    raise LLMBudgetExceededError(
+                        f"daily LLM call budget exhausted: limit={self.budget.daily_limit} "
+                        f"(UTC {self.budget._today()}); raise llm.daily_call_budget or wait for reset")
+            self.call_count += 1
+            try:
+                assert self._provider is not None
+                return self._provider.generate_text(
+                    model=model,
+                    system_prompt=system_prompt,
+                    user_prompt=user_prompt,
+                    messages=messages,
+                    max_tokens=max_tokens,
+                    temperature=temperature,
+                )
+            except Exception as exc:
+                last_exc = exc
+                if attempt >= retries:
+                    break
+                wait = self._backoff(attempt)
+                logger.warning("LLM text generation failed (attempt %d/%d): %s — retry in %.1fs",
+                               attempt + 1, retries + 1, exc, wait)
+                time.sleep(wait)
+        raise RuntimeError(f"LLM text generation failed after retries: {last_exc}") from last_exc
 
 
 def _extract_json(text: str) -> dict:

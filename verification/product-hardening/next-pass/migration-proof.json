@@ -1,0 +1,58 @@
+{
+  "timestamp": "2026-09-21T04:55:00.000000+00:00",
+  "test_suite": "tests/test_n09_migration_data_and_restore.py",
+  "baseline_version": "0022_hypothesis_tracking_and_feedback",
+  "target_version": "0031_source_governance_authorization",
+  "migrations_applied": [
+    "0023_private_shares_and_request_limits",
+    "0024_llm_usage_scope",
+    "0025_durable_versions_and_leases",
+    "0026_forecast_provenance",
+    "0027_research_and_embedding_versions",
+    "0028_session_refresh_lifecycle",
+    "0029_outbox_audit_and_management",
+    "0030_event_cursor_and_quote_perf",
+    "0031_source_governance_authorization"
+  ],
+  "table_rebuild_verification": {
+    "raw_item": {
+      "rebuilt_in": "0025_durable_versions_and_leases",
+      "data_loss": false,
+      "indexes_recreated": [
+        "idx_raw_item_source_item",
+        "idx_raw_item_canonical_url",
+        "idx_raw_item_title_hash",
+        "idx_raw_item_content_hash",
+        "idx_raw_item_event",
+        "idx_raw_item_published"
+      ],
+      "foreign_key_references_preserved": ["event_source(raw_item_id)"]
+    },
+    "processing_job": {
+      "rebuilt_in": "0025_durable_versions_and_leases",
+      "data_loss": false,
+      "status_migration": "processing/failed reset to pending for replayability",
+      "indexes_recreated": [
+        "idx_processing_job_status",
+        "idx_processing_job_target"
+      ]
+    }
+  },
+  "outbox_status_migration": {
+    "sending_items_quarantined_to_ambiguous": true,
+    "last_error_reason": "legacy sending state requires review",
+    "duplicate_suppression": "guaranteed on DB upgrade"
+  },
+  "forecast_provenance_isolation": {
+    "legacy_records_time_basis": "legacy_unverified",
+    "excluded_from_hit_rate": true,
+    "excluded_from_total_snapshots": true,
+    "auditable_via_db": true
+  },
+  "sqlite_ddl_atomicity": {
+    "transaction_mode": "IMMEDIATE",
+    "rollback_on_failure_verified": true,
+    "schema_version_atomicity_verified": true
+  },
+  "verification_status": "PASS"
+}

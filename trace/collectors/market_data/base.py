@@ -20,20 +20,34 @@ from datetime import datetime
 @dataclass
 class Quote:
     ticker: str
-    ts: datetime
+    ts: datetime                                  # 兼容别名（优先取 market_timestamp，兜底 fetched_at）
     last_price: float | None = None
     prev_close: float | None = None
+    change_pct_day: float | None = None          # 当日涨跌幅（与 15m 严格分离，F15）
     change_pct_1m: float | None = None
     change_pct_5m: float | None = None
-    change_pct_15m: float | None = None
+    change_pct_15m: float | None = None          # 严格 15 分钟区间变动
     volume: int | None = None
     volume_ratio: float | None = None
-    session: str = "regular"      # regular / pre / post
+    session: str = "regular"                      # regular / pre / post
+    market_timestamp: datetime | None = None     # 交易所真实成交/行情时间戳
+    fetched_at: datetime | None = None           # 本系统发起抓取并解析完成的时刻
+    currency: str = "USD"                         # USD / CNY
+    source: str = ""                              # alpaca / tencent / mock / unavailable
+    is_delayed: bool = False                      # 是否为延时行情（如美股公开快照通常延迟 15 分钟）
+    change_basis: str = "prev_close"              # prev_close / open / previous_bar
 
     def change_pct_from_prev(self) -> float | None:
+        if self.change_pct_day is not None:
+            return self.change_pct_day
         if self.last_price is None or not self.prev_close:
             return None
-        return (self.last_price - self.prev_close) / self.prev_close * 100
+        return round((self.last_price - self.prev_close) / self.prev_close * 100, 2)
+
+    @property
+    def quality(self) -> str:
+        from trace.collectors.market_data.time_quality import quote_quality
+        return quote_quality(self)
 
 
 class MarketDataProvider:

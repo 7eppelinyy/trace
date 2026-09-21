@@ -17,6 +17,7 @@ from trace.collectors.base import CollectorRegistry, build_default_registry
 from trace.collectors.market_data.alpaca import build_us_provider
 from trace.collectors.market_data.cn import build_cn_provider
 from trace.collectors.market_data.confirmation import MarketConfirmer, build_confirmer
+from trace.collectors.market_data.base import UnavailableMarketProvider
 from trace.config import AppConfig, load_config
 from trace.db.connection import Database, get_database
 from trace.db.migration import apply_migrations
@@ -46,6 +47,11 @@ class AppContext:
     ask_engine: AskEngine
     ledger: ForecastLedger
 
+    def close(self) -> None:
+        """释放 AppContext 持有的资源（数据库连接、HTTP 会话等）。"""
+        if self.db:
+            self.db.close()
+
 
 def create_app(config_path=None) -> AppContext:
     config = load_config(config_path)
@@ -59,7 +65,8 @@ def create_app(config_path=None) -> AppContext:
     # 行情确认接交易日历（休市/过期不得把无关涨跌算作市场确认）
     # 与快照仓库（价格历史供事件锚定回测与事后审计）
     confirmer = build_confirmer(
-        build_us_provider(), build_cn_provider(), config,
+        build_us_provider() if config.get('markets.providers_enabled', True) else UnavailableMarketProvider('US'),
+        build_cn_provider() if config.get('markets.providers_enabled', True) else UnavailableMarketProvider('CN'), config,
         calendar=calendar, snapshot_repo=MarketSnapshotRepo(db))
 
     ai_pipeline = AnalysisPipeline(db, config, graph, confirmer)
@@ -75,10 +82,10 @@ def create_app(config_path=None) -> AppContext:
         confirmer=confirmer,
         event_engine=event_engine,
         pipeline=ai_pipeline,
-        collectors=build_default_registry(db, config),
+        collectors=build_default_registry(db, config) if config.get('collectors.enabled', True) else CollectorRegistry(),
         alert_engine=AlertEngine(db, config),
         alert_renderer=AlertRenderer(db),
         digest_builder=DigestBuilder(db, config, confirmer),
-        ask_engine=AskEngine(db, graph),
+        ask_engine=AskEngine(db, graph, llm=ai_pipeline.llm, confirmer=confirmer),
         ledger=ForecastLedger(db, config, confirmer),
     )

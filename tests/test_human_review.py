@@ -115,6 +115,7 @@ def test_render_truncates_long_queue(db):
 
 def test_stage_a_failure_lands_in_review_queue(app, monkeypatch):
     """Stage A 校验失败：进人工检查、不建事件、不进 Alert 链路。"""
+    app.db.execute("UPDATE source SET can_store=1 WHERE source_id='src_reuters'")
     pipeline = Pipeline(app)
     now = datetime.now(timezone.utc)
     item = RawItem(raw_item_id=raw_item_id(), source_id="src_reuters",

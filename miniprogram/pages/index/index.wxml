@@ -1,0 +1,81 @@
+<!-- pages/index/index.wxml - 全网官方源事件雷达 -->
+<view class="page-container">
+
+  <!-- 顶部 Header -->
+  <view class="page-header">
+    <view>
+      <view class="page-title">Trace</view>
+      <view class="page-subtitle">官方源 · 产业链拓扑 · 核心标的</view>
+    </view>
+    <view class="header-actions">
+      <view class="refresh-btn btn-press" bindtap="onManualRefresh">
+        <image class="refresh-icon-img" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><path d='M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15'/></svg>"></image>
+      </view>
+    </view>
+  </view>
+
+  <!-- 今日宏观主线 Hero 卡片 (完全由实时官方事件驱动) -->
+  <view class="hero-card card-active" wx:if="{{heroEvent}}" bindtap="navigateToDetail" data-id="{{heroEvent.event_id}}">
+    <view class="hero-eyebrow">重点关注事件 · 证据与传导</view>
+    <view class="hero-title">{{heroEvent.title}}</view>
+    <view class="hero-footer">
+      <text class="hero-status">{{heroEvent.source || '权威信源披露'}} · {{heroEvent.impact_level || '产业链传导'}}</text>
+      <text class="hero-link">查看推演全景 →</text>
+    </view>
+  </view>
+
+  <!-- 市场联动指数条 (一体化静谧长条，剔除多重边框) -->
+  <view class="indices-strip">
+    <block wx:for="{{indices}}" wx:key="code">
+      <view class="index-cell">
+        <view class="index-name">
+          {{item.name}}
+          <text class="index-badge" wx:if="{{item.statusBadge}}">{{item.statusBadge}}</text>
+        </view>
+        <view class="index-price tnum {{!item.hasQuote ? 'color-neutral' : ''}}">{{item.formattedPrice}}</view>
+        <view class="index-pct tnum {{!item.hasQuote ? 'color-neutral' : (item.isUp ? 'color-up' : 'color-down')}}">{{item.formattedPct}}</view>
+      </view>
+    </block>
+  </view>
+
+  <!-- 核心事件雷达列表 (Apple Inset Group) -->
+  <view class="section-header">
+    <text class="section-title">核心事件雷达</text>
+    <text class="section-sub">近 24 小时 · 权威源交叉核验</text>
+  </view>
+
+  <view class="apple-group" wx:if="{{events.length > 0}}">
+    <block wx:for="{{events}}" wx:key="event_id">
+      <view class="apple-cell event-item" bindtap="navigateToDetail" data-id="{{item.event_id}}">
+        <!-- 头部信源与传导级别 -->
+        <view class="event-meta">
+          <text class="event-source">{{item.source}}</text>
+          <text class="event-level tnum">{{item.impact_level}}</text>
+        </view>
+
+        <!-- 标题与摘要 -->
+        <view class="event-title">{{item.title}}</view>
+        <view class="event-summary line-clamp-2" wx:if="{{item.summary}}">{{item.summary}}</view>
+
+        <!-- 底部映射标的与穿透提示 (绝对水平对齐，严防换行) -->
+        <view class="event-footer">
+          <view class="securities-wrap">
+            <block wx:for="{{item.securities}}" wx:key="ticker" wx:for-item="sec">
+              <view class="sec-chip tnum">
+                <text class="sec-ticker">{{sec.name || sec.ticker}}</text>
+                <text class="sec-pct {{sec.change_pct === null ? 'color-neutral' : (sec.change_pct >= 0 ? 'color-up' : 'color-down')}}">{{sec.change_pct === null ? '暂无行情' : (sec.change_pct >= 0 ? '+' : '') + sec.change_pct + '%'}}</text>
+              </view>
+            </block>
+          </view>
+          <view class="graph-link">图谱 ↗</view>
+        </view>
+      </view>
+    </block>
+  </view>
+
+  <view class="empty-state-home" wx:if="{{events.length === 0 && !loading}}">
+    <view class="empty-title">当前暂无突发事件动态</view>
+    <view class="empty-desc">Trace 官方源正在全网监控产业异动，请稍后刷新重试</view>
+  </view>
+
+</view>

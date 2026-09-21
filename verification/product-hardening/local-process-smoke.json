@@ -1,0 +1,19 @@
+{
+  "profile": "production-maintenance",
+  "real_external_calls": false,
+  "container_verified": false,
+  "http_contracts": "passed",
+  "readiness": {
+    "ready": true,
+    "status": "READY",
+    "details": {
+      "database": "reachable",
+      "applied_migrations_count": 31,
+      "schema_status": "up_to_date",
+      "securities_count": 46,
+      "seeds_status": "loaded"
+    }
+  },
+  "runner_completed_rounds": 1,
+  "shared_storage_and_processes": "passed"
+}

@@ -15,6 +15,7 @@ from __future__ import annotations
 
 from collections import deque
 from dataclasses import dataclass, field
+from datetime import datetime, timezone
 
 from trace.db.connection import Database
 from trace.db.repositories import IndustryEdgeRepo, SecurityRepo
@@ -48,9 +49,20 @@ class IndustryGraph:
         self.reload()
 
     # ------------------------------------------------------------------
-    def reload(self) -> None:
+    def reload(self, as_of: datetime | None = None) -> None:
         self._adj = {}
+        now = as_of or datetime.now(timezone.utc)
+        if now.tzinfo is None:
+            now = now.replace(tzinfo=timezone.utc)
         for e in self.edge_repo.list_all():
+            if e.valid_from:
+                vf = e.valid_from if e.valid_from.tzinfo else e.valid_from.replace(tzinfo=timezone.utc)
+                if vf > now:
+                    continue
+            if e.valid_to:
+                vt = e.valid_to if e.valid_to.tzinfo else e.valid_to.replace(tzinfo=timezone.utc)
+                if vt <= now:
+                    continue
             self._adj.setdefault(e.from_node, []).append(e)
             self._adj.setdefault(e.to_node, []).append(e)
         self._node_to_securities = {}

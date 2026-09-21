@@ -54,6 +54,12 @@ def _seed_sources(db: Database) -> None:
             authority_level=s.get("authority_level", ""),
             poll_interval_seconds=int(s.get("poll_interval_seconds", 600)),
             security_map=s.get("security_map", []),
+            can_fetch=bool(s.get("can_fetch", True)),
+            can_store=bool(s.get("can_store", True)),
+            can_display=bool(s.get("can_display", True)),
+            can_forward=bool(s.get("can_forward", True)),
+            verified_at=s.get("verified_at"),
+            verified_by=s.get("verified_by"),
         ))
 
 
@@ -79,6 +85,7 @@ def _seed_securities(db: Database) -> None:
             graph_node_ids=s.get("graph_node_ids", []),
             is_watchlist_default=bool(s.get("is_watchlist_default", False)),
             is_context_universe=bool(s.get("is_context_universe", False)),
+            status=s.get("status", "verified"),
         ))
 
 

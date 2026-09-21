@@ -1,0 +1,256 @@
+/** pages/index/index.wxss - Editorial Radar UI **/
+
+.header-actions {
+  display: flex;
+  align-items: center;
+}
+
+.refresh-btn {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+  background-color: #FFFFFF;
+  border: 1rpx solid rgba(15, 23, 42, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2rpx 8rpx rgba(15, 23, 42, 0.03);
+}
+
+.refresh-icon-img {
+  width: 28rpx;
+  height: 28rpx;
+}
+
+/* Hero 主线卡片 (严禁缩放，采用细腻微光阴影) */
+.hero-card {
+  background-color: #FFFFFF;
+  border-radius: 28rpx;
+  border: 1rpx solid rgba(15, 23, 42, 0.05);
+  padding: 32rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 4rpx 20rpx -2rpx rgba(15, 23, 42, 0.03);
+  transition: background-color 80ms ease-out;
+}
+
+.hero-eyebrow {
+  font-size: 21rpx;
+  font-weight: 600;
+  color: #94A3B8;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 10rpx;
+}
+
+.hero-title {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #0F172A;
+  line-height: 1.38;
+  letter-spacing: -0.02em;
+}
+
+.hero-footer {
+  margin-top: 24rpx;
+  padding-top: 20rpx;
+  border-top: 1rpx solid rgba(15, 23, 42, 0.04);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 22rpx;
+}
+
+.hero-status {
+  color: #64748B;
+  font-weight: 400;
+}
+
+.hero-link {
+  color: #2563EB;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* 市场联动指数条 (一体化无缝卡片，内部分隔线) */
+.indices-strip {
+  background-color: #FFFFFF;
+  border-radius: 24rpx;
+  border: 1rpx solid rgba(15, 23, 42, 0.05);
+  box-shadow: 0 2rpx 10rpx rgba(15, 23, 42, 0.02);
+  display: flex;
+  margin-bottom: 28rpx;
+  padding: 16rpx 0;
+}
+
+.index-cell {
+  flex: 1;
+  text-align: center;
+  position: relative;
+}
+
+.index-cell:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 15%;
+  height: 70%;
+  width: 1rpx;
+  background-color: rgba(15, 23, 42, 0.05);
+}
+
+.index-name {
+  font-size: 20rpx;
+  color: #94A3B8;
+  font-weight: 500;
+}
+
+.index-price {
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #0F172A;
+  margin-top: 4rpx;
+  letter-spacing: -0.02em;
+}
+
+.index-pct {
+  font-size: 20rpx;
+  font-weight: 600;
+  margin-top: 2rpx;
+}
+
+/* 区块标题 */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14rpx;
+  padding: 0 4rpx;
+}
+
+.section-title {
+  font-size: 27rpx;
+  font-weight: 700;
+  color: #0F172A;
+  letter-spacing: -0.01em;
+}
+
+.section-sub {
+  font-size: 21rpx;
+  color: #94A3B8;
+  font-weight: 400;
+}
+
+/* 事件流 Cell (点击仅微背景高亮，无任何缩放) */
+.event-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8rpx;
+  font-size: 21rpx;
+}
+
+.event-source {
+  color: #94A3B8;
+  font-weight: 400;
+}
+
+.event-level {
+  color: #475569;
+  font-weight: 500;
+  font-size: 20rpx;
+  background-color: rgba(15, 23, 42, 0.04);
+  padding: 4rpx 12rpx;
+  border-radius: 8rpx;
+}
+
+.event-title {
+  font-size: 29rpx;
+  font-weight: 600;
+  color: #0F172A;
+  line-height: 1.4;
+  letter-spacing: -0.015em;
+}
+
+.event-summary {
+  font-size: 24rpx;
+  color: #64748B;
+  margin-top: 8rpx;
+  line-height: 1.45;
+  font-weight: 400;
+}
+
+.event-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 18rpx;
+  font-size: 21rpx;
+  line-height: 1;
+}
+
+.securities-wrap {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 16rpx;
+}
+
+.sec-chip {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  font-size: 22rpx;
+  line-height: 1;
+}
+
+.sec-ticker {
+  color: #334155;
+  font-weight: 600;
+  margin-right: 8rpx;
+}
+
+.sec-pct {
+  font-weight: 600;
+}
+
+.graph-link {
+  color: #94A3B8;
+  font-size: 21rpx;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.index-badge {
+  font-size: 16rpx;
+  color: #64748B;
+  background-color: rgba(15, 23, 42, 0.06);
+  padding: 2rpx 8rpx;
+  border-radius: 6rpx;
+  margin-left: 6rpx;
+  font-weight: 400;
+}
+
+.color-neutral {
+  color: #94A3B8 !important;
+}
+
+.empty-state-home {
+  padding: 60rpx 40rpx;
+  text-align: center;
+  background-color: #FFFFFF;
+  border-radius: 24rpx;
+  border: 1rpx solid rgba(15, 23, 42, 0.05);
+}
+
+.empty-state-home .empty-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #0F172A;
+  margin-bottom: 8rpx;
+}
+
+.empty-state-home .empty-desc {
+  font-size: 22rpx;
+  color: #94A3B8;
+}

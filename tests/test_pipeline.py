@@ -90,6 +90,8 @@ class _ScriptedCollector(BaseCollector):
 def _setup_user(app):
     db = app.db
     UserRepo(db).ensure("u1")
+    from trace.db.repositories import ChannelBindingRepo
+    ChannelBindingRepo(db).bind("u1", "telegram", "u1")
     mu = SecurityRepo(db).get_by_ticker("MU")
     smic = SecurityRepo(db).get_by_ticker("688981.SH")
     for sec in (mu, smic):
@@ -200,7 +202,9 @@ def test_production_without_telegram_channel_fails(app, monkeypatch):
     pipeline = Pipeline(app)
     pipeline.alert_sender = None                    # 没有通道
     from trace.domain.models import Event, EventImpact
-    event = Event(event_id="e1", version=1)
+    event = Event(event_id="e1", version=1, first_source_id="src_sec_edgar")
+    from trace.db.repositories import EventRepo
+    EventRepo(app.db).insert(event)
     impact = EventImpact(impact_id="IMP-1", event_id="e1",
                          security_id=mu.security_id, final_score=9.0)
     decision = AlertDecision(should_send=True, user_id="u1", event=event,
@@ -208,8 +212,14 @@ def test_production_without_telegram_channel_fails(app, monkeypatch):
 
     summary = RunSummary()
     pipeline._deliver(decision, summary)
-    assert summary.status == STOP_TELEGRAM_CREDENTIALS_MISSING
-    assert summary.alerts_failed == 1
+    # Intent is durable even when transport is missing; delivery is not claimed successful.
+    from trace.alerts.delivery_worker import drain_outbox
+    stats = drain_outbox(app.db, None, is_production=True)
+    assert stats['failed'] == 1
+    assert stats['sent'] == 0
+    row = app.db.query_one("SELECT status,last_error FROM alert_outbox")
+    assert row['status'] == 'pending'
+    assert row['last_error'] == 'production_channel_missing'
     assert summary.alerts_sent == 0
 
 

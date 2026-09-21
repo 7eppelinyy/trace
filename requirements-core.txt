@@ -1,0 +1,15 @@
+# Trace 核心运行时与轻量测试依赖（与 CI 隔离测试一致，不含 torch/sentence-transformers）
+httpx>=0.27
+feedparser>=6.0
+beautifulsoup4>=4.12
+lxml>=5.0
+numpy>=1.26
+openai>=1.30
+python-telegram-bot>=21.0
+fastapi>=0.110.0
+uvicorn>=0.28.0
+pyyaml>=6.0
+python-dotenv>=1.0
+pytz>=2024.1
+mcp>=1.0
+pytest>=8.0

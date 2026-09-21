@@ -1,0 +1,266 @@
+page {
+  height: 100%;
+  overflow: hidden;
+}
+
+.ask-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: #F2F4F8;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.ask-header {
+  flex-shrink: 0;
+  padding: 24rpx 32rpx 16rpx 32rpx;
+  background-color: rgba(242, 244, 248, 0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1rpx solid rgba(15, 23, 42, 0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 10;
+}
+
+.ask-title {
+  font-size: 38rpx;
+  font-weight: 700;
+  color: #0F172A;
+  letter-spacing: -0.025em;
+}
+
+.ask-subtitle {
+  font-size: 22rpx;
+  color: #64748B;
+  margin-top: 6rpx;
+  font-weight: 400;
+}
+
+.clear-btn {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(15, 23, 42, 0.04);
+}
+
+.clear-icon-img {
+  width: 28rpx;
+  height: 28rpx;
+}
+
+/* 聊天内容滚动区 */
+.chat-stream {
+  flex: 1;
+  height: 0;
+  padding: 24rpx 32rpx;
+  box-sizing: border-box;
+  overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* 预设追问建议 */
+.preset-section {
+  margin-bottom: 32rpx;
+}
+
+.preset-label {
+  font-size: 21rpx;
+  font-weight: 600;
+  color: #94A3B8;
+  letter-spacing: 0.02em;
+  margin-bottom: 12rpx;
+}
+
+.preset-item {
+  background-color: #FFFFFF;
+  border: 1rpx solid rgba(15, 23, 42, 0.05);
+  border-radius: 20rpx;
+  padding: 22rpx 28rpx;
+  margin-bottom: 12rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2rpx 8rpx rgba(15, 23, 42, 0.02);
+  transition: background-color 80ms ease-out;
+}
+
+.preset-item:active {
+  background-color: #F8FAFC;
+}
+
+.preset-text {
+  font-size: 24rpx;
+  color: #334155;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.preset-arrow {
+  color: #94A3B8;
+  font-size: 24rpx;
+}
+
+/* 消息行 */
+.msg-row {
+  margin-bottom: 28rpx;
+}
+
+.user-row {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.user-bubble {
+  max-width: 82%;
+  background-color: #0F172A;
+  color: #FFFFFF;
+  padding: 20rpx 28rpx;
+  border-radius: 26rpx;
+  border-top-right-radius: 6rpx;
+  font-size: 26rpx;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+}
+
+.ai-row {
+  display: flex;
+  flex-direction: column;
+}
+
+.ai-meta {
+  font-size: 20rpx;
+  color: #94A3B8;
+  margin-bottom: 8rpx;
+}
+
+.ai-card {
+  background-color: #FFFFFF;
+  border: 1rpx solid rgba(15, 23, 42, 0.05);
+  border-radius: 26rpx;
+  padding: 28rpx 32rpx;
+  box-shadow: 0 4rpx 20rpx -2rpx rgba(15, 23, 42, 0.03);
+}
+
+.ai-title {
+  font-size: 27rpx;
+  font-weight: 700;
+  color: #0F172A;
+  margin-bottom: 10rpx;
+}
+
+.ai-content {
+  font-size: 25rpx;
+  color: #475569;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.ai-footer {
+  margin-top: 20rpx;
+  padding-top: 16rpx;
+  border-top: 1rpx solid rgba(15, 23, 42, 0.04);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 21rpx;
+}
+
+.ai-source {
+  color: #94A3B8;
+}
+
+.ai-link {
+  color: #2563EB;
+  font-weight: 600;
+}
+
+/* 思考等待框 */
+.thinking-box {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  padding: 16rpx 0;
+}
+
+.thinking-spinner {
+  width: 22rpx;
+  height: 22rpx;
+  border: 3rpx solid #CBD5E1;
+  border-top-color: #0F172A;
+  border-radius: 50%;
+  animation: spin 800ms linear infinite;
+}
+
+.thinking-text {
+  font-size: 21rpx;
+  color: #94A3B8;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* 底部常驻输入条：牢牢固定在当前可见视口底部，Tabbar 之上 */
+.input-bar {
+  flex-shrink: 0;
+  padding: 16rpx 28rpx calc(16rpx + env(safe-area-inset-bottom)) 28rpx;
+  background-color: #FFFFFF;
+  border-top: 1rpx solid rgba(15, 23, 42, 0.08);
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  z-index: 100;
+  box-shadow: 0 -2rpx 10rpx rgba(15, 23, 42, 0.03);
+}
+
+.ask-input {
+  flex: 1;
+  background-color: rgba(15, 23, 42, 0.04);
+  border-radius: 20rpx;
+  padding: 16rpx 24rpx;
+  font-size: 26rpx;
+  color: #0F172A;
+}
+
+.send-btn {
+  background-color: #0F172A;
+  color: #FFFFFF;
+  border-radius: 20rpx;
+  padding: 16rpx 32rpx;
+  font-size: 24rpx;
+  font-weight: 600;
+  line-height: 1;
+}
+
+/* 安全拦截特化样式 */
+.ai-card-security {
+  border-left: 6rpx solid #DC2626 !important;
+  background-color: #FEF2F2 !important;
+}
+
+.ai-title-security {
+  color: #991B1B !important;
+}
+
+.ai-content-security {
+  color: #7F1D1D !important;
+  font-size: 24rpx;
+  line-height: 1.6;
+}
+
+/* 降级与兜底特化样式 */
+.ai-card-degraded {
+  border-left: 6rpx solid #D97706 !important;
+  background-color: #FFFBEB !important;
+}
+
+.ai-title-degraded {
+  color: #B45309 !important;
+}
+

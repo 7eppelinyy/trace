@@ -1,0 +1,86 @@
+<!-- pages/ask/ask.wxml - 产业链 AI 深度推演与防破甲交互 -->
+<view class="ask-container">
+
+  <!-- 顶部 Header 状态 -->
+  <view class="ask-header">
+    <view>
+      <view class="ask-title">产业链推演</view>
+      <view class="ask-subtitle">Trace Graph 推理 · 实时行情与官方源穿透</view>
+    </view>
+    <view class="clear-btn btn-press" bindtap="clearChat" title="清空对话">
+      <image class="clear-icon-img" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394A3B8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M3 6h18'/><path d='M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6'/><path d='M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2'/></svg>"></image>
+    </view>
+  </view>
+
+  <!-- 对话与流式推演区域 -->
+  <scroll-view class="chat-stream" scroll-y scroll-into-view="{{scrollTarget}}" enable-flex>
+    
+    <!-- 快捷研报追问建议 -->
+    <view class="preset-section">
+      <view class="preset-label">研报追问建议</view>
+      <view class="preset-item" bindtap="askPreset" data-query="深度分析英伟达 GB200 铜互联方案对 A 股连接器及线缆板块（如沃尔核材、立讯精密）的业绩弹性与估值影响">
+        <text class="preset-text">[英伟达/铜互联] GB200 放量对 A 股线缆连接器业绩弹性？</text>
+        <text class="preset-arrow">→</text>
+      </view>
+      <view class="preset-item" bindtap="askPreset" data-query="请深度评估苹果评估铠侠 NAND 闪存对美光科技（MU）与闪迪（SNDK）的冲击与长单毛利率影响">
+        <text class="preset-text">[美光/闪迪] 苹果引入二供对 Q4 合约毛利率影响？</text>
+        <text class="preset-arrow">→</text>
+      </view>
+      <view class="preset-item" bindtap="askPreset" data-query="美联储货币政策转向与降息预期对中美半导体估值传导逻辑">
+        <text class="preset-text">[宏观降息] 美联储货币政策转向对科技半导体估值传导？</text>
+        <text class="preset-arrow">→</text>
+      </view>
+    </view>
+
+    <!-- 消息对话流 -->
+    <block wx:for="{{messages}}" wx:key="id">
+      <!-- 用户消息 -->
+      <view class="msg-row user-row" wx:if="{{item.role === 'user'}}" id="msg-{{item.id}}">
+        <view class="user-bubble">{{item.content}}</view>
+      </view>
+
+      <!-- AI 推演消息 -->
+      <view class="msg-row ai-row" wx:if="{{item.role === 'assistant'}}" id="msg-{{item.id}}">
+        <view class="ai-meta tnum">{{item.metaBadge || (item.isSecurity ? 'Trace 防护护栏 · 安全审计拦截' : 'Trace Graph 推理 · 耗时 ' + (item.duration || 210) + 'ms · 事实证据已穿透')}}</view>
+        <view class="ai-card {{item.isSecurity ? 'ai-card-security' : (item.isDegraded ? 'ai-card-degraded' : '')}}">
+          <view class="ai-title {{item.isSecurity ? 'ai-title-security' : (item.isDegraded ? 'ai-title-degraded' : '')}}">{{item.title || '推演研判结论'}}</view>
+          <view class="ai-content {{item.isSecurity ? 'ai-content-security' : ''}}">{{item.content}}</view>
+          <view class="ai-footer">
+            <text class="ai-source tnum">{{item.ticker || '核心标的'}} · {{item.sourceLabel || (item.isSecurity ? '安全隔离保护' : '官方证据链与图谱拓扑')}}</text>
+            <view class="ai-link" wx:if="{{!item.isSecurity && item.graphChain && item.graphChain.length > 0}}" bindtap="navigateToDetail" data-index="{{index}}">
+              查看 4 级图谱 ↗
+            </view>
+          </view>
+        </view>
+      </view>
+    </block>
+
+    <!-- 推演中 Loading 状态 -->
+    <view class="msg-row ai-row" wx:if="{{thinking}}" id="msg-thinking">
+      <view class="thinking-box">
+        <view class="thinking-spinner"></view>
+        <text class="thinking-text">Trace Graph 正在穿透产业链拓扑、实时行情与事实证据...</text>
+      </view>
+    </view>
+
+    <view id="scroll-bottom" style="height: 32rpx;"></view>
+  </scroll-view>
+
+  <!-- 底部固定输入条 -->
+  <view class="input-bar">
+    <input 
+      class="ask-input" 
+      placeholder="输入宏观事件、产业链议题或标的代码追问..." 
+      value="{{inputValue}}" 
+      bindinput="onInput" 
+      bindconfirm="submitAsk"
+      confirm-type="send"
+      adjust-position="{{true}}"
+      cursor-spacing="16"
+    />
+    <view class="send-btn btn-press" bindtap="submitAsk">
+      发送
+    </view>
+  </view>
+
+</view>

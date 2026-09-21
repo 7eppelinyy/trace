@@ -15,7 +15,7 @@ from contextlib import contextmanager
 from pathlib import Path
 from threading import local
 
-BUSY_TIMEOUT_MS = 5000
+BUSY_TIMEOUT_MS = 15000
 
 
 class Database:
@@ -28,7 +28,7 @@ class Database:
     def conn(self) -> sqlite3.Connection:
         conn = getattr(self._local, "conn", None)
         if conn is None:
-            conn = sqlite3.connect(self.path, check_same_thread=False)
+            conn = sqlite3.connect(self.path, timeout=15.0, check_same_thread=False)
             conn.row_factory = sqlite3.Row
             conn.execute("PRAGMA journal_mode=WAL")
             conn.execute("PRAGMA synchronous=NORMAL")
@@ -53,18 +53,19 @@ class Database:
         return cur
 
     @contextmanager
-    def transaction(self):
+    def transaction(self, mode: str = "DEFERRED"):
         """把一批 execute/executemany 合并为单次 commit（原子 + 批量 fsync）。
 
         Repository 层调用方无需感知：事务期间 execute 不再逐条 commit。
         可嵌套；内层块交给外层事务统一提交。
+        支持 mode="IMMEDIATE" 获取排他写锁，避免并发竞争升级失败。
         """
         if self._in_txn():
             yield self.conn
             return
         self._local.in_txn = True
         try:
-            self.conn.execute("BEGIN")
+            self.conn.execute(f"BEGIN {mode}")
             yield self.conn
             self.conn.commit()
         except Exception:

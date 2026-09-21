@@ -65,7 +65,7 @@ def test_parse_quotes_success():
     assert q1.ticker == "688981.SH"
     assert q1.last_price == 120.90
     assert q1.prev_close == 114.86
-    assert q1.change_pct_15m == 5.26
+    assert q1.change_pct_day == 5.26
     assert q1.volume == 39436472
     assert q1.ts.year == 2026
     assert q1.ts.month == 9
@@ -76,7 +76,7 @@ def test_parse_quotes_success():
     assert q2.ticker == "000001.SZ"
     assert q2.last_price == 11.50
     assert q2.prev_close == 11.40
-    assert q2.change_pct_15m == 0.88
+    assert q2.change_pct_day == 0.88
 
 
 def test_get_quote_single():

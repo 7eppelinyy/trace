@@ -16,6 +16,12 @@ sources:
     license_mode: public
     enabled: true
     poll_interval_seconds: 120
+    can_fetch: true
+    can_store: true
+    can_display: true
+    can_forward: true
+    verified_at: null  # Previous seed claims lacked supporting verification records
+    verified_by: null
 
   # SanDisk IR：官方 RSS（2026-08-26 真实验证可用：200 + 10 entries，
   # 含 ETag/Last-Modified，支持条件请求）。
@@ -29,6 +35,12 @@ sources:
     enabled: true
     poll_interval_seconds: 120
     security_map: [SEC-US-SNDK]
+    can_fetch: true
+    can_store: true
+    can_display: true
+    can_forward: true
+    verified_at: null  # Previous seed claims lacked supporting verification records
+    verified_by: null
 
   # Micron IR：官方 RSS 端点被 Cloudflare 限流（429，2026-08-26 实测），
   # 备用路线 = 官网新闻室页面（www.micron.com/about/newsroom/press-releases，
@@ -43,6 +55,12 @@ sources:
     enabled: true
     poll_interval_seconds: 120
     security_map: [SEC-US-MU]
+    can_fetch: true
+    can_store: true
+    can_display: true
+    can_forward: true
+    verified_at: null  # Previous seed claims lacked supporting verification records
+    verified_by: null
 
   - source_id: src_nvidia_ir
     source_name: NVIDIA Investor Relations
@@ -54,6 +72,12 @@ sources:
     enabled: true
     poll_interval_seconds: 120
     security_map: [SEC-US-NVDA]
+    can_fetch: true
+    can_store: true
+    can_display: true
+    can_forward: true
+    verified_at: null  # Previous seed claims lacked supporting verification records
+    verified_by: null
 
   - source_id: src_fed
     source_name: Federal Reserve
@@ -64,6 +88,12 @@ sources:
     license_mode: public
     enabled: true
     poll_interval_seconds: 300
+    can_fetch: true
+    can_store: true
+    can_display: true
+    can_forward: true
+    verified_at: null  # Previous seed claims lacked supporting verification records
+    verified_by: null
 
   - source_id: src_bis
     source_name: Bureau of Industry and Security
@@ -74,6 +104,12 @@ sources:
     license_mode: public
     enabled: true
     poll_interval_seconds: 300
+    can_fetch: true
+    can_store: true
+    can_display: true
+    can_forward: true
+    verified_at: null  # Previous seed claims lacked supporting verification records
+    verified_by: null
 
   # U.S. Commerce Department：官方站点被 Cloudflare 挑战（403），
   # 真实可用入口 = GovDelivery 官方订阅 RSS（2026-08-26 验证：200，
@@ -89,6 +125,12 @@ sources:
     license_mode: public
     enabled: true
     poll_interval_seconds: 300
+    can_fetch: true
+    can_store: true
+    can_display: true
+    can_forward: true
+    verified_at: null  # Previous seed claims lacked supporting verification records
+    verified_by: null
 
   - source_id: src_federal_register
     source_name: Federal Register
@@ -99,6 +141,12 @@ sources:
     license_mode: public
     enabled: true
     poll_interval_seconds: 300
+    can_fetch: true
+    can_store: true
+    can_display: true
+    can_forward: true
+    verified_at: null  # Previous seed claims lacked supporting verification records
+    verified_by: null
 
   # ---------------- P0：A股官方 ----------------
   # 路线B（任务书 §5.2）：巨潮是证监会指定的沪深两市统一法定披露平台，
@@ -112,6 +160,12 @@ sources:
     license_mode: public
     enabled: true
     poll_interval_seconds: 300
+    can_fetch: true
+    can_store: true
+    can_display: true
+    can_forward: true
+    verified_at: null  # Previous seed claims lacked supporting verification records
+    verified_by: null
 
   - source_id: src_sse
     source_name: 上海证券交易所
@@ -122,6 +176,12 @@ sources:
     license_mode: public
     enabled: false               # 路线B适配器：默认由 src_cninfo 统一覆盖
     poll_interval_seconds: 300
+    can_fetch: false
+    can_store: false
+    can_display: false
+    can_forward: false
+    verified_at: null  # Previous seed claims lacked supporting verification records
+    verified_by: null
 
   - source_id: src_szse
     source_name: 深圳证券交易所
@@ -132,6 +192,12 @@ sources:
     license_mode: public
     enabled: false               # 路线B适配器：默认由 src_cninfo 统一覆盖
     poll_interval_seconds: 300
+    can_fetch: false
+    can_store: false
+    can_display: false
+    can_forward: false
+    verified_at: null  # Previous seed claims lacked supporting verification records
+    verified_by: null
 
   # ---------------- P0：中国政策官方源（2026-08-26 真实验证） ----------------
   # 首页列表选择器已实测（标题-日期-链接配对），关键词初筛在
@@ -145,6 +211,12 @@ sources:
     license_mode: public
     enabled: true
     poll_interval_seconds: 300
+    can_fetch: true
+    can_store: true
+    can_display: true
+    can_forward: true
+    verified_at: null  # Previous seed claims lacked supporting verification records
+    verified_by: null
 
   - source_id: src_mofcom
     source_name: 商务部
@@ -155,6 +227,12 @@ sources:
     license_mode: public
     enabled: true
     poll_interval_seconds: 300
+    can_fetch: true
+    can_store: true
+    can_display: true
+    can_forward: true
+    verified_at: null  # Previous seed claims lacked supporting verification records
+    verified_by: null
 
   - source_id: src_csrc
     source_name: 中国证监会
@@ -165,6 +243,12 @@ sources:
     license_mode: public
     enabled: false               # 页面选择器未验证，本轮不纳入关键路径
     poll_interval_seconds: 300
+    can_fetch: false
+    can_store: false
+    can_display: false
+    can_forward: false
+    verified_at: null  # Previous seed claims lacked supporting verification records
+    verified_by: null
 
   - source_id: src_stats_cn
     source_name: 国家统计局
@@ -175,6 +259,12 @@ sources:
     license_mode: public
     enabled: false
     poll_interval_seconds: 600
+    can_fetch: false
+    can_store: false
+    can_display: false
+    can_forward: false
+    verified_at: null  # Previous seed claims lacked supporting verification records
+    verified_by: null
 
   # ---------------- P1：产业媒体（RSS/公开页面） ----------------
   # TrendForce：授权未明确（robots 未禁止但无正式许可），
@@ -194,6 +284,12 @@ sources:
     license_mode: unknown
     enabled: false
     poll_interval_seconds: 600
+    can_fetch: false
+    can_store: false
+    can_display: false
+    can_forward: false
+    verified_at: null  # Previous seed claims lacked supporting verification records
+    verified_by: null
 
   - source_id: src_digitimes
     source_name: DIGITIMES
@@ -206,6 +302,12 @@ sources:
     license_mode: public
     enabled: true
     poll_interval_seconds: 600
+    can_fetch: true
+    can_store: true
+    can_display: true
+    can_forward: true
+    verified_at: null  # Previous seed claims lacked supporting verification records
+    verified_by: null
 
   - source_id: src_eetimes
     source_name: EE Times
@@ -218,6 +320,12 @@ sources:
     license_mode: public
     enabled: true
     poll_interval_seconds: 600
+    can_fetch: true
+    can_store: true
+    can_display: true
+    can_forward: true
+    verified_at: null  # Previous seed claims lacked supporting verification records
+    verified_by: null
 
   - source_id: src_eetimes_china
     source_name: EE Times China
@@ -229,6 +337,12 @@ sources:
     # 2026-08-31 实测：/rss/news.xml、/rss.xml、/feed 均 404，站点已无公开 feed。
     enabled: false
     poll_interval_seconds: 600
+    can_fetch: false
+    can_store: false
+    can_display: false
+    can_forward: false
+    verified_at: null  # Previous seed claims lacked supporting verification records
+    verified_by: null
 
   - source_id: src_jw_insights
     source_name: 集微网
@@ -239,6 +353,12 @@ sources:
     license_mode: unknown
     enabled: false
     poll_interval_seconds: 600
+    can_fetch: false
+    can_store: false
+    can_display: false
+    can_forward: false
+    verified_at: null  # Previous seed claims lacked supporting verification records
+    verified_by: null
 
   - source_id: src_chipwise
     source_name: 芯智讯
@@ -249,6 +369,12 @@ sources:
     license_mode: unknown
     enabled: false
     poll_interval_seconds: 600
+    can_fetch: false
+    can_store: false
+    can_display: false
+    can_forward: false
+    verified_at: null  # Previous seed claims lacked supporting verification records
+    verified_by: null
 
   # ---------------- P1/P2：财经媒体（无授权一律关闭） ----------------
   - source_id: src_reuters
@@ -260,6 +386,12 @@ sources:
     license_mode: licensed_ai_analysis
     enabled: false                 # 无正式 API / License 前禁止抓取
     poll_interval_seconds: 600
+    can_fetch: false
+    can_store: false
+    can_display: false
+    can_forward: false
+    verified_at: null  # Previous seed claims lacked supporting verification records
+    verified_by: null
 
   - source_id: src_bloomberg
     source_name: Bloomberg
@@ -270,6 +402,12 @@ sources:
     license_mode: licensed_ai_analysis
     enabled: false
     poll_interval_seconds: 600
+    can_fetch: false
+    can_store: false
+    can_display: false
+    can_forward: false
+    verified_at: null  # Previous seed claims lacked supporting verification records
+    verified_by: null
 
   - source_id: src_dowjones
     source_name: Dow Jones / Factiva
@@ -280,6 +418,12 @@ sources:
     license_mode: licensed_ai_analysis
     enabled: false
     poll_interval_seconds: 600
+    can_fetch: false
+    can_store: false
+    can_display: false
+    can_forward: false
+    verified_at: null  # Previous seed claims lacked supporting verification records
+    verified_by: null
 
   - source_id: src_ft
     source_name: Financial Times
@@ -290,6 +434,12 @@ sources:
     license_mode: licensed_ai_analysis
     enabled: false
     poll_interval_seconds: 600
+    can_fetch: false
+    can_store: false
+    can_display: false
+    can_forward: false
+    verified_at: null  # Previous seed claims lacked supporting verification records
+    verified_by: null
 
   - source_id: src_cnbc
     source_name: CNBC
@@ -303,6 +453,12 @@ sources:
     # 「能取到」不等于「获授权」，不得因技术可行而启用。
     enabled: false
     poll_interval_seconds: 600
+    can_fetch: false
+    can_store: false
+    can_display: false
+    can_forward: false
+    verified_at: null  # Previous seed claims lacked supporting verification records
+    verified_by: null
 
   - source_id: src_cls
     source_name: 财联社
@@ -313,6 +469,12 @@ sources:
     license_mode: unknown
     enabled: false
     poll_interval_seconds: 600
+    can_fetch: false
+    can_store: false
+    can_display: false
+    can_forward: false
+    verified_at: null  # Previous seed claims lacked supporting verification records
+    verified_by: null
 
   - source_id: src_eastmoney
     source_name: 东方财富 / Choice
@@ -323,6 +485,12 @@ sources:
     license_mode: unknown
     enabled: false
     poll_interval_seconds: 600
+    can_fetch: false
+    can_store: false
+    can_display: false
+    can_forward: false
+    verified_at: null  # Previous seed claims lacked supporting verification records
+    verified_by: null
 
   # 金十数据（MCP 智能开放平台，官方 Bearer token 授权）。
   # 合规依据：金十官方 MCP 智能开放平台授予在 AI 应用内使用其快讯/数据/行情的
@@ -338,3 +506,9 @@ sources:
     license_mode: licensed_ai_analysis
     enabled: true
     poll_interval_seconds: 600
+    can_fetch: true
+    can_store: true
+    can_display: true
+    can_forward: false
+    verified_at: null  # Previous seed claims lacked supporting verification records
+    verified_by: null

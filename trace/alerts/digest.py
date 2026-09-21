@@ -57,7 +57,7 @@ class DigestBuilder:
         local_start = tz.localize(
             datetime.combine(date.fromisoformat(date_str), time.min))
         return (local_start.astimezone(pytz.utc),
-                (local_start + timedelta(days=1)).astimezone(pytz.utc))
+                tz.localize(datetime.combine(date.fromisoformat(date_str) + timedelta(days=1), time.min)).astimezone(pytz.utc))
 
     def build(self, date_str: str | None = None,
               timezone_name: str | None = None) -> DailyDigest:
@@ -66,6 +66,9 @@ class DigestBuilder:
             pytz.timezone(tz_name)).date().isoformat()
         start_utc, end_utc = self.local_day_bounds(d, tz_name)
         top_events = self.event_repo.top_between(start_utc, end_utc, limit=10)
+        from trace.common.source_policy import event_permitted
+        top_events = [ev for ev in top_events if event_permitted(self.db,ev.event_id,'display')
+                      and event_permitted(self.db,ev.event_id,'forward')]
 
         lines = [f"📊 美股 + A股每日事件摘要（{d}）", ""]
 
@@ -125,11 +128,13 @@ class DigestBuilder:
         lines.append(f"统计区间（UTC）：{start_utc.strftime('%m-%d %H:%M')} – "
                      f"{end_utc.strftime('%m-%d %H:%M')}")
 
+        cache_key = f"{d}:{tz_name}:default:v1"
         digest = DailyDigest(
             digest_id=digest_id(),
             date_str=d,
             content_markdown="\n".join(lines),
             sent_at=datetime.now(timezone.utc),
+            cache_key=cache_key,
         )
         self.digest_repo.upsert(digest)
         return digest

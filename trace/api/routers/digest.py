@@ -26,9 +26,10 @@ def get_today_digest(
     tz = pytz.timezone(tz_name)
     local_now = datetime.now(timezone.utc).astimezone(tz)
     date_str = local_now.strftime("%Y-%m-%d")
+    cache_key = f"{date_str}:{tz_name}:default:v1"
 
     digest_repo = DailyDigestRepo(ctx.db)
-    saved = digest_repo.get(date_str)
+    saved = digest_repo.get_by_cache_key(cache_key)
     if saved:
         return DigestResponse(
             digest_id=saved.digest_id,

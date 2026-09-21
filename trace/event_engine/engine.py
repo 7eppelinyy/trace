@@ -95,15 +95,21 @@ class EventEngine:
 
     # ------------------------------------------------------------------
     def ingest(self, item: RawItem, extracted: ExtractedEvent, *,
-               skip_exact_dedup: bool = False) -> EngineDecision:
+               skip_exact_dedup: bool = False, target_event_id: str | None = None, on_commit=None) -> EngineDecision:
         normalize_raw_item(item)
 
         # Level 1：确定性去重（调用方已检查时可跳过，避免每条重复 4 次查询）
+        target_event = self.event_repo.get(target_event_id) if target_event_id else None
         if not skip_exact_dedup:
             dup = self.exact_dedup.check(item)
             if dup.is_duplicate:
                 logger.info("exact dedup hit (%s): %s", dup.reason, item.title)
                 return EngineDecision(action="duplicate", reason=dup.reason)
+            if dup.is_revision and dup.existing_event_id:
+                target_event = self.event_repo.get(dup.existing_event_id)
+
+        if target_event:
+            return self._merge_into(target_event, item, extracted, on_commit=on_commit, document_changed=True)
 
         # Level 2/3：语义聚类（跨语言）
         candidates = self.cluster.find_candidates(
@@ -114,13 +120,13 @@ class EventEngine:
         if candidates:
             top = candidates[0]
             if top.merge_score >= self.cluster.auto_merge_threshold:
-                return self._merge_into(top.event, item, extracted)
+                return self._merge_into(top.event, item, extracted, on_commit=on_commit)
             if top.merge_score >= self.cluster.verifier_min_threshold:
                 if self.verifier.is_same_event(extracted, top.event):
-                    return self._merge_into(top.event, item, extracted)
+                    return self._merge_into(top.event, item, extracted, on_commit=on_commit)
 
         # 创建新 Event
-        return self._create_event(item, extracted)
+        return self._create_event(item, extracted, on_commit=on_commit)
 
     # ------------------------------------------------------------------
     def _is_official_source(self, source_id: str | None) -> bool:
@@ -131,28 +137,58 @@ class EventEngine:
         return bool(source and source.authority_level in OFFICIAL_AUTHORITIES)
 
     def _merge_into(self, ev: Event, item: RawItem,
-                    extracted: ExtractedEvent | None = None) -> EngineDecision:
-        self.raw_repo.insert(item)
-        # 官方来源晚于媒体/其他来源出现：官方确认修订（任务书 §8）
-        # reported → official_confirmed，event_version += 1，仅 material update 允许再推送
+                    extracted: ExtractedEvent | None = None, *, on_commit=None, document_changed=False) -> EngineDecision:
         official = self._is_official_source(item.source_id)
-        new_status = ("official_confirmed"
-                      if official and ev.status != "official_confirmed" else None)
-        result: RevisionResult = self.reviser.apply_update(
-            ev.event_id, item, new_status=new_status, official_source=official,
-            # 关键数字变化由 reviser 比对（"投资 100 亿" → "投资 300 亿"）
-            new_key_numbers=list(extracted.key_numbers or []) if extracted else None)
+        extracted_status = extracted.event_status if extracted else None
+        if extracted_status in ("contradicted", "retracted"):
+            new_status = extracted_status
+        elif ev.status in ("contradicted", "retracted"):
+            new_status = "official_confirmed" if official and extracted_status == "official_confirmed" else None
+        else:
+            new_status = "official_confirmed" if official and ev.status != "official_confirmed" else None
+        with self.db.transaction():
+            self.raw_repo.insert(item)
+            # 官方来源晚于媒体/其他来源出现：官方确认修订（任务书 §8）
+            # reported → official_confirmed，event_version += 1，仅 material update 允许再推送
+            result: RevisionResult = self.reviser.apply_update(
+                ev.event_id, item, new_status=new_status, official_source=official,
+                # 关键数字变化由 reviser 比对（"投资 100 亿" → "投资 300 亿"）
+                new_key_numbers=list(extracted.key_numbers or []) if extracted else None,
+                new_summary=extracted.summary if extracted else None,
+                new_title=extracted.title if extracted and document_changed else None,
+                document_changed=document_changed)
+            from trace.db.jobs import schedule_analysis
+            schedule_analysis(self.db, result.event, is_update=result.material_update, resend_allowed=result.resend_allowed)
+            from trace.db.repositories import ResearchQuestionRepo
+            ResearchQuestionRepo(self.db).match_new_evidence(item.raw_item_id, event_id=result.event.event_id)
+            if on_commit:
+                on_commit()
         logger.info("merged into %s (reason=%s, official=%s)",
                     ev.event_id, result.revision_type, official)
-        # 窗口缓存里的事件对象换成修订后的版本（标题/摘要未变，向量沿用）
-        self.cluster.remember(result.event)
+        # 若标题/摘要在修订中更新（旧向量已被清空），重算对应向量并更新 embedding_identity
+        if result.event.title_embedding is None:
+            title_vec, title_blob = self.cluster.embed_text(result.event.title)
+            result.event.title_embedding = title_blob
+        else:
+            title_vec = None
+        if result.event.summary_embedding is None:
+            summary_vec, summary_blob = self.cluster.embed_text(result.event.summary)
+            result.event.summary_embedding = summary_blob
+        else:
+            summary_vec = None
+
+        if title_vec is not None or summary_vec is not None:
+            result.event.embedding_model = self.cluster.embedding_identity
+            self.event_repo.update(result.event)
+
+        # 窗口缓存里的事件对象换成修订后的版本
+        self.cluster.remember(result.event, title_vec=title_vec, summary_vec=summary_vec)
         action = "revised" if result.material_update else "merged"
         return EngineDecision(action=action, event=result.event,
                               reason=result.revision_type,
                               resend_allowed=result.resend_allowed)
 
-    def _create_event(self, item: RawItem, extracted: ExtractedEvent) -> EngineDecision:
-        self.raw_repo.insert(item)
+    def _create_event(self, item: RawItem, extracted: ExtractedEvent, *, on_commit=None) -> EngineDecision:
         now = datetime.now(timezone.utc)
         title_vec, title_blob = self.cluster.embed_text(extracted.title)
         summary_vec, summary_blob = self.cluster.embed_text(extracted.summary)
@@ -174,11 +210,20 @@ class EventEngine:
             key_numbers=list(extracted.key_numbers or []),
             title_embedding=title_blob,
             summary_embedding=summary_blob,
+            embedding_model=self.cluster.embedding_identity,
         )
-        self.event_repo.insert(ev)
-        self.raw_repo.link_event(item.raw_item_id, ev.event_id)
-        self.source_repo.add(EventSource(event_id=ev.event_id,
-                                         raw_item_id=item.raw_item_id, role="first"))
+        with self.db.transaction():
+            self.raw_repo.insert(item)
+            self.event_repo.insert(ev)
+            self.event_repo.update_embeddings(ev.event_id, title_blob, summary_blob, self.cluster.embedding_identity)
+            ev.embedding_model = self.cluster.embedding_identity
+            self.raw_repo.link_event(item.raw_item_id, ev.event_id)
+            self.source_repo.add(EventSource(event_id=ev.event_id,
+                                             raw_item_id=item.raw_item_id, role="first"))
+            from trace.db.jobs import schedule_analysis
+            schedule_analysis(self.db, ev)
+            if on_commit:
+                on_commit()
         # 同一轮的后续 item 必须能与刚建的事件聚类（否则缓存会拆分同一事件）
         self.cluster.remember(ev, title_vec, summary_vec)
         logger.info("created event %s: %s", ev.event_id, ev.title)

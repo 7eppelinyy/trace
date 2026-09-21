@@ -1,0 +1,117 @@
+// app.js - Trace Mini-Program Entry
+const DEFAULT_LOCAL_ENDPOINT = 'http://127.0.0.1:8000/api/v1';
+const DEFAULT_TUNNEL_ENDPOINT = 'https://zgors-66-112-217-25.free.pinggy.net/api/v1';
+const DEFAULT_LAN_ENDPOINT = 'http://172.20.10.3:8000/api/v1';
+
+App({
+  globalData: {
+    apiBase: DEFAULT_LOCAL_ENDPOINT,
+    localEndpoint: DEFAULT_LOCAL_ENDPOINT,
+    tunnelEndpoint: DEFAULT_TUNNEL_ENDPOINT,
+    lanEndpoint: DEFAULT_LAN_ENDPOINT,
+    userId: 'user_default',
+    systemInfo: null,
+    isOnline: true,
+    latencyMs: 0
+  },
+
+  onLaunch() {
+    // 获取设备信息与微信右上角胶囊尺寸（适配顶部安全区与触觉反馈）
+    let isDevTools = false;
+    try {
+      const sysInfo = wx.getSystemInfoSync();
+      this.globalData.systemInfo = sysInfo;
+      isDevTools = (sysInfo && sysInfo.platform === 'devtools');
+      const menuButton = wx.getMenuButtonBoundingClientRect ? wx.getMenuButtonBoundingClientRect() : null;
+      this.globalData.menuButton = menuButton;
+      const statusBarHeight = (sysInfo && sysInfo.statusBarHeight) || 20;
+      const navBarHeight = menuButton ? (menuButton.top - statusBarHeight) * 2 + menuButton.height : 44;
+      this.globalData.statusBarHeight = statusBarHeight;
+      this.globalData.navBarHeight = navBarHeight;
+    } catch (e) {
+      console.warn('getSystemInfoSync failed:', e);
+    }
+
+    // 优先读取本地存储配置的 API 服务端点
+    const storedApiBase = wx.getStorageSync('apiBase');
+    const isObsoleteTunnel = storedApiBase && (storedApiBase.includes('loca.lt') || storedApiBase.includes('ujjxx') || storedApiBase.includes('gkemt') || storedApiBase.includes('abkqh'));
+    const isLoopback = storedApiBase && (storedApiBase.includes('127.0.0.1') || storedApiBase.includes('localhost'));
+
+    // 在开发者工具中，优先使用本地环回 127.0.0.1:8000；在真机上则过滤不可达的 127.0.0.1
+    if (storedApiBase && !isObsoleteTunnel && (isDevTools || !isLoopback)) {
+      this.globalData.apiBase = storedApiBase;
+    } else {
+      const defaultEndpoint = isDevTools ? DEFAULT_LOCAL_ENDPOINT : DEFAULT_TUNNEL_ENDPOINT;
+      this.globalData.apiBase = defaultEndpoint;
+      wx.setStorageSync('apiBase', defaultEndpoint);
+    }
+
+    // 后台服务健康自检（支持智能主备自动切换）
+    this.checkBackendHealth();
+  },
+
+  checkBackendHealth(callback) {
+    const currentBase = this.globalData.apiBase;
+    const t0 = Date.now();
+
+    wx.request({
+      url: `${currentBase}/health`,
+      method: 'GET',
+      header: { 'bypass-tunnel-reminder': '1' },
+      timeout: 3000,
+      success: (res) => {
+        if (res.statusCode === 200) {
+          this.globalData.isOnline = true;
+          this.globalData.latencyMs = Date.now() - t0;
+          console.log('[Trace] Connected to:', currentBase, 'Latency:', this.globalData.latencyMs, 'ms');
+          if (typeof callback === 'function') callback(true, currentBase, this.globalData.latencyMs);
+        } else {
+          this._tryAlternativeEndpoint(callback);
+        }
+      },
+      fail: () => {
+        this._tryAlternativeEndpoint(callback);
+      }
+    });
+  },
+
+  _tryAlternativeEndpoint(callback) {
+    const isDevTools = this.globalData.systemInfo && this.globalData.systemInfo.platform === 'devtools';
+    // 若当前端点不可达，自动探测备选端点（本地环回、局域网与云端穿透互为备援）
+    let altBase = DEFAULT_TUNNEL_ENDPOINT;
+    if (this.globalData.apiBase === DEFAULT_LOCAL_ENDPOINT) {
+      altBase = DEFAULT_LAN_ENDPOINT;
+    } else if (this.globalData.apiBase === DEFAULT_TUNNEL_ENDPOINT) {
+      altBase = isDevTools ? DEFAULT_LOCAL_ENDPOINT : DEFAULT_LAN_ENDPOINT;
+    } else {
+      altBase = isDevTools ? DEFAULT_LOCAL_ENDPOINT : DEFAULT_TUNNEL_ENDPOINT;
+    }
+    const t0 = Date.now();
+
+    wx.request({
+      url: `${altBase}/health`,
+      method: 'GET',
+      header: { 'bypass-tunnel-reminder': '1' },
+      timeout: 3500,
+      success: (res) => {
+        if (res.statusCode === 200) {
+          const latency = Date.now() - t0;
+          this.globalData.isOnline = true;
+          this.globalData.apiBase = altBase;
+          this.globalData.latencyMs = latency;
+          wx.setStorageSync('apiBase', altBase);
+          console.log('[Trace] Auto failover switched to alternative endpoint:', altBase);
+          if (typeof callback === 'function') callback(true, altBase, latency);
+        } else {
+          this.globalData.isOnline = false;
+          if (typeof callback === 'function') callback(false);
+        }
+      },
+      fail: (err) => {
+        this.globalData.isOnline = false;
+        console.warn('[Trace] Both endpoints unreachable:', err);
+        if (typeof callback === 'function') callback(false, null, 0, err);
+      }
+    });
+  }
+});

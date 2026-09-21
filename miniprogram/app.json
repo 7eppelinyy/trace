@@ -1,0 +1,54 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/ask/ask",
+    "pages/watchlist/watchlist",
+    "pages/profile/profile",
+    "pages/detail/detail",
+    "pages/research/research"
+  ],
+  "window": {
+    "navigationBarBackgroundColor": "#F8FAFC",
+    "navigationBarTitleText": "Trace",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#F8FAFC",
+    "backgroundTextStyle": "dark"
+  },
+  "tabBar": {
+    "color": "#94A3B8",
+    "selectedColor": "#0F172A",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "雷达",
+        "iconPath": "assets/icons/radar.png",
+        "selectedIconPath": "assets/icons/radar-active.png"
+      },
+      {
+        "pagePath": "pages/ask/ask",
+        "text": "推演",
+        "iconPath": "assets/icons/ask.png",
+        "selectedIconPath": "assets/icons/ask-active.png"
+      },
+      {
+        "pagePath": "pages/watchlist/watchlist",
+        "text": "自选",
+        "iconPath": "assets/icons/watchlist.png",
+        "selectedIconPath": "assets/icons/watchlist-active.png"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "设置",
+        "iconPath": "assets/icons/profile.png",
+        "selectedIconPath": "assets/icons/profile-active.png"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "networkTimeout": {
+    "request": 60000
+  }
+}

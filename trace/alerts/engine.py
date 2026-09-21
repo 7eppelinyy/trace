@@ -27,6 +27,7 @@ from trace.db.repositories import (
     AlertDeliveryRepo,
     AlertRuleRepo,
     EventRepo,
+    NotificationPreferenceRepo,
     SecurityRepo,
     UserRepo,
     WatchlistRepo,
@@ -36,6 +37,27 @@ from trace.common.observability import run_id_var
 from trace.domain.models import AlertDelivery, AlertType, Event, EventImpact
 
 logger = logging.getLogger(__name__)
+
+
+def is_in_quiet_hours(dt: datetime, tz_name: str, quiet_start: str | None, quiet_end: str | None) -> bool:
+    """判断指定时间在对应用户时区内是否处于免打扰时段。"""
+    if not quiet_start or not quiet_end:
+        return False
+    try:
+        from zoneinfo import ZoneInfo
+        tz = ZoneInfo(tz_name)
+    except Exception:
+        try:
+            import pytz
+            tz = pytz.timezone(tz_name)
+        except Exception:
+            tz = timezone.utc
+    local_dt = dt.astimezone(tz)
+    current_time_str = local_dt.strftime("%H:%M")
+    if quiet_start <= quiet_end:
+        return quiet_start <= current_time_str < quiet_end
+    else:  # 跨夜时段，如 22:00 至 08:00
+        return current_time_str >= quiet_start or current_time_str < quiet_end
 
 
 @dataclass
@@ -56,6 +78,8 @@ class DeliveryReceipt:
     message_id: str | None = None
     response: str | None = None              # ok / api_error / network_error / no_channel
     error: str = ""
+    retry_after_seconds: float | None = None
+    http_status: int | None = None
 
 
 @dataclass
@@ -91,6 +115,7 @@ class AlertEngine:
         self.user_repo = UserRepo(db)
         self.watch_repo = WatchlistRepo(db)
         self.rule_repo = AlertRuleRepo(db)
+        self.pref_repo = NotificationPreferenceRepo(db)
         self.delivery_repo = AlertDeliveryRepo(db)
         self.event_repo = EventRepo(db)
         self.security_repo = SecurityRepo(db)
@@ -156,7 +181,15 @@ class AlertEngine:
                 if user.muted_until and user.muted_until > datetime.now(timezone.utc):
                     batch.suppressed += 1
                     continue
-                threshold = self._threshold_for(user_id, impact.security_id)
+                pref = self.pref_repo.get_effective_preference(user_id, impact.security_id)
+                if not pref.enabled:
+                    batch.suppressed += 1
+                    continue
+                user_tz = getattr(user, "timezone", "Asia/Taipei") or "Asia/Taipei"
+                if is_in_quiet_hours(datetime.now(timezone.utc), user_tz, pref.quiet_start, pref.quiet_end):
+                    batch.suppressed += 1
+                    continue
+                threshold = pref.threshold if (pref and pref.threshold is not None) else self._threshold_for(user_id, impact.security_id)
                 if impact.final_score < threshold:
                     batch.suppressed += 1
                     continue
@@ -190,6 +223,9 @@ class AlertEngine:
         return sorted(r["user_id"] for r in rows)
 
     def _threshold_for(self, user_id: str, security_id: str) -> float:
+        pref = self.pref_repo.get_effective_preference(user_id, security_id)
+        if pref and pref.threshold is not None:
+            return pref.threshold
         t = self.rule_repo.get_threshold(user_id, security_id)
         if t is not None:
             return t

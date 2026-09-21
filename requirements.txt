@@ -1,36 +1,6 @@
-# HTTP / 采集
-httpx>=0.27
-feedparser>=6.0
-beautifulsoup4>=4.12
-lxml>=5.0
+# 核心运行时与测试依赖
+-r requirements-core.txt
 
-# 语义相似度（跨语言 Event 聚类，默认模型可配置；缺失时自动降级为 hash 伪向量）
+# 可选：语义相似度模型（跨语言 Event 聚类，默认模型可配置；缺失时自动降级为 hash 伪向量）
+# 注意：sentence-transformers 依赖 PyTorch，CI 与轻量部署默认无需安装
 sentence-transformers>=2.7
-
-# 语义聚类矩阵加速（batch 余弦；缺失时自动回退纯 Python 逐对计算）
-numpy>=1.26
-
-# LLM Structured Output（可插拔 Provider：默认 Gemini 走 REST/httpx，无 SDK 硬依赖；
-# OpenAI Provider 保持兼容，非必需依赖）
-openai>=1.30
-
-# Telegram Bot
-python-telegram-bot>=21.0
-
-# REST API 服务
-fastapi>=0.110.0
-uvicorn>=0.28.0
-
-
-# 配置
-pyyaml>=6.0
-python-dotenv>=1.0
-
-# 时区
-pytz>=2024.1
-
-# 金十数据（MCP 智能开放平台）官方客户端
-mcp>=1.0
-
-# 测试
-pytest>=8.0

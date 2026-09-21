@@ -10,6 +10,8 @@ from trace.domain.models import (  # noqa: F401
     EventRevision,
     EventSource,
     EventStatus,
+    ForecastCheck,
+    ForecastSnapshot,
     IndustryEdge,
     LicenseMode,
     MarketSnapshot,
@@ -17,5 +19,11 @@ from trace.domain.models import (  # noqa: F401
     Security,
     Source,
     User,
+    UserSession,
+    UserRefreshToken,
     WatchlistEntry,
+    ResearchQuestion,
+    ResearchQuestionState,
+    AlertFeedback,
 )
+

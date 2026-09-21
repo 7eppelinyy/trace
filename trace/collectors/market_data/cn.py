@@ -37,12 +37,22 @@ class MockCNMarketProvider(MarketDataProvider):
     def get_quote(self, ticker: str) -> Quote | None:
         base = 10 + abs(hash(ticker)) % 200
         last = base * (1 + self._rng.uniform(-0.05, 0.05))
+        now_dt = datetime.now(timezone.utc)
+        day_chg = round((last - base) / base * 100, 2)
         return Quote(
-            ticker=ticker, ts=datetime.now(timezone.utc),
-            last_price=round(last, 2), prev_close=round(base, 2),
-            change_pct_15m=round((last - base) / base * 100, 2),
+            ticker=ticker,
+            ts=now_dt,
+            last_price=round(last, 2),
+            prev_close=round(base, 2),
+            change_pct_day=day_chg,
+            change_pct_15m=round(day_chg * 0.3, 2),
             volume=self._rng.randint(500_000, 20_000_000),
             volume_ratio=round(self._rng.uniform(0.5, 4.0), 2),
+            market_timestamp=now_dt,
+            fetched_at=now_dt,
+            currency="CNY",
+            source="mock",
+            is_delayed=False,
         )
 
 
@@ -61,6 +71,7 @@ class TencentCNMarketProvider(MarketDataProvider):
             return self._client
         return httpx.Client(
             timeout=self.timeout,
+            trust_env=False,
             headers={"User-Agent": "TraceEventRadar/0.1 (research use)"},
         )
 
@@ -139,25 +150,34 @@ class TencentCNMarketProvider(MarketDataProvider):
                 last_price = float(parts[3])
                 prev_close = float(parts[4])
                 volume = int(parts[6]) if parts[6] else None
-                # timestamp: parts[30] = 'YYYYMMDDHHMMSS' (CST, UTC+8)
+                fetched_at = datetime.now(timezone.utc)
+                market_ts = None
                 ts_str = parts[30] if len(parts) > 30 else ""
                 if len(ts_str) == 14:
-                    ts = datetime.strptime(ts_str, "%Y%m%d%H%M%S").replace(
-                        tzinfo=timezone(timedelta(hours=8))
-                    )
-                else:
-                    ts = datetime.now(timezone.utc)
+                    try:
+                        market_ts = datetime.strptime(ts_str, "%Y%m%d%H%M%S").replace(
+                            tzinfo=timezone(timedelta(hours=8))
+                        )
+                    except Exception:
+                        market_ts = None
 
                 change_pct = float(parts[32]) if len(parts) > 32 and parts[32] else None
 
+                # F15: 日涨跌与 15m 严格分离，腾讯快照给出的是当日涨跌幅，不可冒充 15m
                 results[orig_ticker] = Quote(
                     ticker=orig_ticker,
-                    ts=ts,
+                    ts=market_ts or fetched_at,
                     last_price=last_price,
                     prev_close=prev_close,
-                    change_pct_15m=change_pct,
+                    change_pct_day=round(change_pct, 2) if change_pct is not None else None,
+                    change_pct_15m=None,
                     volume=volume,
                     session="regular",
+                    market_timestamp=market_ts,
+                    fetched_at=fetched_at,
+                    currency="CNY",
+                    source="tencent",
+                    is_delayed=False,
                 )
             except (ValueError, IndexError) as exc:
                 logger.debug("error parsing tencent quote for %s: %s", sym, exc)

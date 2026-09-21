@@ -21,11 +21,19 @@ class Market(str, Enum):
     CN = "CN"
 
 
+class SecurityStatus(str, Enum):
+    VERIFIED = "verified"
+    UNVERIFIED = "unverified"
+    DELISTED = "delisted"
+
+
 class EventStatus(str, Enum):
     RUMOR = "rumor"
     REPORTED = "reported"
     PARTIALLY_CONFIRMED = "partially_confirmed"
     OFFICIAL_CONFIRMED = "official_confirmed"
+    CONTRADICTED = "contradicted"  # 存在矛盾 / 官方否认
+    RETRACTED = "retracted"        # 已撤回
     SUPERSEDED = "superseded"
 
 
@@ -133,6 +141,43 @@ class Source:
     poll_interval_seconds: int = 600       # 建议轮询间隔
     security_map: list[str] = field(default_factory=list)
     # 公司官方源直接关联的 security_id（官方公告不依赖 LLM 猜股票代码）
+    # Governance & Licensing (F29, F30)
+    can_fetch: bool = True
+    can_store: bool = True
+    can_display: bool = True
+    can_forward: bool = True
+    verified_at: str | None = None
+    verified_by: str | None = None
+    operational_override: bool | None = None
+    override_reason: str = ""
+    override_updated_at: str | None = None
+    override_updated_by: str | None = None
+    seed_enabled: bool = False
+
+    @property
+    def is_effective_enabled(self) -> bool:
+        if self.operational_override is not None:
+            return bool(self.operational_override)
+        return bool(self.enabled)
+
+
+@dataclass
+class SourceAuthorizationRecord:
+    """正式授权证据登记格式（Source Governance & Legal Clearance）。
+
+    区别于系统的技术配置权限（can_fetch/store/display/forward），
+    本记录用于登记经过法律/合规核验的第三方数据真实授权或许可协议。
+    """
+    auth_id: str
+    source_id: str
+    scope: list[str]                  # e.g. ["fetch", "store", "display", "forward"]
+    evidence_url_or_file: str         # 证据链接、许可协议编号或文件路径
+    verified_by: str                  # 真实核验人姓名或工号（禁止虚构合规团队）
+    verified_at: str                  # ISO8601 时间戳
+    expires_at: str | None = None     # 授权期限（若永久为 None）
+    status: str = "pending"           # pending | verified | expired | rejected
+    notes: str = ""
+    created_at: str = ""
 
 
 @dataclass
@@ -181,6 +226,7 @@ class Event:
     # 聚类辅助字段
     title_embedding: bytes | None = None
     summary_embedding: bytes | None = None
+    embedding_model: str | None = None
 
 
 @dataclass
@@ -229,6 +275,7 @@ class Security:
     graph_node_ids: list[str] = field(default_factory=list)
     is_watchlist_default: bool = False     # 初始核心 Watchlist
     is_context_universe: bool = False      # Context Universe（不一定触发通知）
+    status: str = SecurityStatus.VERIFIED.value  # verified / unverified / delisted
 
 
 @dataclass
@@ -285,6 +332,8 @@ class EventImpact:
     # （后三者来自行情时段门禁，见 collectors/market_data/confirmation.py；
     #  每个取值都必须在 alerts/template.py 有对应说明文案）
     market_data_mode: str = "real"
+    next_eligible_at: datetime | None = None        # 预计可补算的最早时刻（下一次开盘）
+    expires_at: datetime | None = None              # 补算反应窗口截止时刻
     created_at: datetime | None = None
 
 
@@ -294,12 +343,17 @@ class MarketSnapshot:
     ts: datetime
     last_price: float | None = None
     prev_close: float | None = None
+    change_pct_day: float | None = None             # 当日涨跌幅（与 15m 严格分离，F15）
     change_pct_1m: float | None = None
     change_pct_5m: float | None = None
-    change_pct_15m: float | None = None
+    change_pct_15m: float | None = None             # 严格 15 分钟区间变动
     volume: int | None = None
     volume_ratio: float | None = None
-    session: str = ""                        # regular / pre / post
+    session: str = ""                               # regular / pre / post
+    currency: str = "USD"
+    source: str = ""                                # alpaca / tencent / mock / unavailable
+    is_delayed: bool = False                        # 是否延时行情
+    market_ts: datetime | None = None               # 交易所成交时间戳
 
 
 # ---------------------------------------------------------------------------
@@ -308,7 +362,7 @@ class MarketSnapshot:
 
 @dataclass
 class User:
-    user_id: str                             # telegram chat id
+    user_id: str                             # telegram chat id / internal user id
     timezone: str = "Asia/Taipei"
     muted_until: datetime | None = None
     created_at: datetime | None = None
@@ -318,10 +372,33 @@ class User:
 
 
 @dataclass
+class UserSession:
+    session_token: str
+    user_id: str
+    created_at: datetime
+    expires_at: datetime
+    is_revoked: bool = False
+    family_id: str | None = None
+
+
+@dataclass
+class UserRefreshToken:
+    token_hash: str
+    user_id: str
+    family_id: str
+    expires_at: datetime
+    created_at: datetime
+    session_token: str | None = None
+    used_at: datetime | None = None
+    revoked_at: datetime | None = None
+
+
+@dataclass
 class WatchlistEntry:
     user_id: str
     security_id: str
     added_at: datetime | None = None
+    user_alias: str = ""
 
 
 @dataclass
@@ -359,6 +436,50 @@ class DailyDigest:
     date_str: str                            # YYYY-MM-DD
     content_markdown: str = ""
     sent_at: datetime | None = None
+    cache_key: str | None = None
+
+
+@dataclass
+class NotificationPreference:
+    preference_id: str
+    user_id: str
+    security_id: str | None = None           # None = 全局默认偏好；非 None = 单标的覆盖
+    threshold: float = 7.0
+    enabled: bool = True
+    quiet_start: str | None = None           # HH:MM 本地时区
+    quiet_end: str | None = None             # HH:MM 本地时区
+    channel: str = "all"                     # all / telegram / wechat
+    revision: int = 1
+    updated_at: datetime | None = None
+
+
+@dataclass
+class ForecastSnapshot:
+    """不可变预测快照 (T13/F19/F27)。
+
+    在 Stage B 生成预测时定格快照，以预测生成时刻 (analysis_created_at) 作为唯一基准锚点，
+    消除前视偏差。修订事件版本生成新快照，禁止覆盖历史快照。
+    """
+    snapshot_id: str
+    impact_id: str
+    event_id: str
+    security_id: str
+    event_version: int = 1
+    predicted_direction: str = "uncertain"   # bullish / bearish / uncertain
+    predicted_score: float = 0.0
+    confidence: float = 0.0
+    model_version: str = "v1"
+    market: str = "US"                       # US / CN
+    analysis_created_at: datetime | None = None
+    published_at: datetime | None = None
+    anchor_price: float | None = None
+    anchor_ts: datetime | None = None
+    horizon_hours: float = 24.0
+    due_at: datetime | None = None
+    benchmark_code: str = "SPX"              # SPX (US) / STAR50 (CN)
+    benchmark_anchor_price: float | None = None
+    status: str = "pending"                  # pending / evaluated / unmeasurable / expired
+    created_at: datetime | None = None
 
 
 @dataclass
@@ -382,8 +503,123 @@ class ForecastCheck:
     horizon_hours: float = 24.0
     evaluated_at: datetime | None = None
     # 事件锚定区间收益的可复算依据（0009）
-    anchor_price: float | None = None        # 事件时刻附近的快照价
+    anchor_price: float | None = None        # 预测生成时刻附近的快照价
     anchor_ts: datetime | None = None
     exit_price: float | None = None          # 核对时刻价格
-    elapsed_hours: float | None = None       # 事件到核对的真实间隔
+    elapsed_hours: float | None = None       # 预测生成到核对的真实间隔
     note: str = ""                           # unmeasurable 的原因
+    snapshot_id: str | None = None           # 关联不可变快照 (0020)
+    event_version: int = 1
+    model_version: str = "v1"
+    market: str = "US"
+    benchmark_code: str = "SPX"
+    benchmark_change_pct: float | None = None
+    excess_return_pct: float | None = None
+    excluded_reason: str = ""
+
+
+
+@dataclass
+class ProcessingJob:
+    """持久化处理作业 (T03/F03)。"""
+    job_id: str
+    job_type: str                            # stage_a_extract / stage_b_analyze
+    target_id: str                           # raw_item_id / event_id
+    status: str                              # pending / processing / completed / failed / blocked_budget / human_review / succeeded_empty
+    processor_version: str = "v1"
+    input_version: int = 1
+    lease_until: datetime | None = None
+    retry_count: int = 0
+    max_retries: int = 3
+    last_error: str | None = None
+    created_at: datetime | None = None
+    updated_at: datetime | None = None
+    lease_owner: str | None = None
+    input_json: dict = field(default_factory=dict)
+
+
+@dataclass
+class ChannelBinding:
+    """用户通知渠道绑定 (F06/T06)。"""
+    binding_id: str
+    user_id: str
+    channel_type: str                         # telegram / wechat / webhook
+    channel_target: str                       # chat_id / openid / url
+    is_active: bool = True
+    verified_at: datetime | None = None
+    created_at: datetime | None = None
+    updated_at: datetime | None = None
+
+
+@dataclass
+class AlertOutbox:
+    """待投递提醒任务 (F06/T06)。"""
+    outbox_id: str
+    user_id: str
+    channel_type: str
+    channel_target: str
+    event_id: str
+    impact_id: str | None
+    event_version: int
+    alert_type: str
+    idempotency_key: str
+    content_text: str
+    content_url: str | None = None
+    status: str = "pending"                   # pending / sending / sent / failed / suppressed
+    retry_count: int = 0
+    max_retries: int = 3
+    retry_after: datetime | None = None
+    lease_until: datetime | None = None
+    last_error: str | None = None
+    created_at: datetime | None = None
+    updated_at: datetime | None = None
+    lease_owner: str | None = None
+    security_id: str | None = None
+    final_score: float | None = None
+    analysis_id: str | None = None
+    expires_at: datetime | None = None
+
+
+# ---------------------------------------------------------------------------
+# 假设跟踪与用户反馈 (T16)
+# ---------------------------------------------------------------------------
+
+class ResearchQuestionState(str, Enum):
+    TRACKING = "tracking"
+    CONFIRMED = "confirmed"
+    FALSIFIED = "falsified"
+    ARCHIVED = "archived"
+
+
+@dataclass
+class ResearchQuestion:
+    """用户假设跟踪模型 (F31/T16)。"""
+    question_id: str
+    user_id: str
+    title: str
+    hypothesis: str
+    event_id: str | None = None
+    security_id: str | None = None
+    supporting_conditions: list[str] = field(default_factory=list)
+    contradicting_conditions: list[str] = field(default_factory=list)
+    next_check_at: datetime | None = None
+    state: str = ResearchQuestionState.TRACKING.value
+    user_notes: str = ""
+    matched_evidence_ids: list[str] = field(default_factory=list)
+    created_at: datetime | None = None
+    updated_at: datetime | None = None
+    revision: int = 1
+
+
+@dataclass
+class AlertFeedback:
+    """提醒有效性与原因反馈模型 (F32/T16)。"""
+    feedback_id: str
+    user_id: str
+    event_id: str
+    rating: str                                # useful / not_useful / irrelevant / too_late / incorrect_analysis / duplicate
+    security_id: str | None = None
+    reason: str = ""
+    created_at: datetime | None = None
+
+

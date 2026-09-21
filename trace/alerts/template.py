@@ -39,6 +39,8 @@ _MARKET_MODE_NOTES = {
     # 当前涨跌与本事件无关，市场确认取中性（见 market_data/confirmation.py）
     "market_not_opened_since_event": "市场尚未开盘，本次未计入市场确认（开盘后会重算）",
     "reaction_window_expired": "已超过事件反应窗口，本次未计入市场确认",
+    "calendar_unavailable": "交易日历未覆盖或不可用，本次未计入市场确认",
+    "price_context": "市场确认基于当前价格背景（保守折半计入，非事件因果验证）",
 }
 
 

@@ -105,8 +105,9 @@ def send_message(bot_token: str, chat_id: str, text: str,
                 time.sleep(retry_after)
                 resp = _post_send_message(url, chat_id, text, timeout)
     except httpx.HTTPError as exc:
-        return DeliveryReceipt(status="failed", response="network_error",
-                               error=f"network: {exc}")
+        uncertain = isinstance(exc, (httpx.ReadTimeout, httpx.WriteTimeout, httpx.ReadError, httpx.WriteError))
+        return DeliveryReceipt(status="ambiguous" if uncertain else "failed", response="network_error",
+                               error=type(exc).__name__)
 
     try:
         data = resp.json()
@@ -118,7 +119,8 @@ def send_message(bot_token: str, chat_id: str, text: str,
     if not data.get("ok"):
         desc = data.get("description", "unknown api error")
         return DeliveryReceipt(status="failed", response="api_error",
-                               error=f"api: {desc} (HTTP {resp.status_code})")
+                               error=f"api: {desc} (HTTP {resp.status_code})", http_status=resp.status_code,
+                               retry_after_seconds=(data.get('parameters') or {}).get('retry_after'))
 
     result = data.get("result") or {}
     message_id = result.get("message_id")

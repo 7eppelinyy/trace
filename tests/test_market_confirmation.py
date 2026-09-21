@@ -20,6 +20,7 @@ from trace.collectors.market_data.confirmation import (
     MODE_MARKET_NOT_OPENED,
     MODE_WINDOW_EXPIRED,
     MarketConfirmer,
+    confirmation_score,
 )
 from trace.db.repositories import MarketSnapshotRepo
 from trace.market_time.calendar import MarketCalendar
@@ -44,11 +45,13 @@ class _CountingProvider(MarketDataProvider):
     def __init__(self, change_pct: float = 2.0):
         self.calls = 0
         self.change_pct = change_pct
+        self.as_of = None
 
     def get_quote(self, ticker: str) -> Quote | None:
         self.calls += 1
         prev = 100.0
-        return Quote(ticker=ticker, ts=datetime.now(timezone.utc),
+        return Quote(ticker=ticker, ts=self.as_of or datetime.now(timezone.utc),
+                     market_timestamp=self.as_of or datetime.now(timezone.utc),
                      last_price=prev * (1 + self.change_pct / 100),
                      prev_close=prev)
 
@@ -62,8 +65,14 @@ class _NullCN(MarketDataProvider):
 
 
 def _confirmer(config, provider=None, **kwargs) -> MarketConfirmer:
-    return MarketConfirmer(provider or _CountingProvider(), _NullCN(),
-                           calendar=MarketCalendar(config), **kwargs)
+    provider = provider or _CountingProvider()
+    confirmer = MarketConfirmer(provider, _NullCN(), calendar=MarketCalendar(config), **kwargs)
+    original = confirmer.confirm
+    def confirm(*args, **kw):
+        provider.as_of = kw.get('now') or datetime.now(timezone.utc)
+        return original(*args, **kw)
+    confirmer.confirm = confirm
+    return confirmer
 
 
 # ---------------------------------------------------------------------------
@@ -135,8 +144,8 @@ def test_gate_disabled_without_calendar(config):
     c = MarketConfirmer(_CountingProvider(), _NullCN()).confirm(
         "US", "MU", "bullish",
         event_time=EVENT_AFTER_CLOSE, now=_utc("2026-09-05T12:00:00"))
-    assert c.mode == "real"
-    assert c.score > 5.0
+    assert c.mode == "calendar_unavailable"
+    assert c.score == 5.0
 
 
 def test_unavailable_provider_is_neutral_and_marked(config):
@@ -206,3 +215,49 @@ def test_snapshot_failure_does_not_break_confirmation(db, config):
 
     confirmer = _confirmer(config, snapshot_repo=_BrokenRepo())
     assert confirmer.quote("US", "MU", security_id="SEC-US-MU") is not None
+
+
+# ---------------------------------------------------------------------------
+# confirmation_score 方向四象限与边界单测 (P0)
+# ---------------------------------------------------------------------------
+
+def test_confirmation_score_bullish():
+    # 看多 + 上涨 -> 加分
+    assert confirmation_score("bullish", 3.0) == pytest.approx(8.0)
+    assert confirmation_score("bullish", 5.0) == pytest.approx(10.0)
+    assert confirmation_score("bullish", 8.0) == pytest.approx(10.0)  # 超过+5%封顶
+
+    # 看多 + 下跌 -> 扣分
+    assert confirmation_score("bullish", -3.0) == pytest.approx(2.0)
+    assert confirmation_score("bullish", -5.0) == pytest.approx(1.0)
+    assert confirmation_score("bullish", -8.0) == pytest.approx(1.0)  # 超过-5%封底
+
+
+def test_confirmation_score_bearish():
+    # 看空 + 下跌 -> 加分
+    assert confirmation_score("bearish", -3.0) == pytest.approx(8.0)
+    assert confirmation_score("bearish", -5.0) == pytest.approx(10.0)
+    assert confirmation_score("bearish", -8.0) == pytest.approx(10.0)  # 超过-5%封顶
+
+    # 看空 + 上涨 -> 扣分
+    assert confirmation_score("bearish", 3.0) == pytest.approx(2.0)
+    assert confirmation_score("bearish", 5.0) == pytest.approx(1.0)
+    assert confirmation_score("bearish", 8.0) == pytest.approx(1.0)  # 超过+5%封底
+
+
+def test_confirmation_score_zero_and_neutral():
+    # 零涨跌
+    assert confirmation_score("bullish", 0.0) == pytest.approx(5.0)
+    assert confirmation_score("bearish", 0.0) == pytest.approx(5.0)
+
+    # 缺失行情数据 (None)
+    assert confirmation_score("bullish", None) == pytest.approx(5.0)
+    assert confirmation_score("bearish", None) == pytest.approx(5.0)
+    assert confirmation_score("neutral", None) == pytest.approx(5.0)
+
+    # 中性 / 混合 / 不确定方向不受涨跌幅影响，恒为 5.0
+    assert confirmation_score("neutral", 4.5) == pytest.approx(5.0)
+    assert confirmation_score("neutral", -4.5) == pytest.approx(5.0)
+    assert confirmation_score("mixed", 4.5) == pytest.approx(5.0)
+    assert confirmation_score("uncertain", -4.5) == pytest.approx(5.0)
+

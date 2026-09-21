@@ -19,6 +19,10 @@ except ImportError:  # pragma: no cover
 
 
 class Embedder:
+    model_name: str = "unknown"
+    dim: int = 0
+    is_degraded: bool = False
+
     def encode(self, texts: list[str]) -> list[list[float]]:
         raise NotImplementedError
 
@@ -28,6 +32,8 @@ class HashEmbedder(Embedder):
 
     def __init__(self, dim: int = 256):
         self.dim = dim
+        self.model_name = f"hash-ngram-{dim}"
+        self.is_degraded = True
 
     def encode(self, texts: list[str]) -> list[list[float]]:
         out = []
@@ -46,7 +52,13 @@ class HashEmbedder(Embedder):
 class SentenceTransformerEmbedder(Embedder):
     def __init__(self, model_name: str):
         from sentence_transformers import SentenceTransformer
+        self.model_name = model_name
+        self.is_degraded = False
         self._model = SentenceTransformer(model_name)
+        try:
+            self.dim = int(self._model.get_sentence_embedding_dimension())
+        except Exception:
+            self.dim = 384
 
     def encode(self, texts: list[str]) -> list[list[float]]:
         vecs = self._model.encode(texts or [""], normalize_embeddings=True)

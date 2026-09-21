@@ -1,0 +1,545 @@
+/** pages/detail/detail.wxss - Apple Inset Topology Detail **/
+
+.detail-container {
+  padding: 24rpx 32rpx calc(150rpx + env(safe-area-inset-bottom)) 32rpx;
+  background-color: var(--bg-grouped, #F2F4F8);
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+.detail-card {
+  background-color: #FFFFFF;
+  border-radius: 28rpx;
+  border: 1rpx solid rgba(15, 23, 42, 0.05);
+  padding: 32rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 4rpx 20rpx -2rpx rgba(15, 23, 42, 0.03);
+}
+
+.source-label {
+  font-size: 21rpx;
+  color: #94A3B8;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  margin-bottom: 12rpx;
+}
+
+.fact-title {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #0F172A;
+  line-height: 1.4;
+  letter-spacing: -0.02em;
+}
+
+.fact-summary {
+  font-size: 25rpx;
+  color: #64748B;
+  margin-top: 14rpx;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+.securities-bar {
+  margin-top: 24rpx;
+  padding-top: 20rpx;
+  border-top: 1rpx solid rgba(15, 23, 42, 0.04);
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+}
+
+.sec-stat {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  font-size: 23rpx;
+  line-height: 1;
+}
+
+.sec-code {
+  color: #334155;
+  font-weight: 600;
+  margin-right: 8rpx;
+}
+
+.sec-val {
+  font-weight: 700;
+}
+
+/* 4 级垂直时间线 - 极简同心圆节点 */
+.chain-header {
+  font-size: 27rpx;
+  font-weight: 700;
+  color: #0F172A;
+  margin-bottom: 28rpx;
+  letter-spacing: -0.01em;
+}
+
+.timeline-wrap {
+  position: relative;
+  padding-left: 8rpx;
+}
+
+.timeline-line {
+  position: absolute;
+  left: 19rpx;
+  top: 18rpx;
+  bottom: 36rpx;
+  width: 2rpx;
+  background-color: rgba(15, 23, 42, 0.08);
+}
+
+.timeline-node {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 20rpx;
+  margin-bottom: 34rpx;
+}
+
+.timeline-node:last-child {
+  margin-bottom: 8rpx;
+}
+
+.timeline-marker {
+  width: 24rpx;
+  height: 38rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  flex-shrink: 0;
+}
+
+.marker-dot {
+  width: 14rpx;
+  height: 14rpx;
+  border-radius: 50%;
+  background-color: #0F172A;
+  box-shadow: 0 0 0 4rpx #FFFFFF, 0 0 0 6rpx rgba(15, 23, 42, 0.15);
+}
+
+.node-body {
+  flex: 1;
+}
+
+.node-header {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-bottom: 6rpx;
+}
+
+.node-level-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 32rpx;
+  padding: 0 10rpx;
+  background-color: rgba(15, 23, 42, 0.05);
+  color: #0F172A;
+  font-size: 20rpx;
+  font-weight: 700;
+  border-radius: 8rpx;
+  letter-spacing: 0.02em;
+}
+
+.node-title {
+  font-size: 27rpx;
+  font-weight: 600;
+  color: #0F172A;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+}
+
+.node-desc {
+  font-size: 23rpx;
+  color: #64748B;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+/* 底部浮动操作栏 - 毛玻璃与微动效 */
+.bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 18rpx 32rpx calc(24rpx + env(safe-area-inset-bottom)) 32rpx;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-top: 1rpx solid rgba(15, 23, 42, 0.06);
+  z-index: 20;
+}
+
+.ask-btn {
+  height: 84rpx;
+  border-radius: 42rpx;
+  background-color: #0F172A;
+  color: #FFFFFF;
+  font-size: 27rpx;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  box-shadow: 0 6rpx 20rpx -2rpx rgba(15, 23, 42, 0.22);
+  letter-spacing: -0.01em;
+}
+
+.ask-btn-icon {
+  width: 28rpx;
+  height: 28rpx;
+}
+
+/* 演示案例警示条 */
+.demo-banner {
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+  background: #FFFBEB;
+  border: 1rpx solid #FDE68A;
+  border-radius: 16rpx;
+  padding: 14rpx 20rpx;
+  margin-bottom: 20rpx;
+}
+
+.demo-badge {
+  background: #F59E0B;
+  color: #FFFFFF;
+  font-size: 20rpx;
+  font-weight: 700;
+  padding: 2rpx 10rpx;
+  border-radius: 6rpx;
+  letter-spacing: 0.02em;
+}
+
+.demo-tip {
+  font-size: 22rpx;
+  color: #B45309;
+  font-weight: 500;
+}
+
+/* 方向研判胶囊与状态标签 */
+.sec-dir-badge {
+  margin-left: 10rpx;
+  font-size: 19rpx;
+  font-weight: 700;
+  padding: 2rpx 10rpx;
+  border-radius: 6rpx;
+  line-height: 1.2;
+}
+
+.dir-up {
+  background: rgba(5, 150, 105, 0.1);
+  color: #059669;
+}
+
+.dir-down {
+  background: rgba(225, 29, 72, 0.1);
+  color: #E11D48;
+}
+
+.dir-neutral {
+  background: rgba(100, 116, 139, 0.1);
+  color: #64748B;
+}
+
+.color-muted {
+  color: #94A3B8;
+  font-weight: 500;
+}
+
+.color-error {
+  color: #E11D48;
+}
+
+/* 异常状态与重试卡片 */
+.state-card {
+  padding: 48rpx 32rpx;
+  text-align: center;
+}
+
+.error-card {
+  border-left: 6rpx solid #E11D48;
+}
+
+.state-title {
+  margin-top: 12rpx;
+}
+
+.state-action-box {
+  margin-top: 32rpx;
+  display: flex;
+  justify-content: center;
+}
+
+/* 标签与元数据徽章 */
+.event-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12rpx;
+}
+
+.event-meta-tags {
+  display: inline-flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.event-id-tag {
+  font-size: 20rpx;
+  color: #64748B;
+  background: #F1F5F9;
+  padding: 2rpx 10rpx;
+  border-radius: 6rpx;
+  font-family: ui-monospace, monospace;
+}
+
+.event-ver-tag {
+  font-size: 20rpx;
+  color: #2563EB;
+  background: rgba(37, 99, 235, 0.08);
+  font-weight: 700;
+  padding: 2rpx 10rpx;
+  border-radius: 6rpx;
+}
+
+.event-status-pill {
+  font-size: 20rpx;
+  color: #0F172A;
+  background: #F8FAFC;
+  border: 1rpx solid #E2E8F0;
+  padding: 2rpx 12rpx;
+  border-radius: 999rpx;
+  font-weight: 600;
+}
+
+/* 事实与推断 Claims 卡片 */
+.claims-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.claim-item {
+  background: #F8FAFC;
+  border-radius: 16rpx;
+  padding: 18rpx 22rpx;
+  border: 1rpx solid rgba(15, 23, 42, 0.04);
+}
+
+.claim-top {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  margin-bottom: 8rpx;
+}
+
+.claim-kind-pill {
+  font-size: 19rpx;
+  font-weight: 700;
+  padding: 2rpx 10rpx;
+  border-radius: 6rpx;
+}
+
+.pill-fact {
+  background: rgba(5, 150, 105, 0.12);
+  color: #059669;
+}
+
+.pill-inference {
+  background: rgba(37, 99, 235, 0.12);
+  color: #2563EB;
+}
+
+.pill-scenario {
+  background: rgba(217, 119, 6, 0.12);
+  color: #D97706;
+}
+
+.claim-text {
+  font-size: 25rpx;
+  color: #1E293B;
+  line-height: 1.45;
+}
+
+.claim-conditions {
+  margin-top: 10rpx;
+  padding-top: 10rpx;
+  border-top: 1rpx dashed rgba(15, 23, 42, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+}
+
+.condition-line {
+  font-size: 21rpx;
+  color: #64748B;
+  display: flex;
+  align-items: flex-start;
+  gap: 8rpx;
+}
+
+.cond-label {
+  font-weight: 600;
+  color: #475569;
+  flex-shrink: 0;
+}
+
+/* 原文信源与证据链接列表 */
+.evidence-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.evidence-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #F8FAFC;
+  border-radius: 16rpx;
+  padding: 18rpx 20rpx;
+  border: 1rpx solid #E2E8F0;
+}
+
+.evidence-left {
+  flex: 1;
+  min-width: 0;
+  padding-right: 16rpx;
+}
+
+.evidence-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-bottom: 6rpx;
+}
+
+.evidence-role {
+  font-size: 19rpx;
+  background: #E2E8F0;
+  color: #334155;
+  font-weight: 600;
+  padding: 2rpx 8rpx;
+  border-radius: 4rpx;
+}
+
+.evidence-time {
+  font-size: 20rpx;
+  color: #94A3B8;
+}
+
+.evidence-title {
+  font-size: 24rpx;
+  color: #0F172A;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.evidence-url {
+  font-size: 20rpx;
+  color: #64748B;
+  margin-top: 4rpx;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: ui-monospace, monospace;
+}
+
+.copy-url-btn {
+  font-size: 21rpx;
+  font-weight: 600;
+  color: #2563EB;
+  background: rgba(37, 99, 235, 0.08);
+  padding: 10rpx 18rpx;
+  border-radius: 10rpx;
+  flex-shrink: 0;
+}
+
+/* 列表条目（尚不清楚与下一步验证） */
+.bullet-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14rpx;
+}
+
+.bullet-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12rpx;
+}
+
+.bullet-dot {
+  width: 10rpx;
+  height: 10rpx;
+  border-radius: 50%;
+  background: #CBD5E1;
+  margin-top: 14rpx;
+  flex-shrink: 0;
+}
+
+.bullet-dot-check {
+  background: #3B82F6;
+}
+
+.bullet-text {
+  font-size: 24rpx;
+  color: #334155;
+  line-height: 1.5;
+  flex: 1;
+}
+
+/* 修订历史时间线 */
+.revision-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.revision-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14rpx 18rpx;
+  background: #F8FAFC;
+  border-radius: 12rpx;
+}
+
+.rev-ver {
+  font-size: 22rpx;
+  font-weight: 700;
+  color: #0F172A;
+  margin-right: 12rpx;
+}
+
+.rev-note {
+  font-size: 23rpx;
+  color: #475569;
+  flex: 1;
+}
+
+.rev-time {
+  font-size: 20rpx;
+  color: #94A3B8;
+}
+
+.research-track-btn {
+  width: 100% !important;
+  margin-top: 20rpx;
+  margin-bottom: 24rpx;
+  background-color: #F8FAFC;
+  color: #0F172A;
+  font-size: 26rpx;
+  font-weight: 600;
+  border-radius: 20rpx;
+  border: 1rpx solid #E2E8F0;
+  padding: 20rpx 0;
+  box-sizing: border-box;
+}

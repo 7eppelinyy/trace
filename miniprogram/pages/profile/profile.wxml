@@ -1,0 +1,106 @@
+<!-- pages/profile/profile.wxml - 投研设置与机构席位 -->
+<view class="page-container">
+
+  <!-- 顶部 Header -->
+  <view class="page-header">
+    <view>
+      <view class="page-title">设置</view>
+      <view class="page-subtitle">机构席位与微信推送通道</view>
+    </view>
+  </view>
+
+  <!-- 用户机构席位卡片 -->
+  <view class="account-card">
+    <view class="avatar-badge">Z</view>
+    <view class="account-info">
+      <view class="account-name">设备访客账户</view>
+      <view class="account-id tnum">席位标识: {{userIdDisplay || '未建立会话'}}</view>
+    </view>
+    <view class="status-badge {{isOnline ? 'status-online' : 'status-offline'}}">
+      {{isOnline ? ('专线在线 · ' + latencyMs + 'ms') : '离线状态'}}
+    </view>
+  </view>
+
+  <!-- 分组 1：全局通知与研报策略 (Apple Inset Group) -->
+  <view class="group-title">全局通知与免打扰策略</view>
+  <view class="apple-group">
+    
+    <view class="apple-cell flex-between">
+      <view>
+        <view class="setting-name">重大事件强提醒</view>
+        <view class="setting-desc">综合评分 ≥ {{alertThreshold || '7.0'}} 即时推送</view>
+      </view>
+      <view class="apple-switch {{globalEnabled ? 'switch-on' : 'switch-off'}}" bindtap="toggleGlobalAlert">
+        <view class="switch-dot"></view>
+      </view>
+    </view>
+
+    <view class="apple-cell flex-between">
+      <view>
+        <view class="setting-name">夜间免打扰时段</view>
+        <view class="setting-desc">当地时间 {{quietStart || '22:00'}} 至 {{quietEnd || '08:00'}} 暂停推送</view>
+      </view>
+      <text class="param-val tnum" style="color: #0F172A; font-weight: 500;">{{quietStart || '22:00'}} - {{quietEnd || '08:00'}}</text>
+    </view>
+
+    <view class="apple-cell flex-between">
+      <view>
+        <view class="setting-name">每日时区研报摘要</view>
+        <view class="setting-desc">依据当前设备时区独立生成自然日结</view>
+      </view>
+      <text class="param-val tnum" style="color: #10B981; font-weight: 500;">使用账户设置时区</text>
+    </view>
+
+    <view class="apple-cell flex-between">
+      <view>
+        <view class="setting-name">微信服务号/订阅消息通道</view>
+        <view class="setting-desc">微信外部推送服务通道状态</view>
+      </view>
+      <text class="param-val tnum" style="color: #64748B;">内测联调中 (未对外开放)</text>
+    </view>
+
+  </view>
+
+  <!-- 分组 2：系统运行指标与策略 -->
+  <view class="group-title">系统策略与数据指标</view>
+  <view class="apple-group">
+    <view class="apple-cell flex-between">
+      <text class="param-label">官方监测信源池</text>
+      <text class="param-val tnum">以实时覆盖状态为准</text>
+    </view>
+    <view class="apple-cell flex-between">
+      <text class="param-label">行情基准时效</text>
+      <text class="param-val tnum">按报价时间与延迟状态展示</text>
+    </view>
+    <view class="apple-cell flex-between">
+      <text class="param-label">微信即时推送状态</text>
+      <text class="param-val tnum" style="color: #64748B;">内测联调中 (未对外开放)</text>
+    </view>
+  </view>
+
+  <!-- 分组 3：席位维护工具 -->
+  <view class="action-btn-wrap">
+    <view class="tool-btn touch-press" bindtap="openResearch">
+      我的研究假设与脱敏导出 (工作台)
+    </view>
+    <view class="tool-btn touch-press btn-primary" bindtap="checkServer">
+      检测后端 API 连接状态 (Ping)
+    </view>
+    <view class="tool-btn touch-press" bindtap="toggleEndpointQuick">
+      切换通道 (当前: {{apiBaseDisplay}})
+    </view>
+    <view class="tool-btn touch-press" bindtap="editApiBase">
+      自定义服务端点 ({{apiBaseDisplay}})
+    </view>
+    <view class="tool-btn touch-press" bindtap="handleResetWatchlist">
+      恢复官方核心自选池
+    </view>
+    <view class="tool-btn touch-press" bindtap="handleResetSession">
+      重置席位会话 Token
+    </view>
+    <view class="tool-btn touch-press" bindtap="clearCache">
+      清除本地临时缓存 ({{cacheSize}} KB)
+    </view>
+  </view>
+
+</view>

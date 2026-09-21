@@ -21,9 +21,10 @@ run-once 流程（任务书 §11.2）：
 from __future__ import annotations
 
 import logging
+import json
 import re
 import time
-from dataclasses import dataclass, field
+from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Callable
@@ -49,6 +50,7 @@ from trace.common.modes import (
 )
 from trace.common.observability import new_run_id
 from trace.db.health import HumanReviewRepo
+from trace.db.repositories import ProcessingJobRepo, RawItemRepo
 from trace.domain.models import Event
 from trace.event_engine.exact_dedup import ExactDedup
 from trace.event_engine.normalize import normalize_raw_item
@@ -170,7 +172,12 @@ class Pipeline:
         跳过未到期的采集器（长驻 run/bot 循环用）；run-once 验收默认
         False，保证每次都真实采集。结束后摘要落库到 run_history。
         """
+        from trace.alerts.delivery_worker import drain_outbox
+        before = drain_outbox(self.app.db, self.alert_sender, is_production=TraceMode.is_production())
         summary = self._run_once(enforce_intervals=enforce_intervals)
+        summary.alerts_sent += before['sent']
+        summary.alerts_failed += before['failed']
+        summary.alerts_suppressed += before['suppressed']
         try:
             from trace.db.repositories import RunHistoryRepo
             history = RunHistoryRepo(self.app.db)
@@ -221,148 +228,176 @@ class Pipeline:
                     summary.sources_failed, summary.sources_disabled,
                     summary.keyword_filtered)
 
-        # 2. 逐条：Level 1 确定性去重（零成本，必须先于 DeepSeek）
-        #    → Stage A 抽取 → 语义去重 → Event 创建/修订
-        #    任务书 §17：重复条目不得消耗 LLM 调用
-        #    （ingest 内部跳过重复的确定性检查：本层已拦截）
+        # Persist every raw version and its extraction intent before advancing cursors.
         dedup = ExactDedup(ctx.db)
+        job_repo = ProcessingJobRepo(ctx.db)
+        raw_repo = RawItemRepo(ctx.db)
         stage_a_before = ctx.pipeline.extractor.real_llm_calls
-        verifier_before = getattr(ctx.event_engine.verifier, "real_llm_calls", 0)
+        stage_b_before = ctx.pipeline.analyzer.real_llm_calls
+        verifier_before = getattr(ctx.event_engine.verifier, 'real_llm_calls', 0)
         impact_repo = ctx.pipeline.impact_repo
-        pending: dict[str, _PendingEvent] = {}
+        pending = {}
         for item in items:
             normalize_raw_item(item)
-            if dedup.check(item).is_duplicate:
-                summary.raw_items_duplicate += 1
+            from trace.common.source_policy import permitted
+            if not permitted(ctx.db, item.source_id, 'store'):
+                summary.notes.append('source_storage_not_permitted:' + item.source_id)
+                continue
+            with ctx.db.transaction(mode='IMMEDIATE'):
+                match = dedup.check(item)
+                if match.is_duplicate:
+                    summary.raw_items_duplicate += 1
+                    # A duplicate input can still have unfinished durable work.
+                    existing = raw_repo.get(match.existing_raw_item_id) if match.existing_raw_item_id else None
+                    if existing and not existing.event_id:
+                        job_repo.create_or_update('stage_a_extract', existing.raw_item_id)
+                    continue
+                raw_repo.insert(item)
+                job_repo.create_or_update('stage_a_extract', item.raw_item_id,
+                    input_json={'revision_event_id': match.existing_event_id if match.is_revision else None})
+                summary.raw_items_new += 1
+        summary.cursors_committed = ctx.collectors.commit_cursors()
+
+        for candidate in job_repo.list_pending('stage_a_extract', limit=500):
+            job = job_repo.claim(candidate.job_id)
+            if job is None:
+                continue
+            item = raw_repo.get(job.target_id)
+            if item is None:
+                job_repo.finish(job, 'dead_letter', 'raw_payload_missing')
                 continue
             try:
                 extracted = ctx.pipeline.extractor.extract(item)
-            except SchemaValidationError as exc:
-                # 人工检查：不创建 Event，不进入 Alert 链路
-                summary.human_review += 1
-                HumanReviewRepo(ctx.db).add(
-                    revision_id(), event_id=None, raw_item_id=item.raw_item_id,
-                    reason=f"stage_a_schema_validation_failed: {exc}")
-                logger.warning("stage A schema validation failed for %s → human review",
-                               item.raw_item_id)
-                continue
-            except LLMBudgetExceededError as exc:
-                # 预算耗尽：本轮到此为止。已处理的条目保留，下一个 UTC 日
-                # 自动恢复；不得继续消耗配额，也不得降级伪装成完整分析。
-                summary.status = STOP_LLM_BUDGET_EXCEEDED
-                summary.notes.append(f"STOP: {exc}")
-                logger.error("%s", exc)
-                return summary
-            except LLMUnavailableError as exc:
-                # 生产模式无 LLM：整轮停止，不得生成伪分析
-                summary.status = self._llm_stop_status()
-                summary.notes.append(f"STOP: {exc}")
-                logger.error("%s", exc)
-                return summary
-
-            decision = ctx.event_engine.ingest(item, extracted, skip_exact_dedup=True)
-            if decision.action == "duplicate" or decision.event is None:
-                summary.raw_items_duplicate += 1
-                continue
-            summary.raw_items_new += 1
-            entry = pending.get(decision.event.event_id)
-            if entry is None:
-                entry = _PendingEvent(event=decision.event)
-                pending[decision.event.event_id] = entry
-            entry.event = decision.event      # 保留最新版本
-
-            if decision.action == "created":
-                summary.events_created += 1
-                entry.needs_analysis = True
-            elif decision.action == "revised":
-                summary.events_revised += 1
-                # 同一事件被多条 item 修订时：任一次原因在白名单内即允许复推
-                entry.resend_allowed = (
-                    decision.resend_allowed if not entry.is_update
-                    else entry.resend_allowed or decision.resend_allowed)
-                entry.is_update = True
-                entry.needs_analysis = True
-            elif not entry.needs_analysis:
-                # merged：只是多了一条佐证，事件本体没有实质变化。
-                # 唯一必须补跑的情况是该事件还没有任何分析结果
-                # （上一轮 Stage B 失败 / 当时无图谱命中）。
-                entry.needs_analysis = (
-                    self._reanalyze_on_merge
-                    or not impact_repo.exists_for_event(decision.event.event_id))
-
-        # 2.5 采集游标提交点：本轮采到的条目已全部走完 ingest（RawItem 已落库
-        #     或被明确判为重复/送人工检查），此刻推进游标才是安全的。
-        #     上面循环里的任何 return（预算耗尽 / 缺 Key）都会跳过这里，
-        #     游标保持原位，下一轮重新采集 —— 否则条目既没进库又被永久跳过。
-        summary.cursors_committed = ctx.collectors.commit_cursors()
-
-        # 3. 逐事件：Stage B 分析 → 评分 → Alert 评估 → 投递
-        stage_b_before = ctx.pipeline.analyzer.real_llm_calls
-        for entry in pending.values():
-            event, is_update = entry.event, entry.is_update
-            if not entry.needs_analysis:
-                summary.stage_b_skipped += 1
-                logger.info("event %s: evidence-only merge, Stage B skipped",
-                            event.event_id)
-                continue
-            # Stage B 会 upsert 覆盖旧结论：先留一份用于事后比对方向/分数变化
-            previous_impacts = impact_repo.list_by_event(event.event_id)
-            try:
-                impacts = ctx.pipeline.analyze_event(
-                    event, extra_entities=self.entity_names_for_event(event))
-            except SchemaValidationError as exc:
-                # Schema 校验失败：进入人工检查状态，不允许进入 Alert Engine
-                event.needs_human_review = True
-                ctx.event_engine.event_repo.update(event)
-                summary.human_review += 1
-                HumanReviewRepo(ctx.db).add(
-                    revision_id(), event_id=event.event_id, raw_item_id=None,
-                    reason=f"stage_b_schema_validation_failed: {exc}")
-                logger.warning("stage B schema validation failed for %s → human review",
-                               event.event_id)
-                continue
-            except LLMBudgetExceededError as exc:
-                summary.status = STOP_LLM_BUDGET_EXCEEDED
-                summary.notes.append(f"STOP: {exc}")
-                logger.error("%s", exc)
-                return summary
-            except LLMUnavailableError as exc:
-                summary.status = self._llm_stop_status()
-                summary.notes.append(f"STOP: {exc}")
-                logger.error("%s", exc)
-                return summary
-
-            summary.events_analyzed += 1
-
-            # Stage B 结论实质变化（方向反转 / 分数跳变）→ 版本 +1 允许再次推送。
-            # 这两条复推规则依赖新分数与新方向，而修订发生在 Stage B 之前，
-            # 只能在这里补判；已因状态变化升过版的事件不再重复升。
-            resend_allowed = entry.resend_allowed
-            if not is_update:
-                change_reasons = ctx.event_engine.reviser.analysis_change_reasons(
-                    previous_impacts, impacts)
-                if change_reasons:
-                    result = ctx.event_engine.reviser.apply_analysis_change(
-                        event, change_reasons)
-                    event, is_update = result.event, True
-                    resend_allowed = result.resend_allowed
+                decision = ctx.event_engine.ingest(item, extracted, skip_exact_dedup=True,
+                    target_event_id=job.input_json.get('revision_event_id'),
+                    on_commit=lambda: job_repo.finish(job, 'completed'))
+                if decision.action == 'created':
+                    summary.events_created += 1
+                elif decision.action == 'revised':
                     summary.events_revised += 1
+                elif decision.action == 'merged':
+                    done = job_repo.get_by_target('stage_b_analyze', decision.event.event_id)
+                    if done and done.status in ('completed', 'succeeded_empty'):
+                        summary.stage_b_skipped += 1
+            except SchemaValidationError as exc:
+                with ctx.db.transaction():
+                    job_repo.finish(job, 'human_review', str(exc))
+                    HumanReviewRepo(ctx.db).add(revision_id(), raw_item_id=item.raw_item_id,
+                        reason=f'stage_a_schema_validation_failed: {exc}')
+                summary.human_review += 1
+            except LLMBudgetExceededError as exc:
+                job_repo.finish(job, 'blocked_budget', str(exc))
+                summary.status = STOP_LLM_BUDGET_EXCEEDED
+                summary.notes.append(str(exc))
+                break
+            except LLMUnavailableError as exc:
+                job_repo.finish(job, 'blocked_budget', str(exc))
+                summary.status = self._llm_stop_status()
+                summary.notes.append(str(exc))
+                break
+            except Exception as exc:
+                if job_repo.owns(job):
+                    job_repo.finish(job, 'failed', type(exc).__name__)
+                logger.exception('Stage A job failed: %s', job.job_id)
+                summary.notes.append('stage_a_job_failed:' + job.job_id)
 
-            batch = ctx.alert_engine.evaluate(event, impacts, is_update=is_update,
-                                              resend_allowed=resend_allowed)
-            summary.alerts_eligible += len(batch.decisions)
-            summary.alerts_suppressed += batch.suppressed
-
-            # 首次同步保护：历史事件显式标记抑制（不集中推送，但可查询）
-            for suppression in batch.bootstrap_suppressions:
-                ctx.alert_engine.mark_bootstrap_suppressed(suppression)
-                summary.alerts_suppressed += 1
-
-            for dec in batch.decisions:
-                self._deliver(dec, summary)
+        from trace.db.jobs import event_from_job
+        for candidate in job_repo.list_pending('stage_b_analyze', limit=500):
+            if summary.status != STATUS_OK:
+                break
+            job = job_repo.claim(candidate.job_id)
+            if job is None:
+                continue
+            current = ctx.event_engine.event_repo.get(job.target_id)
+            if current is None:
+                job_repo.finish(job, 'dead_letter', 'event_missing')
+                continue
+            if current.version != job.input_version and job.input_json:
+                job_repo.finish(job, 'superseded', 'newer_event_version_available')
+                continue
+            event = event_from_job(job, current)
+            previous_impacts = impact_repo.list_by_event(event.event_id)
+            is_update = job.input_json.get('is_update', event.version > 1)
+            resend_allowed = job.input_json.get('resend_allowed', True)
+            try:
+                job_repo.renew_lease(job, 600)
+                # All model/quote work occurs outside the write transaction.
+                impacts = ctx.pipeline.analyze_event(event,
+                    extra_entities=self.entity_names_for_event(event), persist=False,
+                    evidence_ids=job.input_json.get('evidence_ids'))
+                with ctx.db.transaction(mode='IMMEDIATE'):
+                    if not job_repo.owns(job):
+                        raise RuntimeError('Processing lease lost')
+                    latest = ctx.event_engine.event_repo.get(event.event_id)
+                    if latest.version != event.version:
+                        job_repo.finish(job, 'superseded', 'event_revised_during_analysis')
+                        continue
+                    ctx.pipeline.persist_results(event, impacts)
+                    from trace.db.repositories import ResearchQuestionRepo
+                    for impact in impacts:
+                        for raw_id in job.input_json.get('evidence_ids', []):
+                            ResearchQuestionRepo(ctx.db).match_new_evidence(raw_id, event_id=event.event_id, security_id=impact.security_id)
+                    analysis_id = 'AN-' + job.job_id
+                    ctx.db.execute('''INSERT OR IGNORE INTO analysis_run
+                        (analysis_id,event_id,event_version,processor_version,model,created_at,evidence_ids_json,impacts_json,status)
+                        VALUES (?,?,?,?,?,?,?,?,?)''',
+                        (analysis_id,event.event_id,event.version,job.processor_version,
+                         ctx.config.llm.model_impact_analyzer,datetime.now(timezone.utc).isoformat(),
+                         json.dumps(job.input_json.get('evidence_ids', [])),
+                         json.dumps([asdict(i) for i in impacts],default=str,ensure_ascii=False),
+                         'completed' if impacts else 'succeeded_empty'))
+                    batch = ctx.alert_engine.evaluate(event, impacts, is_update=is_update, resend_allowed=resend_allowed)
+                    summary.alerts_eligible += len(batch.decisions)
+                    summary.alerts_suppressed += batch.suppressed
+                    for suppression in batch.bootstrap_suppressions:
+                        ctx.alert_engine.mark_bootstrap_suppressed(suppression)
+                        summary.alerts_suppressed += 1
+                    for decision in batch.decisions:
+                        self._deliver(decision, summary, analysis_id=analysis_id)
+                    job_repo.finish(job, 'completed' if impacts else 'succeeded_empty')
+                summary.events_analyzed += 1
+                pending[event.event_id] = event
+            except SchemaValidationError as exc:
+                with ctx.db.transaction():
+                    job_repo.finish(job, 'human_review', str(exc))
+                    event.needs_human_review = True
+                    ctx.event_engine.event_repo.update(event)
+                    HumanReviewRepo(ctx.db).add(revision_id(), event_id=event.event_id,
+                        reason=f'stage_b_schema_validation_failed: {exc}')
+                summary.human_review += 1
+            except LLMBudgetExceededError as exc:
+                job_repo.finish(job, 'blocked_budget', str(exc))
+                summary.status = STOP_LLM_BUDGET_EXCEEDED
+                summary.notes.append(str(exc))
+            except LLMUnavailableError as exc:
+                job_repo.finish(job, 'blocked_budget', str(exc))
+                summary.status = self._llm_stop_status()
+                summary.notes.append(str(exc))
+            except Exception as exc:
+                if job_repo.owns(job):
+                    job_repo.finish(job, 'failed', type(exc).__name__)
+                logger.exception('Stage B job failed: %s', job.job_id)
+                summary.notes.append('stage_b_job_failed:' + job.job_id)
 
         # 4. 开盘后补算此前拿不到的市场确认（零 LLM 成本）
         self._rescore_market_confirmations(summary, set(pending))
+
+        # 4.5 消费并排空 Outbox 投递队列 (T06 / F06)
+        from trace.alerts.delivery_worker import drain_outbox
+        drain_stats = drain_outbox(
+            ctx.db,
+            self.alert_sender,
+            limit=100,
+            is_production=TraceMode.is_production(),
+        )
+        summary.alerts_sent += drain_stats["sent"]
+        summary.alerts_failed += drain_stats["failed"]
+        summary.alerts_suppressed += drain_stats["suppressed"]
+        if TraceMode.is_production() and drain_stats["failed"] > 0:
+            if self.alert_sender is None:
+                summary.status = STOP_TELEGRAM_CREDENTIALS_MISSING
+            else:
+                summary.status = STOP_TELEGRAM_DELIVERY_FAILED
 
         # LLM 成本统计（任务书 §17）：本轮真实 API 调用次数（含重试）
         summary.llm_stage_a_calls = ctx.pipeline.extractor.real_llm_calls - stage_a_before
@@ -394,6 +429,9 @@ class Pipeline:
         ctx = self.app
         if not ctx.config.get("scoring.rescore_on_market_open", True):
             return
+
+        # 先清理已超过反应窗口截止时刻的过期记录 (F17)
+        ctx.pipeline.impact_repo.expire_stale_pending_confirmations()
 
         impacts = ctx.pipeline.impact_repo.list_pending_confirmation(
             _PENDING_CONFIRMATION_MODES,
@@ -476,6 +514,10 @@ class Pipeline:
                 security.market, security.ticker, imp.direction,
                 event_time=event.event_time, security_id=security.security_id)
             if confirmation.mode in _PENDING_CONFIRMATION_MODES:
+                # 更新可能计算得出的调度窗口，下轮继续按时补算
+                imp.next_eligible_at = confirmation.next_eligible_at
+                imp.expires_at = confirmation.expires_at
+                ctx.pipeline.impact_repo.upsert(imp)
                 continue          # 仍然拿不到：保持原样，下轮再试
 
             new_score = ctx.pipeline.scoring.final_score(
@@ -484,6 +526,8 @@ class Pipeline:
             imp.final_score = new_score
             imp.market_confirmation = confirmation.score
             imp.market_data_mode = confirmation.mode
+            imp.next_eligible_at = None
+            imp.expires_at = None
             ctx.pipeline.impact_repo.upsert(imp)
             logger.info("rescored %s: %.2f → %.2f (market_confirmation=%.1f, %s)",
                         imp.impact_id, old_score, new_score,
@@ -498,17 +542,19 @@ class Pipeline:
         default_id = ctx.config.telegram.default_chat_id
         if not default_id:
             return
+        from trace.db.repositories import ChannelBindingRepo
         if ctx.alert_engine.user_repo.get(default_id) is not None:
             return  # 用户已存在：不覆盖其设置
         ctx.alert_engine.user_repo.ensure(
             default_id, ctx.config.telegram.default_user_timezone)
+        ChannelBindingRepo(ctx.db).bind(default_id, "telegram", default_id)
         ctx.alert_engine.rule_repo.set_threshold(
             default_id, None, ctx.alert_engine.default_threshold)
         logger.info("default chat %s registered (all-threshold=%.1f)",
                     default_id, ctx.alert_engine.default_threshold)
 
     # ------------------------------------------------------------------
-    def _deliver(self, decision: AlertDecision, summary: RunSummary) -> None:
+    def _deliver(self, decision: AlertDecision, summary: RunSummary, *, analysis_id: str | None = None) -> None:
         ctx = self.app
         user = ctx.alert_engine.user_repo.get(decision.user_id)
         tz = user.timezone if user else ctx.config.telegram.default_user_timezone
@@ -516,34 +562,39 @@ class Pipeline:
             decision.event, decision.impact, tz,
             is_update=(decision.alert_type == "event_update"))
 
-        if self.alert_sender is None:
-            if TraceMode.is_production():
-                # 生产模式：没有 Telegram Token 不得宣称投递成功
-                summary.status = STOP_TELEGRAM_CREDENTIALS_MISSING
-                summary.alerts_failed += 1
-                logger.error("production mode without telegram channel: "
-                             "refuse to claim delivery success (%s/%s)",
-                             decision.event.event_id, decision.user_id)
-                return
-            # test / offline：只打印，明确标记 log_only
-            logger.info("[ALERT -> %s]\n%s", decision.user_id, text)
-            ctx.alert_engine.mark_sent(
-                decision, DeliveryReceipt(status="sent", response="log_only"))
-            summary.alerts_sent += 1
+        from trace.db.repositories import AlertOutboxRepo, ChannelBindingRepo
+        from trace.domain.models import AlertOutbox
+        import secrets
+
+        binding_repo = ChannelBindingRepo(ctx.db)
+        bindings = binding_repo.list_active(decision.user_id)
+        if not bindings:
+            logger.info("user %s has no active notification channels, skipping direct push",
+                        decision.user_id)
             return
 
-        receipt = self.alert_sender(decision.user_id, text, url)
-        if receipt.status == "sent":
-            ctx.alert_engine.mark_sent(decision, receipt)
-            summary.alerts_sent += 1
-            logger.info("alert sent: user=%s event=%s message_id=%s",
-                        decision.user_id, decision.event.event_id,
-                        receipt.message_id)
-        else:
-            ctx.alert_engine.mark_failed(decision, receipt)
-            summary.alerts_failed += 1
-            if TraceMode.is_production():
-                summary.status = STOP_TELEGRAM_DELIVERY_FAILED
+        outbox_repo = AlertOutboxRepo(ctx.db)
+        for b in bindings:
+            idem_key = (f"{decision.user_id}:{decision.event.event_id}:"
+                        f"{decision.impact.security_id}:{decision.event.version}:"
+                        f"{decision.alert_type}:{b.channel_type}:{b.channel_target}")
+            outbox_item = AlertOutbox(
+                outbox_id=f"out_{secrets.token_hex(8)}",
+                user_id=decision.user_id,
+                channel_type=b.channel_type,
+                channel_target=b.channel_target,
+                event_id=decision.event.event_id,
+                impact_id=decision.impact.impact_id,
+                event_version=decision.event.version,
+                alert_type=decision.alert_type,
+                idempotency_key=idem_key,
+                content_text=text,
+                content_url=url,
+                security_id=decision.impact.security_id,
+                final_score=decision.impact.final_score,
+                analysis_id=analysis_id,
+            )
+            outbox_repo.enqueue(outbox_item)
 
     # ------------------------------------------------------------------
     def _entity_index(self) -> list[tuple[list[str], str]]:
@@ -593,21 +644,29 @@ class Pipeline:
                     enforce_intervals: bool = True) -> None:
         """长驻轮询循环：按 collectors.interval_seconds 调度采集器，
         每轮后执行运营维护（预测回测 / 每日摘要 / 每日备份）。"""
-        logger.info("pipeline started (poll=%ss, enforce_intervals=%s)",
-                    poll_seconds, enforce_intervals)
-        try:
-            while True:
-                try:
-                    self.run_once(enforce_intervals=enforce_intervals)
-                except Exception:
-                    logger.exception("pipeline round failed")
-                try:
-                    self._maintenance()
-                except Exception:
-                    logger.exception("pipeline maintenance failed")
-                time.sleep(poll_seconds)
-        except KeyboardInterrupt:
-            logger.info("pipeline stopped (keyboard interrupt)")
+        from trace.common.process_lock import SingleInstanceLock
+        lock_path = Path(self.app.config.db_path).parent / "runner.lock"
+        with SingleInstanceLock(lock_path, name="pipeline_runner"):
+            logger.info("pipeline started (poll=%ss, enforce_intervals=%s)",
+                        poll_seconds, enforce_intervals)
+            from trace.alerts.delivery_worker import start_delivery_worker
+            stop_delivery, delivery_thread = start_delivery_worker(self.app.db, self.alert_sender, production=TraceMode.is_production())
+            try:
+                while True:
+                    try:
+                        self.run_once(enforce_intervals=enforce_intervals)
+                    except Exception:
+                        logger.exception("pipeline round failed")
+                    try:
+                        self._maintenance()
+                    except Exception:
+                        logger.exception("pipeline maintenance failed")
+                    time.sleep(poll_seconds)
+            except KeyboardInterrupt:
+                logger.info("pipeline stopped (keyboard interrupt)")
+            finally:
+                stop_delivery.set()
+                delivery_thread.join(timeout=5)
 
     # ------------------------------------------------------------------
     def _maintenance(self) -> None:
@@ -666,7 +725,7 @@ class Pipeline:
         ctx = self.app
         if not ctx.config.get("backup.enabled", True):
             return
-        backup_dir = Path(ctx.config.db_path).parent / "backups"
+        backup_dir = Path(ctx.config.get("backup.directory", Path(ctx.config.db_path).parent / "backups"))
         today = datetime.now(timezone.utc).strftime("%Y%m%d")
         latest = latest_backup(backup_dir)
         if latest is not None and latest.name.startswith(f"trace-{today}"):

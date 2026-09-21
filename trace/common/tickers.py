@@ -78,8 +78,23 @@ def normalize_ticker(raw: str) -> NormalizedTicker:
         suffix = "SH" if exchange == "SSE" else "SZ"
         return NormalizedTicker(market="CN", exchange=exchange, ticker=f"{s}.{suffix}")
 
-    # 美股：只允许字母与 . - 组合（如 BRK.B、GOOGL）
+    # 美股：允许字母与 . - 组合（如 BRK.B / BRK-B、GOOGL）
     if re.fullmatch(r"[A-Z][A-Z0-9.\-]{0,9}", s):
-        return NormalizedTicker(market="US", exchange="", ticker=s)
+        norm_sym = s.replace("-", ".")
+        known_exchanges = {
+            "TSM": "NYSE",
+            "IBM": "NYSE",
+        }
+        exchange = known_exchanges.get(norm_sym, "")
+        return NormalizedTicker(market="US", exchange=exchange, ticker=norm_sym)
 
     raise TickerParseError(f"unrecognized ticker format: {raw}")
+
+
+def is_valid_ticker_format(raw: str) -> bool:
+    """快速检查输入字符串是否符合合法证券代码格式。"""
+    try:
+        normalize_ticker(raw)
+        return True
+    except (TickerParseError, Exception):
+        return False

@@ -38,8 +38,12 @@ def test_exact_dedup_by_source_item_id(db, config):
 
     item2 = _item("Completely different title", "https://a.com/2", source_item_id="X1")
     d2 = engine.ingest(item2, _extracted(item2.title))
-    assert d2.action == "duplicate"
-    assert d2.reason == "source_item_id"
+    assert d2.action == "revised"
+    assert d2.event.event_id == d1.event.event_id
+    assert d2.event.version == 2
+    # Exact same version is still zero-cost deduplicated.
+    repeat = engine.ingest(item2, _extracted(item2.title))
+    assert repeat.action == 'duplicate' 
 
 
 def test_exact_dedup_by_title_hash(db, config):

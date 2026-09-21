@@ -110,7 +110,7 @@ class BaseCollector(ABC):
         """本采集器负责且已启用的来源（未授权来源永不运行）。"""
         return [
             s for s in self.source_repo.list_enabled()
-            if s.source_id in self.handled_source_ids
+            if s.source_id in self.handled_source_ids and s.can_fetch
         ]
 
     # ------------------------------------------------------------------
@@ -118,6 +118,9 @@ class BaseCollector(ABC):
                     headers: dict | None = None, max_retries: int = 3,
                     backoff_base: float = 1.5) -> "HttpClient":
         """创建带统一工程参数的 HttpClient（timeout 来自配置，失败分类上抛）。"""
+        from trace.common.source_policy import permitted
+        if not permitted(self.source_repo.db, source_id, "fetch"):
+            raise PermissionError(f"fetch not permitted for source: {source_id}")
         from trace.common.http_client import HttpClient
         return HttpClient(
             source_id,

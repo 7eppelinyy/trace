@@ -140,9 +140,11 @@ def test_aborted_round_does_not_advance_cursor(app, monkeypatch):
 
     summary = pipeline.run_once()
     assert summary.status == STOP_LLM_BUDGET_EXCEEDED
-    assert summary.cursors_committed == 0
-    assert CursorRepo(app.db).get(CURSOR_SOURCE) == {}, "中途退出不得推进游标"
-    assert app.db.query("SELECT * FROM raw_item") == []
+    # Cursor advancement is now safe: both raw payloads and extraction jobs are durable.
+    assert summary.cursors_committed == 1
+    assert CursorRepo(app.db).get(CURSOR_SOURCE) == {"seen_item_ids": ["A1", "A2"]}
+    assert len(app.db.query("SELECT * FROM raw_item")) == 2
+    assert len(app.db.query("SELECT * FROM processing_job WHERE job_type='stage_a_extract'")) == 2
 
     # 恢复后重新采集：条目没有丢
     monkeypatch.setattr(app.pipeline.extractor, "extract", lambda it: ExtractedEvent(
@@ -150,7 +152,9 @@ def test_aborted_round_does_not_advance_cursor(app, monkeypatch):
         event_type="regulation", event_status="reported",
         event_time=it.published_at))
     recovered = pipeline.run_once()
-    assert recovered.raw_items_new == 2, "中途 STOP 的条目必须能重新采回来"
+    assert recovered.raw_items_new == 0
+    assert app.db.query_one("SELECT COUNT(*) AS n FROM raw_item WHERE event_id IS NOT NULL")['n'] == 2
+    assert app.db.query_one("SELECT COUNT(*) AS n FROM processing_job WHERE job_type='stage_a_extract' AND status='completed'")['n'] == 2
     assert recovered.cursors_committed == 1
 
 
@@ -165,13 +169,13 @@ def test_pending_cursor_from_aborted_round_is_dropped_next_round(app, monkeypatc
                         lambda it: (_ for _ in ()).throw(
                             LLMBudgetExceededError("budget exhausted")))
     pipeline.run_once()
-    assert collector.cursor_repo.pending_count == 1      # 挂着没提交
+    assert collector.cursor_repo.pending_count == 0      # 原文与作业持久化后已安全提交
 
     monkeypatch.setattr(app.pipeline.extractor, "extract", lambda it: ExtractedEvent(
         title=it.title, summary=it.title, entities=["Micron"],
         event_type="regulation", event_status="reported",
         event_time=it.published_at))
-    assert pipeline.run_once().raw_items_new == 1
+    assert pipeline.run_once().events_created == 1
 
 
 def test_schema_failure_still_commits_cursor(app, monkeypatch):

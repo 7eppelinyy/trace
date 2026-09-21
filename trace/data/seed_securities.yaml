@@ -45,6 +45,7 @@ securities:
   # ---------------- 美股 Context Universe ----------------
   - ticker: WDC
     market: US
+    exchange: NASDAQ
     company_name_en: Western Digital
     company_name_zh: 西部数据
     products: [HDD, NAND]
@@ -54,6 +55,7 @@ securities:
 
   - ticker: STX
     market: US
+    exchange: NASDAQ
     company_name_en: Seagate Technology
     company_name_zh: 希捷科技
     products: [HDD]
@@ -63,6 +65,7 @@ securities:
 
   - ticker: AMD
     market: US
+    exchange: NASDAQ
     company_name_en: Advanced Micro Devices
     company_name_zh: 超威半导体
     products: [CPU, GPU, AI Accelerator]
@@ -72,6 +75,7 @@ securities:
 
   - ticker: AAPL
     market: US
+    exchange: NASDAQ
     company_name_en: Apple Inc.
     company_name_zh: 苹果
     products: [Smartphone, PC, Consumer Electronics]
@@ -81,6 +85,7 @@ securities:
 
   - ticker: MSFT
     market: US
+    exchange: NASDAQ
     company_name_en: Microsoft Corporation
     company_name_zh: 微软
     products: [Cloud, AI, Software]
@@ -90,6 +95,7 @@ securities:
 
   - ticker: META
     market: US
+    exchange: NASDAQ
     company_name_en: Meta Platforms
     company_name_zh: Meta
     products: [Social, AI Infrastructure]
@@ -99,6 +105,7 @@ securities:
 
   - ticker: GOOGL
     market: US
+    exchange: NASDAQ
     company_name_en: Alphabet Inc.
     company_name_zh: 谷歌
     aliases: [GOOG, Google, Alphabet]
@@ -109,6 +116,7 @@ securities:
 
   - ticker: AMZN
     market: US
+    exchange: NASDAQ
     company_name_en: Amazon.com
     company_name_zh: 亚马逊
     products: [E-commerce, Cloud]
@@ -128,6 +136,7 @@ securities:
 
   - ticker: AVGO
     market: US
+    exchange: NASDAQ
     company_name_en: Broadcom Inc.
     company_name_zh: 博通
     products: [Networking, Custom ASIC]
@@ -137,6 +146,7 @@ securities:
 
   - ticker: INTC
     market: US
+    exchange: NASDAQ
     company_name_en: Intel Corporation
     company_name_zh: 英特尔
     products: [CPU, Foundry]
@@ -146,6 +156,7 @@ securities:
 
   - ticker: ARM
     market: US
+    exchange: NASDAQ
     company_name_en: Arm Holdings
     company_name_zh: Arm
     products: [CPU IP]
@@ -155,6 +166,7 @@ securities:
 
   - ticker: MRVL
     market: US
+    exchange: NASDAQ
     company_name_en: Marvell Technology
     company_name_zh: 迈威尔科技
     products: [Networking, Custom ASIC, Storage Controller]
@@ -164,6 +176,7 @@ securities:
 
   - ticker: AMAT
     market: US
+    exchange: NASDAQ
     company_name_en: Applied Materials
     company_name_zh: 应用材料
     products: [Semiconductor Equipment]
@@ -173,12 +186,38 @@ securities:
 
   - ticker: LRCX
     market: US
+    exchange: NASDAQ
     company_name_en: Lam Research
     company_name_zh: 泛林集团
     products: [Semiconductor Equipment]
     industry_tags: [equipment]
     is_context_universe: true
     graph_node_ids: [lrcx]
+    status: verified
+
+  - ticker: QCOM
+    market: US
+    exchange: NASDAQ
+    company_name_en: QUALCOMM Inc.
+    company_name_zh: 高通
+    aliases: [Qualcomm, 高通公司]
+    products: [Snapdragon, Mobile SoC, Cellular Modem]
+    industry_tags: [mobile, soc, 5g, ai]
+    is_context_universe: true
+    graph_node_ids: [qcom]
+    status: verified
+
+  - ticker: ASML
+    market: US
+    exchange: NASDAQ
+    company_name_en: ASML Holding N.V.
+    company_name_zh: 阿斯麦
+    aliases: [ASML, 阿斯麦尔]
+    products: [EUV Lithography, DUV Lithography, Metrology]
+    industry_tags: [equipment, lithography, semi_equipment]
+    is_context_universe: true
+    graph_node_ids: [asml]
+    status: verified
 
   # ---------------- A股第一批：AI / 半导体 / 存储 / 服务器 / 光通信 / 设备材料 ----------------
   - ticker: 688981.SH

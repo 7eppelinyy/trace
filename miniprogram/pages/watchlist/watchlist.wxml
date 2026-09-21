@@ -1,0 +1,187 @@
+<!-- pages/watchlist/watchlist.wxml - 自选标的与阈值预警 -->
+<view class="page-container">
+
+  <!-- 顶部 Header -->
+  <view class="page-header">
+    <view>
+      <view class="page-title">自选与预警</view>
+      <view class="page-subtitle">{{watchlist.length}} 支标的 · 实时行情直连</view>
+    </view>
+    <view style="display: flex; gap: 16rpx; align-items: center;">
+      <view class="clear-text-btn btn-press" wx:if="{{watchlist.length > 0}}" bindtap="promptClearWatchlist">
+        清空
+      </view>
+      <view class="btn-primary btn-press" bindtap="openAddModal">
+        + 录入
+      </view>
+    </view>
+  </view>
+
+  <!-- 市场分段切换器 (Apple 经典浅灰药丸) -->
+  <view class="segmented-control">
+    <view class="seg-item {{currentMarket === 'all' ? 'active' : ''}}" bindtap="switchMarket" data-market="all">
+      全部 ({{watchlist.length}})
+    </view>
+    <view class="seg-item {{currentMarket === 'US' ? 'active' : ''}}" bindtap="switchMarket" data-market="US">
+      美股 ({{usCount}})
+    </view>
+    <view class="seg-item {{currentMarket === 'CN' ? 'active' : ''}}" bindtap="switchMarket" data-market="CN">
+      A 股 ({{cnCount}})
+    </view>
+  </view>
+
+  <!-- 空状态展示 (无任何廉价 Emoji，纯净排版) -->
+  <view class="empty-state" wx:if="{{filteredList.length === 0}}">
+    <view class="empty-vector">
+      <image class="empty-vector-img" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394A3B8' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'><path d='M3 3v18h18'/><path d='m19 9-5 5-4-4-3 3'/></svg>"></image>
+    </view>
+    <view class="empty-title">当前分类下暂无标的</view>
+    <view class="empty-desc">支持录入美股（如 NVDA）或 A 股 6 位代码（如 688981）</view>
+    <view style="display: flex; gap: 20rpx; justify-content: center; margin-top: 24rpx;">
+      <view class="btn-primary empty-btn btn-press" bindtap="openAddModal">
+        + 录入监控
+      </view>
+      <view class="btn-secondary empty-btn btn-press" bindtap="promptResetWatchlist">
+        恢复默认池
+      </view>
+    </view>
+  </view>
+
+  <!-- Apple Stocks 式一体化列表 (支持轻量平滑左滑管理) -->
+  <view class="apple-group" wx:if="{{filteredList.length > 0}}">
+    <block wx:for="{{filteredList}}" wx:key="ticker">
+      <view class="swipe-row" 
+            data-index="{{index}}" 
+            bindtouchstart="onTouchStart" 
+            bindtouchmove="onTouchMove" 
+            bindtouchend="onTouchEnd">
+        
+        <!-- 背景操作按钮层 -->
+        <view class="swipe-actions">
+          <view class="action-btn pin-btn" catchtap="pinTicker" data-index="{{index}}">
+            置顶
+          </view>
+          <view class="action-btn del-btn" catchtap="deleteTicker" data-index="{{index}}">
+            删除
+          </view>
+        </view>
+
+        <!-- 主内容前景滑动层 (绝无缩放！仅滑动位移与轻柔高亮) -->
+        <view class="swipe-content apple-cell ticker-item" 
+              style="transform: translateX({{item.offsetX || 0}}rpx);"
+              bindtap="navigateToDetail" 
+              data-ticker="{{item.ticker}}">
+          
+          <view class="ticker-main">
+            <!-- 标的信息 -->
+            <view class="ticker-info">
+              <view class="ticker-headline">
+                <text class="ticker-code tnum">{{item.shortCode}}</text>
+                <text class="ticker-name">{{item.company_name_zh || item.company_name_en || item.ticker}}</text>
+              </view>
+              <view class="ticker-note truncate">{{item.note || '点击进入标的产业链深度研判'}}</view>
+            </view>
+
+            <!-- 真实价格与涨跌幅 (无假曲线) -->
+            <view class="ticker-quote tnum">
+              <view class="ticker-price">{{item.formattedPrice}}</view>
+              <view class="ticker-pct {{item.isUp ? 'color-up' : 'color-down'}}">{{item.formattedPct}}</view>
+            </view>
+          </view>
+
+          <!-- 下方安静的一行监控状态 -->
+          <view class="ticker-monitor" catchtap="stopBubble">
+            <text class="monitor-threshold">偏离监控: |Δ| ≥ 2.0%</text>
+            <view class="monitor-switch-wrap" catchtap="togglePush" data-index="{{index}}">
+              <text class="switch-label">{{item.pushEnabled ? '重大事件提醒' : '已暂停提醒'}}</text>
+              <view class="apple-switch {{item.pushEnabled ? 'switch-on' : 'switch-off'}}">
+                <view class="switch-dot"></view>
+              </view>
+            </view>
+          </view>
+
+        </view>
+
+      </view>
+    </block>
+  </view>
+
+  <!-- Apple Stocks 智能联想搜索抽屉 -->
+  <view class="search-mask" wx:if="{{showSearchSheet}}" bindtap="closeSearchModal">
+    <view class="search-sheet" catchtap="stopBubble">
+      
+      <!-- 抽屉头部 -->
+      <view class="sheet-header">
+        <view class="sheet-title">录入自选标的</view>
+        <view class="sheet-close btn-press" bindtap="closeSearchModal">✕</view>
+      </view>
+
+      <!-- 搜索输入条 -->
+      <view class="search-input-box">
+        <image class="search-icon-img" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394A3B8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='11' cy='11' r='8'/><path d='m21 21-4.3-4.3'/></svg>"></image>
+        <input 
+          class="search-input" 
+          placeholder="输入中文名（如 寒武纪/比亚迪）或代码（如 NVDA, 688981）" 
+          value="{{searchQuery}}" 
+          bindinput="onSearchInput" 
+          bindconfirm="onSearchConfirm"
+          confirm-type="search"
+          focus="{{searchFocused}}"
+        />
+        <view class="search-clear" wx:if="{{searchQuery}}" bindtap="clearSearchQuery">✕</view>
+      </view>
+
+      <!-- 热门建议 (当未输入时呈现) -->
+      <view wx:if="{{!searchQuery}}">
+        <view class="suggest-label">热门产业链龙头</view>
+        <view class="suggest-chips">
+          <view class="suggest-chip btn-press" bindtap="tapSuggestChip" data-ticker="688256.SH">寒武纪 (688256)</view>
+          <view class="suggest-chip btn-press" bindtap="tapSuggestChip" data-ticker="NVDA">英伟达 (NVDA)</view>
+          <view class="suggest-chip btn-press" bindtap="tapSuggestChip" data-ticker="TSM">台积电 (TSM)</view>
+          <view class="suggest-chip btn-press" bindtap="tapSuggestChip" data-ticker="300750.SZ">宁德时代 (300750)</view>
+          <view class="suggest-chip btn-press" bindtap="tapSuggestChip" data-ticker="AAPL">苹果 (AAPL)</view>
+        </view>
+      </view>
+
+      <!-- 搜索结果列表 -->
+      <scroll-view class="search-results-list" scroll-y enable-flex>
+        <block wx:for="{{searchResults}}" wx:key="security_id">
+          <view class="search-item">
+            <view class="search-item-left">
+              <view class="search-item-ticker-row">
+                <text class="search-item-ticker tnum">{{item.ticker}}</text>
+                <text class="search-market-pill">{{item.market === 'US' ? '美股' : 'A股'}}</text>
+              </view>
+              <view class="search-item-name">{{item.company_name_zh || item.company_name_en}}</view>
+            </view>
+
+            <view class="search-item-right">
+              <view class="search-item-quote tnum" wx:if="{{item.last_price}}">
+                <view class="search-item-price">{{item.formattedPrice}}</view>
+                <view class="search-item-pct {{item.change_pct >= 0 ? 'color-up' : 'color-down'}}">{{item.change_pct >= 0 ? '+' : ''}}{{item.change_pct}}%</view>
+              </view>
+
+              <view class="add-action-btn btn-press {{item.is_watched ? 'watched' : ''}}" 
+                    bindtap="confirmAddSearchItem" 
+                    data-ticker="{{item.ticker}}"
+                    data-name="{{item.company_name_zh || item.company_name_en}}"
+                    data-watched="{{item.is_watched}}">
+                {{item.is_watched ? '已关注' : '+ 关注'}}
+              </view>
+            </view>
+          </view>
+        </block>
+
+        <view class="empty-desc" style="text-align: center; margin-top: 40rpx;" wx:if="{{searchQuery && searchResults.length === 0}}">
+          未检索到精确匹配标的
+          <view class="btn-primary btn-press" style="display: inline-block; margin-top: 24rpx; padding: 14rpx 36rpx; font-size: 24rpx;" bindtap="directAddQueryTicker">
+            + 直接按代码 "{{searchQuery}}" 录入监控
+          </view>
+        </view>
+      </scroll-view>
+
+    </view>
+  </view>
+
+</view>
+

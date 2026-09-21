@@ -14,6 +14,8 @@ from __future__ import annotations
 import logging
 import uuid
 
+from datetime import datetime, timedelta, timezone
+
 from trace.ai.analyzer import ImpactAnalyzer, directness_score
 from trace.ai.budget import LLMBudget
 from trace.ai.extractor import EventExtractor
@@ -23,16 +25,24 @@ from trace.collectors.market_data.confirmation import MarketConfirmer
 from trace.db.connection import Database
 from trace.db.repositories import (
     EventImpactRepo,
+    ForecastSnapshotRepo,
+    MarketSnapshotRepo,
     RawItemRepo,
     SecurityRepo,
     SourceRepo,
 )
-from trace.domain.models import Event, EventImpact
+from trace.domain.models import Event, EventImpact, ForecastSnapshot
 from trace.graph.industry_graph import IndustryGraph
 from trace.scoring.engine import ScoreInput, ScoringEngine
 from trace.scoring.signals import detect_supply_demand
 
 logger = logging.getLogger(__name__)
+
+
+class AnalysisResults(list):
+    def __init__(self):
+        super().__init__()
+        self.snapshots = []
 
 
 class AnalysisPipeline:
@@ -44,12 +54,17 @@ class AnalysisPipeline:
         self.confirmer = confirmer
         self.scoring = ScoringEngine(config)
         # 成本熔断：每次真实 API 调用（含重试）前检查当日预算
-        self.budget = LLMBudget(db, int(config.get("llm.daily_call_budget", 0)))
+        self.budget = LLMBudget(db, int(config.get("llm.daily_call_budget", 0)),
+                               ask_limit=int(config.get("llm.ask_daily_budget", 300)),
+                               ask_user_limit=int(config.get("llm.ask_user_daily_budget", 30)),
+                               pipeline_reserve=config.get("llm.pipeline_reserved_calls"))
         self.llm = LLMClient(config.llm, budget=self.budget)
         self.extractor = EventExtractor(self.llm, config.llm)
         self.analyzer = ImpactAnalyzer(self.llm, config.llm)
         self.verifier = LLMSameEventVerifier(self.llm, config.llm)
         self.impact_repo = EventImpactRepo(db)
+        self.snapshot_repo = ForecastSnapshotRepo(db)
+        self.snapshots = MarketSnapshotRepo(db)
         self.raw_repo = RawItemRepo(db)
         self.security_repo = SecurityRepo(db)
         self.source_repo = SourceRepo(db)
@@ -118,7 +133,8 @@ class AnalysisPipeline:
         return nodes
 
     def analyze_event(self, event: Event, entity_nodes: list[str] | None = None,
-                      extra_entities: list[str] | None = None) -> list[EventImpact]:
+                      extra_entities: list[str] | None = None, *, persist: bool = True,
+                      evidence_ids: list[str] | None = None) -> list[EventImpact]:
         """对事件执行 Stage B 影响分析并落库。"""
         from trace.graph.industry_graph import GraphHit
 
@@ -130,6 +146,8 @@ class AnalysisPipeline:
         hits = self.graph.find_securities_from_entities(nodes, max_hops=3)
 
         evidence_items = self.raw_repo.list_by_event(event.event_id)
+        if evidence_ids is not None:
+            evidence_items = [item for item in (self.raw_repo.get(rid) for rid in evidence_ids) if item]
         sources = self._cached_sources()
         sec_by_id = {s.security_id: s for s in self._cached_securities()}
 
@@ -177,7 +195,7 @@ class AnalysisPipeline:
         primary = sources.get(event.primary_source_id or "")
         source_reliability = primary.base_reliability if primary else 5.0
 
-        results: list[EventImpact] = []
+        results = AnalysisResults()
         for imp in impacts_raw:
             hit = imp.pop("_hit", None)
             security = hit.security if hit else self.security_repo.get_by_ticker(
@@ -225,9 +243,63 @@ class AnalysisPipeline:
                 # 逐条确认的实际模式（real/mock/unavailable 或休市/过期原因），
                 # 比按市场取的 data_mode 更精确
                 market_data_mode=confirmation.mode,
+                next_eligible_at=confirmation.next_eligible_at,
+                expires_at=confirmation.expires_at,
             )
-            self.impact_repo.upsert(impact)
+            impact.created_at = datetime.now(timezone.utc)
             results.append(impact)
 
+            # 不可变预测快照 (T13 / F19 / F27): 记录预测生成时点的行情与判断，消除前视偏差
+            if impact.direction in ("bullish", "bearish"):
+                analysis_now = datetime.now(timezone.utc)
+                bench_code = "SPX" if security.market == "US" else "STAR50"
+                from trace.collectors.market_data.time_quality import quote_quality
+                usable = quote_quality(confirmation.quote, analysis_now) == 'real'
+                anchor_price = confirmation.quote.last_price if usable else None
+                anchor_ts = confirmation.quote.market_timestamp if usable else None
+
+                bench_snap = self.snapshots.nearest(bench_code, analysis_now, 6.0)
+                bench_anchor = bench_snap.last_price if bench_snap else None
+
+                horizon_h = float(self.config.get("forecast.horizon_hours", 24.0))
+                model_ver = f'{self.config.llm.provider}:{self.config.llm.model_impact_analyzer}'
+                snap = ForecastSnapshot(
+                    snapshot_id=f"SNP-{uuid.uuid4().hex[:12]}",
+                    impact_id=impact.impact_id,
+                    event_id=event.event_id,
+                    security_id=security.security_id,
+                    event_version=event.version or 1,
+                    predicted_direction=impact.direction,
+                    predicted_score=impact.final_score,
+                    confidence=impact.confidence,
+                    model_version=model_ver,
+                    market=security.market,
+                    analysis_created_at=analysis_now,
+                    published_at=analysis_now,
+                    anchor_price=anchor_price,
+                    anchor_ts=anchor_ts,
+                    horizon_hours=horizon_h,
+                    due_at=analysis_now + timedelta(hours=horizon_h),
+                    benchmark_code=bench_code,
+                    benchmark_anchor_price=bench_anchor,
+                    status="pending",
+                    created_at=analysis_now,
+                )
+                results.snapshots.append(snap)
+
+        if persist:
+            with self.db.transaction():
+                self.persist_results(event, results)
         logger.info("event %s analyzed: %d impacts", event.event_id, len(results))
         return results
+
+    def persist_results(self, event, results):
+        """Called in the same short transaction as analysis receipt and notification intent."""
+        wanted = {impact.security_id for impact in results}
+        for old in self.impact_repo.list_by_event(event.event_id):
+            if old.security_id not in wanted:
+                self.db.execute('DELETE FROM event_impact WHERE impact_id=?', (old.impact_id,))
+        for impact in results:
+            self.impact_repo.upsert(impact)
+        for snapshot in getattr(results, 'snapshots', []):
+            self.snapshot_repo.insert(snapshot)

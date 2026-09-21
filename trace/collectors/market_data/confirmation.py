@@ -31,10 +31,11 @@ Phase 1 行情主要用于 Market Confirmation，不做无新闻异动报警。
 
 from __future__ import annotations
 
+import concurrent.futures
 import logging
 import time
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 from trace.collectors.market_data.base import MarketDataProvider, Quote
 from trace.domain.models import MarketSnapshot
@@ -45,31 +46,51 @@ logger = logging.getLogger(__name__)
 MODE_NO_QUOTE = "no_quote"
 MODE_MARKET_NOT_OPENED = "market_not_opened_since_event"
 MODE_WINDOW_EXPIRED = "reaction_window_expired"
+MODE_CALENDAR_UNAVAILABLE = "calendar_unavailable"
+MODE_PRICE_CONTEXT = "price_context"
 
 NEUTRAL_SCORE = 5.0
 
 
 def confirmation_score(direction: str, change_pct: float | None) -> float:
-    """direction: bullish/bearish/neutral/mixed/uncertain。返回 1–10。"""
+    """计算市场确认分（1.0–10.0，中性为 5.0）。
+
+    计分规则：
+    - 无行情数据 (None) 或中性/分歧方向 (neutral, mixed, uncertain)：返回 5.0。
+    - 涨跌幅为 0.0：返回 5.0。
+    - 看多 (bullish)：
+        - 上涨（change_pct > 0）：方向一致，加分；+5% 对应满分 10.0；
+        - 下跌（change_pct < 0）：方向背离，扣分；-5% 对应最低 1.0。
+    - 看空 (bearish)：
+        - 下跌（change_pct < 0）：方向一致，加分；-5% 对应满分 10.0；
+        - 上涨（change_pct > 0）：方向背离，扣分；+5% 对应最低 1.0。
+    """
     if change_pct is None:
-        return 5.0
+        return NEUTRAL_SCORE
     if direction in ("neutral", "mixed", "uncertain"):
-        return 5.0
-    magnitude = min(abs(change_pct) / 5.0, 1.0) * 5.0  # ±5% 映射到 ±5 分
+        return NEUTRAL_SCORE
+
     if direction == "bullish":
-        return max(1.0, min(10.0, 5.0 + magnitude))
-    if direction == "bearish":
-        return max(1.0, min(10.0, 5.0 - magnitude))
-    return 5.0
+        delta = max(-5.0, min(5.0, change_pct))
+        return round(max(1.0, min(10.0, 5.0 + delta)), 2)
+    elif direction == "bearish":
+        delta = max(-5.0, min(5.0, -change_pct))
+        return round(max(1.0, min(10.0, 5.0 + delta)), 2)
+
+    return NEUTRAL_SCORE
 
 
 @dataclass
 class MarketConfirmation:
-    """一次市场确认的完整结果（分数 + 依据 + 数据模式）。"""
+    """一次市场确认的完整结果（分数 + 依据 + 数据模式 + 调度窗口）。"""
     score: float
     quote: Quote | None
-    mode: str                       # real / mock / unavailable / no_quote / 门禁原因
+    mode: str                                       # real / mock / unavailable / no_quote / 门禁原因
     change_pct: float | None = None
+    analysis_mode: str = "price_context"            # event_anchored (事件后表现) / price_context (价格背景)
+    next_eligible_at: datetime | None = None        # 下一次开盘补算时刻
+    expires_at: datetime | None = None              # 补算反应窗口过期时刻
+    causality_note: str = "市场确认仅反映价格表现，不构成因果验证"
 
     @property
     def is_neutral(self) -> bool:
@@ -116,19 +137,97 @@ class MarketConfirmer:
             self._record_snapshot(security_id, quote)
         return quote
 
+    def cached_quote(self, market: str, ticker: str) -> Quote | None:
+        """只读缓存中的行情，若未缓存或已过期则返回 None，绝不触发外部网络阻塞。"""
+        key = (market, ticker)
+        now = time.monotonic()
+        cached = self._cache.get(key)
+        if cached is not None and now - cached[0] < self._cache_ttl:
+            return cached[1]
+        return None
+
+    def cached_quotes(self, requests: list[tuple[str, str, str | None]]) -> dict[tuple[str, str], Quote]:
+        """批量只读已缓存的行情，不触发外部网络拉取（用于事件列表高效无阻断查询）。"""
+        results: dict[tuple[str, str], Quote] = {}
+        now = time.monotonic()
+        for market, ticker, _ in requests:
+            key = (market, ticker)
+            cached = self._cache.get(key)
+            if cached is not None and now - cached[0] < self._cache_ttl:
+                if cached[1]:
+                    results[key] = cached[1]
+        return results
+
+    def quotes(self, requests: list[tuple[str, str, str | None]]) -> dict[tuple[str, str], Quote]:
+        """批量获取多市场标的行情（自动按市场分组并走各 Provider 的 get_quotes 批量接口）。"""
+        results: dict[tuple[str, str], Quote] = {}
+        now = time.monotonic()
+
+        missing_by_market: dict[str, list[str]] = {}
+        sec_id_map: dict[tuple[str, str], str | None] = {}
+        for market, ticker, sec_id in requests:
+            key = (market, ticker)
+            sec_id_map[key] = sec_id
+            cached = self._cache.get(key)
+            if cached is not None and now - cached[0] < self._cache_ttl:
+                if cached[1]:
+                    results[key] = cached[1]
+            else:
+                missing_by_market.setdefault(market, []).append(ticker)
+
+        def _fetch_one_market(m: str, t_list: list[str]):
+            prov = self._providers.get(m)
+            if not prov:
+                return m, {}
+            try:
+                return m, prov.get_quotes(t_list)
+            except Exception as e:
+                logger.warning("market %s quote fetch failed: %s", m, e)
+                return m, {}
+
+        if missing_by_market:
+            with concurrent.futures.ThreadPoolExecutor(max_workers=max(1, len(missing_by_market))) as executor:
+                future_to_market = {
+                    executor.submit(_fetch_one_market, m, t_list): m
+                    for m, t_list in missing_by_market.items()
+                }
+                for fut in concurrent.futures.as_completed(future_to_market):
+                    m, fetched = fut.result()
+                    tickers = missing_by_market.get(m, [])
+                    for t in tickers:
+                        q = fetched.get(t)
+                        key = (m, t)
+                        self._cache[key] = (now, q)
+                        if q:
+                            results[key] = q
+                            sid = sec_id_map.get(key)
+                            if sid:
+                                self._record_snapshot(sid, q)
+
+        return results
+
     def _record_snapshot(self, security_id: str, quote: Quote) -> None:
         """落库价格历史。失败不得影响主流程（行情是旁路信号）。"""
         if self._snapshots is None:
             return
         try:
             self._snapshots.insert(MarketSnapshot(
-                security_id=security_id, ts=quote.ts,
-                last_price=quote.last_price, prev_close=quote.prev_close,
+                security_id=security_id,
+                ts=quote.ts,
+                last_price=quote.last_price,
+                prev_close=quote.prev_close,
+                change_pct_day=quote.change_pct_day,
                 change_pct_1m=quote.change_pct_1m,
                 change_pct_5m=quote.change_pct_5m,
                 change_pct_15m=quote.change_pct_15m,
-                volume=quote.volume, volume_ratio=quote.volume_ratio,
-                session=quote.session))
+                volume=quote.volume,
+                volume_ratio=quote.volume_ratio,
+                session=quote.session,
+                currency=quote.currency,
+                source=quote.source,
+                is_delayed=quote.is_delayed,
+                market_ts=quote.market_timestamp,
+            ))
         except Exception:
             logger.exception("market snapshot persist failed: %s", security_id)
 
@@ -140,16 +239,13 @@ class MarketConfirmer:
         """对某证券做一次市场确认。
 
         event_time 缺省时不做时段门禁（保持旧行为）；传入时按交易日历判断
-        当前报价是否谈得上"对该事件的反应"，谈不上就返回中性 5.0。
+        当前报价是否谈得上"对该事件的反应"，谈不上就返回中性 5.0 并记录补算调度窗口。
         """
         provider = self._providers.get(market)
         if provider is None:
             return MarketConfirmation(NEUTRAL_SCORE, None, "unavailable")
 
-        # 先取报价再判门禁：即使这次不能用作市场确认，价格本身仍要留进
-        # market_snapshot —— 盘后事件的锚点价正是"事件之前那个收盘价"，
-        # 门禁一挡就不取的话，恰恰是最重要的盘后公告永远拿不到回测锚点。
-        # TTL 缓存保证每轮每个 ticker 至多一次真实请求。
+        # 先取报价再判门禁：即使这次不能用作市场确认，价格本身仍要留进 market_snapshot
         quote = self.quote(market, ticker, security_id=security_id)
         if quote is None:
             mode = getattr(provider, "data_mode", "real")
@@ -157,33 +253,57 @@ class MarketConfirmer:
                 NEUTRAL_SCORE, None,
                 MODE_NO_QUOTE if mode == "real" else mode)
 
-        blocked = self._reaction_gate(market, event_time, now)
+        blocked, next_eligible, expires = self._reaction_gate(market, event_time, now)
         if blocked:
             logger.info("market confirmation suppressed for %s (%s)", ticker, blocked)
-            return MarketConfirmation(NEUTRAL_SCORE, quote, blocked)
+            return MarketConfirmation(
+                NEUTRAL_SCORE, quote, blocked,
+                next_eligible_at=next_eligible,
+                expires_at=expires,
+            )
 
-        change = (quote.change_pct_15m if quote.change_pct_15m is not None
-                  else quote.change_pct_from_prev())
+        from trace.collectors.market_data.time_quality import quote_quality
+        quality = quote_quality(quote, now)
+        if quality not in ('real',):
+            return MarketConfirmation(NEUTRAL_SCORE, quote, quality)
+
+        # 区分严格 15 分钟事件锚定反应 vs 全日价格背景 (F15, F17/T12)
+        # A recent bar is price context, not an event-anchored causal observation.
+        change = quote.change_pct_day if quote.change_pct_day is not None else quote.change_pct_from_prev()
+        analysis_mode = "price_context"
+        raw_score = confirmation_score(direction, change)
+        score = round(5.0 + (raw_score - 5.0) * 0.5, 2)
+
         return MarketConfirmation(
-            score=confirmation_score(direction, change),
+            score=score,
             quote=quote,
             mode=getattr(provider, "data_mode", "real"),
-            change_pct=change)
+            change_pct=change,
+            analysis_mode=analysis_mode,
+        )
 
     # ------------------------------------------------------------------
     def _reaction_gate(self, market: str, event_time: datetime | None,
-                       now: datetime | None) -> str:
-        """返回 "" 表示当前报价可用作该事件的市场确认；否则返回抑制原因。"""
-        if event_time is None or self._calendar is None:
-            return ""
+                       now: datetime | None) -> tuple[str, datetime | None, datetime | None]:
+        """返回 (blocked_mode, next_eligible_at, expires_at)。blocked_mode 为 "" 表示放行。"""
+        if event_time is None:
+            return "", None, None
+        if self._calendar is None:
+            return MODE_CALENDAR_UNAVAILABLE, None, None
         if not getattr(self._calendar, "knows_market", lambda _m: False)(market):
-            return ""       # 该市场没有日历配置：不做门禁，保持旧行为
+            return MODE_CALENDAR_UNAVAILABLE, None, None
 
         now = now or datetime.now(timezone.utc)
         event_time = _aware(event_time)
         now = _aware(now)
+
+        # F18: 日历覆盖范围检查
+        if hasattr(self._calendar, "is_covered") and not self._calendar.is_covered(market, event_time.date()):
+            logger.warning("trading calendar coverage missing for %s at %s", market, event_time.date())
+            return MODE_CALENDAR_UNAVAILABLE, None, None
+
         if now < event_time:
-            return MODE_MARKET_NOT_OPENED       # 事件时间在未来：无从确认
+            return MODE_MARKET_NOT_OPENED, None, None       # 事件时间在未来：无从确认
 
         # 参考时刻：事件当时若在交易时段就用事件时刻，否则用事件后首次开盘
         try:
@@ -192,14 +312,18 @@ class MarketConfirmer:
             else:
                 reference = _aware(self._calendar.next_open(market, event_time))
         except Exception:
+            # F17 修复：日历异常必须安全降级为 calendar_unavailable，严禁返回 "" 放行伪确认
             logger.exception("market calendar lookup failed for %s", market)
-            return ""
+            return MODE_CALENDAR_UNAVAILABLE, None, None
+
+        next_eligible = reference
+        expires = reference + timedelta(hours=self._max_reaction_hours)
 
         if now < reference:
-            return MODE_MARKET_NOT_OPENED       # 事件之后市场还没开过盘
-        if (now - reference).total_seconds() > self._max_reaction_hours * 3600:
-            return MODE_WINDOW_EXPIRED          # 早已不是对该事件的反应
-        return ""
+            return MODE_MARKET_NOT_OPENED, next_eligible, expires       # 事件之后市场还没开过盘
+        if now > expires:
+            return MODE_WINDOW_EXPIRED, None, None                      # 早已不是对该事件的反应
+        return "", None, None
 
     # ------------------------------------------------------------------
     def data_mode(self, market: str) -> str:

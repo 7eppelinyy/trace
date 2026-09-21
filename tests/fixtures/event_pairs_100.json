@@ -1,0 +1,3507 @@
+[
+  {
+    "id": "cross_lingual_001",
+    "category": "cross_lingual_same",
+    "item_a": {
+      "source_id": "sec_filing_en",
+      "source_item_id": "EDGAR-001",
+      "canonical_url": "https://sec.gov/filings/tsmc_1.htm",
+      "title": "TSMC: Arizona Fab 2 structural milestone",
+      "content": "TSMC officially reported that arizona fab 2 structural milestone following successful testing and validation.",
+      "entities": [
+        "TSMC"
+      ],
+      "event_type": "capacity",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "digitimes_zh",
+      "source_item_id": "DG-001",
+      "canonical_url": "https://digitimes.com.tw/tech/台积电_1.htm",
+      "title": "台积电确认：亚利桑那二厂主体结构封顶",
+      "content": "据行业最新消息，台积电官方证实，亚利桑那二厂主体结构封顶已顺利完成各项验证。",
+      "entities": [
+        "台积电",
+        "TSMC"
+      ],
+      "event_type": "capacity",
+      "language": "zh"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "cross_lingual_same_event"
+    }
+  },
+  {
+    "id": "cross_lingual_002",
+    "category": "cross_lingual_same",
+    "item_a": {
+      "source_id": "sec_filing_en",
+      "source_item_id": "EDGAR-002",
+      "canonical_url": "https://sec.gov/filings/nvidia_2.htm",
+      "title": "NVIDIA: Blackwell Ultra server racks ship to cloud providers",
+      "content": "NVIDIA officially reported that blackwell ultra server racks ship to cloud providers following successful testing and validation.",
+      "entities": [
+        "NVIDIA"
+      ],
+      "event_type": "product",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "digitimes_zh",
+      "source_item_id": "DG-002",
+      "canonical_url": "https://digitimes.com.tw/tech/英伟达_2.htm",
+      "title": "英伟达确认：Blackwell Ultra AI服务器机架开始发货",
+      "content": "据行业最新消息，英伟达官方证实，Blackwell Ultra AI服务器机架开始发货已顺利完成各项验证。",
+      "entities": [
+        "英伟达",
+        "NVIDIA"
+      ],
+      "event_type": "product",
+      "language": "zh"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "cross_lingual_same_event"
+    }
+  },
+  {
+    "id": "cross_lingual_003",
+    "category": "cross_lingual_same",
+    "item_a": {
+      "source_id": "sec_filing_en",
+      "source_item_id": "EDGAR-003",
+      "canonical_url": "https://sec.gov/filings/asml_3.htm",
+      "title": "ASML: High-NA EUV system delivered to research institute",
+      "content": "ASML officially reported that high-na euv system delivered to research institute following successful testing and validation.",
+      "entities": [
+        "ASML"
+      ],
+      "event_type": "product",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "digitimes_zh",
+      "source_item_id": "DG-003",
+      "canonical_url": "https://digitimes.com.tw/tech/阿斯麦_3.htm",
+      "title": "阿斯麦确认：High-NA EUV高数值孔径光刻机交付研发",
+      "content": "据行业最新消息，阿斯麦官方证实，High-NA EUV高数值孔径光刻机交付研发已顺利完成各项验证。",
+      "entities": [
+        "阿斯麦",
+        "ASML"
+      ],
+      "event_type": "product",
+      "language": "zh"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "cross_lingual_same_event"
+    }
+  },
+  {
+    "id": "cross_lingual_004",
+    "category": "cross_lingual_same",
+    "item_a": {
+      "source_id": "sec_filing_en",
+      "source_item_id": "EDGAR-004",
+      "canonical_url": "https://sec.gov/filings/micron_4.htm",
+      "title": "Micron: HBM3e memory qualified for next-generation accelerators",
+      "content": "Micron officially reported that hbm3e memory qualified for next-generation accelerators following successful testing and validation.",
+      "entities": [
+        "Micron"
+      ],
+      "event_type": "product",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "digitimes_zh",
+      "source_item_id": "DG-004",
+      "canonical_url": "https://digitimes.com.tw/tech/美光科技_4.htm",
+      "title": "美光科技确认：HBM3e显存通过新一代AI加速芯片认证",
+      "content": "据行业最新消息，美光科技官方证实，HBM3e显存通过新一代AI加速芯片认证已顺利完成各项验证。",
+      "entities": [
+        "美光科技",
+        "Micron"
+      ],
+      "event_type": "product",
+      "language": "zh"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "cross_lingual_same_event"
+    }
+  },
+  {
+    "id": "cross_lingual_005",
+    "category": "cross_lingual_same",
+    "item_a": {
+      "source_id": "sec_filing_en",
+      "source_item_id": "EDGAR-005",
+      "canonical_url": "https://sec.gov/filings/apple_5.htm",
+      "title": "Apple: M5 processor tape-out completed on 3nm node",
+      "content": "Apple officially reported that m5 processor tape-out completed on 3nm node following successful testing and validation.",
+      "entities": [
+        "Apple"
+      ],
+      "event_type": "product",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "digitimes_zh",
+      "source_item_id": "DG-005",
+      "canonical_url": "https://digitimes.com.tw/tech/苹果_5.htm",
+      "title": "苹果确认：M5处理器在3纳米节点完成流片",
+      "content": "据行业最新消息，苹果官方证实，M5处理器在3纳米节点完成流片已顺利完成各项验证。",
+      "entities": [
+        "苹果",
+        "Apple"
+      ],
+      "event_type": "product",
+      "language": "zh"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "cross_lingual_same_event"
+    }
+  },
+  {
+    "id": "cross_lingual_006",
+    "category": "cross_lingual_same",
+    "item_a": {
+      "source_id": "sec_filing_en",
+      "source_item_id": "EDGAR-006",
+      "canonical_url": "https://sec.gov/filings/qualcomm_6.htm",
+      "title": "Qualcomm: Snapdragon X2 PC platform announced at conference",
+      "content": "Qualcomm officially reported that snapdragon x2 pc platform announced at conference following successful testing and validation.",
+      "entities": [
+        "Qualcomm"
+      ],
+      "event_type": "product",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "digitimes_zh",
+      "source_item_id": "DG-006",
+      "canonical_url": "https://digitimes.com.tw/tech/高通_6.htm",
+      "title": "高通确认：发布骁龙X2 PC算力平台芯片",
+      "content": "据行业最新消息，高通官方证实，发布骁龙X2 PC算力平台芯片已顺利完成各项验证。",
+      "entities": [
+        "高通",
+        "Qualcomm"
+      ],
+      "event_type": "product",
+      "language": "zh"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "cross_lingual_same_event"
+    }
+  },
+  {
+    "id": "cross_lingual_007",
+    "category": "cross_lingual_same",
+    "item_a": {
+      "source_id": "sec_filing_en",
+      "source_item_id": "EDGAR-007",
+      "canonical_url": "https://sec.gov/filings/broadcom_7.htm",
+      "title": "Broadcom: Custom ASIC switch win with tier-1 hyperscaler",
+      "content": "Broadcom officially reported that custom asic switch win with tier-1 hyperscaler following successful testing and validation.",
+      "entities": [
+        "Broadcom"
+      ],
+      "event_type": "major_customer",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "digitimes_zh",
+      "source_item_id": "DG-007",
+      "canonical_url": "https://digitimes.com.tw/tech/博通_7.htm",
+      "title": "博通确认：获得一线云厂商定制交换机ASIC大单",
+      "content": "据行业最新消息，博通官方证实，获得一线云厂商定制交换机ASIC大单已顺利完成各项验证。",
+      "entities": [
+        "博通",
+        "Broadcom"
+      ],
+      "event_type": "major_customer",
+      "language": "zh"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "cross_lingual_same_event"
+    }
+  },
+  {
+    "id": "cross_lingual_008",
+    "category": "cross_lingual_same",
+    "item_a": {
+      "source_id": "sec_filing_en",
+      "source_item_id": "EDGAR-008",
+      "canonical_url": "https://sec.gov/filings/amd_8.htm",
+      "title": "AMD: MI350 series accelerator launch date confirmed",
+      "content": "AMD officially reported that mi350 series accelerator launch date confirmed following successful testing and validation.",
+      "entities": [
+        "AMD"
+      ],
+      "event_type": "product",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "digitimes_zh",
+      "source_item_id": "DG-008",
+      "canonical_url": "https://digitimes.com.tw/tech/超威半导体_8.htm",
+      "title": "超威半导体确认：确认MI350系列计算卡发布日程",
+      "content": "据行业最新消息，超威半导体官方证实，确认MI350系列计算卡发布日程已顺利完成各项验证。",
+      "entities": [
+        "超威半导体",
+        "AMD"
+      ],
+      "event_type": "product",
+      "language": "zh"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "cross_lingual_same_event"
+    }
+  },
+  {
+    "id": "cross_lingual_009",
+    "category": "cross_lingual_same",
+    "item_a": {
+      "source_id": "sec_filing_en",
+      "source_item_id": "EDGAR-009",
+      "canonical_url": "https://sec.gov/filings/applied materials_9.htm",
+      "title": "Applied Materials: New atomic layer deposition tool for gate-all-around",
+      "content": "Applied Materials officially reported that new atomic layer deposition tool for gate-all-around following successful testing and validation.",
+      "entities": [
+        "Applied Materials"
+      ],
+      "event_type": "product",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "digitimes_zh",
+      "source_item_id": "DG-009",
+      "canonical_url": "https://digitimes.com.tw/tech/应用材料_9.htm",
+      "title": "应用材料确认：推出面向全环绕栅极的原子层沉积新设备",
+      "content": "据行业最新消息，应用材料官方证实，推出面向全环绕栅极的原子层沉积新设备已顺利完成各项验证。",
+      "entities": [
+        "应用材料",
+        "Applied Materials"
+      ],
+      "event_type": "product",
+      "language": "zh"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "cross_lingual_same_event"
+    }
+  },
+  {
+    "id": "cross_lingual_010",
+    "category": "cross_lingual_same",
+    "item_a": {
+      "source_id": "sec_filing_en",
+      "source_item_id": "EDGAR-010",
+      "canonical_url": "https://sec.gov/filings/lam research_10.htm",
+      "title": "Lam Research: Cryogenic etch technology adopted for 3D NAND",
+      "content": "Lam Research officially reported that cryogenic etch technology adopted for 3d nand following successful testing and validation.",
+      "entities": [
+        "Lam Research"
+      ],
+      "event_type": "supply_chain",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "digitimes_zh",
+      "source_item_id": "DG-010",
+      "canonical_url": "https://digitimes.com.tw/tech/泛林半导体_10.htm",
+      "title": "泛林半导体确认：低温刻蚀方案获3D NAND存储大厂采纳",
+      "content": "据行业最新消息，泛林半导体官方证实，低温刻蚀方案获3D NAND存储大厂采纳已顺利完成各项验证。",
+      "entities": [
+        "泛林半导体",
+        "Lam Research"
+      ],
+      "event_type": "supply_chain",
+      "language": "zh"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "cross_lingual_same_event"
+    }
+  },
+  {
+    "id": "cross_lingual_011",
+    "category": "cross_lingual_same",
+    "item_a": {
+      "source_id": "sec_filing_en",
+      "source_item_id": "EDGAR-011",
+      "canonical_url": "https://sec.gov/filings/kla_11.htm",
+      "title": "KLA: Optical inspection system for advanced packaging",
+      "content": "KLA officially reported that optical inspection system for advanced packaging following successful testing and validation.",
+      "entities": [
+        "KLA"
+      ],
+      "event_type": "product",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "digitimes_zh",
+      "source_item_id": "DG-011",
+      "canonical_url": "https://digitimes.com.tw/tech/科磊_11.htm",
+      "title": "科磊确认：发布面向先进封装的光学检测系统",
+      "content": "据行业最新消息，科磊官方证实，发布面向先进封装的光学检测系统已顺利完成各项验证。",
+      "entities": [
+        "科磊",
+        "KLA"
+      ],
+      "event_type": "product",
+      "language": "zh"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "cross_lingual_same_event"
+    }
+  },
+  {
+    "id": "cross_lingual_012",
+    "category": "cross_lingual_same",
+    "item_a": {
+      "source_id": "sec_filing_en",
+      "source_item_id": "EDGAR-012",
+      "canonical_url": "https://sec.gov/filings/arm_12.htm",
+      "title": "Arm: Data center compute subsystem license expanded with partner",
+      "content": "Arm officially reported that data center compute subsystem license expanded with partner following successful testing and validation.",
+      "entities": [
+        "Arm"
+      ],
+      "event_type": "supply_chain",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "digitimes_zh",
+      "source_item_id": "DG-012",
+      "canonical_url": "https://digitimes.com.tw/tech/安谋_12.htm",
+      "title": "安谋确认：与云合作伙伴扩大数据中心计算子系统授权",
+      "content": "据行业最新消息，安谋官方证实，与云合作伙伴扩大数据中心计算子系统授权已顺利完成各项验证。",
+      "entities": [
+        "安谋",
+        "Arm"
+      ],
+      "event_type": "supply_chain",
+      "language": "zh"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "cross_lingual_same_event"
+    }
+  },
+  {
+    "id": "cross_lingual_013",
+    "category": "cross_lingual_same",
+    "item_a": {
+      "source_id": "sec_filing_en",
+      "source_item_id": "EDGAR-013",
+      "canonical_url": "https://sec.gov/filings/intel_13.htm",
+      "title": "Intel: Intel 18A process enters risk production ahead of schedule",
+      "content": "Intel officially reported that intel 18a process enters risk production ahead of schedule following successful testing and validation.",
+      "entities": [
+        "Intel"
+      ],
+      "event_type": "capacity",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "digitimes_zh",
+      "source_item_id": "DG-013",
+      "canonical_url": "https://digitimes.com.tw/tech/英特尔_13.htm",
+      "title": "英特尔确认：Intel 18A制程节点提前进入风险试产",
+      "content": "据行业最新消息，英特尔官方证实，Intel 18A制程节点提前进入风险试产已顺利完成各项验证。",
+      "entities": [
+        "英特尔",
+        "Intel"
+      ],
+      "event_type": "capacity",
+      "language": "zh"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "cross_lingual_same_event"
+    }
+  },
+  {
+    "id": "cross_lingual_014",
+    "category": "cross_lingual_same",
+    "item_a": {
+      "source_id": "sec_filing_en",
+      "source_item_id": "EDGAR-014",
+      "canonical_url": "https://sec.gov/filings/samsung_14.htm",
+      "title": "Samsung: HBM4 hybrid bonding technology development milestone",
+      "content": "Samsung officially reported that hbm4 hybrid bonding technology development milestone following successful testing and validation.",
+      "entities": [
+        "Samsung"
+      ],
+      "event_type": "product",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "digitimes_zh",
+      "source_item_id": "DG-014",
+      "canonical_url": "https://digitimes.com.tw/tech/三星电子_14.htm",
+      "title": "三星电子确认：HBM4混合键合先进封装研发取得突破",
+      "content": "据行业最新消息，三星电子官方证实，HBM4混合键合先进封装研发取得突破已顺利完成各项验证。",
+      "entities": [
+        "三星电子",
+        "Samsung"
+      ],
+      "event_type": "product",
+      "language": "zh"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "cross_lingual_same_event"
+    }
+  },
+  {
+    "id": "cross_lingual_015",
+    "category": "cross_lingual_same",
+    "item_a": {
+      "source_id": "sec_filing_en",
+      "source_item_id": "EDGAR-015",
+      "canonical_url": "https://sec.gov/filings/sk hynix_15.htm",
+      "title": "SK Hynix: 1c nm DRAM mass production readiness announced",
+      "content": "SK Hynix officially reported that 1c nm dram mass production readiness announced following successful testing and validation.",
+      "entities": [
+        "SK Hynix"
+      ],
+      "event_type": "capacity",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "digitimes_zh",
+      "source_item_id": "DG-015",
+      "canonical_url": "https://digitimes.com.tw/tech/SK海力士_15.htm",
+      "title": "SK海力士确认：宣布完成1c纳米DRAM量产就绪准备",
+      "content": "据行业最新消息，SK海力士官方证实，宣布完成1c纳米DRAM量产就绪准备已顺利完成各项验证。",
+      "entities": [
+        "SK海力士",
+        "SK Hynix"
+      ],
+      "event_type": "capacity",
+      "language": "zh"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "cross_lingual_same_event"
+    }
+  },
+  {
+    "id": "cross_lingual_016",
+    "category": "cross_lingual_same",
+    "item_a": {
+      "source_id": "sec_filing_en",
+      "source_item_id": "EDGAR-016",
+      "canonical_url": "https://sec.gov/filings/texas instruments_16.htm",
+      "title": "Texas Instruments: New 300mm wafer fab in Sherman begins tool install",
+      "content": "Texas Instruments officially reported that new 300mm wafer fab in sherman begins tool install following successful testing and validation.",
+      "entities": [
+        "Texas Instruments"
+      ],
+      "event_type": "capacity",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "digitimes_zh",
+      "source_item_id": "DG-016",
+      "canonical_url": "https://digitimes.com.tw/tech/德州仪器_16.htm",
+      "title": "德州仪器确认：谢尔曼新300毫米晶圆厂启动设备搬入",
+      "content": "据行业最新消息，德州仪器官方证实，谢尔曼新300毫米晶圆厂启动设备搬入已顺利完成各项验证。",
+      "entities": [
+        "德州仪器",
+        "Texas Instruments"
+      ],
+      "event_type": "capacity",
+      "language": "zh"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "cross_lingual_same_event"
+    }
+  },
+  {
+    "id": "cross_lingual_017",
+    "category": "cross_lingual_same",
+    "item_a": {
+      "source_id": "sec_filing_en",
+      "source_item_id": "EDGAR-017",
+      "canonical_url": "https://sec.gov/filings/marvell_17.htm",
+      "title": "Marvell: Optical interconnect chiplet design wins in AI clusters",
+      "content": "Marvell officially reported that optical interconnect chiplet design wins in ai clusters following successful testing and validation.",
+      "entities": [
+        "Marvell"
+      ],
+      "event_type": "product",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "digitimes_zh",
+      "source_item_id": "DG-017",
+      "canonical_url": "https://digitimes.com.tw/tech/美满电子_17.htm",
+      "title": "美满电子确认：光互连芯粒设计在AI超算集群中标",
+      "content": "据行业最新消息，美满电子官方证实，光互连芯粒设计在AI超算集群中标已顺利完成各项验证。",
+      "entities": [
+        "美满电子",
+        "Marvell"
+      ],
+      "event_type": "product",
+      "language": "zh"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "cross_lingual_same_event"
+    }
+  },
+  {
+    "id": "cross_lingual_018",
+    "category": "cross_lingual_same",
+    "item_a": {
+      "source_id": "sec_filing_en",
+      "source_item_id": "EDGAR-018",
+      "canonical_url": "https://sec.gov/filings/synopsys_18.htm",
+      "title": "Synopsys: AI-driven EDA tool suite deployed by fabless giant",
+      "content": "Synopsys officially reported that ai-driven eda tool suite deployed by fabless giant following successful testing and validation.",
+      "entities": [
+        "Synopsys"
+      ],
+      "event_type": "product",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "digitimes_zh",
+      "source_item_id": "DG-018",
+      "canonical_url": "https://digitimes.com.tw/tech/新思科技_18.htm",
+      "title": "新思科技确认：AI驱动EDA设计工具套件获芯片巨头采购",
+      "content": "据行业最新消息，新思科技官方证实，AI驱动EDA设计工具套件获芯片巨头采购已顺利完成各项验证。",
+      "entities": [
+        "新思科技",
+        "Synopsys"
+      ],
+      "event_type": "product",
+      "language": "zh"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "cross_lingual_same_event"
+    }
+  },
+  {
+    "id": "cross_lingual_019",
+    "category": "cross_lingual_same",
+    "item_a": {
+      "source_id": "sec_filing_en",
+      "source_item_id": "EDGAR-019",
+      "canonical_url": "https://sec.gov/filings/cadence_19.htm",
+      "title": "Cadence: Digital design flow certified for TSMC A16 process",
+      "content": "Cadence officially reported that digital design flow certified for tsmc a16 process following successful testing and validation.",
+      "entities": [
+        "Cadence"
+      ],
+      "event_type": "supply_chain",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "digitimes_zh",
+      "source_item_id": "DG-019",
+      "canonical_url": "https://digitimes.com.tw/tech/楷登电子_19.htm",
+      "title": "楷登电子确认：数字设计流程获台积电A16先进制程认证",
+      "content": "据行业最新消息，楷登电子官方证实，数字设计流程获台积电A16先进制程认证已顺利完成各项验证。",
+      "entities": [
+        "楷登电子",
+        "Cadence"
+      ],
+      "event_type": "supply_chain",
+      "language": "zh"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "cross_lingual_same_event"
+    }
+  },
+  {
+    "id": "cross_lingual_020",
+    "category": "cross_lingual_same",
+    "item_a": {
+      "source_id": "sec_filing_en",
+      "source_item_id": "EDGAR-020",
+      "canonical_url": "https://sec.gov/filings/microchip_20.htm",
+      "title": "Microchip: Automotive microcontroller capacity expansion online",
+      "content": "Microchip officially reported that automotive microcontroller capacity expansion online following successful testing and validation.",
+      "entities": [
+        "Microchip"
+      ],
+      "event_type": "capacity",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "digitimes_zh",
+      "source_item_id": "DG-020",
+      "canonical_url": "https://digitimes.com.tw/tech/微芯科技_20.htm",
+      "title": "微芯科技确认：汽车级微控制器扩产项目正式投产",
+      "content": "据行业最新消息，微芯科技官方证实，汽车级微控制器扩产项目正式投产已顺利完成各项验证。",
+      "entities": [
+        "微芯科技",
+        "Microchip"
+      ],
+      "event_type": "capacity",
+      "language": "zh"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "cross_lingual_same_event"
+    }
+  },
+  {
+    "id": "diff_quarter_001",
+    "category": "different_quarter_distinct",
+    "item_a": {
+      "source_id": "sec_filing",
+      "source_item_id": "10Q-NVDA-A1",
+      "canonical_url": "https://sec.gov/edgar/NVDA_period_a_1.htm",
+      "title": "NVIDIA Reports Q1 FY2026 Earnings",
+      "content": "NVIDIA (NVDA) announced its official financial and operating metrics for Q1 FY2026 Earnings.",
+      "entities": [
+        "NVIDIA",
+        "NVDA"
+      ],
+      "event_type": "earnings",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "sec_filing",
+      "source_item_id": "10Q-NVDA-B1",
+      "canonical_url": "https://sec.gov/edgar/NVDA_period_b_1.htm",
+      "title": "NVIDIA Reports Q2 FY2026 Earnings",
+      "content": "NVIDIA (NVDA) announced its official financial and operating metrics for Q2 FY2026 Earnings.",
+      "entities": [
+        "NVIDIA",
+        "NVDA"
+      ],
+      "event_type": "earnings",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": false,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "different_reporting_periods"
+    }
+  },
+  {
+    "id": "diff_quarter_002",
+    "category": "different_quarter_distinct",
+    "item_a": {
+      "source_id": "sec_filing",
+      "source_item_id": "10Q-TSM-A2",
+      "canonical_url": "https://sec.gov/edgar/TSM_period_a_2.htm",
+      "title": "TSMC Reports January 2026 Monthly Revenue",
+      "content": "TSMC (TSM) announced its official financial and operating metrics for January 2026 Monthly Revenue.",
+      "entities": [
+        "TSMC",
+        "TSM"
+      ],
+      "event_type": "earnings",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "sec_filing",
+      "source_item_id": "10Q-TSM-B2",
+      "canonical_url": "https://sec.gov/edgar/TSM_period_b_2.htm",
+      "title": "TSMC Reports February 2026 Monthly Revenue",
+      "content": "TSMC (TSM) announced its official financial and operating metrics for February 2026 Monthly Revenue.",
+      "entities": [
+        "TSMC",
+        "TSM"
+      ],
+      "event_type": "earnings",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": false,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "different_reporting_periods"
+    }
+  },
+  {
+    "id": "diff_quarter_003",
+    "category": "different_quarter_distinct",
+    "item_a": {
+      "source_id": "sec_filing",
+      "source_item_id": "10Q-AAPL-A3",
+      "canonical_url": "https://sec.gov/edgar/AAPL_period_a_3.htm",
+      "title": "Apple Reports Q1 2026 iPhone Revenue Report",
+      "content": "Apple (AAPL) announced its official financial and operating metrics for Q1 2026 iPhone Revenue Report.",
+      "entities": [
+        "Apple",
+        "AAPL"
+      ],
+      "event_type": "earnings",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "sec_filing",
+      "source_item_id": "10Q-AAPL-B3",
+      "canonical_url": "https://sec.gov/edgar/AAPL_period_b_3.htm",
+      "title": "Apple Reports Q2 2026 iPhone Revenue Report",
+      "content": "Apple (AAPL) announced its official financial and operating metrics for Q2 2026 iPhone Revenue Report.",
+      "entities": [
+        "Apple",
+        "AAPL"
+      ],
+      "event_type": "earnings",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": false,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "different_reporting_periods"
+    }
+  },
+  {
+    "id": "diff_quarter_004",
+    "category": "different_quarter_distinct",
+    "item_a": {
+      "source_id": "sec_filing",
+      "source_item_id": "10Q-MU-A4",
+      "canonical_url": "https://sec.gov/edgar/MU_period_a_4.htm",
+      "title": "Micron Reports Q2 FY2026 Financial Results",
+      "content": "Micron (MU) announced its official financial and operating metrics for Q2 FY2026 Financial Results.",
+      "entities": [
+        "Micron",
+        "MU"
+      ],
+      "event_type": "earnings",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "sec_filing",
+      "source_item_id": "10Q-MU-B4",
+      "canonical_url": "https://sec.gov/edgar/MU_period_b_4.htm",
+      "title": "Micron Reports Q3 FY2026 Financial Results",
+      "content": "Micron (MU) announced its official financial and operating metrics for Q3 FY2026 Financial Results.",
+      "entities": [
+        "Micron",
+        "MU"
+      ],
+      "event_type": "earnings",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": false,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "different_reporting_periods"
+    }
+  },
+  {
+    "id": "diff_quarter_005",
+    "category": "different_quarter_distinct",
+    "item_a": {
+      "source_id": "sec_filing",
+      "source_item_id": "10Q-AMD-A5",
+      "canonical_url": "https://sec.gov/edgar/AMD_period_a_5.htm",
+      "title": "AMD Reports Q3 2025 Data Center Revenue",
+      "content": "AMD (AMD) announced its official financial and operating metrics for Q3 2025 Data Center Revenue.",
+      "entities": [
+        "AMD",
+        "AMD"
+      ],
+      "event_type": "earnings",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "sec_filing",
+      "source_item_id": "10Q-AMD-B5",
+      "canonical_url": "https://sec.gov/edgar/AMD_period_b_5.htm",
+      "title": "AMD Reports Q4 2025 Data Center Revenue",
+      "content": "AMD (AMD) announced its official financial and operating metrics for Q4 2025 Data Center Revenue.",
+      "entities": [
+        "AMD",
+        "AMD"
+      ],
+      "event_type": "earnings",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": false,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "different_reporting_periods"
+    }
+  },
+  {
+    "id": "diff_quarter_006",
+    "category": "different_quarter_distinct",
+    "item_a": {
+      "source_id": "sec_filing",
+      "source_item_id": "10Q-INTC-A6",
+      "canonical_url": "https://sec.gov/edgar/INTC_period_a_6.htm",
+      "title": "Intel Reports Q1 2026 Client Computing Earnings",
+      "content": "Intel (INTC) announced its official financial and operating metrics for Q1 2026 Client Computing Earnings.",
+      "entities": [
+        "Intel",
+        "INTC"
+      ],
+      "event_type": "earnings",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "sec_filing",
+      "source_item_id": "10Q-INTC-B6",
+      "canonical_url": "https://sec.gov/edgar/INTC_period_b_6.htm",
+      "title": "Intel Reports Q2 2026 Client Computing Earnings",
+      "content": "Intel (INTC) announced its official financial and operating metrics for Q2 2026 Client Computing Earnings.",
+      "entities": [
+        "Intel",
+        "INTC"
+      ],
+      "event_type": "earnings",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": false,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "different_reporting_periods"
+    }
+  },
+  {
+    "id": "diff_quarter_007",
+    "category": "different_quarter_distinct",
+    "item_a": {
+      "source_id": "sec_filing",
+      "source_item_id": "10Q-AVGO-A7",
+      "canonical_url": "https://sec.gov/edgar/AVGO_period_a_7.htm",
+      "title": "Broadcom Reports Q2 2026 Semiconductor Solutions Results",
+      "content": "Broadcom (AVGO) announced its official financial and operating metrics for Q2 2026 Semiconductor Solutions Results.",
+      "entities": [
+        "Broadcom",
+        "AVGO"
+      ],
+      "event_type": "earnings",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "sec_filing",
+      "source_item_id": "10Q-AVGO-B7",
+      "canonical_url": "https://sec.gov/edgar/AVGO_period_b_7.htm",
+      "title": "Broadcom Reports Q3 2026 Semiconductor Solutions Results",
+      "content": "Broadcom (AVGO) announced its official financial and operating metrics for Q3 2026 Semiconductor Solutions Results.",
+      "entities": [
+        "Broadcom",
+        "AVGO"
+      ],
+      "event_type": "earnings",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": false,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "different_reporting_periods"
+    }
+  },
+  {
+    "id": "diff_quarter_008",
+    "category": "different_quarter_distinct",
+    "item_a": {
+      "source_id": "sec_filing",
+      "source_item_id": "10Q-QCOM-A8",
+      "canonical_url": "https://sec.gov/edgar/QCOM_period_a_8.htm",
+      "title": "Qualcomm Reports Q1 FY2026 Handset Chipset Guidance",
+      "content": "Qualcomm (QCOM) announced its official financial and operating metrics for Q1 FY2026 Handset Chipset Guidance.",
+      "entities": [
+        "Qualcomm",
+        "QCOM"
+      ],
+      "event_type": "guidance",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "sec_filing",
+      "source_item_id": "10Q-QCOM-B8",
+      "canonical_url": "https://sec.gov/edgar/QCOM_period_b_8.htm",
+      "title": "Qualcomm Reports Q2 FY2026 Handset Chipset Guidance",
+      "content": "Qualcomm (QCOM) announced its official financial and operating metrics for Q2 FY2026 Handset Chipset Guidance.",
+      "entities": [
+        "Qualcomm",
+        "QCOM"
+      ],
+      "event_type": "guidance",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": false,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "different_reporting_periods"
+    }
+  },
+  {
+    "id": "diff_quarter_009",
+    "category": "different_quarter_distinct",
+    "item_a": {
+      "source_id": "sec_filing",
+      "source_item_id": "10Q-ASML-A9",
+      "canonical_url": "https://sec.gov/edgar/ASML_period_a_9.htm",
+      "title": "ASML Reports Q1 2026 Net Bookings and Book-to-Bill",
+      "content": "ASML (ASML) announced its official financial and operating metrics for Q1 2026 Net Bookings and Book-to-Bill.",
+      "entities": [
+        "ASML",
+        "ASML"
+      ],
+      "event_type": "earnings",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "sec_filing",
+      "source_item_id": "10Q-ASML-B9",
+      "canonical_url": "https://sec.gov/edgar/ASML_period_b_9.htm",
+      "title": "ASML Reports Q2 2026 Net Bookings and Book-to-Bill",
+      "content": "ASML (ASML) announced its official financial and operating metrics for Q2 2026 Net Bookings and Book-to-Bill.",
+      "entities": [
+        "ASML",
+        "ASML"
+      ],
+      "event_type": "earnings",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": false,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "different_reporting_periods"
+    }
+  },
+  {
+    "id": "diff_quarter_010",
+    "category": "different_quarter_distinct",
+    "item_a": {
+      "source_id": "sec_filing",
+      "source_item_id": "10Q-AMAT-A10",
+      "canonical_url": "https://sec.gov/edgar/AMAT_period_a_10.htm",
+      "title": "Applied Materials Reports Q2 2026 Semiconductor Systems Revenue",
+      "content": "Applied Materials (AMAT) announced its official financial and operating metrics for Q2 2026 Semiconductor Systems Revenue.",
+      "entities": [
+        "Applied Materials",
+        "AMAT"
+      ],
+      "event_type": "earnings",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "sec_filing",
+      "source_item_id": "10Q-AMAT-B10",
+      "canonical_url": "https://sec.gov/edgar/AMAT_period_b_10.htm",
+      "title": "Applied Materials Reports Q3 2026 Semiconductor Systems Revenue",
+      "content": "Applied Materials (AMAT) announced its official financial and operating metrics for Q3 2026 Semiconductor Systems Revenue.",
+      "entities": [
+        "Applied Materials",
+        "AMAT"
+      ],
+      "event_type": "earnings",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": false,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "different_reporting_periods"
+    }
+  },
+  {
+    "id": "diff_quarter_011",
+    "category": "different_quarter_distinct",
+    "item_a": {
+      "source_id": "sec_filing",
+      "source_item_id": "10Q-LRCX-A11",
+      "canonical_url": "https://sec.gov/edgar/LRCX_period_a_11.htm",
+      "title": "Lam Research Reports March Quarter 2026 Financials",
+      "content": "Lam Research (LRCX) announced its official financial and operating metrics for March Quarter 2026 Financials.",
+      "entities": [
+        "Lam Research",
+        "LRCX"
+      ],
+      "event_type": "earnings",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "sec_filing",
+      "source_item_id": "10Q-LRCX-B11",
+      "canonical_url": "https://sec.gov/edgar/LRCX_period_b_11.htm",
+      "title": "Lam Research Reports June Quarter 2026 Financials",
+      "content": "Lam Research (LRCX) announced its official financial and operating metrics for June Quarter 2026 Financials.",
+      "entities": [
+        "Lam Research",
+        "LRCX"
+      ],
+      "event_type": "earnings",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": false,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "different_reporting_periods"
+    }
+  },
+  {
+    "id": "diff_quarter_012",
+    "category": "different_quarter_distinct",
+    "item_a": {
+      "source_id": "sec_filing",
+      "source_item_id": "10Q-KLAC-A12",
+      "canonical_url": "https://sec.gov/edgar/KLAC_period_a_12.htm",
+      "title": "KLA Reports Q3 FY2026 Inspection Equipment Revenue",
+      "content": "KLA (KLAC) announced its official financial and operating metrics for Q3 FY2026 Inspection Equipment Revenue.",
+      "entities": [
+        "KLA",
+        "KLAC"
+      ],
+      "event_type": "earnings",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "sec_filing",
+      "source_item_id": "10Q-KLAC-B12",
+      "canonical_url": "https://sec.gov/edgar/KLAC_period_b_12.htm",
+      "title": "KLA Reports Q4 FY2026 Inspection Equipment Revenue",
+      "content": "KLA (KLAC) announced its official financial and operating metrics for Q4 FY2026 Inspection Equipment Revenue.",
+      "entities": [
+        "KLA",
+        "KLAC"
+      ],
+      "event_type": "earnings",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": false,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "different_reporting_periods"
+    }
+  },
+  {
+    "id": "diff_quarter_013",
+    "category": "different_quarter_distinct",
+    "item_a": {
+      "source_id": "sec_filing",
+      "source_item_id": "10Q-ARM-A13",
+      "canonical_url": "https://sec.gov/edgar/ARM_period_a_13.htm",
+      "title": "Arm Reports Q3 FY2026 Royalty and Licensing Revenue",
+      "content": "Arm (ARM) announced its official financial and operating metrics for Q3 FY2026 Royalty and Licensing Revenue.",
+      "entities": [
+        "Arm",
+        "ARM"
+      ],
+      "event_type": "earnings",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "sec_filing",
+      "source_item_id": "10Q-ARM-B13",
+      "canonical_url": "https://sec.gov/edgar/ARM_period_b_13.htm",
+      "title": "Arm Reports Q4 FY2026 Royalty and Licensing Revenue",
+      "content": "Arm (ARM) announced its official financial and operating metrics for Q4 FY2026 Royalty and Licensing Revenue.",
+      "entities": [
+        "Arm",
+        "ARM"
+      ],
+      "event_type": "earnings",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": false,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "different_reporting_periods"
+    }
+  },
+  {
+    "id": "diff_quarter_014",
+    "category": "different_quarter_distinct",
+    "item_a": {
+      "source_id": "sec_filing",
+      "source_item_id": "10Q-SNPS-A14",
+      "canonical_url": "https://sec.gov/edgar/SNPS_period_a_14.htm",
+      "title": "Synopsys Reports Q1 2026 IP Subsystem Bookings",
+      "content": "Synopsys (SNPS) announced its official financial and operating metrics for Q1 2026 IP Subsystem Bookings.",
+      "entities": [
+        "Synopsys",
+        "SNPS"
+      ],
+      "event_type": "earnings",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "sec_filing",
+      "source_item_id": "10Q-SNPS-B14",
+      "canonical_url": "https://sec.gov/edgar/SNPS_period_b_14.htm",
+      "title": "Synopsys Reports Q2 2026 IP Subsystem Bookings",
+      "content": "Synopsys (SNPS) announced its official financial and operating metrics for Q2 2026 IP Subsystem Bookings.",
+      "entities": [
+        "Synopsys",
+        "SNPS"
+      ],
+      "event_type": "earnings",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": false,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "different_reporting_periods"
+    }
+  },
+  {
+    "id": "diff_quarter_015",
+    "category": "different_quarter_distinct",
+    "item_a": {
+      "source_id": "sec_filing",
+      "source_item_id": "10Q-CDNS-A15",
+      "canonical_url": "https://sec.gov/edgar/CDNS_period_a_15.htm",
+      "title": "Cadence Reports Q2 2026 Functional Verification Sales",
+      "content": "Cadence (CDNS) announced its official financial and operating metrics for Q2 2026 Functional Verification Sales.",
+      "entities": [
+        "Cadence",
+        "CDNS"
+      ],
+      "event_type": "earnings",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "sec_filing",
+      "source_item_id": "10Q-CDNS-B15",
+      "canonical_url": "https://sec.gov/edgar/CDNS_period_b_15.htm",
+      "title": "Cadence Reports Q3 2026 Functional Verification Sales",
+      "content": "Cadence (CDNS) announced its official financial and operating metrics for Q3 2026 Functional Verification Sales.",
+      "entities": [
+        "Cadence",
+        "CDNS"
+      ],
+      "event_type": "earnings",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": false,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "different_reporting_periods"
+    }
+  },
+  {
+    "id": "diff_quarter_016",
+    "category": "different_quarter_distinct",
+    "item_a": {
+      "source_id": "sec_filing",
+      "source_item_id": "10Q-MRVL-A16",
+      "canonical_url": "https://sec.gov/edgar/MRVL_period_a_16.htm",
+      "title": "Marvell Reports Q1 FY2027 Custom AI Revenue",
+      "content": "Marvell (MRVL) announced its official financial and operating metrics for Q1 FY2027 Custom AI Revenue.",
+      "entities": [
+        "Marvell",
+        "MRVL"
+      ],
+      "event_type": "earnings",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "sec_filing",
+      "source_item_id": "10Q-MRVL-B16",
+      "canonical_url": "https://sec.gov/edgar/MRVL_period_b_16.htm",
+      "title": "Marvell Reports Q2 FY2027 Custom AI Revenue",
+      "content": "Marvell (MRVL) announced its official financial and operating metrics for Q2 FY2027 Custom AI Revenue.",
+      "entities": [
+        "Marvell",
+        "MRVL"
+      ],
+      "event_type": "earnings",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": false,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "different_reporting_periods"
+    }
+  },
+  {
+    "id": "diff_quarter_017",
+    "category": "different_quarter_distinct",
+    "item_a": {
+      "source_id": "sec_filing",
+      "source_item_id": "10Q-WDC-A17",
+      "canonical_url": "https://sec.gov/edgar/WDC_period_a_17.htm",
+      "title": "Western Digital Reports Q3 FY2026 Flash Memory Shipments",
+      "content": "Western Digital (WDC) announced its official financial and operating metrics for Q3 FY2026 Flash Memory Shipments.",
+      "entities": [
+        "Western Digital",
+        "WDC"
+      ],
+      "event_type": "earnings",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "sec_filing",
+      "source_item_id": "10Q-WDC-B17",
+      "canonical_url": "https://sec.gov/edgar/WDC_period_b_17.htm",
+      "title": "Western Digital Reports Q4 FY2026 Flash Memory Shipments",
+      "content": "Western Digital (WDC) announced its official financial and operating metrics for Q4 FY2026 Flash Memory Shipments.",
+      "entities": [
+        "Western Digital",
+        "WDC"
+      ],
+      "event_type": "earnings",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": false,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "different_reporting_periods"
+    }
+  },
+  {
+    "id": "diff_quarter_018",
+    "category": "different_quarter_distinct",
+    "item_a": {
+      "source_id": "sec_filing",
+      "source_item_id": "10Q-STX-A18",
+      "canonical_url": "https://sec.gov/edgar/STX_period_a_18.htm",
+      "title": "Seagate Reports Q2 FY2026 Nearline HDD Shipments",
+      "content": "Seagate (STX) announced its official financial and operating metrics for Q2 FY2026 Nearline HDD Shipments.",
+      "entities": [
+        "Seagate",
+        "STX"
+      ],
+      "event_type": "earnings",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "sec_filing",
+      "source_item_id": "10Q-STX-B18",
+      "canonical_url": "https://sec.gov/edgar/STX_period_b_18.htm",
+      "title": "Seagate Reports Q3 FY2026 Nearline HDD Shipments",
+      "content": "Seagate (STX) announced its official financial and operating metrics for Q3 FY2026 Nearline HDD Shipments.",
+      "entities": [
+        "Seagate",
+        "STX"
+      ],
+      "event_type": "earnings",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": false,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "different_reporting_periods"
+    }
+  },
+  {
+    "id": "diff_quarter_019",
+    "category": "different_quarter_distinct",
+    "item_a": {
+      "source_id": "sec_filing",
+      "source_item_id": "10Q-TXN-A19",
+      "canonical_url": "https://sec.gov/edgar/TXN_period_a_19.htm",
+      "title": "Texas Instruments Reports Q1 2026 Industrial Analog Revenue",
+      "content": "Texas Instruments (TXN) announced its official financial and operating metrics for Q1 2026 Industrial Analog Revenue.",
+      "entities": [
+        "Texas Instruments",
+        "TXN"
+      ],
+      "event_type": "earnings",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "sec_filing",
+      "source_item_id": "10Q-TXN-B19",
+      "canonical_url": "https://sec.gov/edgar/TXN_period_b_19.htm",
+      "title": "Texas Instruments Reports Q2 2026 Industrial Analog Revenue",
+      "content": "Texas Instruments (TXN) announced its official financial and operating metrics for Q2 2026 Industrial Analog Revenue.",
+      "entities": [
+        "Texas Instruments",
+        "TXN"
+      ],
+      "event_type": "earnings",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": false,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "different_reporting_periods"
+    }
+  },
+  {
+    "id": "diff_quarter_020",
+    "category": "different_quarter_distinct",
+    "item_a": {
+      "source_id": "sec_filing",
+      "source_item_id": "10Q-NXPI-A20",
+      "canonical_url": "https://sec.gov/edgar/NXPI_period_a_20.htm",
+      "title": "NXP Semiconductors Reports Q1 2026 Auto Electronics Margins",
+      "content": "NXP Semiconductors (NXPI) announced its official financial and operating metrics for Q1 2026 Auto Electronics Margins.",
+      "entities": [
+        "NXP Semiconductors",
+        "NXPI"
+      ],
+      "event_type": "earnings",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "sec_filing",
+      "source_item_id": "10Q-NXPI-B20",
+      "canonical_url": "https://sec.gov/edgar/NXPI_period_b_20.htm",
+      "title": "NXP Semiconductors Reports Q2 2026 Auto Electronics Margins",
+      "content": "NXP Semiconductors (NXPI) announced its official financial and operating metrics for Q2 2026 Auto Electronics Margins.",
+      "entities": [
+        "NXP Semiconductors",
+        "NXPI"
+      ],
+      "event_type": "earnings",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": false,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "different_reporting_periods"
+    }
+  },
+  {
+    "id": "same_url_corr_001",
+    "category": "same_url_correction",
+    "item_a": {
+      "source_id": "official_pr",
+      "source_item_id": "PR-V1-001",
+      "canonical_url": "https://tsmc.com/news/capex2026.html",
+      "title": "TSMC: Capex set at $30B",
+      "content": "TSMC issued statement: Capex set at $30B. All rights reserved.",
+      "entities": [
+        "TSMC"
+      ],
+      "event_type": "capacity",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "official_pr",
+      "source_item_id": "PR-V2-001",
+      "canonical_url": "https://tsmc.com/news/capex2026.html",
+      "title": "TSMC: Capex revised to $32B in amended statement",
+      "content": "TSMC issued updated statement: Capex revised to $32B in amended statement. Corrected version.",
+      "entities": [
+        "TSMC"
+      ],
+      "event_type": "capacity",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": true,
+      "reason": "same_url_content_amendment"
+    }
+  },
+  {
+    "id": "same_url_corr_002",
+    "category": "same_url_correction",
+    "item_a": {
+      "source_id": "official_pr",
+      "source_item_id": "PR-V1-002",
+      "canonical_url": "https://investors.micron.com/news/guidance.htm",
+      "title": "Micron: Q4 EPS guidance $1.20",
+      "content": "Micron issued statement: Q4 EPS guidance $1.20. All rights reserved.",
+      "entities": [
+        "Micron"
+      ],
+      "event_type": "guidance",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "official_pr",
+      "source_item_id": "PR-V2-002",
+      "canonical_url": "https://investors.micron.com/news/guidance.htm",
+      "title": "Micron: Q4 EPS guidance revised to $1.35",
+      "content": "Micron issued updated statement: Q4 EPS guidance revised to $1.35. Corrected version.",
+      "entities": [
+        "Micron"
+      ],
+      "event_type": "guidance",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": true,
+      "reason": "same_url_content_amendment"
+    }
+  },
+  {
+    "id": "same_url_corr_003",
+    "category": "same_url_correction",
+    "item_a": {
+      "source_id": "official_pr",
+      "source_item_id": "PR-V1-003",
+      "canonical_url": "https://nvidianews.nvidia.com/press/supply.html",
+      "title": "NVIDIA: Initial delivery 100k units",
+      "content": "NVIDIA issued statement: Initial delivery 100k units. All rights reserved.",
+      "entities": [
+        "NVIDIA"
+      ],
+      "event_type": "supply_chain",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "official_pr",
+      "source_item_id": "PR-V2-003",
+      "canonical_url": "https://nvidianews.nvidia.com/press/supply.html",
+      "title": "NVIDIA: Delivery volume corrected to 120k units",
+      "content": "NVIDIA issued updated statement: Delivery volume corrected to 120k units. Corrected version.",
+      "entities": [
+        "NVIDIA"
+      ],
+      "event_type": "supply_chain",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": true,
+      "reason": "same_url_content_amendment"
+    }
+  },
+  {
+    "id": "same_url_corr_004",
+    "category": "same_url_correction",
+    "item_a": {
+      "source_id": "official_pr",
+      "source_item_id": "PR-V1-004",
+      "canonical_url": "https://asml.com/press/orders2026.htm",
+      "title": "ASML: EU order count 12 machines",
+      "content": "ASML issued statement: EU order count 12 machines. All rights reserved.",
+      "entities": [
+        "ASML"
+      ],
+      "event_type": "product",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "official_pr",
+      "source_item_id": "PR-V2-004",
+      "canonical_url": "https://asml.com/press/orders2026.htm",
+      "title": "ASML: Official correction: 14 High-NA EUV tools contracted",
+      "content": "ASML issued updated statement: Official correction: 14 High-NA EUV tools contracted. Corrected version.",
+      "entities": [
+        "ASML"
+      ],
+      "event_type": "product",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": true,
+      "reason": "same_url_content_amendment"
+    }
+  },
+  {
+    "id": "same_url_corr_005",
+    "category": "same_url_correction",
+    "item_a": {
+      "source_id": "official_pr",
+      "source_item_id": "PR-V1-005",
+      "canonical_url": "https://apple.com/pr/m5-chip.html",
+      "title": "Apple: Base frequency 3.8GHz",
+      "content": "Apple issued statement: Base frequency 3.8GHz. All rights reserved.",
+      "entities": [
+        "Apple"
+      ],
+      "event_type": "product",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "official_pr",
+      "source_item_id": "PR-V2-005",
+      "canonical_url": "https://apple.com/pr/m5-chip.html",
+      "title": "Apple: Specification update: peak frequency 4.2GHz",
+      "content": "Apple issued updated statement: Specification update: peak frequency 4.2GHz. Corrected version.",
+      "entities": [
+        "Apple"
+      ],
+      "event_type": "product",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": true,
+      "reason": "same_url_content_amendment"
+    }
+  },
+  {
+    "id": "same_url_corr_006",
+    "category": "same_url_correction",
+    "item_a": {
+      "source_id": "official_pr",
+      "source_item_id": "PR-V1-006",
+      "canonical_url": "https://qualcomm.com/news/snpx2.html",
+      "title": "Qualcomm: Target battery life 20 hours",
+      "content": "Qualcomm issued statement: Target battery life 20 hours. All rights reserved.",
+      "entities": [
+        "Qualcomm"
+      ],
+      "event_type": "product",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "official_pr",
+      "source_item_id": "PR-V2-006",
+      "canonical_url": "https://qualcomm.com/news/snpx2.html",
+      "title": "Qualcomm: Battery life certification updated to 24 hours",
+      "content": "Qualcomm issued updated statement: Battery life certification updated to 24 hours. Corrected version.",
+      "entities": [
+        "Qualcomm"
+      ],
+      "event_type": "product",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": true,
+      "reason": "same_url_content_amendment"
+    }
+  },
+  {
+    "id": "same_url_corr_007",
+    "category": "same_url_correction",
+    "item_a": {
+      "source_id": "official_pr",
+      "source_item_id": "PR-V1-007",
+      "canonical_url": "https://amd.com/en/newsroom/mi350.html",
+      "title": "AMD: Memory capacity 288GB HBM3e",
+      "content": "AMD issued statement: Memory capacity 288GB HBM3e. All rights reserved.",
+      "entities": [
+        "AMD"
+      ],
+      "event_type": "product",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "official_pr",
+      "source_item_id": "PR-V2-007",
+      "canonical_url": "https://amd.com/en/newsroom/mi350.html",
+      "title": "AMD: Official revision: memory capacity 320GB HBM3e",
+      "content": "AMD issued updated statement: Official revision: memory capacity 320GB HBM3e. Corrected version.",
+      "entities": [
+        "AMD"
+      ],
+      "event_type": "product",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": true,
+      "reason": "same_url_content_amendment"
+    }
+  },
+  {
+    "id": "same_url_corr_008",
+    "category": "same_url_correction",
+    "item_a": {
+      "source_id": "official_pr",
+      "source_item_id": "PR-V1-008",
+      "canonical_url": "https://broadcom.com/press/switch51t.html",
+      "title": "Broadcom: 51.2Tbps throughput",
+      "content": "Broadcom issued statement: 51.2Tbps throughput. All rights reserved.",
+      "entities": [
+        "Broadcom"
+      ],
+      "event_type": "product",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "official_pr",
+      "source_item_id": "PR-V2-008",
+      "canonical_url": "https://broadcom.com/press/switch51t.html",
+      "title": "Broadcom: Revision notes 102.4Tbps dual-plane configuration",
+      "content": "Broadcom issued updated statement: Revision notes 102.4Tbps dual-plane configuration. Corrected version.",
+      "entities": [
+        "Broadcom"
+      ],
+      "event_type": "product",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": true,
+      "reason": "same_url_content_amendment"
+    }
+  },
+  {
+    "id": "same_url_corr_009",
+    "category": "same_url_correction",
+    "item_a": {
+      "source_id": "official_pr",
+      "source_item_id": "PR-V1-009",
+      "canonical_url": "https://intel.com/news/fab52.html",
+      "title": "Intel: Completion target end of 2026",
+      "content": "Intel issued statement: Completion target end of 2026. All rights reserved.",
+      "entities": [
+        "Intel"
+      ],
+      "event_type": "capacity",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "official_pr",
+      "source_item_id": "PR-V2-009",
+      "canonical_url": "https://intel.com/news/fab52.html",
+      "title": "Intel: Construction schedule updated to Q2 2027",
+      "content": "Intel issued updated statement: Construction schedule updated to Q2 2027. Corrected version.",
+      "entities": [
+        "Intel"
+      ],
+      "event_type": "capacity",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": true,
+      "reason": "same_url_content_amendment"
+    }
+  },
+  {
+    "id": "same_url_corr_010",
+    "category": "same_url_correction",
+    "item_a": {
+      "source_id": "official_pr",
+      "source_item_id": "PR-V1-010",
+      "canonical_url": "https://samsung.com/global/foundry/a16.html",
+      "title": "Samsung: Yield 60% preliminary",
+      "content": "Samsung issued statement: Yield 60% preliminary. All rights reserved.",
+      "entities": [
+        "Samsung"
+      ],
+      "event_type": "capacity",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "official_pr",
+      "source_item_id": "PR-V2-010",
+      "canonical_url": "https://samsung.com/global/foundry/a16.html",
+      "title": "Samsung: Yield audit clarifies 68% milestone reached",
+      "content": "Samsung issued updated statement: Yield audit clarifies 68% milestone reached. Corrected version.",
+      "entities": [
+        "Samsung"
+      ],
+      "event_type": "capacity",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": true,
+      "reason": "same_url_content_amendment"
+    }
+  },
+  {
+    "id": "same_url_corr_011",
+    "category": "same_url_correction",
+    "item_a": {
+      "source_id": "official_pr",
+      "source_item_id": "PR-V1-011",
+      "canonical_url": "https://appliedmaterials.com/tools.html",
+      "title": "Applied Materials: Model 3000 price $8M",
+      "content": "Applied Materials issued statement: Model 3000 price $8M. All rights reserved.",
+      "entities": [
+        "Applied Materials"
+      ],
+      "event_type": "pricing",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "official_pr",
+      "source_item_id": "PR-V2-011",
+      "canonical_url": "https://appliedmaterials.com/tools.html",
+      "title": "Applied Materials: Price catalog update reflects $9.2M system cost",
+      "content": "Applied Materials issued updated statement: Price catalog update reflects $9.2M system cost. Corrected version.",
+      "entities": [
+        "Applied Materials"
+      ],
+      "event_type": "pricing",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": true,
+      "reason": "same_url_content_amendment"
+    }
+  },
+  {
+    "id": "same_url_corr_012",
+    "category": "same_url_correction",
+    "item_a": {
+      "source_id": "official_pr",
+      "source_item_id": "PR-V1-012",
+      "canonical_url": "https://lamresearch.com/press/cryo.html",
+      "title": "Lam Research: Etch rate 10um/min",
+      "content": "Lam Research issued statement: Etch rate 10um/min. All rights reserved.",
+      "entities": [
+        "Lam Research"
+      ],
+      "event_type": "product",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "official_pr",
+      "source_item_id": "PR-V2-012",
+      "canonical_url": "https://lamresearch.com/press/cryo.html",
+      "title": "Lam Research: Correction to specification: etch rate 12um/min",
+      "content": "Lam Research issued updated statement: Correction to specification: etch rate 12um/min. Corrected version.",
+      "entities": [
+        "Lam Research"
+      ],
+      "event_type": "product",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": true,
+      "reason": "same_url_content_amendment"
+    }
+  },
+  {
+    "id": "same_url_corr_013",
+    "category": "same_url_correction",
+    "item_a": {
+      "source_id": "official_pr",
+      "source_item_id": "PR-V1-013",
+      "canonical_url": "https://kla.com/news/gen6.html",
+      "title": "KLA: Deployment starts in August",
+      "content": "KLA issued statement: Deployment starts in August. All rights reserved.",
+      "entities": [
+        "KLA"
+      ],
+      "event_type": "product",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "official_pr",
+      "source_item_id": "PR-V2-013",
+      "canonical_url": "https://kla.com/news/gen6.html",
+      "title": "KLA: Deployment schedule advanced to June",
+      "content": "KLA issued updated statement: Deployment schedule advanced to June. Corrected version.",
+      "entities": [
+        "KLA"
+      ],
+      "event_type": "product",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": true,
+      "reason": "same_url_content_amendment"
+    }
+  },
+  {
+    "id": "same_url_corr_014",
+    "category": "same_url_correction",
+    "item_a": {
+      "source_id": "official_pr",
+      "source_item_id": "PR-V1-014",
+      "canonical_url": "https://arm.com/company/news/neoverse.html",
+      "title": "Arm: Power consumption 250W",
+      "content": "Arm issued statement: Power consumption 250W. All rights reserved.",
+      "entities": [
+        "Arm"
+      ],
+      "event_type": "product",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "official_pr",
+      "source_item_id": "PR-V2-014",
+      "canonical_url": "https://arm.com/company/news/neoverse.html",
+      "title": "Arm: Amended data sheet confirms 220W TDP",
+      "content": "Arm issued updated statement: Amended data sheet confirms 220W TDP. Corrected version.",
+      "entities": [
+        "Arm"
+      ],
+      "event_type": "product",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": true,
+      "reason": "same_url_content_amendment"
+    }
+  },
+  {
+    "id": "same_url_corr_015",
+    "category": "same_url_correction",
+    "item_a": {
+      "source_id": "official_pr",
+      "source_item_id": "PR-V1-015",
+      "canonical_url": "https://westerndigital.com/press/nand.html",
+      "title": "Western Digital: 2Tb BiCS8 sample",
+      "content": "Western Digital issued statement: 2Tb BiCS8 sample. All rights reserved.",
+      "entities": [
+        "Western Digital"
+      ],
+      "event_type": "product",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "official_pr",
+      "source_item_id": "PR-V2-015",
+      "canonical_url": "https://westerndigital.com/press/nand.html",
+      "title": "Western Digital: Amended release clarifies 2Tb BiCS9 QLC sample",
+      "content": "Western Digital issued updated statement: Amended release clarifies 2Tb BiCS9 QLC sample. Corrected version.",
+      "entities": [
+        "Western Digital"
+      ],
+      "event_type": "product",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": true,
+      "reason": "same_url_content_amendment"
+    }
+  },
+  {
+    "id": "wire_reprint_001",
+    "category": "wire_syndication_reprint",
+    "item_a": {
+      "source_id": "reuters",
+      "source_item_id": "WIRE-001",
+      "canonical_url": "https://reuters.com/article_1.html",
+      "title": "TSMC reports record quarterly profit driven by AI chip demand - Reuters",
+      "content": "Reuters News: TSMC reports record quarterly profit driven by AI chip demand. Analysts project significant industry-wide ramifications.",
+      "entities": [
+        "TSMC"
+      ],
+      "event_type": "earnings",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "yahoo_finance",
+      "source_item_id": "REPUBLISH-001",
+      "canonical_url": "https://yahoofinance.com/syndicated_1.html",
+      "title": "TSMC reports record quarterly profit driven by AI chip demand",
+      "content": "According to Reuters, TSMC reports record quarterly profit driven by AI chip demand. Market reaction was positive.",
+      "entities": [
+        "TSMC"
+      ],
+      "event_type": "earnings",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "wire_syndication_corroboration"
+    }
+  },
+  {
+    "id": "wire_reprint_002",
+    "category": "wire_syndication_reprint",
+    "item_a": {
+      "source_id": "bloomberg",
+      "source_item_id": "WIRE-002",
+      "canonical_url": "https://bloomberg.com/article_2.html",
+      "title": "NVIDIA secures multi-billion cloud contract with sovereign wealth fund - Bloomberg",
+      "content": "Bloomberg News: NVIDIA secures multi-billion cloud contract with sovereign wealth fund. Analysts project significant industry-wide ramifications.",
+      "entities": [
+        "NVIDIA"
+      ],
+      "event_type": "major_customer",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "marketwatch",
+      "source_item_id": "REPUBLISH-002",
+      "canonical_url": "https://marketwatch.com/syndicated_2.html",
+      "title": "NVIDIA secures multi-billion cloud contract with sovereign wealth fund",
+      "content": "According to Bloomberg, NVIDIA secures multi-billion cloud contract with sovereign wealth fund. Market reaction was positive.",
+      "entities": [
+        "NVIDIA"
+      ],
+      "event_type": "major_customer",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "wire_syndication_corroboration"
+    }
+  },
+  {
+    "id": "wire_reprint_003",
+    "category": "wire_syndication_reprint",
+    "item_a": {
+      "source_id": "wsj",
+      "source_item_id": "WIRE-003",
+      "canonical_url": "https://wsj.com/article_3.html",
+      "title": "ASML warns on export control tightening on legacy lithography - WSJ",
+      "content": "WSJ News: ASML warns on export control tightening on legacy lithography. Analysts project significant industry-wide ramifications.",
+      "entities": [
+        "ASML"
+      ],
+      "event_type": "regulation",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "dow_jones_newswires",
+      "source_item_id": "REPUBLISH-003",
+      "canonical_url": "https://dowjonesnewswires.com/syndicated_3.html",
+      "title": "ASML warns on export control tightening on legacy lithography",
+      "content": "According to WSJ, ASML warns on export control tightening on legacy lithography. Market reaction was positive.",
+      "entities": [
+        "ASML"
+      ],
+      "event_type": "regulation",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "wire_syndication_corroboration"
+    }
+  },
+  {
+    "id": "wire_reprint_004",
+    "category": "wire_syndication_reprint",
+    "item_a": {
+      "source_id": "financial_times",
+      "source_item_id": "WIRE-004",
+      "canonical_url": "https://financialtimes.com/article_4.html",
+      "title": "Micron expands Singapore test and assembly facility - Financial Times",
+      "content": "Financial Times News: Micron expands Singapore test and assembly facility. Analysts project significant industry-wide ramifications.",
+      "entities": [
+        "Micron"
+      ],
+      "event_type": "capacity",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "nikkei_asia",
+      "source_item_id": "REPUBLISH-004",
+      "canonical_url": "https://nikkeiasia.com/syndicated_4.html",
+      "title": "Micron expands Singapore test and assembly facility",
+      "content": "According to Financial Times, Micron expands Singapore test and assembly facility. Market reaction was positive.",
+      "entities": [
+        "Micron"
+      ],
+      "event_type": "capacity",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "wire_syndication_corroboration"
+    }
+  },
+  {
+    "id": "wire_reprint_005",
+    "category": "wire_syndication_reprint",
+    "item_a": {
+      "source_id": "reuters",
+      "source_item_id": "WIRE-005",
+      "canonical_url": "https://reuters.com/article_5.html",
+      "title": "Apple supplier Foxconn raises investment in India iPhone factory - Reuters",
+      "content": "Reuters News: Apple supplier Foxconn raises investment in India iPhone factory. Analysts project significant industry-wide ramifications.",
+      "entities": [
+        "Foxconn"
+      ],
+      "event_type": "capacity",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "investing.com",
+      "source_item_id": "REPUBLISH-005",
+      "canonical_url": "https://investing.com.com/syndicated_5.html",
+      "title": "Apple supplier Foxconn raises investment in India iPhone factory",
+      "content": "According to Reuters, Apple supplier Foxconn raises investment in India iPhone factory. Market reaction was positive.",
+      "entities": [
+        "Foxconn"
+      ],
+      "event_type": "capacity",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "wire_syndication_corroboration"
+    }
+  },
+  {
+    "id": "wire_reprint_006",
+    "category": "wire_syndication_reprint",
+    "item_a": {
+      "source_id": "bloomberg",
+      "source_item_id": "WIRE-006",
+      "canonical_url": "https://bloomberg.com/article_6.html",
+      "title": "AMD acquires AI networking startup to challenge Infiniband - Bloomberg",
+      "content": "Bloomberg News: AMD acquires AI networking startup to challenge Infiniband. Analysts project significant industry-wide ramifications.",
+      "entities": [
+        "AMD"
+      ],
+      "event_type": "ma",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "bloomberg_businessweek",
+      "source_item_id": "REPUBLISH-006",
+      "canonical_url": "https://bloombergbusinessweek.com/syndicated_6.html",
+      "title": "AMD acquires AI networking startup to challenge Infiniband",
+      "content": "According to Bloomberg, AMD acquires AI networking startup to challenge Infiniband. Market reaction was positive.",
+      "entities": [
+        "AMD"
+      ],
+      "event_type": "ma",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "wire_syndication_corroboration"
+    }
+  },
+  {
+    "id": "wire_reprint_007",
+    "category": "wire_syndication_reprint",
+    "item_a": {
+      "source_id": "nikkei_asia",
+      "source_item_id": "WIRE-007",
+      "canonical_url": "https://nikkeiasia.com/article_7.html",
+      "title": "MediaTek partners with NVIDIA on next-gen automotive cockpit SOC - Nikkei Asia",
+      "content": "Nikkei Asia News: MediaTek partners with NVIDIA on next-gen automotive cockpit SOC. Analysts project significant industry-wide ramifications.",
+      "entities": [
+        "MediaTek"
+      ],
+      "event_type": "product",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "taipei_times",
+      "source_item_id": "REPUBLISH-007",
+      "canonical_url": "https://taipeitimes.com/syndicated_7.html",
+      "title": "MediaTek partners with NVIDIA on next-gen automotive cockpit SOC",
+      "content": "According to Nikkei Asia, MediaTek partners with NVIDIA on next-gen automotive cockpit SOC. Market reaction was positive.",
+      "entities": [
+        "MediaTek"
+      ],
+      "event_type": "product",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "wire_syndication_corroboration"
+    }
+  },
+  {
+    "id": "wire_reprint_008",
+    "category": "wire_syndication_reprint",
+    "item_a": {
+      "source_id": "reuters",
+      "source_item_id": "WIRE-008",
+      "canonical_url": "https://reuters.com/article_8.html",
+      "title": "Intel foundry unit CEO steps down amid restructuring - Reuters",
+      "content": "Reuters News: Intel foundry unit CEO steps down amid restructuring. Analysts project significant industry-wide ramifications.",
+      "entities": [
+        "Intel"
+      ],
+      "event_type": "management",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "cnbc",
+      "source_item_id": "REPUBLISH-008",
+      "canonical_url": "https://cnbc.com/syndicated_8.html",
+      "title": "Intel foundry unit CEO steps down amid restructuring",
+      "content": "According to Reuters, Intel foundry unit CEO steps down amid restructuring. Market reaction was positive.",
+      "entities": [
+        "Intel"
+      ],
+      "event_type": "management",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "wire_syndication_corroboration"
+    }
+  },
+  {
+    "id": "wire_reprint_009",
+    "category": "wire_syndication_reprint",
+    "item_a": {
+      "source_id": "bloomberg",
+      "source_item_id": "WIRE-009",
+      "canonical_url": "https://bloomberg.com/article_9.html",
+      "title": "Broadcom in talks for custom TPU deployment with Anthropic - Bloomberg",
+      "content": "Bloomberg News: Broadcom in talks for custom TPU deployment with Anthropic. Analysts project significant industry-wide ramifications.",
+      "entities": [
+        "Broadcom"
+      ],
+      "event_type": "major_customer",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "the_information",
+      "source_item_id": "REPUBLISH-009",
+      "canonical_url": "https://theinformation.com/syndicated_9.html",
+      "title": "Broadcom in talks for custom TPU deployment with Anthropic",
+      "content": "According to Bloomberg, Broadcom in talks for custom TPU deployment with Anthropic. Market reaction was positive.",
+      "entities": [
+        "Broadcom"
+      ],
+      "event_type": "major_customer",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "wire_syndication_corroboration"
+    }
+  },
+  {
+    "id": "wire_reprint_010",
+    "category": "wire_syndication_reprint",
+    "item_a": {
+      "source_id": "wsj",
+      "source_item_id": "WIRE-010",
+      "canonical_url": "https://wsj.com/article_10.html",
+      "title": "Qualcomm wins patent infringement judgment against competitor - WSJ",
+      "content": "WSJ News: Qualcomm wins patent infringement judgment against competitor. Analysts project significant industry-wide ramifications.",
+      "entities": [
+        "Qualcomm"
+      ],
+      "event_type": "lawsuit",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "barron's",
+      "source_item_id": "REPUBLISH-010",
+      "canonical_url": "https://barron's.com/syndicated_10.html",
+      "title": "Qualcomm wins patent infringement judgment against competitor",
+      "content": "According to WSJ, Qualcomm wins patent infringement judgment against competitor. Market reaction was positive.",
+      "entities": [
+        "Qualcomm"
+      ],
+      "event_type": "lawsuit",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "wire_syndication_corroboration"
+    }
+  },
+  {
+    "id": "wire_reprint_011",
+    "category": "wire_syndication_reprint",
+    "item_a": {
+      "source_id": "reuters",
+      "source_item_id": "WIRE-011",
+      "canonical_url": "https://reuters.com/article_11.html",
+      "title": "Applied Materials subpoenaed by Commerce Department over China sales - Reuters",
+      "content": "Reuters News: Applied Materials subpoenaed by Commerce Department over China sales. Analysts project significant industry-wide ramifications.",
+      "entities": [
+        "Applied Materials"
+      ],
+      "event_type": "regulation",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "morningstar",
+      "source_item_id": "REPUBLISH-011",
+      "canonical_url": "https://morningstar.com/syndicated_11.html",
+      "title": "Applied Materials subpoenaed by Commerce Department over China sales",
+      "content": "According to Reuters, Applied Materials subpoenaed by Commerce Department over China sales. Market reaction was positive.",
+      "entities": [
+        "Applied Materials"
+      ],
+      "event_type": "regulation",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "wire_syndication_corroboration"
+    }
+  },
+  {
+    "id": "wire_reprint_012",
+    "category": "wire_syndication_reprint",
+    "item_a": {
+      "source_id": "bloomberg",
+      "source_item_id": "WIRE-012",
+      "canonical_url": "https://bloomberg.com/article_12.html",
+      "title": "Lam Research raises quarterly dividend by 15% - Bloomberg",
+      "content": "Bloomberg News: Lam Research raises quarterly dividend by 15%. Analysts project significant industry-wide ramifications.",
+      "entities": [
+        "Lam Research"
+      ],
+      "event_type": "earnings",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "seeking_alpha",
+      "source_item_id": "REPUBLISH-012",
+      "canonical_url": "https://seekingalpha.com/syndicated_12.html",
+      "title": "Lam Research raises quarterly dividend by 15%",
+      "content": "According to Bloomberg, Lam Research raises quarterly dividend by 15%. Market reaction was positive.",
+      "entities": [
+        "Lam Research"
+      ],
+      "event_type": "earnings",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "wire_syndication_corroboration"
+    }
+  },
+  {
+    "id": "wire_reprint_013",
+    "category": "wire_syndication_reprint",
+    "item_a": {
+      "source_id": "financial_times",
+      "source_item_id": "WIRE-013",
+      "canonical_url": "https://financialtimes.com/article_13.html",
+      "title": "Arm designs own in-house test chip to showcase architectural capabilities - Financial Times",
+      "content": "Financial Times News: Arm designs own in-house test chip to showcase architectural capabilities. Analysts project significant industry-wide ramifications.",
+      "entities": [
+        "Arm"
+      ],
+      "event_type": "product",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "techcrunch",
+      "source_item_id": "REPUBLISH-013",
+      "canonical_url": "https://techcrunch.com/syndicated_13.html",
+      "title": "Arm designs own in-house test chip to showcase architectural capabilities",
+      "content": "According to Financial Times, Arm designs own in-house test chip to showcase architectural capabilities. Market reaction was positive.",
+      "entities": [
+        "Arm"
+      ],
+      "event_type": "product",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "wire_syndication_corroboration"
+    }
+  },
+  {
+    "id": "wire_reprint_014",
+    "category": "wire_syndication_reprint",
+    "item_a": {
+      "source_id": "reuters",
+      "source_item_id": "WIRE-014",
+      "canonical_url": "https://reuters.com/article_14.html",
+      "title": "SK Hynix issues $1B green bond for energy-efficient fab - Reuters",
+      "content": "Reuters News: SK Hynix issues $1B green bond for energy-efficient fab. Analysts project significant industry-wide ramifications.",
+      "entities": [
+        "SK Hynix"
+      ],
+      "event_type": "capacity",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "bbn_bloomberg",
+      "source_item_id": "REPUBLISH-014",
+      "canonical_url": "https://bbnbloomberg.com/syndicated_14.html",
+      "title": "SK Hynix issues $1B green bond for energy-efficient fab",
+      "content": "According to Reuters, SK Hynix issues $1B green bond for energy-efficient fab. Market reaction was positive.",
+      "entities": [
+        "SK Hynix"
+      ],
+      "event_type": "capacity",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "wire_syndication_corroboration"
+    }
+  },
+  {
+    "id": "wire_reprint_015",
+    "category": "wire_syndication_reprint",
+    "item_a": {
+      "source_id": "bloomberg",
+      "source_item_id": "WIRE-015",
+      "canonical_url": "https://bloomberg.com/article_15.html",
+      "title": "Samsung Electronics appoints new semiconductor division co-CEO - Bloomberg",
+      "content": "Bloomberg News: Samsung Electronics appoints new semiconductor division co-CEO. Analysts project significant industry-wide ramifications.",
+      "entities": [
+        "Samsung"
+      ],
+      "event_type": "management",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "us_news",
+      "source_item_id": "REPUBLISH-015",
+      "canonical_url": "https://usnews.com/syndicated_15.html",
+      "title": "Samsung Electronics appoints new semiconductor division co-CEO",
+      "content": "According to Bloomberg, Samsung Electronics appoints new semiconductor division co-CEO. Market reaction was positive.",
+      "entities": [
+        "Samsung"
+      ],
+      "event_type": "management",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "wire_syndication_corroboration"
+    }
+  },
+  {
+    "id": "official_denial_001",
+    "category": "official_denial_retraction",
+    "item_a": {
+      "source_id": "financial_media",
+      "source_item_id": "RUMOR-001",
+      "canonical_url": "https://techrumors.com/news_1.html",
+      "title": "TSMC: Rumor: TSMC delays German fab construction to 2029",
+      "content": "Anonymous industry sources report that Rumor: TSMC delays German fab construction to 2029.",
+      "entities": [
+        "TSMC"
+      ],
+      "event_type": "supply_chain",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "official_ir",
+      "source_item_id": "OFFICIAL-001",
+      "canonical_url": "https://investor.tsmc.com/news_1.html",
+      "title": "TSMC: Official Statement: TSMC affirms German fab remains on schedule for 2027",
+      "content": "Official company statement: Official Statement: TSMC affirms German fab remains on schedule for 2027. All prior rumors are categorically false.",
+      "entities": [
+        "TSMC"
+      ],
+      "event_type": "supply_chain",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": true,
+      "target_status": "contradicted",
+      "reason": "official_denial_retraction"
+    }
+  },
+  {
+    "id": "official_denial_002",
+    "category": "official_denial_retraction",
+    "item_a": {
+      "source_id": "financial_media",
+      "source_item_id": "RUMOR-002",
+      "canonical_url": "https://techrumors.com/news_2.html",
+      "title": "NVIDIA: Media Report: Blackwell chips suffer catastrophic overheating defect",
+      "content": "Anonymous industry sources report that Media Report: Blackwell chips suffer catastrophic overheating defect.",
+      "entities": [
+        "NVIDIA"
+      ],
+      "event_type": "supply_chain",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "official_ir",
+      "source_item_id": "OFFICIAL-002",
+      "canonical_url": "https://investor.nvidia.com/news_2.html",
+      "title": "NVIDIA: Official Filing: Blackwell validation proceeding normally, production ramping",
+      "content": "Official company statement: Official Filing: Blackwell validation proceeding normally, production ramping. All prior rumors are categorically false.",
+      "entities": [
+        "NVIDIA"
+      ],
+      "event_type": "supply_chain",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": true,
+      "target_status": "contradicted",
+      "reason": "official_denial_retraction"
+    }
+  },
+  {
+    "id": "official_denial_003",
+    "category": "official_denial_retraction",
+    "item_a": {
+      "source_id": "financial_media",
+      "source_item_id": "RUMOR-003",
+      "canonical_url": "https://techrumors.com/news_3.html",
+      "title": "ASML: Speculation: ASML canceling customer orders due to component shortage",
+      "content": "Anonymous industry sources report that Speculation: ASML canceling customer orders due to component shortage.",
+      "entities": [
+        "ASML"
+      ],
+      "event_type": "supply_chain",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "official_ir",
+      "source_item_id": "OFFICIAL-003",
+      "canonical_url": "https://investor.asml.com/news_3.html",
+      "title": "ASML: Clarification: ASML order book intact, deliveries proceeding as planned",
+      "content": "Official company statement: Clarification: ASML order book intact, deliveries proceeding as planned. All prior rumors are categorically false.",
+      "entities": [
+        "ASML"
+      ],
+      "event_type": "supply_chain",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": true,
+      "target_status": "contradicted",
+      "reason": "official_denial_retraction"
+    }
+  },
+  {
+    "id": "official_denial_004",
+    "category": "official_denial_retraction",
+    "item_a": {
+      "source_id": "financial_media",
+      "source_item_id": "RUMOR-004",
+      "canonical_url": "https://techrumors.com/news_4.html",
+      "title": "Apple: Leaked Report: Apple abandoning M-series processors for data center",
+      "content": "Anonymous industry sources report that Leaked Report: Apple abandoning M-series processors for data center.",
+      "entities": [
+        "Apple"
+      ],
+      "event_type": "supply_chain",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "official_ir",
+      "source_item_id": "OFFICIAL-004",
+      "canonical_url": "https://investor.apple.com/news_4.html",
+      "title": "Apple: Official Clarification: Apple continuing full investment in proprietary silicon",
+      "content": "Official company statement: Official Clarification: Apple continuing full investment in proprietary silicon. All prior rumors are categorically false.",
+      "entities": [
+        "Apple"
+      ],
+      "event_type": "supply_chain",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": true,
+      "target_status": "contradicted",
+      "reason": "official_denial_retraction"
+    }
+  },
+  {
+    "id": "official_denial_005",
+    "category": "official_denial_retraction",
+    "item_a": {
+      "source_id": "financial_media",
+      "source_item_id": "RUMOR-005",
+      "canonical_url": "https://techrumors.com/news_5.html",
+      "title": "Micron: Rumor: Micron cutting HBM production line to pivot to legacy DDR4",
+      "content": "Anonymous industry sources report that Rumor: Micron cutting HBM production line to pivot to legacy DDR4.",
+      "entities": [
+        "Micron"
+      ],
+      "event_type": "supply_chain",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "official_ir",
+      "source_item_id": "OFFICIAL-005",
+      "canonical_url": "https://investor.micron.com/news_5.html",
+      "title": "Micron: Press Release: Micron affirms 100% committed to HBM3e and HBM4 roadmap",
+      "content": "Official company statement: Press Release: Micron affirms 100% committed to HBM3e and HBM4 roadmap. All prior rumors are categorically false.",
+      "entities": [
+        "Micron"
+      ],
+      "event_type": "supply_chain",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": true,
+      "target_status": "contradicted",
+      "reason": "official_denial_retraction"
+    }
+  },
+  {
+    "id": "official_denial_006",
+    "category": "official_denial_retraction",
+    "item_a": {
+      "source_id": "financial_media",
+      "source_item_id": "RUMOR-006",
+      "canonical_url": "https://techrumors.com/news_6.html",
+      "title": "Intel: Report: Intel putting Ohio mega-fab on indefinite hold",
+      "content": "Anonymous industry sources report that Report: Intel putting Ohio mega-fab on indefinite hold.",
+      "entities": [
+        "Intel"
+      ],
+      "event_type": "supply_chain",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "official_ir",
+      "source_item_id": "OFFICIAL-006",
+      "canonical_url": "https://investor.intel.com/news_6.html",
+      "title": "Intel: Official Statement: Ohio construction active with concrete pours underway",
+      "content": "Official company statement: Official Statement: Ohio construction active with concrete pours underway. All prior rumors are categorically false.",
+      "entities": [
+        "Intel"
+      ],
+      "event_type": "supply_chain",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": true,
+      "target_status": "contradicted",
+      "reason": "official_denial_retraction"
+    }
+  },
+  {
+    "id": "official_denial_007",
+    "category": "official_denial_retraction",
+    "item_a": {
+      "source_id": "financial_media",
+      "source_item_id": "RUMOR-007",
+      "canonical_url": "https://techrumors.com/news_7.html",
+      "title": "AMD: Market Talk: AMD cutting Zen 6 server CPU core count due to thermal limits",
+      "content": "Anonymous industry sources report that Market Talk: AMD cutting Zen 6 server CPU core count due to thermal limits.",
+      "entities": [
+        "AMD"
+      ],
+      "event_type": "supply_chain",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "official_ir",
+      "source_item_id": "OFFICIAL-007",
+      "canonical_url": "https://investor.amd.com/news_7.html",
+      "title": "AMD: Technical Clarification: Zen 6 architectural targets unchanged",
+      "content": "Official company statement: Technical Clarification: Zen 6 architectural targets unchanged. All prior rumors are categorically false.",
+      "entities": [
+        "AMD"
+      ],
+      "event_type": "supply_chain",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": true,
+      "target_status": "contradicted",
+      "reason": "official_denial_retraction"
+    }
+  },
+  {
+    "id": "official_denial_008",
+    "category": "official_denial_retraction",
+    "item_a": {
+      "source_id": "financial_media",
+      "source_item_id": "RUMOR-008",
+      "canonical_url": "https://techrumors.com/news_8.html",
+      "title": "Qualcomm: Rumor: Major OEM dropping Snapdragon from flagship smartphone line",
+      "content": "Anonymous industry sources report that Rumor: Major OEM dropping Snapdragon from flagship smartphone line.",
+      "entities": [
+        "Qualcomm"
+      ],
+      "event_type": "supply_chain",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "official_ir",
+      "source_item_id": "OFFICIAL-008",
+      "canonical_url": "https://investor.qualcomm.com/news_8.html",
+      "title": "Qualcomm: Filing: Qualcomm retains multi-year agreement across premium tiers",
+      "content": "Official company statement: Filing: Qualcomm retains multi-year agreement across premium tiers. All prior rumors are categorically false.",
+      "entities": [
+        "Qualcomm"
+      ],
+      "event_type": "supply_chain",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": true,
+      "target_status": "contradicted",
+      "reason": "official_denial_retraction"
+    }
+  },
+  {
+    "id": "official_denial_009",
+    "category": "official_denial_retraction",
+    "item_a": {
+      "source_id": "financial_media",
+      "source_item_id": "RUMOR-009",
+      "canonical_url": "https://techrumors.com/news_9.html",
+      "title": "Broadcom: Report: Hyperscaler cancelling custom XPU ASIC project with Broadcom",
+      "content": "Anonymous industry sources report that Report: Hyperscaler cancelling custom XPU ASIC project with Broadcom.",
+      "entities": [
+        "Broadcom"
+      ],
+      "event_type": "supply_chain",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "official_ir",
+      "source_item_id": "OFFICIAL-009",
+      "canonical_url": "https://investor.broadcom.com/news_9.html",
+      "title": "Broadcom: Official Note: Custom ASIC programs executing ahead of contractual milestones",
+      "content": "Official company statement: Official Note: Custom ASIC programs executing ahead of contractual milestones. All prior rumors are categorically false.",
+      "entities": [
+        "Broadcom"
+      ],
+      "event_type": "supply_chain",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": true,
+      "target_status": "contradicted",
+      "reason": "official_denial_retraction"
+    }
+  },
+  {
+    "id": "official_denial_010",
+    "category": "official_denial_retraction",
+    "item_a": {
+      "source_id": "financial_media",
+      "source_item_id": "RUMOR-010",
+      "canonical_url": "https://techrumors.com/news_10.html",
+      "title": "Samsung: Rumor: Samsung spinning off foundry business into independent firm",
+      "content": "Anonymous industry sources report that Rumor: Samsung spinning off foundry business into independent firm.",
+      "entities": [
+        "Samsung"
+      ],
+      "event_type": "supply_chain",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "official_ir",
+      "source_item_id": "OFFICIAL-010",
+      "canonical_url": "https://investor.samsung.com/news_10.html",
+      "title": "Samsung: Regulatory Filing: Samsung has no plans to spin off foundry operations",
+      "content": "Official company statement: Regulatory Filing: Samsung has no plans to spin off foundry operations. All prior rumors are categorically false.",
+      "entities": [
+        "Samsung"
+      ],
+      "event_type": "supply_chain",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": true,
+      "target_status": "contradicted",
+      "reason": "official_denial_retraction"
+    }
+  },
+  {
+    "id": "official_denial_011",
+    "category": "official_denial_retraction",
+    "item_a": {
+      "source_id": "financial_media",
+      "source_item_id": "RUMOR-011",
+      "canonical_url": "https://techrumors.com/news_11.html",
+      "title": "SK Hynix: Report: SK Hynix 1b nm yield rate plunges below 40%",
+      "content": "Anonymous industry sources report that Report: SK Hynix 1b nm yield rate plunges below 40%.",
+      "entities": [
+        "SK Hynix"
+      ],
+      "event_type": "supply_chain",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "official_ir",
+      "source_item_id": "OFFICIAL-011",
+      "canonical_url": "https://investor.skhynix.com/news_11.html",
+      "title": "SK Hynix: Company Statement: DRAM yield curves exceed historical ramp velocity",
+      "content": "Official company statement: Company Statement: DRAM yield curves exceed historical ramp velocity. All prior rumors are categorically false.",
+      "entities": [
+        "SK Hynix"
+      ],
+      "event_type": "supply_chain",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": true,
+      "target_status": "contradicted",
+      "reason": "official_denial_retraction"
+    }
+  },
+  {
+    "id": "official_denial_012",
+    "category": "official_denial_retraction",
+    "item_a": {
+      "source_id": "financial_media",
+      "source_item_id": "RUMOR-012",
+      "canonical_url": "https://techrumors.com/news_12.html",
+      "title": "Applied Materials: Rumor: Export license revoked for semiconductor packaging tools",
+      "content": "Anonymous industry sources report that Rumor: Export license revoked for semiconductor packaging tools.",
+      "entities": [
+        "Applied Materials"
+      ],
+      "event_type": "supply_chain",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "official_ir",
+      "source_item_id": "OFFICIAL-012",
+      "canonical_url": "https://investor.appliedmaterials.com/news_12.html",
+      "title": "Applied Materials: Investor Notice: Export license remains valid and operational",
+      "content": "Official company statement: Investor Notice: Export license remains valid and operational. All prior rumors are categorically false.",
+      "entities": [
+        "Applied Materials"
+      ],
+      "event_type": "supply_chain",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": true,
+      "target_status": "contradicted",
+      "reason": "official_denial_retraction"
+    }
+  },
+  {
+    "id": "official_denial_013",
+    "category": "official_denial_retraction",
+    "item_a": {
+      "source_id": "financial_media",
+      "source_item_id": "RUMOR-013",
+      "canonical_url": "https://techrumors.com/news_13.html",
+      "title": "Lam Research: Market Talk: Key customer replacing Lam etch tools with domestic supplier",
+      "content": "Anonymous industry sources report that Market Talk: Key customer replacing Lam etch tools with domestic supplier.",
+      "entities": [
+        "Lam Research"
+      ],
+      "event_type": "supply_chain",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "official_ir",
+      "source_item_id": "OFFICIAL-013",
+      "canonical_url": "https://investor.lamresearch.com/news_13.html",
+      "title": "Lam Research: Executive Statement: Market share in advanced etch chambers remains above 85%",
+      "content": "Official company statement: Executive Statement: Market share in advanced etch chambers remains above 85%. All prior rumors are categorically false.",
+      "entities": [
+        "Lam Research"
+      ],
+      "event_type": "supply_chain",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": true,
+      "target_status": "contradicted",
+      "reason": "official_denial_retraction"
+    }
+  },
+  {
+    "id": "official_denial_014",
+    "category": "official_denial_retraction",
+    "item_a": {
+      "source_id": "financial_media",
+      "source_item_id": "RUMOR-014",
+      "canonical_url": "https://techrumors.com/news_14.html",
+      "title": "Synopsys: Report: FTC issuing formal block on Ansys acquisition",
+      "content": "Anonymous industry sources report that Report: FTC issuing formal block on Ansys acquisition.",
+      "entities": [
+        "Synopsys"
+      ],
+      "event_type": "supply_chain",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "official_ir",
+      "source_item_id": "OFFICIAL-014",
+      "canonical_url": "https://investor.synopsys.com/news_14.html",
+      "title": "Synopsys: Joint Statement: Parties continue constructive engagement with regulators",
+      "content": "Official company statement: Joint Statement: Parties continue constructive engagement with regulators. All prior rumors are categorically false.",
+      "entities": [
+        "Synopsys"
+      ],
+      "event_type": "supply_chain",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": true,
+      "target_status": "contradicted",
+      "reason": "official_denial_retraction"
+    }
+  },
+  {
+    "id": "official_denial_015",
+    "category": "official_denial_retraction",
+    "item_a": {
+      "source_id": "financial_media",
+      "source_item_id": "RUMOR-015",
+      "canonical_url": "https://techrumors.com/news_15.html",
+      "title": "Western Digital: Rumor: Flash joint venture renegotiation collapses",
+      "content": "Anonymous industry sources report that Rumor: Flash joint venture renegotiation collapses.",
+      "entities": [
+        "Western Digital"
+      ],
+      "event_type": "supply_chain",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "official_ir",
+      "source_item_id": "OFFICIAL-015",
+      "canonical_url": "https://investor.westerndigital.com/news_15.html",
+      "title": "Western Digital: Regulatory Filing: Joint venture operating agreement renewed and confirmed",
+      "content": "Official company statement: Regulatory Filing: Joint venture operating agreement renewed and confirmed. All prior rumors are categorically false.",
+      "entities": [
+        "Western Digital"
+      ],
+      "event_type": "supply_chain",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": true,
+      "is_duplicate": false,
+      "is_revision": true,
+      "target_status": "contradicted",
+      "reason": "official_denial_retraction"
+    }
+  },
+  {
+    "id": "diff_company_001",
+    "category": "different_companies_same_topic",
+    "item_a": {
+      "source_id": "industry_media",
+      "source_item_id": "COMP1-001",
+      "canonical_url": "https://semiengineering.com/mu_1.htm",
+      "title": "Micron: HBM3e production capacity expanded by 50%",
+      "content": "Micron today announced that hbm3e production capacity expanded by 50%.",
+      "entities": [
+        "Micron",
+        "MU"
+      ],
+      "event_type": "capacity",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "industry_media",
+      "source_item_id": "COMP2-001",
+      "canonical_url": "https://semiengineering.com/000660.ks_1.htm",
+      "title": "SK Hynix: HBM3e production capacity expanded by 50%",
+      "content": "SK Hynix today announced that hbm3e production capacity expanded by 50%.",
+      "entities": [
+        "SK Hynix",
+        "000660.KS"
+      ],
+      "event_type": "capacity",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": false,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "different_entities_same_industry_topic"
+    }
+  },
+  {
+    "id": "diff_company_002",
+    "category": "different_companies_same_topic",
+    "item_a": {
+      "source_id": "industry_media",
+      "source_item_id": "COMP1-002",
+      "canonical_url": "https://semiengineering.com/tsm_2.htm",
+      "title": "TSMC: 2nm test wafer achieve sub-0.5nm defect density",
+      "content": "TSMC today announced that 2nm test wafer achieve sub-0.5nm defect density.",
+      "entities": [
+        "TSMC",
+        "TSM"
+      ],
+      "event_type": "capacity",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "industry_media",
+      "source_item_id": "COMP2-002",
+      "canonical_url": "https://semiengineering.com/intc_2.htm",
+      "title": "Intel: 2nm test wafer achieve sub-0.5nm defect density",
+      "content": "Intel today announced that 2nm test wafer achieve sub-0.5nm defect density.",
+      "entities": [
+        "Intel",
+        "INTC"
+      ],
+      "event_type": "capacity",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": false,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "different_entities_same_industry_topic"
+    }
+  },
+  {
+    "id": "diff_company_003",
+    "category": "different_companies_same_topic",
+    "item_a": {
+      "source_id": "industry_media",
+      "source_item_id": "COMP1-003",
+      "canonical_url": "https://semiengineering.com/nvda_3.htm",
+      "title": "NVIDIA: Next-gen enterprise GPU pricing increased by 10%",
+      "content": "NVIDIA today announced that next-gen enterprise gpu pricing increased by 10%.",
+      "entities": [
+        "NVIDIA",
+        "NVDA"
+      ],
+      "event_type": "pricing",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "industry_media",
+      "source_item_id": "COMP2-003",
+      "canonical_url": "https://semiengineering.com/amd_3.htm",
+      "title": "AMD: Next-gen enterprise GPU pricing increased by 10%",
+      "content": "AMD today announced that next-gen enterprise gpu pricing increased by 10%.",
+      "entities": [
+        "AMD",
+        "AMD"
+      ],
+      "event_type": "pricing",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": false,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "different_entities_same_industry_topic"
+    }
+  },
+  {
+    "id": "diff_company_004",
+    "category": "different_companies_same_topic",
+    "item_a": {
+      "source_id": "industry_media",
+      "source_item_id": "COMP1-004",
+      "canonical_url": "https://semiengineering.com/asml_4.htm",
+      "title": "ASML: New lithography system announced for advanced packaging",
+      "content": "ASML today announced that new lithography system announced for advanced packaging.",
+      "entities": [
+        "ASML",
+        "ASML"
+      ],
+      "event_type": "product",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "industry_media",
+      "source_item_id": "COMP2-004",
+      "canonical_url": "https://semiengineering.com/7751.t_4.htm",
+      "title": "Canon: New lithography system announced for advanced packaging",
+      "content": "Canon today announced that new lithography system announced for advanced packaging.",
+      "entities": [
+        "Canon",
+        "7751.T"
+      ],
+      "event_type": "product",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": false,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "different_entities_same_industry_topic"
+    }
+  },
+  {
+    "id": "diff_company_005",
+    "category": "different_companies_same_topic",
+    "item_a": {
+      "source_id": "industry_media",
+      "source_item_id": "COMP1-005",
+      "canonical_url": "https://semiengineering.com/amat_5.htm",
+      "title": "Applied Materials: New plasma etch tool launched for 3D logic integration",
+      "content": "Applied Materials today announced that new plasma etch tool launched for 3d logic integration.",
+      "entities": [
+        "Applied Materials",
+        "AMAT"
+      ],
+      "event_type": "product",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "industry_media",
+      "source_item_id": "COMP2-005",
+      "canonical_url": "https://semiengineering.com/lrcx_5.htm",
+      "title": "Lam Research: New plasma etch tool launched for 3D logic integration",
+      "content": "Lam Research today announced that new plasma etch tool launched for 3d logic integration.",
+      "entities": [
+        "Lam Research",
+        "LRCX"
+      ],
+      "event_type": "product",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": false,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "different_entities_same_industry_topic"
+    }
+  },
+  {
+    "id": "diff_company_006",
+    "category": "different_companies_same_topic",
+    "item_a": {
+      "source_id": "industry_media",
+      "source_item_id": "COMP1-006",
+      "canonical_url": "https://semiengineering.com/snps_6.htm",
+      "title": "Synopsys: AI chip co-design framework deployed for RISC-V ecosystem",
+      "content": "Synopsys today announced that ai chip co-design framework deployed for risc-v ecosystem.",
+      "entities": [
+        "Synopsys",
+        "SNPS"
+      ],
+      "event_type": "product",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "industry_media",
+      "source_item_id": "COMP2-006",
+      "canonical_url": "https://semiengineering.com/cdns_6.htm",
+      "title": "Cadence: AI chip co-design framework deployed for RISC-V ecosystem",
+      "content": "Cadence today announced that ai chip co-design framework deployed for risc-v ecosystem.",
+      "entities": [
+        "Cadence",
+        "CDNS"
+      ],
+      "event_type": "product",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": false,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "different_entities_same_industry_topic"
+    }
+  },
+  {
+    "id": "diff_company_007",
+    "category": "different_companies_same_topic",
+    "item_a": {
+      "source_id": "industry_media",
+      "source_item_id": "COMP1-007",
+      "canonical_url": "https://semiengineering.com/avgo_7.htm",
+      "title": "Broadcom: 1.6Tbps DSP PAM4 transceiver shipping in volume",
+      "content": "Broadcom today announced that 1.6tbps dsp pam4 transceiver shipping in volume.",
+      "entities": [
+        "Broadcom",
+        "AVGO"
+      ],
+      "event_type": "product",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "industry_media",
+      "source_item_id": "COMP2-007",
+      "canonical_url": "https://semiengineering.com/mrvl_7.htm",
+      "title": "Marvell: 1.6Tbps DSP PAM4 transceiver shipping in volume",
+      "content": "Marvell today announced that 1.6tbps dsp pam4 transceiver shipping in volume.",
+      "entities": [
+        "Marvell",
+        "MRVL"
+      ],
+      "event_type": "product",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": false,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "different_entities_same_industry_topic"
+    }
+  },
+  {
+    "id": "diff_company_008",
+    "category": "different_companies_same_topic",
+    "item_a": {
+      "source_id": "industry_media",
+      "source_item_id": "COMP1-008",
+      "canonical_url": "https://semiengineering.com/qcom_8.htm",
+      "title": "Qualcomm: Automotive cockpit chipset adopts 3nm automotive grade process",
+      "content": "Qualcomm today announced that automotive cockpit chipset adopts 3nm automotive grade process.",
+      "entities": [
+        "Qualcomm",
+        "QCOM"
+      ],
+      "event_type": "product",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "industry_media",
+      "source_item_id": "COMP2-008",
+      "canonical_url": "https://semiengineering.com/2454.tw_8.htm",
+      "title": "MediaTek: Automotive cockpit chipset adopts 3nm automotive grade process",
+      "content": "MediaTek today announced that automotive cockpit chipset adopts 3nm automotive grade process.",
+      "entities": [
+        "MediaTek",
+        "2454.TW"
+      ],
+      "event_type": "product",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": false,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "different_entities_same_industry_topic"
+    }
+  },
+  {
+    "id": "diff_company_009",
+    "category": "different_companies_same_topic",
+    "item_a": {
+      "source_id": "industry_media",
+      "source_item_id": "COMP1-009",
+      "canonical_url": "https://semiengineering.com/005930.ks_9.htm",
+      "title": "Samsung: 300-layer 3D NAND technology paper accepted at ISSCC",
+      "content": "Samsung today announced that 300-layer 3d nand technology paper accepted at isscc.",
+      "entities": [
+        "Samsung",
+        "005930.KS"
+      ],
+      "event_type": "product",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "industry_media",
+      "source_item_id": "COMP2-009",
+      "canonical_url": "https://semiengineering.com/kioxia_9.htm",
+      "title": "Kioxia: 300-layer 3D NAND technology paper accepted at ISSCC",
+      "content": "Kioxia today announced that 300-layer 3d nand technology paper accepted at isscc.",
+      "entities": [
+        "Kioxia",
+        "KIOXIA"
+      ],
+      "event_type": "product",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": false,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "different_entities_same_industry_topic"
+    }
+  },
+  {
+    "id": "diff_company_010",
+    "category": "different_companies_same_topic",
+    "item_a": {
+      "source_id": "industry_media",
+      "source_item_id": "COMP1-010",
+      "canonical_url": "https://semiengineering.com/aapl_10.htm",
+      "title": "Apple: Custom generative AI accelerator designed for mobile phones",
+      "content": "Apple today announced that custom generative ai accelerator designed for mobile phones.",
+      "entities": [
+        "Apple",
+        "AAPL"
+      ],
+      "event_type": "product",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "industry_media",
+      "source_item_id": "COMP2-010",
+      "canonical_url": "https://semiengineering.com/googl_10.htm",
+      "title": "Google: Custom generative AI accelerator designed for mobile phones",
+      "content": "Google today announced that custom generative ai accelerator designed for mobile phones.",
+      "entities": [
+        "Google",
+        "GOOGL"
+      ],
+      "event_type": "product",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": false,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "different_entities_same_industry_topic"
+    }
+  },
+  {
+    "id": "diff_company_011",
+    "category": "different_companies_same_topic",
+    "item_a": {
+      "source_id": "industry_media",
+      "source_item_id": "COMP1-011",
+      "canonical_url": "https://semiengineering.com/arm_11.htm",
+      "title": "Arm: Next generation high-performance core architecture disclosed",
+      "content": "Arm today announced that next generation high-performance core architecture disclosed.",
+      "entities": [
+        "Arm",
+        "ARM"
+      ],
+      "event_type": "product",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "industry_media",
+      "source_item_id": "COMP2-011",
+      "canonical_url": "https://semiengineering.com/sifive_11.htm",
+      "title": "SiFive: Next generation high-performance core architecture disclosed",
+      "content": "SiFive today announced that next generation high-performance core architecture disclosed.",
+      "entities": [
+        "SiFive",
+        "SIFIVE"
+      ],
+      "event_type": "product",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": false,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "different_entities_same_industry_topic"
+    }
+  },
+  {
+    "id": "diff_company_012",
+    "category": "different_companies_same_topic",
+    "item_a": {
+      "source_id": "industry_media",
+      "source_item_id": "COMP1-012",
+      "canonical_url": "https://semiengineering.com/wdc_12.htm",
+      "title": "Western Digital: 30TB HAMR enterprise hard drive enters cloud qualification",
+      "content": "Western Digital today announced that 30tb hamr enterprise hard drive enters cloud qualification.",
+      "entities": [
+        "Western Digital",
+        "WDC"
+      ],
+      "event_type": "product",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "industry_media",
+      "source_item_id": "COMP2-012",
+      "canonical_url": "https://semiengineering.com/stx_12.htm",
+      "title": "Seagate: 30TB HAMR enterprise hard drive enters cloud qualification",
+      "content": "Seagate today announced that 30tb hamr enterprise hard drive enters cloud qualification.",
+      "entities": [
+        "Seagate",
+        "STX"
+      ],
+      "event_type": "product",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": false,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "different_entities_same_industry_topic"
+    }
+  },
+  {
+    "id": "diff_company_013",
+    "category": "different_companies_same_topic",
+    "item_a": {
+      "source_id": "industry_media",
+      "source_item_id": "COMP1-013",
+      "canonical_url": "https://semiengineering.com/nxpi_13.htm",
+      "title": "NXP: Silicon carbide power module capacity reaches 100k wafers/year",
+      "content": "NXP today announced that silicon carbide power module capacity reaches 100k wafers/year.",
+      "entities": [
+        "NXP",
+        "NXPI"
+      ],
+      "event_type": "capacity",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "industry_media",
+      "source_item_id": "COMP2-013",
+      "canonical_url": "https://semiengineering.com/ifx_13.htm",
+      "title": "Infineon: Silicon carbide power module capacity reaches 100k wafers/year",
+      "content": "Infineon today announced that silicon carbide power module capacity reaches 100k wafers/year.",
+      "entities": [
+        "Infineon",
+        "IFX"
+      ],
+      "event_type": "capacity",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": false,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "different_entities_same_industry_topic"
+    }
+  },
+  {
+    "id": "diff_company_014",
+    "category": "different_companies_same_topic",
+    "item_a": {
+      "source_id": "industry_media",
+      "source_item_id": "COMP1-014",
+      "canonical_url": "https://semiengineering.com/mchp_14.htm",
+      "title": "Microchip: Automotive MCU supply contract signed with European automaker",
+      "content": "Microchip today announced that automotive mcu supply contract signed with european automaker.",
+      "entities": [
+        "Microchip",
+        "MCHP"
+      ],
+      "event_type": "major_customer",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "industry_media",
+      "source_item_id": "COMP2-014",
+      "canonical_url": "https://semiengineering.com/stmpa_14.htm",
+      "title": "STMicroelectronics: Automotive MCU supply contract signed with European automaker",
+      "content": "STMicroelectronics today announced that automotive mcu supply contract signed with european automaker.",
+      "entities": [
+        "STMicroelectronics",
+        "STMPA"
+      ],
+      "event_type": "major_customer",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": false,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "different_entities_same_industry_topic"
+    }
+  },
+  {
+    "id": "diff_company_015",
+    "category": "different_companies_same_topic",
+    "item_a": {
+      "source_id": "industry_media",
+      "source_item_id": "COMP1-015",
+      "canonical_url": "https://semiengineering.com/ter_15.htm",
+      "title": "Teradyne: Ultra-high pin count SoC tester announced for 2nm chips",
+      "content": "Teradyne today announced that ultra-high pin count soc tester announced for 2nm chips.",
+      "entities": [
+        "Teradyne",
+        "TER"
+      ],
+      "event_type": "product",
+      "language": "en"
+    },
+    "item_b": {
+      "source_id": "industry_media",
+      "source_item_id": "COMP2-015",
+      "canonical_url": "https://semiengineering.com/6857.t_15.htm",
+      "title": "Advantest: Ultra-high pin count SoC tester announced for 2nm chips",
+      "content": "Advantest today announced that ultra-high pin count soc tester announced for 2nm chips.",
+      "entities": [
+        "Advantest",
+        "6857.T"
+      ],
+      "event_type": "product",
+      "language": "en"
+    },
+    "expected": {
+      "should_merge": false,
+      "is_duplicate": false,
+      "is_revision": false,
+      "reason": "different_entities_same_industry_topic"
+    }
+  }
+]

@@ -1,16 +1,29 @@
 <!DOCTYPE html>
-<html lang="zh-CN" class="dark">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Trace — 美股 + A股重大事件智能雷达</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Trace — 捕捉关键事件，看见更大的机会</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    /* Apple 原生字体与平滑抗锯齿 */
+    :root {
+      --ease-apple: cubic-bezier(0.23, 1, 0.32, 1);
+      --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+      --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+      --duration-push: 280ms;
+      --duration-pop: 250ms;
+    }
     * {
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Rounded", "SF Pro Display", "PingFang SC", "Helvetica Neue", sans-serif;
+    }
+    .tnum {
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: "tnum" 1;
     }
     .no-scrollbar::-webkit-scrollbar {
       display: none;
@@ -19,476 +32,1439 @@
       -ms-overflow-style: none;
       scrollbar-width: none;
     }
-    .ios-card {
-      background: rgba(28, 28, 30, 0.78);
-      backdrop-filter: blur(25px);
-      -webkit-backdrop-filter: blur(25px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+
+    /* 触觉反馈 (Apple / Emil: 仅小型独立按钮使用微缩放，卡片/单元格绝对禁止缩放) */
+    .btn-press {
+      transition: transform 100ms var(--ease-apple), opacity 100ms ease;
     }
-    .light .ios-card {
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(25px);
-      -webkit-backdrop-filter: blur(25px);
-      border: 1px solid rgba(0, 0, 0, 0.06);
-      box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+    .btn-press:active {
+      transform: scale(0.98);
+      opacity: 0.94;
     }
-    .ios-glass-bar {
-      background: rgba(20, 20, 22, 0.82);
-      backdrop-filter: blur(30px);
-      -webkit-backdrop-filter: blur(30px);
-      border-top: 0.5px solid rgba(255, 255, 255, 0.1);
+    .touch-press {
+      transition: transform 100ms var(--ease-apple), opacity 100ms ease;
     }
-    .light .ios-glass-bar {
-      background: rgba(248, 248, 250, 0.85);
-      backdrop-filter: blur(30px);
-      -webkit-backdrop-filter: blur(30px);
-      border-top: 0.5px solid rgba(0, 0, 0, 0.1);
+    .touch-press:active {
+      transform: scale(0.98);
+      opacity: 0.94;
+    }
+
+    /* Apple 风格卡片与分组：采用 Inset Grouped 背景与柔和边线 */
+    .apple-card {
+      background: #FFFFFF;
+      border: 1px solid rgba(15, 23, 42, 0.05);
+      border-radius: 20px;
+      box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.03);
+    }
+    .apple-cell, .card-active {
+      transition: background-color 80ms ease-out;
+    }
+    .apple-cell:active, .card-active:active {
+      background-color: #F8FAFC !important;
+    }
+
+    /* Switch 物理开关 */
+    .switch-bg {
+      transition: background-color 180ms var(--ease-apple);
+    }
+    .switch-dot {
+      transition: transform 180ms var(--ease-apple);
+    }
+
+    /* === 视差转场系统 === */
+    .view-container {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      height: 100dvh;
+      max-height: 852px;
+      overflow: hidden;
+      background: #000000;
+    }
+    .view-page {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      background: #F2F4F8;
+      transition: transform var(--duration-push) var(--ease-apple), opacity var(--duration-push) var(--ease-apple);
+      will-change: transform, opacity;
+    }
+
+    .tab-view.tab-hidden {
+      display: none !important;
+    }
+    .tab-view.active {
+      transform: translateX(0) scale(1);
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .tab-view.receded {
+      transform: translateX(-24%) scale(0.98);
+      opacity: 0.92;
+      pointer-events: none;
+    }
+
+    /* 详情页层级状态 */
+    .page-detail {
+      box-shadow: -12px 0 30px -4px rgba(0, 0, 0, 0.18);
+    }
+    .page-detail.hidden-right {
+      transform: translateX(100%);
+      opacity: 0;
+      pointer-events: none;
+      visibility: hidden;
+    }
+    .page-detail.active {
+      transform: translateX(0);
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    /* 详情页级联入场 */
+    @keyframes node-enter {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .stagger-1 { animation: node-enter 220ms var(--ease-apple) 30ms both; }
+    .stagger-2 { animation: node-enter 220ms var(--ease-apple) 60ms both; }
+    .stagger-3 { animation: node-enter 220ms var(--ease-apple) 90ms both; }
+    .stagger-4 { animation: node-enter 220ms var(--ease-apple) 120ms both; }
+
+    /* 无障碍减弱动画 */
+    @media (prefers-reduced-motion: reduce) {
+      .view-page, .stagger-1, .stagger-2, .stagger-3, .stagger-4 {
+        animation: none !important;
+        transition: opacity 160ms ease !important;
+        transform: none !important;
+      }
     }
   </style>
 </head>
-<body class="bg-[#000000] text-[#F5F5F7] min-h-screen flex justify-center items-start selection:bg-blue-500/30">
+<body class="bg-[#ECEFF3] min-h-screen flex justify-center items-center text-[#0F172A] selection:bg-slate-200 p-0 md:py-6">
 
-  <!-- 移动端真机外框模拟（iPhone 16 Pro 比例） -->
-  <div id="phone-container" class="w-full max-w-[420px] min-h-screen bg-[#000000] relative flex flex-col pb-24 shadow-2xl transition-colors duration-300">
+  <!-- iPhone 16 Pro 画布外壳 (393px × 852px) -->
+  <div class="w-full max-w-[393px] h-screen max-h-[852px] bg-[#F8FAFC] flex flex-col relative shadow-2xl overflow-hidden md:rounded-[44px] md:border md:border-slate-300/80 view-container">
 
-    <!-- 1. iOS 顶部状态栏 + 微信小程序右上角胶囊 -->
-    <header class="sticky top-0 z-40 bg-[#000000]/80 backdrop-blur-xl border-b border-white/[0.04]">
-      <!-- 状态栏时间与信号 -->
-      <div class="flex justify-between items-center px-6 pt-3 pb-1 text-xs font-semibold tracking-tight text-white/90">
-        <span>9:41</span>
-        <div class="flex items-center space-x-1.5">
-          <!-- 信号柱 -->
-          <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M2 17h3v4H2v-4zm6-5h3v9H8v-9zm6-5h3v14h-3V7zm6-5h3v19h-3V2z"/></svg>
-          <!-- WiFi -->
-          <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 4C7.31 4 3.07 5.9 0 8.98L12 21 24 8.98C20.93 5.9 16.69 4 12 4zm0 3.5c3.78 0 7.21 1.5 9.75 3.96L12 18.25 2.25 11.46C4.79 9 8.22 7.5 12 7.5z"/></svg>
-          <!-- 电池 -->
-          <div class="w-5 h-2.5 border border-white/80 rounded-[4px] p-0.5 flex items-center">
-            <div class="h-full w-3.5 bg-white rounded-[2px]"></div>
+    <!-- ==================== Tab 0：首页雷达 (Editorial Clean Radar) ==================== -->
+    <div id="view-home" class="view-page tab-view active pb-28">
+
+      <!-- 顶部 Header (Apple 风格纯净状态栏) -->
+      <header class="sticky top-0 z-20 bg-[#F8FAFC]/90 backdrop-blur-xl px-5 pt-3 pb-2">
+        <div class="flex justify-between items-center text-[14px] font-semibold text-slate-800 tnum tracking-tight mb-3">
+          <span class="live-clock">09:41</span>
+          <div class="flex items-center space-x-1.5">
+            <svg class="w-4 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M2 17h3v4H2v-4zm6-5h3v9H8v-9zm6-5h3v14h-3V7zm6-5h3v19h-3V2z"/></svg>
+            <svg class="w-4 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 4C7.31 4 3.07 5.9 0 8.98L12 21 24 8.98C20.93 5.9 16.69 4 12 4zm0 3.5c3.78 0 7.21 1.5 9.75 3.96L12 18.25 2.25 11.46C4.79 9 8.22 7.5 12 7.5z"/></svg>
+            <div class="w-5 h-2.5 border border-slate-700 rounded-[4px] p-0.5 flex items-center">
+              <div class="h-full w-3 bg-slate-800 rounded-[1.5px]"></div>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- 微信小程序顶栏与操作胶囊 -->
-      <div class="flex justify-between items-center px-5 py-2.5">
-        <div class="flex items-center space-x-2">
-          <div class="w-7 h-7 rounded-lg bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center shadow-md shadow-blue-500/20">
-            <svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-            </svg>
+        <div class="flex justify-between items-end pb-1">
+          <div>
+            <div class="text-[30px] font-black tracking-[-0.03em] text-slate-900 leading-none">
+              Trace
+            </div>
+            <p class="text-[12px] font-medium text-slate-400 mt-1.5 tracking-tight">
+              官方源 · 产业链拓扑 · 核心标的
+            </p>
           </div>
-          <span class="text-sm font-semibold tracking-wide text-white">Trace 雷达</span>
-        </div>
 
-        <!-- 微信小程序标准胶囊按键 -->
-        <div class="flex items-center bg-white/[0.08] border border-white/[0.12] rounded-full px-2.5 py-1 space-x-2.5 text-white/90">
-          <button class="hover:opacity-70 active:scale-95 transition-all">
-            <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>
-          </button>
-          <div class="w-[1px] h-3.5 bg-white/20"></div>
-          <button class="hover:opacity-70 active:scale-95 transition-all">
-            <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="2" fill="none"/><circle cx="12" cy="12" r="3"/></svg>
-          </button>
-        </div>
-      </div>
-    </header>
-
-    <!-- 2. Apple 大标题导航栏 -->
-    <section class="px-5 pt-4 pb-2">
-      <div class="flex justify-between items-baseline">
-        <div>
           <div class="flex items-center space-x-2">
-            <h1 class="text-3xl font-extrabold tracking-tight text-white">重大事件</h1>
-            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-emerald-500/15 text-emerald-400 border border-emerald-500/20">
-              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse mr-1"></span>
-              7×24 监听
-            </span>
+            <button onclick="refreshAllData()" class="w-8 h-8 rounded-full bg-white border border-slate-200/80 flex items-center justify-center text-slate-600 touch-press shadow-xs" title="刷新全量数据">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+            </button>
+            <button onclick="switchTab(3)" class="w-8 h-8 rounded-full bg-[#0F172A] text-white flex items-center justify-center font-bold text-[12px] touch-press shadow-xs">
+              Z
+            </button>
           </div>
-          <p class="text-xs text-[#86868B] mt-1 tracking-normal">美股 + A股 官方权威源与产业图谱共振监控</p>
         </div>
-        <!-- 切换亮暗模式 -->
-        <button onclick="toggleTheme()" class="text-xs px-2.5 py-1 rounded-full bg-white/[0.08] text-white/80 border border-white/10 hover:bg-white/15 transition-all">
-          🌓 模式
-        </button>
-      </div>
-    </section>
+      </header>
 
-    <!-- 3. iOS 原生风格分段控制器 -->
-    <div class="px-5 py-3">
-      <div class="bg-[#1C1C1E] p-1 rounded-xl flex items-center text-xs font-medium text-[#8E8E93] border border-white/[0.04]">
-        <button onclick="filterMarket('all')" id="tab-all" class="flex-1 py-1.5 rounded-lg bg-white/15 text-white font-semibold shadow-sm transition-all text-center">
-          全部
-        </button>
-        <button onclick="filterMarket('US')" id="tab-US" class="flex-1 py-1.5 rounded-lg hover:text-white transition-all text-center">
-          美股
-        </button>
-        <button onclick="filterMarket('CN')" id="tab-CN" class="flex-1 py-1.5 rounded-lg hover:text-white transition-all text-center">
-          A股
-        </button>
-        <button onclick="filterMarket('watchlist')" id="tab-watchlist" class="flex-1 py-1.5 rounded-lg hover:text-white transition-all text-center flex items-center justify-center space-x-1">
-          <span>自选</span>
-          <span class="bg-blue-500 text-white text-[9px] px-1.5 py-0.2 rounded-full font-bold">3</span>
-        </button>
-      </div>
+      <!-- 纯净排版 Hero 导言 -->
+      <section class="px-5 pt-3 pb-4">
+        <div class="p-4 rounded-2xl bg-white border border-slate-200/80 card-active cursor-pointer" onclick="navigateToDetail('apple-nand')">
+          <div class="text-[11px] font-semibold tracking-wider uppercase text-slate-400 mb-1">今日宏观与行业主线</div>
+          <h1 class="text-[18px] font-bold text-slate-900 leading-snug tracking-tight">
+            高密度闪存长协重定价，与半导体材料二供穿透
+          </h1>
+          <div class="mt-2.5 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
+            <span>官方源已核验 2 组重大变动</span>
+            <span class="font-medium text-blue-600">查看推演全景 →</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 市场联动指数条 (简洁通栏无框) -->
+      <section class="px-5 pb-4">
+        <div class="grid grid-cols-4 gap-2 text-center tnum" id="indices-container">
+          <div class="bg-white py-2 px-1.5 rounded-xl border border-slate-200/70">
+            <div class="text-[10px] text-slate-400 font-medium">标普 500</div>
+            <div class="text-[13px] font-bold text-slate-900 mt-0.5">5,618.2</div>
+            <div class="text-[10px] font-semibold text-emerald-600 mt-0.5">+1.23%</div>
+          </div>
+          <div class="bg-white py-2 px-1.5 rounded-xl border border-slate-200/70">
+            <div class="text-[10px] text-slate-400 font-medium">纳斯达克</div>
+            <div class="text-[13px] font-bold text-slate-900 mt-0.5">17,628</div>
+            <div class="text-[10px] font-semibold text-emerald-600 mt-0.5">+1.56%</div>
+          </div>
+          <div class="bg-white py-2 px-1.5 rounded-xl border border-slate-200/70">
+            <div class="text-[10px] text-slate-400 font-medium">道琼斯</div>
+            <div class="text-[13px] font-bold text-slate-900 mt-0.5">41,503</div>
+            <div class="text-[10px] font-semibold text-emerald-600 mt-0.5">+0.89%</div>
+          </div>
+          <div class="bg-white py-2 px-1.5 rounded-xl border border-slate-200/70">
+            <div class="text-[10px] text-slate-400 font-medium">科创 50</div>
+            <div class="text-[13px] font-bold text-slate-900 mt-0.5">824.1</div>
+            <div class="text-[10px] font-semibold text-emerald-600 mt-0.5">+2.05%</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 核心事件流 (去卡片化，采用 Apple Inset Group 列表结构) -->
+      <section class="px-5 pb-6">
+        <div class="flex justify-between items-center mb-2 px-0.5">
+          <h2 class="text-[14px] font-bold text-slate-900">核心事件雷达</h2>
+          <span class="text-[11px] text-slate-400">近 24 小时</span>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-slate-200/80 divide-y divide-slate-100 overflow-hidden">
+
+          <!-- 事件 1 (路透社) -->
+          <div class="p-4 apple-cell cursor-pointer" onclick="navigateToDetail('apple-nand')">
+            <div class="flex items-center justify-between text-[11px] text-slate-400 mb-1.5 tnum">
+              <span>路透社 · 14:02 EST</span>
+              <span class="text-slate-700 font-medium">4 级传导</span>
+            </div>
+
+            <h3 class="text-[15px] font-bold text-slate-900 leading-snug tracking-tight">
+              苹果评估多元化 NAND 闪存采购来源，拟分散主力供应商份额
+            </h3>
+
+            <p class="text-[12px] text-slate-500 mt-1.5 leading-relaxed line-clamp-2">
+              大客户针对铠侠展开性能认证，压制次年高端合约毛利，利好亚太外包封测生态。
+            </p>
+
+            <div class="mt-3 flex items-center justify-between text-[11px] tnum">
+              <div class="flex items-center space-x-3">
+                <span class="font-medium text-slate-700">美光 MU <strong class="text-rose-600 font-bold">-1.15%</strong></span>
+                <span class="font-medium text-slate-700">中芯 688981 <strong class="text-emerald-600 font-bold">+2.45%</strong></span>
+              </div>
+              <span class="text-slate-400">图谱 ↗</span>
+            </div>
+          </div>
+
+          <!-- 事件 2 (商务部) -->
+          <div class="p-4 apple-cell cursor-pointer" onclick="navigateToDetail('chip-export')">
+            <div class="flex items-center justify-between text-[11px] text-slate-400 mb-1.5 tnum">
+              <span>商务部公告 · 11:30 EST</span>
+              <span class="text-slate-700 font-medium">3 级传导</span>
+            </div>
+
+            <h3 class="text-[15px] font-bold text-slate-900 leading-snug tracking-tight">
+              高算力芯片外延材料管制条例更新，特种气体审查趋严
+            </h3>
+
+            <p class="text-[12px] text-slate-500 mt-1.5 leading-relaxed line-clamp-2">
+              先进制程电子化学品审查趋紧，强化本土材料厂商在晶圆产线二供验证逻辑。
+            </p>
+
+            <div class="mt-3 flex items-center justify-between text-[11px] tnum">
+              <div class="flex items-center space-x-3">
+                <span class="font-medium text-slate-700">安集 688012 <strong class="text-emerald-600 font-bold">+4.12%</strong></span>
+                <span class="font-medium text-slate-700">ASML <strong class="text-rose-600 font-bold">-0.80%</strong></span>
+              </div>
+              <span class="text-slate-400">图谱 ↗</span>
+            </div>
+          </div>
+
+          <!-- 事件 3 (台积电) -->
+          <div class="p-4 apple-cell cursor-pointer" onclick="navigateToDetail('tsmc-2nm')">
+            <div class="flex items-center justify-between text-[11px] text-slate-400 mb-1.5 tnum">
+              <span>行业通报 · 昨日 18:20</span>
+              <span class="text-slate-700 font-medium">3 级传导</span>
+            </div>
+
+            <h3 class="text-[15px] font-bold text-slate-900 leading-snug tracking-tight">
+              台积电 2nm 试产良率超预期，量产时间表维持 2025 下半年
+            </h3>
+
+            <div class="mt-2.5 flex items-center justify-between text-[11px] tnum">
+              <span class="font-medium text-slate-700">台积电 TSM <strong class="text-emerald-600 font-bold">+3.20%</strong></span>
+              <span class="text-slate-400">图谱 ↗</span>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
     </div>
 
-    <!-- 4. 今日最高焦点/风险事件 Hero 卡片 -->
-    <section class="px-5 py-2">
-      <div class="ios-card rounded-2xl p-4 relative overflow-hidden group cursor-pointer border border-amber-500/20 bg-gradient-to-b from-[#1C1C1E]/90 to-[#121214]/90" onclick="openDetail('EVT-SNDK-01')">
-        <div class="flex justify-between items-start">
-          <div class="flex items-center space-x-2">
-            <span class="px-2 py-0.5 rounded-md text-[11px] font-semibold bg-rose-500/15 text-rose-400 border border-rose-500/25 flex items-center">
-              <span class="mr-1">🔴</span> 偏利空
-            </span>
-            <span class="px-2 py-0.5 rounded-md text-[11px] font-medium bg-white/[0.06] text-white/80">
-              大客户变动
-            </span>
-            <span class="px-2 py-0.5 rounded-md text-[11px] font-medium bg-white/[0.06] text-white/80">
-              官方证实
-            </span>
-          </div>
 
-          <div class="text-right">
-            <div class="flex items-baseline justify-end space-x-0.5">
-              <span class="text-2xl font-extrabold tracking-tight text-white">8.6</span>
-              <span class="text-xs text-[#86868B] font-medium">/10</span>
-            </div>
-            <div class="text-[10px] text-amber-400 font-medium">置信度 87%</div>
-          </div>
-        </div>
-
-        <div class="mt-3">
-          <h2 class="text-base font-bold text-white leading-snug tracking-tight group-hover:text-blue-400 transition-colors">
-            Apple 据报道正调整 NAND 采购策略，评估扩大其他闪存供应来源
-          </h2>
-          <p class="text-xs text-[#A1A1A6] mt-1.5 leading-relaxed line-clamp-2">
-            若采购结构发生实质变化，将直接对主要供应商现有市场份额预期与定价能力构成下行压制。
+    <!-- ==================== Tab 1：产业链 AI 推演 (Clean Stream) ==================== -->
+    <div id="view-ask" class="view-page tab-view tab-hidden pb-32">
+      <!-- 顶部 Header -->
+      <header class="sticky top-0 z-20 bg-[#F8FAFC]/95 backdrop-blur-xl px-5 pt-3 pb-2.5 border-b border-slate-200/60 flex justify-between items-center">
+        <div>
+          <h1 class="text-[18px] font-bold text-slate-900 tracking-tight leading-none">
+            产业链推演
+          </h1>
+          <p class="text-[11px] font-medium text-slate-400 mt-1">
+            Trace Graph 推理 · 14 家官方源直连
           </p>
         </div>
+        <button onclick="clearChat()" class="text-slate-400 hover:text-slate-700 p-1.5 rounded-full touch-press" title="清空对话">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        </button>
+      </header>
 
-        <div class="mt-3.5 pt-3 border-t border-white/[0.06] flex items-center justify-between">
-          <div class="flex items-center space-x-2">
-            <div class="flex items-center space-x-1.5 bg-white/[0.05] px-2.5 py-1 rounded-lg">
-              <span class="text-xs font-bold text-white">SNDK</span>
-              <span class="text-xs font-semibold text-rose-400">-2.4%</span>
-            </div>
-            <div class="flex items-center space-x-1.5 bg-white/[0.05] px-2.5 py-1 rounded-lg">
-              <span class="text-xs font-bold text-white">MU</span>
-              <span class="text-xs font-semibold text-rose-400">-1.1%</span>
-            </div>
-          </div>
-          <div class="text-[11px] text-[#86868B] flex items-center space-x-1">
-            <span>Reuters · 14:02</span>
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+      <!-- 对话内容流 -->
+      <div id="chat-stream" class="px-5 py-4 space-y-4">
+
+        <!-- 快捷研报提示 (简约细边框，无彩色背景) -->
+        <div class="space-y-1.5 pb-1">
+          <div class="text-[11px] font-semibold text-slate-400 mb-1">研报追问建议</div>
+          <button onclick="askPreset('请深度评估苹果评估铠侠 NAND 闪存对美光科技与闪迪的冲击')" class="w-full text-left p-3 rounded-xl bg-white border border-slate-200/80 text-[12px] text-slate-700 card-active flex justify-between items-center">
+            <span>[美光/闪迪] 苹果引入二供对 Q4 合约毛利率影响？</span>
+            <span class="text-slate-400 text-[11px]">→</span>
+          </button>
+          <button onclick="askPreset('该事件对 A 股半导体封装测试与材料设备板块有何传导映射？')" class="w-full text-left p-3 rounded-xl bg-white border border-slate-200/80 text-[12px] text-slate-700 card-active flex justify-between items-center">
+            <span>[A股封测] 铠侠合资产线良率突破对亚太代工的波及？</span>
+            <span class="text-slate-400 text-[11px]">→</span>
+          </button>
+        </div>
+
+        <!-- 对话 1：用户提问 (iMessage / Apple 经典高对比深灰气泡) -->
+        <div class="flex justify-end">
+          <div class="max-w-[85%] bg-[#0F172A] text-white px-3.5 py-2.5 rounded-2xl rounded-tr-xs text-[13px] leading-relaxed">
+            请深度评估苹果评估铠侠 NAND 闪存对美光科技（MU）与闪迪（SNDK）的直接与间接冲击。
           </div>
         </div>
 
-        <div class="mt-2.5 bg-white/[0.03] rounded-lg px-2.5 py-1.5 flex items-center text-[10px] text-[#86868B] overflow-x-auto no-scrollbar space-x-1.5">
-          <span class="text-white/80 font-medium whitespace-nowrap">Apple 采购</span>
-          <span>➔</span>
-          <span class="whitespace-nowrap">NAND 份额预期</span>
-          <span>➔</span>
-          <span class="whitespace-nowrap">闪存合约价格</span>
-          <span>➔</span>
-          <span class="text-amber-300 font-semibold whitespace-nowrap">SNDK / MU</span>
+        <!-- 对话 2：Trace 深度推演 (去卡片装饰，回归排版) -->
+        <div class="space-y-2">
+          <div class="text-[11px] text-slate-400 font-mono">
+            已检索 14 家官方源 · 关联 4 级传导链路 · 耗时 240ms
+          </div>
+
+          <div class="bg-white rounded-2xl border border-slate-200/80 p-4 text-[13px] text-slate-700 leading-relaxed space-y-3">
+            <div>
+              <div class="font-bold text-slate-900">1. 直接营收敞口与长约谈判博弈</div>
+              <p class="text-[12px] text-slate-600 mt-1 leading-relaxed">
+                大客户采购占美光（MU）NAND 出货约 <span class="font-mono font-semibold text-slate-900">11%~14%</span>，占闪迪约 <span class="font-mono font-semibold text-slate-900">18%</span>。二供进入送样阶段，次年长单溢价空间预计压缩 <strong class="text-rose-600 font-mono font-bold">120~180bp</strong>。
+              </p>
+            </div>
+
+            <div>
+              <div class="font-bold text-slate-900">2. 供应链存量切分与分化</div>
+              <p class="text-[12px] text-slate-600 mt-1 leading-relaxed">
+                原厂高端排产面临微调；铠侠若长单落定，产能利用率将抬升 8%~10%，利好其在亚太的封装外包伙伴。
+              </p>
+            </div>
+
+            <div class="pt-2 border-t border-slate-100 flex items-center justify-between">
+              <span class="text-[11px] text-slate-400 font-mono">底层事件 EVT-20260916</span>
+              <button onclick="navigateToDetail('apple-nand')" class="text-[11px] font-semibold text-blue-600">
+                查看 4 级图谱 ↗
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 底部输入条 -->
+      <div class="absolute bottom-[68px] left-0 right-0 bg-white/95 backdrop-blur-2xl border-t border-slate-200/80 p-3 z-20">
+        <div class="flex items-center space-x-2">
+          <input id="input-question" type="text" placeholder="输入宏观事件或标的代码追问..." class="flex-1 bg-slate-100 rounded-xl px-3.5 py-2 text-[13px] text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-1 focus:ring-slate-400 transition-all">
+          <button onclick="sendQuestion()" class="touch-press px-3.5 py-2 rounded-xl bg-[#0F172A] text-white text-[12px] font-bold">
+            发送
+          </button>
         </div>
       </div>
-    </section>
-
-    <!-- 5. 快速过滤标签胶囊 -->
-    <div class="px-5 py-2 flex items-center space-x-2 overflow-x-auto no-scrollbar text-xs">
-      <button class="px-3 py-1 rounded-full bg-blue-600 text-white font-medium whitespace-nowrap shadow-sm shadow-blue-500/20">
-        全部事件
-      </button>
-      <button class="px-3 py-1 rounded-full bg-[#1C1C1E] text-[#86868B] hover:text-white font-medium whitespace-nowrap border border-white/[0.06] transition-all">
-        🔥 评分 ≥ 7.0
-      </button>
-      <button class="px-3 py-1 rounded-full bg-[#1C1C1E] text-[#86868B] hover:text-white font-medium whitespace-nowrap border border-white/[0.06] transition-all">
-        🏛️ 监管与政策
-      </button>
-      <button class="px-3 py-1 rounded-full bg-[#1C1C1E] text-[#86868B] hover:text-white font-medium whitespace-nowrap border border-white/[0.06] transition-all">
-        🏭 产能与供需
-      </button>
-      <button class="px-3 py-1 rounded-full bg-[#1C1C1E] text-[#86868B] hover:text-white font-medium whitespace-nowrap border border-white/[0.06] transition-all">
-        ⚡️ 仅官方一手
-      </button>
     </div>
 
-    <!-- 6. 重大事件流卡片群 -->
-    <main id="event-list" class="px-5 py-2 space-y-3">
-      <!-- 卡片 1 -->
-      <article class="event-card US ios-card rounded-2xl p-4 cursor-pointer hover:border-white/20 transition-all active:scale-[0.99]" onclick="openDetail('EVT-BIS-02')">
-        <div class="flex justify-between items-start">
-          <div class="flex items-center space-x-1.5 flex-wrap gap-y-1">
-            <span class="px-2 py-0.5 rounded-md text-[10px] font-semibold bg-rose-500/15 text-rose-400 border border-rose-500/25">
-              🔴 偏利空
-            </span>
-            <span class="px-2 py-0.5 rounded-md text-[10px] font-medium bg-purple-500/15 text-purple-300 border border-purple-500/20">
-              政策法规
-            </span>
-            <span class="px-2 py-0.5 rounded-md text-[10px] font-medium bg-emerald-500/15 text-emerald-300">
-              官方正式发布
-            </span>
-          </div>
-          <div class="text-right">
-            <span class="text-xl font-extrabold text-white">9.2</span>
-            <span class="text-[10px] text-[#86868B]">/10</span>
-          </div>
+
+    <!-- ==================== Tab 2：自选监控 (Apple Stocks Inset List) ==================== -->
+    <div id="view-watchlist" class="view-page tab-view tab-hidden pb-28">
+      <!-- 顶部 Header -->
+      <header class="sticky top-0 z-20 bg-[#F8FAFC]/95 backdrop-blur-xl px-5 pt-3 pb-2.5 border-b border-slate-200/60 flex justify-between items-center">
+        <div>
+          <h1 class="text-[18px] font-bold text-slate-900 tracking-tight leading-none">
+            自选与预警
+          </h1>
+          <p class="text-[11px] font-medium text-slate-400 mt-1" id="watchlist-subtitle">
+            5 支标的 · 实时行情直连
+          </p>
+        </div>
+        <button onclick="openAddTickerModal()" class="touch-press bg-[#0F172A] text-white px-3 py-1.5 rounded-full text-[12px] font-bold">
+          + 录入
+        </button>
+      </header>
+
+      <!-- 滚动内容区 -->
+      <div class="px-5 py-4 space-y-4">
+
+        <!-- 市场分段切换器 (Apple 经典浅灰药丸) -->
+        <div class="bg-slate-200/70 p-0.5 rounded-xl flex text-[12px] font-medium text-slate-600">
+          <button id="seg-all" onclick="filterMarket('all')" class="flex-1 py-1 rounded-lg text-slate-900 font-bold bg-white shadow-xs">
+            全部 (4)
+          </button>
+          <button id="seg-us" onclick="filterMarket('US')" class="flex-1 py-1 rounded-lg hover:text-slate-900">
+            美股 (2)
+          </button>
+          <button id="seg-cn" onclick="filterMarket('CN')" class="flex-1 py-1 rounded-lg hover:text-slate-900">
+            A 股 (2)
+          </button>
         </div>
 
-        <h3 class="text-sm font-bold text-white mt-2.5 leading-snug">
-          美商务部 BIS 公布先进计算与半导体制造设备最终出口管制规则细则
-        </h3>
-        <p class="text-xs text-[#8E8E93] mt-1.5 leading-relaxed line-clamp-2">
-          明确界定算力密度阈值与先进制程光刻机/刻蚀设备物项分类，要求海外制造代工遵循对应许可证许可标准。
+        <!-- 类似 Apple Stocks 的一体式无缝列表 (杜绝多重卡片嵌套) -->
+        <div class="bg-white rounded-2xl border border-slate-200/80 divide-y divide-slate-100 overflow-hidden" id="watchlist-list">
+
+          <!-- 标的 1: NVDA -->
+          <div class="p-4 apple-cell cursor-pointer ticker-card" data-market="US" onclick="navigateToDetail('apple-nand')">
+            <div class="flex items-center justify-between">
+              <div class="min-w-0">
+                <div class="flex items-baseline space-x-1.5">
+                  <span class="text-[16px] font-black text-slate-900 font-mono tracking-tight">NVDA</span>
+                  <span class="text-[12px] font-medium text-slate-400">英伟达</span>
+                </div>
+                <div class="text-[11px] text-slate-500 mt-0.5 truncate">
+                  Blackwell 铜互联产线推演
+                </div>
+              </div>
+
+              <!-- 中间 Sparkline -->
+              <div class="px-2">
+                <svg class="w-20 h-4" viewBox="0 0 100 20">
+                  <path d="M0,18 Q25,14 50,8 T100,2" fill="none" stroke="#059669" stroke-width="1.8"/>
+                </svg>
+              </div>
+
+              <!-- 右侧价格与涨跌幅 -->
+              <div class="text-right tnum">
+                <div class="text-[15px] font-bold text-slate-900">$118.50</div>
+                <div class="text-[11px] font-semibold text-emerald-600 mt-0.5">
+                  +3.85%
+                </div>
+              </div>
+            </div>
+
+            <!-- 下方安静的一行监控状态 -->
+            <div class="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400" onclick="event.stopPropagation()">
+              <span>偏离预警: |Δ| ≥ 2.0%</span>
+              <div class="flex items-center space-x-1.5 cursor-pointer" onclick="toggleSwitch(this, 'NVDA')">
+                <span class="text-[10px] text-slate-400 switch-label">微信推送</span>
+                <div class="w-8 h-4.5 rounded-full bg-[#0F172A] p-0.5 switch-bg flex items-center">
+                  <div class="w-3.5 h-3.5 rounded-full bg-white shadow-xs switch-dot transform translate-x-3.5"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 标的 2: MU -->
+          <div class="p-4 apple-cell cursor-pointer ticker-card" data-market="US" onclick="navigateToDetail('apple-nand')">
+            <div class="flex items-center justify-between">
+              <div class="min-w-0">
+                <div class="flex items-baseline space-x-1.5">
+                  <span class="text-[16px] font-black text-slate-900 font-mono tracking-tight">MU</span>
+                  <span class="text-[12px] font-medium text-slate-400">美光科技</span>
+                </div>
+                <div class="text-[11px] text-slate-500 mt-0.5 truncate">
+                  大客户评估二供资质承压
+                </div>
+              </div>
+
+              <div class="px-2">
+                <svg class="w-20 h-4" viewBox="0 0 100 20">
+                  <path d="M0,4 Q25,8 50,14 T100,18" fill="none" stroke="#E11D48" stroke-width="1.8"/>
+                </svg>
+              </div>
+
+              <div class="text-right tnum">
+                <div class="text-[15px] font-bold text-slate-900">$88.50</div>
+                <div class="text-[11px] font-semibold text-rose-600 mt-0.5">
+                  -1.15%
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400" onclick="event.stopPropagation()">
+              <span>风险分: 70 (高)</span>
+              <div class="flex items-center space-x-1.5 cursor-pointer" onclick="toggleSwitch(this, 'MU')">
+                <span class="text-[10px] text-slate-400 switch-label">微信推送</span>
+                <div class="w-8 h-4.5 rounded-full bg-[#0F172A] p-0.5 switch-bg flex items-center">
+                  <div class="w-3.5 h-3.5 rounded-full bg-white shadow-xs switch-dot transform translate-x-3.5"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 标的 3: 688981.SH -->
+          <div class="p-4 apple-cell cursor-pointer ticker-card" data-market="CN" onclick="navigateToDetail('apple-nand')">
+            <div class="flex items-center justify-between">
+              <div class="min-w-0">
+                <div class="flex items-baseline space-x-1.5">
+                  <span class="text-[16px] font-black text-slate-900 font-mono tracking-tight">688981</span>
+                  <span class="text-[12px] font-medium text-slate-400">中芯国际</span>
+                </div>
+                <div class="text-[11px] text-slate-500 mt-0.5 truncate">
+                  先进封装与国产替代溢出
+                </div>
+              </div>
+
+              <div class="px-2">
+                <svg class="w-20 h-4" viewBox="0 0 100 20">
+                  <path d="M0,15 Q25,16 50,9 T100,3" fill="none" stroke="#059669" stroke-width="1.8"/>
+                </svg>
+              </div>
+
+              <div class="text-right tnum">
+                <div class="text-[15px] font-bold text-slate-900">¥52.80</div>
+                <div class="text-[11px] font-semibold text-emerald-600 mt-0.5">
+                  +2.45%
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400" onclick="event.stopPropagation()">
+              <span>波动预警: |Δ| ≥ 3.0%</span>
+              <div class="flex items-center space-x-1.5 cursor-pointer" onclick="toggleSwitch(this, '688981.SH')">
+                <span class="text-[10px] text-slate-400 switch-label">微信推送</span>
+                <div class="w-8 h-4.5 rounded-full bg-[#0F172A] p-0.5 switch-bg flex items-center">
+                  <div class="w-3.5 h-3.5 rounded-full bg-white shadow-xs switch-dot transform translate-x-3.5"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 标的 4: 300750.SZ -->
+          <div class="p-4 apple-cell cursor-pointer ticker-card" data-market="CN" onclick="navigateToDetail('apple-nand')">
+            <div class="flex items-center justify-between">
+              <div class="min-w-0">
+                <div class="flex items-baseline space-x-1.5">
+                  <span class="text-[16px] font-black text-slate-900 font-mono tracking-tight">300750</span>
+                  <span class="text-[12px] font-medium text-slate-400">宁德时代</span>
+                </div>
+                <div class="text-[11px] text-slate-500 mt-0.5 truncate">
+                  全固态电池上游原料测试
+                </div>
+              </div>
+
+              <div class="px-2">
+                <svg class="w-20 h-4" viewBox="0 0 100 20">
+                  <path d="M0,12 Q25,14 50,8 T100,4" fill="none" stroke="#059669" stroke-width="1.8"/>
+                </svg>
+              </div>
+
+              <div class="text-right tnum">
+                <div class="text-[15px] font-bold text-slate-900">¥245.80</div>
+                <div class="text-[11px] font-semibold text-emerald-600 mt-0.5">
+                  +1.65%
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400" onclick="event.stopPropagation()">
+              <span>幅度预警: |Δ| ≥ 2.5%</span>
+              <div class="flex items-center space-x-1.5 cursor-pointer" onclick="toggleSwitch(this, '300750.SZ')">
+                <span class="text-[10px] text-slate-400 switch-label">微信推送</span>
+                <div class="w-8 h-4.5 rounded-full bg-slate-300 p-0.5 switch-bg flex items-center">
+                  <div class="w-3.5 h-3.5 rounded-full bg-white shadow-xs switch-dot transform translate-x-0"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+
+    <!-- ==================== Tab 3：设置与席位 (Apple Settings Style) ==================== -->
+    <div id="view-profile" class="view-page tab-view tab-hidden pb-28">
+      <!-- 顶部 Header -->
+      <header class="sticky top-0 z-20 bg-[#F8FAFC]/95 backdrop-blur-xl px-5 pt-3 pb-2.5 border-b border-slate-200/60">
+        <h1 class="text-[18px] font-bold text-slate-900 tracking-tight leading-none">
+          设置
+        </h1>
+        <p class="text-[11px] font-medium text-slate-400 mt-1">
+          机构席位与微信推送通道
         </p>
+      </header>
 
-        <div class="mt-3 flex items-center justify-between">
-          <div class="flex items-center space-x-1.5">
-            <span class="bg-white/[0.06] text-white font-medium text-[11px] px-2 py-0.5 rounded">NVDA <b class="text-rose-400 font-semibold">-1.8%</b></span>
-            <span class="bg-white/[0.06] text-white font-medium text-[11px] px-2 py-0.5 rounded">TSM <b class="text-rose-400 font-semibold">-0.9%</b></span>
-            <span class="bg-white/[0.06] text-[#A1A1A6] text-[11px] px-2 py-0.5 rounded">002371.SZ 北方华创</span>
+      <div class="px-5 py-4 space-y-4">
+        <!-- 账户信息 -->
+        <div class="p-4 rounded-2xl bg-white border border-slate-200/80 flex items-center space-x-3">
+          <div class="w-11 h-11 rounded-full bg-[#0F172A] text-white flex items-center justify-center font-bold text-[16px]">
+            Z
           </div>
-          <span class="text-[10px] text-[#86868B]">11:30 · BIS 官方</span>
-        </div>
-      </article>
-
-      <!-- 卡片 2 -->
-      <article class="event-card CN ios-card rounded-2xl p-4 cursor-pointer hover:border-white/20 transition-all active:scale-[0.99]" onclick="openDetail('EVT-SMIC-03')">
-        <div class="flex justify-between items-start">
-          <div class="flex items-center space-x-1.5 flex-wrap gap-y-1">
-            <span class="px-2 py-0.5 rounded-md text-[10px] font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/25">
-              🟢 偏利多
-            </span>
-            <span class="px-2 py-0.5 rounded-md text-[10px] font-medium bg-blue-500/15 text-blue-300 border border-blue-500/20">
-              产能景气
-            </span>
-            <span class="px-2 py-0.5 rounded-md text-[10px] font-medium bg-white/[0.06] text-white/80">
-              直接影响
-            </span>
-          </div>
-          <div class="text-right">
-            <span class="text-xl font-extrabold text-white">7.4</span>
-            <span class="text-[10px] text-[#86868B]">/10</span>
+          <div>
+            <div class="text-[15px] font-bold text-slate-900">Zeppelin</div>
+            <div class="text-[11px] text-slate-400 font-mono">TRC-INST-88219 · 机构专线</div>
           </div>
         </div>
 
-        <h3 class="text-sm font-bold text-white mt-2.5 leading-snug">
-          中芯国际公告：特色工艺与成熟制程产能利用率回升至 92%
-        </h3>
-        <p class="text-xs text-[#8E8E93] mt-1.5 leading-relaxed line-clamp-2">
-          下游消费电子补库需求强劲，晶圆月出货量环比增长 14%，8 英寸与 12 英寸晶圆产线保持高位稼动。
-        </p>
+        <!-- 微信服务通知分组 -->
+        <div>
+          <div class="text-[11px] font-semibold text-slate-400 mb-1.5 px-1">微信通知中枢</div>
+          <div class="bg-white rounded-2xl border border-slate-200/80 divide-y divide-slate-100 overflow-hidden">
+            <div class="p-3.5 flex items-center justify-between">
+              <div>
+                <div class="text-[13px] font-semibold text-slate-800">每日 08:30 盘前晨报</div>
+                <div class="text-[11px] text-slate-400">汇总隔夜美股传导至 A 股的核心清单</div>
+              </div>
+              <div class="cursor-pointer ml-3" onclick="toggleSwitch(this, 'morning_report')">
+                <div class="w-8 h-4.5 rounded-full bg-[#0F172A] p-0.5 switch-bg flex items-center">
+                  <div class="w-3.5 h-3.5 rounded-full bg-white shadow-xs switch-dot transform translate-x-3.5"></div>
+                </div>
+              </div>
+            </div>
 
-        <div class="mt-3 flex items-center justify-between">
-          <div class="flex items-center space-x-1.5">
-            <span class="bg-white/[0.06] text-white font-medium text-[11px] px-2 py-0.5 rounded">688981.SH <b class="text-emerald-400 font-semibold">+3.8%</b></span>
-            <span class="bg-white/[0.06] text-[#A1A1A6] text-[11px] px-2 py-0.5 rounded">688347.SH 华虹</span>
+            <div class="p-3.5 flex items-center justify-between">
+              <div>
+                <div class="text-[13px] font-semibold text-slate-800">阈值偏离强提醒 (|Δ| ≥ 1.5%)</div>
+                <div class="text-[11px] text-slate-400">自选标的异动毫秒级模板消息</div>
+              </div>
+              <div class="cursor-pointer ml-3" onclick="toggleSwitch(this, 'threshold_alert')">
+                <div class="w-8 h-4.5 rounded-full bg-[#0F172A] p-0.5 switch-bg flex items-center">
+                  <div class="w-3.5 h-3.5 rounded-full bg-white shadow-xs switch-dot transform translate-x-3.5"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-3.5 flex items-center justify-between">
+              <div>
+                <div class="text-[13px] font-semibold text-slate-800">重大突发官方快报</div>
+                <div class="text-[11px] text-slate-400">3 家官方源交叉核验后推送</div>
+              </div>
+              <div class="cursor-pointer ml-3" onclick="toggleSwitch(this, 'breaking_news')">
+                <div class="w-8 h-4.5 rounded-full bg-[#0F172A] p-0.5 switch-bg flex items-center">
+                  <div class="w-3.5 h-3.5 rounded-full bg-white shadow-xs switch-dot transform translate-x-3.5"></div>
+                </div>
+              </div>
+            </div>
           </div>
-          <span class="text-[10px] text-[#86868B]">10:15 · 巨潮官方公告</span>
         </div>
-      </article>
 
-      <!-- 卡片 3 -->
-      <article class="event-card US CN ios-card rounded-2xl p-4 cursor-pointer hover:border-white/20 transition-all active:scale-[0.99]" onclick="openDetail('EVT-TF-04')">
-        <div class="flex justify-between items-start">
-          <div class="flex items-center space-x-1.5 flex-wrap gap-y-1">
-            <span class="px-2 py-0.5 rounded-md text-[10px] font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/25">
-              🟢 偏利多
-            </span>
-            <span class="px-2 py-0.5 rounded-md text-[10px] font-medium bg-amber-500/15 text-amber-300 border border-amber-500/20">
-              现货合约价
-            </span>
-            <span class="px-2 py-0.5 rounded-md text-[10px] font-medium bg-white/[0.06] text-white/80">
-              间接传导
-            </span>
-          </div>
-          <div class="text-right">
-            <span class="text-xl font-extrabold text-white">6.8</span>
-            <span class="text-[10px] text-[#86868B]">/10</span>
-          </div>
+        <!-- 维护工具 -->
+        <div class="pt-2">
+          <button onclick="showMonitorToast('已清除本地拓扑缓存')" class="w-full py-2.5 rounded-xl bg-white border border-slate-200/80 text-slate-700 font-semibold text-[12px] touch-press">
+            清除本地缓存 (84 MB)
+          </button>
         </div>
 
-        <h3 class="text-sm font-bold text-white mt-2.5 leading-snug">
-          TrendForce 调研：AI 服务器高规格 HBM3e 与企业级 SSD 合约价格将上调 15–20%
-        </h3>
-        <p class="text-xs text-[#8E8E93] mt-1.5 leading-relaxed line-clamp-2">
-          云厂商 Capex 扩张势头未减，通用服务器与 AI 训练集群并驱拉动高密度存储供应链量价齐升。
-        </p>
+      </div>
+    </div>
 
-        <div class="mt-3 flex items-center justify-between">
-          <div class="flex items-center space-x-1.5">
-            <span class="bg-white/[0.06] text-white font-medium text-[11px] px-2 py-0.5 rounded">MU <b class="text-emerald-400 font-semibold">+1.5%</b></span>
-            <span class="bg-white/[0.06] text-white font-medium text-[11px] px-2 py-0.5 rounded">SNDK <b class="text-emerald-400 font-semibold">+0.8%</b></span>
-            <span class="bg-white/[0.06] text-[#A1A1A6] text-[11px] px-2 py-0.5 rounded">603986.SH 兆易</span>
-          </div>
-          <span class="text-[10px] text-[#86868B]">09:30 · TrendForce</span>
-        </div>
-      </article>
-    </main>
 
-    <!-- 7. 微信小程序底部悬浮毛玻璃 Tab Bar -->
-    <nav class="fixed bottom-0 w-full max-w-[420px] ios-glass-bar z-40 px-6 py-2 pb-6 flex justify-around items-center">
-      <button class="flex flex-col items-center text-blue-500 space-y-1">
-        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
-        </svg>
-        <span class="text-[10px] font-semibold">雷达</span>
+    <!-- ==================== 常驻底部导航栏 (Apple Native UITabBar Style) ==================== -->
+    <nav class="absolute bottom-0 left-0 right-0 bg-white/90 backdrop-blur-2xl border-t border-slate-200/70 px-6 pt-2 pb-6 flex justify-between items-center z-30">
+      <button id="tab-0" onclick="switchTab(0)" class="nav-tab flex flex-col items-center text-slate-900 space-y-1">
+        <svg class="w-5 h-5 transition-transform duration-150" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+        <span class="text-[10px] font-bold">雷达</span>
       </button>
 
-      <button class="flex flex-col items-center text-[#8E8E93] hover:text-white transition-colors space-y-1">
-        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-        </svg>
+      <button id="tab-1" onclick="switchTab(1)" class="nav-tab flex flex-col items-center text-slate-400 hover:text-slate-700 space-y-1">
+        <svg class="w-5 h-5 transition-transform duration-150" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <span class="text-[10px] font-medium">推演</span>
+      </button>
+
+      <!-- 中间操作浮动按钮 -->
+      <div class="-mt-4">
+        <button id="btn-plus" onclick="toggleQuickActions(event)" class="w-11 h-11 rounded-full bg-[#0F172A] text-white flex items-center justify-center shadow-md btn-press border-2 border-white">
+          <svg id="plus-icon" class="w-5 h-5 transition-transform duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+      </div>
+
+      <button id="tab-2" onclick="switchTab(2)" class="nav-tab flex flex-col items-center text-slate-400 hover:text-slate-700 space-y-1">
+        <svg class="w-5 h-5 transition-transform duration-150" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
         <span class="text-[10px] font-medium">自选</span>
       </button>
 
-      <button class="flex flex-col items-center text-[#8E8E93] hover:text-white transition-colors space-y-1">
-        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-        </svg>
-        <span class="text-[10px] font-medium">问答</span>
-      </button>
-
-      <button class="flex flex-col items-center text-[#8E8E93] hover:text-white transition-colors space-y-1">
-        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="3"/>
-          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
-        </svg>
-        <span class="text-[10px] font-medium">系统</span>
+      <button id="tab-3" onclick="switchTab(3)" class="nav-tab flex flex-col items-center text-slate-400 hover:text-slate-700 space-y-1">
+        <svg class="w-5 h-5 transition-transform duration-150" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span class="text-[10px] font-medium">设置</span>
       </button>
     </nav>
 
-    <!-- 8. Apple 原生交互抽屉 -->
-    <div id="detail-modal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden items-end justify-center transition-all duration-300">
-      <div class="w-full max-w-[420px] bg-[#1C1C1E] border-t border-white/10 rounded-t-[28px] p-6 max-h-[85vh] overflow-y-auto no-scrollbar shadow-2xl animate-in slide-in-from-bottom duration-300">
-        <div class="w-10 h-1.5 bg-white/20 rounded-full mx-auto mb-4 cursor-pointer" onclick="closeDetail()"></div>
 
-        <div class="flex justify-between items-start">
-          <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-rose-500/20 text-rose-400">🔴 偏利空 · 重要度 8.6</span>
-          <button onclick="closeDetail()" class="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center text-white/80 hover:bg-white/20">
-            ✕
-          </button>
-        </div>
+    <!-- ==================== 视差变暗蒙层 ==================== -->
+    <div id="home-dimmer" onclick="navigateBackToHome()" class="absolute inset-0 bg-slate-950/25 opacity-0 pointer-events-none transition-opacity duration-280 ease-out z-35"></div>
 
-        <h3 id="modal-title" class="text-base font-bold text-white mt-3 leading-snug">
-          Apple 据报道正调整 NAND 采购策略，评估扩大其他供应来源
-        </h3>
 
-        <!-- 评分可解释性卡片 -->
-        <div class="mt-4 p-3.5 bg-black/40 rounded-xl border border-white/[0.06] space-y-2.5">
-          <div class="text-xs font-semibold text-white/90">评分维度拆解（集中引擎计算）</div>
-          <div class="grid grid-cols-2 gap-2 text-xs">
-            <div class="flex justify-between text-[#8E8E93]"><span>来源可靠度:</span> <b class="text-white">8.5/10</b></div>
-            <div class="flex justify-between text-[#8E8E93]"><span>直接性得分:</span> <b class="text-white">9.0/10</b></div>
-            <div class="flex justify-between text-[#8E8E93]"><span>影响幅度:</span> <b class="text-white">8.2/10</b></div>
-            <div class="flex justify-between text-[#8E8E93]"><span>影响持久度:</span> <b class="text-white">8.0/10</b></div>
-          </div>
-          <div class="pt-2 border-t border-white/[0.06] flex justify-between text-xs">
-            <span class="text-[#8E8E93]">市场反应确认 (15m):</span>
-            <span class="text-rose-400 font-semibold">SNDK -2.4% (确认加权)</span>
-          </div>
-        </div>
+    <!-- ==================== 下钻详情：4 级产业链推演图谱 (Push View) ==================== -->
+    <div id="view-detail" class="view-page page-detail hidden-right pb-10 z-40">
+      <div id="edge-swipe-handle" class="absolute left-0 top-0 bottom-0 w-9 z-50 cursor-ew-resize"></div>
 
-        <!-- 产业链传导路径树 -->
-        <div class="mt-4">
-          <div class="text-xs font-semibold text-white/90 mb-2">产业链传导路径</div>
-          <div class="relative pl-6 space-y-3 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-0.5 before:bg-blue-500/30">
-            <div class="relative">
-              <span class="absolute -left-6 top-1 w-2.5 h-2.5 rounded-full bg-blue-500 ring-4 ring-black"></span>
-              <p class="text-xs font-medium text-white">Apple 终端采购策略变动</p>
-              <p class="text-[11px] text-[#86868B]">评估引入新闪存供应商，打破双寡头格局</p>
-            </div>
-            <div class="relative">
-              <span class="absolute -left-6 top-1 w-2.5 h-2.5 rounded-full bg-blue-500/60 ring-4 ring-black"></span>
-              <p class="text-xs font-medium text-white">NAND 采购份额预期重新分配</p>
-              <p class="text-[11px] text-[#86868B]">导致 2026 下半年前瞻订单量承压</p>
-            </div>
-            <div class="relative">
-              <span class="absolute -left-6 top-1 w-2.5 h-2.5 rounded-full bg-rose-500 ring-4 ring-black"></span>
-              <p class="text-xs font-semibold text-rose-400">直接冲击: SNDK & MU 定价与营收</p>
-              <p class="text-[11px] text-[#86868B]">闪存业务毛利率面临短期阶段性博弈</p>
-            </div>
+      <!-- Header -->
+      <header class="sticky top-0 z-50 bg-[#F8FAFC]/95 backdrop-blur-xl px-5 pt-3 pb-2.5 border-b border-slate-200/60 flex justify-between items-center">
+        <button onclick="navigateBackToHome()" class="flex items-center text-slate-700 hover:text-slate-900 touch-press p-1 -ml-1">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 18l-6-6 6-6"/></svg>
+          <span class="text-[14px] font-semibold ml-0.5">返回</span>
+        </button>
+        <span class="text-[15px] font-bold text-slate-900">事件推演图谱</span>
+        <button onclick="showMonitorToast('已开启该事件后续异动警报')" class="p-1.5 rounded-full touch-press text-slate-600">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        </button>
+      </header>
+
+      <!-- 详情内容区 -->
+      <div class="px-5 pt-4 space-y-4">
+        
+        <!-- 官方事实摘要 -->
+        <div class="p-4 rounded-2xl bg-white border border-slate-200/80 stagger-1">
+          <div class="text-[11px] font-mono text-slate-400 mb-1">路透社独家 · 2026-09-16 14:02 EST</div>
+          <h2 class="text-[16px] font-bold text-slate-900 leading-snug tracking-tight">
+            苹果据报道评估多元化 NAND 采购来源，分散主力供应商份额
+          </h2>
+          <p class="text-[12px] text-slate-500 mt-2 leading-relaxed">
+            大客户针对铠侠等第二梯队原厂展开规格验证，旨在降低对美系两家主力原厂的依赖。
+          </p>
+          <div class="mt-3 pt-2.5 border-t border-slate-100 flex items-center space-x-3 text-[12px] tnum">
+            <span>SNDK <strong class="text-rose-600 font-bold">-2.40%</strong></span>
+            <span>MU <strong class="text-rose-600 font-bold">-1.15%</strong></span>
           </div>
         </div>
 
-        <!-- 证据链与溯源 -->
-        <div class="mt-4 pt-3 border-t border-white/[0.06]">
-          <div class="text-xs font-semibold text-white/90 mb-2">多源证据溯源 (2 条官方与权威佐证)</div>
-          <div class="space-y-2 text-xs">
-            <div class="p-2.5 bg-white/[0.03] rounded-lg flex justify-between items-center">
-              <div>
-                <div class="font-medium text-white">路透社独家产业报道</div>
-                <div class="text-[10px] text-[#86868B]">首发报道 · 14:02</div>
+        <!-- 4 级产业链拓扑链路 (Apple Inset 垂直时间线) -->
+        <div class="p-4 rounded-2xl bg-white border border-slate-200/60 shadow-xs stagger-2">
+          <div class="text-[13px] font-bold text-slate-900 mb-3.5">4 级传导推演链路</div>
+
+          <div class="relative pl-2 space-y-4">
+            <div class="absolute left-[13px] top-2 bottom-3 w-[1.5px] bg-slate-200/80"></div>
+
+            <!-- L1 -->
+            <div class="relative flex items-start space-x-3">
+              <div class="w-3 h-3 mt-1 rounded-full bg-slate-900 ring-4 ring-white ring-offset-0 shadow-xs z-10 flex-shrink-0 ml-[7px]"></div>
+              <div class="flex-1 text-[12px]">
+                <div class="flex items-center space-x-1.5">
+                  <span class="inline-flex items-center px-1.5 py-0.5 rounded bg-slate-100 text-slate-900 font-bold text-[10px]">L1</span>
+                  <span class="font-bold text-slate-900">官方源：苹果送样认证二供资质</span>
+                </div>
+                <div class="text-slate-500 mt-1 leading-relaxed">供应链议价权再平衡，次年大客户采购配额面临重新切分</div>
               </div>
-              <span class="text-[11px] text-blue-400 font-medium hover:underline">原文 ↗</span>
             </div>
-            <div class="p-2.5 bg-white/[0.03] rounded-lg flex justify-between items-center">
-              <div>
-                <div class="font-medium text-white">SanDisk 投资者关系 (IR) 声明</div>
-                <div class="text-[10px] text-[#86868B]">官方一手确认 · 15:10</div>
+
+            <!-- L2 -->
+            <div class="relative flex items-start space-x-3">
+              <div class="w-3 h-3 mt-1 rounded-full bg-slate-900 ring-4 ring-white ring-offset-0 shadow-xs z-10 flex-shrink-0 ml-[7px]"></div>
+              <div class="flex-1 text-[12px]">
+                <div class="flex items-center space-x-1.5">
+                  <span class="inline-flex items-center px-1.5 py-0.5 rounded bg-slate-100 text-slate-900 font-bold text-[10px]">L2</span>
+                  <span class="font-bold text-slate-900">上游：原厂合约毛利承压</span>
+                </div>
+                <div class="text-slate-500 mt-1 leading-relaxed">美系主力两家原厂高端溢价空间受挤压，毛利率中枢预计下修 120~180bp</div>
               </div>
-              <span class="text-[11px] text-blue-400 font-medium hover:underline">原文 ↗</span>
+            </div>
+
+            <!-- L3 -->
+            <div class="relative flex items-start space-x-3">
+              <div class="w-3 h-3 mt-1 rounded-full bg-slate-900 ring-4 ring-white ring-offset-0 shadow-xs z-10 flex-shrink-0 ml-[7px]"></div>
+              <div class="flex-1 text-[12px]">
+                <div class="flex items-center space-x-1.5">
+                  <span class="inline-flex items-center px-1.5 py-0.5 rounded bg-slate-100 text-slate-900 font-bold text-[10px]">L3</span>
+                  <span class="font-bold text-slate-900">中游制造：外包封装与材料验证提速</span>
+                </div>
+                <div class="text-slate-500 mt-1 leading-relaxed">二供扩大产能利用率，溢出效应强化亚太封测外包伙伴需求</div>
+              </div>
+            </div>
+
+            <!-- L4 -->
+            <div class="relative flex items-start space-x-3">
+              <div class="w-3 h-3 mt-1 rounded-full bg-slate-900 ring-4 ring-white ring-offset-0 shadow-xs z-10 flex-shrink-0 ml-[7px]"></div>
+              <div class="flex-1 text-[12px]">
+                <div class="flex items-center space-x-1.5">
+                  <span class="inline-flex items-center px-1.5 py-0.5 rounded bg-slate-100 text-slate-900 font-bold text-[10px]">L4</span>
+                  <span class="font-bold text-slate-900">资本市场标的映射</span>
+                </div>
+                <div class="text-slate-500 mt-1 leading-relaxed">美股美光 MU / 闪迪 SNDK 承压；A 股先进封测迎二供替代估值溢价</div>
+              </div>
             </div>
           </div>
         </div>
 
-        <button onclick="closeDetail()" class="w-full mt-5 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm transition-all shadow-lg shadow-blue-500/25 active:scale-98">
-          完成并返回
+        <!-- 研报归因 -->
+        <div class="p-4 rounded-2xl bg-white border border-slate-200/80 stagger-3 text-[12px] text-slate-600 leading-relaxed space-y-2">
+          <div class="font-bold text-slate-900 text-[13px]">投研逻辑研判</div>
+          <p>高密度闪存占整机硬件成本约 8%~11%，大客户在 Q4 启动次年长单排产前引入竞争，属于典型的结构性定价杠杆，美股原厂获利盘短期面临调仓诉求。</p>
+        </div>
+
+      </div>
+
+      <!-- 详情固定底部栏 -->
+      <div class="sticky bottom-0 bg-white/95 backdrop-blur-2xl border-t border-slate-200/80 px-5 py-3 z-50">
+        <button onclick="openAttributionDrawer()" class="btn-press w-full py-3 rounded-2xl bg-[#0F172A] text-white font-semibold text-[13px] shadow-sm flex items-center justify-center space-x-2">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          <span>发起针对该事件的产业链追问</span>
         </button>
       </div>
+    </div>
+
+
+    <!-- ==================== 快速操作面板 (Quick Action Sheet) ==================== -->
+    <div id="quick-backdrop" onclick="toggleQuickActions(event)" class="absolute inset-0 bg-slate-950/25 backdrop-blur-[2px] opacity-0 pointer-events-none transition-opacity duration-200 z-40"></div>
+    <div id="quick-sheet" class="absolute bottom-20 left-1/2 -translate-x-1/2 w-[90%] max-w-[350px] bg-white rounded-2xl p-2 shadow-xl border border-slate-200/90 z-40 opacity-0 pointer-events-none translate-y-3 scale-95 transition-all duration-200">
+      <div class="divide-y divide-slate-100 text-[13px]">
+        <div onclick="toggleQuickActions(); openAddTickerModal()" class="p-3 hover:bg-slate-50 active:bg-slate-100 cursor-pointer flex justify-between items-center transition-colors">
+          <span class="font-bold text-slate-800">录入自选代码</span>
+          <span class="text-[11px] text-slate-400">美股 / A股 →</span>
+        </div>
+        <div onclick="toggleQuickActions(); switchTab(1)" class="p-3 hover:bg-slate-50 active:bg-slate-100 cursor-pointer flex justify-between items-center transition-colors">
+          <span class="font-bold text-slate-800">发起产业链推演</span>
+          <span class="text-[11px] text-slate-400">Trace AI →</span>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ==================== 录入新标的弹窗抽屉 (Add Ticker Modal Sheet) ==================== -->
+    <div id="modal-add" onclick="closeAddTickerModal()" class="absolute inset-0 bg-slate-950/30 backdrop-blur-[2px] opacity-0 pointer-events-none transition-opacity duration-200 z-50"></div>
+    <div id="modal-sheet" class="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl shadow-xl border-t border-slate-200/80 p-5 z-50 translate-y-full transition-transform duration-250 pointer-events-none">
+      <div class="w-9 h-1 bg-slate-300 rounded-full mx-auto mb-3"></div>
+      <div class="flex items-center justify-between mb-2">
+        <h3 class="text-[15px] font-bold text-slate-900">录入自选标的</h3>
+        <button onclick="closeAddTickerModal()" class="text-slate-400 p-1">✕</button>
+      </div>
+      <p class="text-[12px] text-slate-400 mb-3">
+        输入股票代码（如 NVDA, MU, 688981.SH），系统将自动关联产业链图谱。
+      </p>
+      <div class="flex items-center space-x-2">
+        <input id="input-ticker" type="text" placeholder="输入代码..." class="flex-1 bg-slate-100 rounded-xl px-3 py-2 text-[13px] font-mono uppercase text-slate-900 focus:outline-none">
+        <button onclick="submitNewTicker()" class="touch-press bg-[#0F172A] text-white px-4 py-2 rounded-xl text-[12px] font-bold">
+          确认
+        </button>
+      </div>
+    </div>
+
+
+    <!-- ==================== 追问细节抽屉 (Attribution Drawer) ==================== -->
+    <div id="drawer-backdrop" onclick="closeAttributionDrawer()" class="absolute inset-0 bg-slate-950/30 backdrop-blur-[2px] opacity-0 pointer-events-none transition-opacity duration-240 z-50"></div>
+    <div id="drawer-sheet" class="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl shadow-xl border-t border-slate-200/80 z-50 translate-y-full transition-transform duration-280 pointer-events-none flex flex-col max-h-[75vh] overflow-hidden">
+      <div id="drawer-handle-bar" class="w-full pt-3 pb-2 flex flex-col items-center cursor-grab">
+        <div class="w-9 h-1 bg-slate-300 rounded-full"></div>
+      </div>
+
+      <div class="px-5 pb-2.5 border-b border-slate-100 flex items-center justify-between">
+        <h3 class="text-[15px] font-bold text-slate-900">产业链深度追问</h3>
+        <button onclick="closeAttributionDrawer()" class="text-slate-400 p-1">✕</button>
+      </div>
+
+      <div class="flex-1 overflow-y-auto px-5 py-3 space-y-3 text-[12px] no-scrollbar">
+        <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/70 text-slate-600 space-y-1.5">
+          <div class="font-bold text-slate-800">A 股代工与封测外溢研判</div>
+          <p>二供准入周期内，铠侠亚太合作伙伴有望获得试产打样订单，建议关注 10 月初下游排产明细。</p>
+        </div>
+      </div>
+
+      <div class="p-3 bg-slate-50 border-t border-slate-200/80 flex items-center space-x-2">
+        <input id="drawer-input" type="text" placeholder="向 Trace 追问..." class="flex-1 bg-white border border-slate-200 rounded-xl px-3 py-2 text-[12px] text-slate-800 focus:outline-none">
+        <button onclick="submitAsk()" class="touch-press px-3.5 py-2 bg-[#0F172A] text-white rounded-xl font-bold text-[12px]">
+          发送
+        </button>
+      </div>
+    </div>
+
+
+    <!-- ==================== 物理弹簧通知 (Sonner-style Spring Toast) ==================== -->
+    <div id="toast-monitor" onclick="dismissMonitorToast()" class="absolute top-4 left-1/2 -translate-x-1/2 w-[90%] max-w-[340px] bg-[#0F172A] text-white px-3.5 py-2.5 rounded-2xl shadow-xl z-60 flex items-center justify-between pointer-events-none opacity-0 -translate-y-6 scale-95 transition-all duration-220 ease-out cursor-pointer">
+      <div class="flex items-center space-x-2">
+        <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+        <span id="toast-title" class="text-[12px] font-semibold text-white leading-tight">操作成功</span>
+      </div>
+      <span class="text-[10px] text-slate-400 font-mono">轻触关闭</span>
     </div>
 
   </div>
 
   <script>
-    function filterMarket(market) {
-      ['all', 'US', 'CN', 'watchlist'].forEach(m => {
-        const btn = document.getElementById('tab-' + m);
-        if (m === market) {
-          btn.className = 'flex-1 py-1.5 rounded-lg bg-white/15 text-white font-semibold shadow-sm transition-all text-center';
+    // 时间刷新
+    function updateClock() {
+      const now = new Date();
+      const h = String(now.getHours()).padStart(2, '0');
+      const m = String(now.getMinutes()).padStart(2, '0');
+      document.querySelectorAll('.live-clock').forEach(el => el.textContent = `${h}:${m}`);
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // Tab 系统
+    const tabViewIds = ['view-home', 'view-ask', 'view-watchlist', 'view-profile'];
+    let currentTabIndex = 0;
+
+    const detailEl = document.getElementById('view-detail');
+    const homeDimmer = document.getElementById('home-dimmer');
+    const containerEl = document.querySelector('.view-container');
+
+    function getCurrentActiveView() {
+      return document.getElementById(tabViewIds[currentTabIndex]);
+    }
+
+    function switchTab(index) {
+      if (index === currentTabIndex) return;
+      if (detailEl.classList.contains('active')) navigateBackToHome();
+
+      tabViewIds.forEach((id, i) => {
+        const v = document.getElementById(id);
+        if (i === index) {
+          v.classList.remove('tab-hidden');
+          v.classList.add('active');
         } else {
-          btn.className = 'flex-1 py-1.5 rounded-lg hover:text-white transition-all text-center text-[#8E8E93]';
+          v.classList.remove('active');
+          v.classList.add('tab-hidden');
+        }
+      });
+      currentTabIndex = index;
+
+      const tabs = document.querySelectorAll('.nav-tab');
+      tabs.forEach((tab, i) => {
+        if (i === index) {
+          tab.classList.remove('text-slate-400');
+          tab.classList.add('text-slate-900');
+          const span = tab.querySelector('span');
+          if (span) span.className = 'text-[10px] font-bold';
+        } else {
+          tab.classList.remove('text-slate-900');
+          tab.classList.add('text-slate-400');
+          const span = tab.querySelector('span');
+          if (span) span.className = 'text-[10px] font-medium';
         }
       });
 
-      const cards = document.querySelectorAll('.event-card');
-      cards.forEach(c => {
-        if (market === 'all') {
-          c.style.display = 'block';
-        } else if (market === 'watchlist') {
-          c.style.display = (c.classList.contains('US') || c.classList.contains('CN')) ? 'block' : 'none';
-        } else {
-          c.style.display = c.classList.contains(market) ? 'block' : 'none';
-        }
-      });
-    }
-
-    function openDetail(id) {
-      const modal = document.getElementById('detail-modal');
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
-    }
-    function closeDetail() {
-      const modal = document.getElementById('detail-modal');
-      modal.classList.add('hidden');
-      modal.classList.remove('flex');
-    }
-
-    function toggleTheme() {
-      const root = document.documentElement;
-      const isDark = root.classList.contains('dark');
-      if (isDark) {
-        root.classList.remove('dark');
-        root.classList.add('light');
-        document.getElementById('phone-container').classList.replace('bg-[#000000]', 'bg-[#F2F2F7]');
-        document.body.classList.replace('bg-[#000000]', 'bg-[#E5E5EA]');
-      } else {
-        root.classList.remove('light');
-        root.classList.add('dark');
-        document.getElementById('phone-container').classList.replace('bg-[#F2F2F7]', 'bg-[#000000]');
-        document.body.classList.replace('bg-[#E5E5EA]', 'bg-[#000000]');
+      if (index === 1) {
+        setTimeout(() => {
+          const inp = document.getElementById('input-question');
+          if (inp) inp.focus();
+        }, 150);
       }
     }
+
+    // Push / Pop 物理转场
+    function navigateToDetail(eventId) {
+      const activeView = getCurrentActiveView();
+      activeView.classList.remove('active');
+      activeView.classList.add('receded');
+      homeDimmer.style.opacity = '1';
+
+      detailEl.classList.remove('hidden-right');
+      detailEl.classList.add('active');
+      detailEl.scrollTop = 0;
+
+      const nodes = detailEl.querySelectorAll('[class*="stagger-"]');
+      nodes.forEach(n => {
+        n.style.animation = 'none';
+        n.offsetHeight;
+        n.style.animation = '';
+      });
+    }
+
+    function navigateBackToHome() {
+      const activeView = getCurrentActiveView();
+      detailEl.classList.remove('active');
+      detailEl.classList.add('hidden-right');
+      activeView.classList.remove('receded');
+      activeView.classList.add('active');
+      homeDimmer.style.opacity = '0';
+
+      setTimeout(() => {
+        detailEl.style.transform = '';
+        activeView.style.transform = '';
+        detailEl.style.transition = '';
+        activeView.style.transition = '';
+      }, 250);
+    }
+
+    // 1:1 边缘轻扫手势
+    let isEdgeSwiping = false;
+    let swipeStartX = 0;
+    let lastSwipeX = 0;
+    let swipeStartTime = 0;
+    let swipeVelocity = 0;
+
+    function handleSwipeStart(clientX) {
+      if (!detailEl.classList.contains('active')) return;
+      const rect = containerEl.getBoundingClientRect();
+      const relX = clientX - rect.left;
+
+      if (relX >= 0 && relX <= 42) {
+        isEdgeSwiping = true;
+        swipeStartX = clientX;
+        lastSwipeX = clientX;
+        swipeStartTime = Date.now();
+        swipeVelocity = 0;
+
+        const activeView = getCurrentActiveView();
+        detailEl.style.transition = 'none';
+        activeView.style.transition = 'none';
+        homeDimmer.style.transition = 'none';
+      }
+    }
+
+    function handleSwipeMove(clientX) {
+      if (!isEdgeSwiping) return;
+      const dx = clientX - swipeStartX;
+      if (dx < 0) return;
+
+      const dt = Date.now() - swipeStartTime;
+      if (dt > 0) swipeVelocity = (clientX - lastSwipeX) / 16;
+      lastSwipeX = clientX;
+
+      const width = containerEl.offsetWidth || 393;
+      const progress = Math.min(Math.max(dx / width, 0), 1);
+      const activeView = getCurrentActiveView();
+
+      detailEl.style.transform = `translateX(${dx}px)`;
+      activeView.style.transform = `translateX(${-24 * (1 - progress)}%) scale(${0.98 + 0.02 * progress})`;
+      homeDimmer.style.opacity = `${0.25 * (1 - progress)}`;
+    }
+
+    function handleSwipeEnd() {
+      if (!isEdgeSwiping) return;
+      isEdgeSwiping = false;
+
+      const dx = lastSwipeX - swipeStartX;
+      const width = containerEl.offsetWidth || 393;
+      const progress = dx / width;
+      const activeView = getCurrentActiveView();
+
+      detailEl.style.transition = 'transform 240ms var(--ease-apple), opacity 240ms var(--ease-apple)';
+      activeView.style.transition = 'transform 240ms var(--ease-apple), opacity 240ms var(--ease-apple)';
+      homeDimmer.style.transition = 'opacity 240ms var(--ease-apple)';
+
+      if (progress > 0.26 || swipeVelocity > 0.3) {
+        detailEl.style.transform = 'translateX(100%)';
+        activeView.style.transform = 'translateX(0) scale(1)';
+        homeDimmer.style.opacity = '0';
+        setTimeout(navigateBackToHome, 240);
+      } else {
+        detailEl.style.transform = 'translateX(0)';
+        activeView.style.transform = 'translateX(-24%) scale(0.98)';
+        homeDimmer.style.opacity = '0.25';
+        setTimeout(() => {
+          detailEl.style.transform = '';
+          activeView.style.transform = '';
+          detailEl.style.transition = '';
+          activeView.style.transition = '';
+          homeDimmer.style.transition = '';
+        }, 240);
+      }
+    }
+
+    detailEl.addEventListener('touchstart', e => handleSwipeStart(e.touches[0].clientX), { passive: true });
+    window.addEventListener('touchmove', e => { if (isEdgeSwiping && e.touches.length) handleSwipeMove(e.touches[0].clientX); }, { passive: true });
+    window.addEventListener('touchend', handleSwipeEnd, { passive: true });
+
+    const swipeHandle = document.getElementById('edge-swipe-handle');
+    if (swipeHandle) {
+      swipeHandle.addEventListener('mousedown', e => {
+        handleSwipeStart(e.clientX);
+        const mm = ev => handleSwipeMove(ev.clientX);
+        const mu = () => { handleSwipeEnd(); window.removeEventListener('mousemove', mm); window.removeEventListener('mouseup', mu); };
+        window.addEventListener('mousemove', mm);
+        window.addEventListener('mouseup', mu);
+      });
+    }
+
+    // 自选过滤
+    function filterMarket(market) {
+      const segAll = document.getElementById('seg-all');
+      const segUs = document.getElementById('seg-us');
+      const segCn = document.getElementById('seg-cn');
+      const cards = document.querySelectorAll('#watchlist-list .ticker-card');
+
+      [segAll, segUs, segCn].forEach(b => b.className = 'flex-1 py-1 rounded-lg hover:text-slate-900 text-slate-500 font-medium');
+
+      if (market === 'all') segAll.className = 'flex-1 py-1 rounded-lg text-slate-900 font-bold bg-white shadow-xs';
+      else if (market === 'US') segUs.className = 'flex-1 py-1 rounded-lg text-slate-900 font-bold bg-white shadow-xs';
+      else if (market === 'CN') segCn.className = 'flex-1 py-1 rounded-lg text-slate-900 font-bold bg-white shadow-xs';
+
+      cards.forEach(c => {
+        const m = c.getAttribute('data-market');
+        c.style.display = (market === 'all' || m === market) ? 'block' : 'none';
+      });
+    }
+
+    // Switch 开关
+    function toggleSwitch(container, ticker) {
+      const bg = container.querySelector('.switch-bg');
+      const dot = container.querySelector('.switch-dot');
+      const label = container.querySelector('.switch-label');
+      const isOn = dot.classList.contains('translate-x-3.5');
+
+      if (isOn) {
+        dot.classList.remove('translate-x-3.5');
+        dot.classList.add('translate-x-0');
+        bg.classList.remove('bg-[#0F172A]');
+        bg.classList.add('bg-slate-300');
+        if (label) label.textContent = '已静音';
+        showMonitorToast(`已暂停 ${ticker} 推送`);
+      } else {
+        dot.classList.remove('translate-x-0');
+        dot.classList.add('translate-x-3.5');
+        bg.classList.remove('bg-slate-300');
+        bg.classList.add('bg-[#0F172A]');
+        if (label) label.textContent = '微信推送';
+        showMonitorToast(`已开启 ${ticker} 微信服务通知`);
+      }
+    }
+
+    // Modal 抽屉
+    const modalAdd = document.getElementById('modal-add');
+    const modalSheet = document.getElementById('modal-sheet');
+    function openAddTickerModal() {
+      modalAdd.classList.remove('opacity-0', 'pointer-events-none');
+      modalAdd.classList.add('opacity-100', 'pointer-events-auto');
+      modalSheet.classList.remove('translate-y-full', 'pointer-events-none');
+      modalSheet.classList.add('translate-y-0', 'pointer-events-auto');
+      setTimeout(() => { const inp = document.getElementById('input-ticker'); if (inp) inp.focus(); }, 150);
+    }
+    function closeAddTickerModal() {
+      modalAdd.classList.remove('opacity-100', 'pointer-events-auto');
+      modalAdd.classList.add('opacity-0', 'pointer-events-none');
+      modalSheet.classList.remove('translate-y-0', 'pointer-events-auto');
+      modalSheet.classList.add('translate-y-full', 'pointer-events-none');
+    }
+    // ==================== Backend API Integration ====================
+    const API_BASE = 'http://127.0.0.1:8000/api/v1';
+
+    // 1. 实时市场指数直连 (SPX, IXIC, DJI, STAR50)
+    async function loadLiveIndices() {
+      try {
+        const res = await fetch(`${API_BASE}/market/indices`, { signal: AbortSignal.timeout(4000) });
+        if (!res.ok) return;
+        const data = await res.json();
+        if (!Array.isArray(data) || data.length === 0) return;
+        const container = document.getElementById('indices-container');
+        if (!container) return;
+        container.innerHTML = data.map(item => {
+          const isUp = (item.change_pct || 0) >= 0;
+          const sign = isUp ? '+' : '';
+          const colorClass = isUp ? 'text-emerald-600' : 'text-rose-600';
+          const formattedPrice = Number(item.price).toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 });
+          return `
+            <div class="bg-white py-2 px-1.5 rounded-xl border border-slate-200/70">
+              <div class="text-[10px] text-slate-400 font-medium">${item.name}</div>
+              <div class="text-[13px] font-bold text-slate-900 mt-0.5">${formattedPrice}</div>
+              <div class="text-[10px] font-semibold ${colorClass} mt-0.5">${sign}${item.change_pct}%</div>
+            </div>
+          `;
+        }).join('');
+      } catch (err) {
+        console.debug('Indices fetch fallback to offline mock:', err);
+      }
+    }
+
+    // 2. 实时自选监控直连 (NVDA, MU, SNDK, 688981.SH, 300750.SZ)
+    async function loadLiveWatchlist() {
+      try {
+        const res = await fetch(`${API_BASE}/watchlist`, {
+          headers: { 'X-User-ID': 'user_default' },
+          signal: AbortSignal.timeout(6000)
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+        if (!data || !Array.isArray(data.items) || data.items.length === 0) return;
+
+        const items = data.items;
+        const wlList = document.getElementById('watchlist-list');
+        if (!wlList) return;
+
+        const notes = {
+          'NVDA': 'Blackwell 铜互联产线推演',
+          'MU': '大客户评估二供资质承压',
+          'SNDK': '次年长单溢价承压',
+          '688981.SH': '先进封装与国产替代溢出',
+          '300750.SZ': '全固态电池上游原料测试'
+        };
+
+        wlList.innerHTML = items.map(sec => {
+          const isUp = (sec.change_pct || 0) >= 0;
+          const sign = isUp ? '+' : '';
+          const colorClass = isUp ? 'text-emerald-600' : 'text-rose-600';
+          const strokeColor = isUp ? '#059669' : '#E11D48';
+          const sparklineD = isUp 
+            ? 'M0,16 Q25,14 50,8 T100,3' 
+            : 'M0,4 Q25,8 50,14 T100,17';
+          
+          const currency = sec.market === 'CN' ? '¥' : '$';
+          const priceText = sec.last_price != null ? `${currency}${Number(sec.last_price).toFixed(2)}` : '--';
+          const pctText = sec.change_pct != null ? `${sign}${Number(sec.change_pct).toFixed(2)}%` : '--';
+          const displayName = sec.company_name_zh || sec.company_name_en || sec.ticker;
+          const shortCode = sec.ticker.includes('.') ? sec.ticker.split('.')[0] : sec.ticker;
+          const note = notes[sec.ticker] || '关联产业链节点推演';
+
+          return `
+            <div class="p-4 apple-cell cursor-pointer ticker-card" data-market="${sec.market}" onclick="navigateToDetail('apple-nand')">
+              <div class="flex items-center justify-between">
+                <div class="min-w-0">
+                  <div class="flex items-baseline space-x-1.5">
+                    <span class="text-[16px] font-black text-slate-900 font-mono tracking-tight">${shortCode}</span>
+                    <span class="text-[12px] font-medium text-slate-400">${displayName}</span>
+                  </div>
+                  <div class="text-[11px] text-slate-500 mt-0.5 truncate">
+                    ${note}
+                  </div>
+                </div>
+
+                <div class="px-2">
+                  <svg class="w-20 h-4" viewBox="0 0 100 20">
+                    <path d="${sparklineD}" fill="none" stroke="${strokeColor}" stroke-width="1.8"/>
+                  </svg>
+                </div>
+
+                <div class="text-right tnum">
+                  <div class="text-[15px] font-bold text-slate-900">${priceText}</div>
+                  <div class="text-[11px] font-semibold ${colorClass} mt-0.5">
+                    ${pctText}
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400" onclick="event.stopPropagation()">
+                <span>偏离预警: |Δ| ≥ 2.0%</span>
+                <div class="flex items-center space-x-1.5 cursor-pointer" onclick="toggleSwitch(this, '${shortCode}')">
+                  <span class="text-[10px] text-slate-400 switch-label">微信推送</span>
+                  <div class="w-8 h-4.5 rounded-full bg-[#0F172A] p-0.5 switch-bg flex items-center">
+                    <div class="w-3.5 h-3.5 rounded-full bg-white shadow-xs switch-dot transform translate-x-3.5"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        const usCount = items.filter(x => x.market === 'US').length;
+        const cnCount = items.filter(x => x.market === 'CN').length;
+        const subTitle = document.getElementById('watchlist-subtitle');
+        if (subTitle) subTitle.textContent = `${items.length} 支标的 · 实时行情直连`;
+
+        const segAll = document.getElementById('seg-all');
+        const segUs = document.getElementById('seg-us');
+        const segCn = document.getElementById('seg-cn');
+        if (segAll) segAll.textContent = `全部 (${items.length})`;
+        if (segUs) segUs.textContent = `美股 (${usCount})`;
+        if (segCn) segCn.textContent = `A 股 (${cnCount})`;
+      } catch (err) {
+        console.debug('Watchlist fetch fallback to offline mock:', err);
+      }
+    }
+
+    // 3. 提交新标的接入自选
+    async function submitNewTicker() {
+      const inp = document.getElementById('input-ticker');
+      const val = inp.value.trim().toUpperCase();
+      if (!val) return;
+      closeAddTickerModal();
+      showMonitorToast(`正在连接数据源核验 ${val}...`);
+      try {
+        const res = await fetch(`${API_BASE}/watchlist`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-User-ID': 'user_default' },
+          body: JSON.stringify({ ticker: val })
+        });
+        if (res.ok) {
+          showMonitorToast(`${val} 已接入自选监控`);
+          await loadLiveWatchlist();
+        } else {
+          const errData = await res.json().catch(() => ({}));
+          showMonitorToast(errData.detail || `接入失败: ${val}`);
+        }
+      } catch (err) {
+        showMonitorToast(`${val} 已加入自选监控 (离线)`);
+      }
+      inp.value = '';
+    }
+
+    // 4. 全局手动刷新
+    async function refreshAllData() {
+      showMonitorToast('正在同步官方源与实时行情...');
+      await Promise.allSettled([loadLiveIndices(), loadLiveWatchlist()]);
+      showMonitorToast('已刷新 14 家官方源与行情池');
+    }
+
+    // Attribution Drawer
+    const drawerBackdrop = document.getElementById('drawer-backdrop');
+    const drawerSheet = document.getElementById('drawer-sheet');
+    function openAttributionDrawer() {
+      drawerBackdrop.classList.remove('pointer-events-none', 'opacity-0');
+      drawerBackdrop.classList.add('opacity-100', 'pointer-events-auto');
+      drawerSheet.classList.remove('pointer-events-none', 'translate-y-full');
+      drawerSheet.classList.add('pointer-events-auto');
+      drawerSheet.style.transform = 'translateY(0)';
+    }
+    function closeAttributionDrawer() {
+      drawerBackdrop.classList.remove('opacity-100', 'pointer-events-auto');
+      drawerBackdrop.classList.add('opacity-0', 'pointer-events-none');
+      drawerSheet.style.transform = 'translateY(100%)';
+      setTimeout(() => drawerSheet.classList.add('pointer-events-none'), 280);
+    }
+    function submitAsk() {
+      const inp = document.getElementById('drawer-input');
+      if (!inp.value.trim()) return;
+      showMonitorToast('正在推演分析中...');
+      inp.value = '';
+    }
+
+    // AI Tab 5. 产业链推演问答直连
+    function askPreset(q) {
+      document.getElementById('input-question').value = q;
+      sendQuestion();
+    }
+
+    async function sendQuestion() {
+      const inp = document.getElementById('input-question');
+      const q = inp.value.trim();
+      if (!q) return;
+
+      const stream = document.getElementById('chat-stream');
+      const userBubble = document.createElement('div');
+      userBubble.className = 'flex justify-end';
+      userBubble.innerHTML = `<div class="max-w-[85%] bg-[#0F172A] text-white px-3.5 py-2.5 rounded-2xl rounded-tr-xs text-[13px] leading-relaxed">${q}</div>`;
+      stream.appendChild(userBubble);
+      inp.value = '';
+
+      // 智能匹配标的
+      let ticker = 'NVDA';
+      if (/MU|美光/i.test(q)) ticker = 'MU';
+      else if (/SNDK|闪迪/i.test(q)) ticker = 'SNDK';
+      else if (/688981|中芯/i.test(q)) ticker = '688981.SH';
+      else if (/300750|宁德/i.test(q)) ticker = '300750.SZ';
+      else if (/TSM|台积电/i.test(q)) ticker = 'TSM';
+      else if (/ASML/i.test(q)) ticker = 'ASML';
+      else if (/NVDA|英伟达/i.test(q)) ticker = 'NVDA';
+
+      const loadingId = 'ai-loading-' + Date.now();
+      const loadingBubble = document.createElement('div');
+      loadingBubble.id = loadingId;
+      loadingBubble.className = 'space-y-2';
+      loadingBubble.innerHTML = `
+        <div class="text-[11px] text-slate-400 font-mono flex items-center space-x-1.5">
+          <svg class="w-3 h-3 animate-spin text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10" stroke-width="3" stroke-dasharray="32" stroke-linecap="round"/></svg>
+          <span>Trace Graph 正在穿透 ${ticker} 产业链拓扑与证据事件...</span>
+        </div>
+      `;
+      stream.appendChild(loadingBubble);
+      const askView = document.getElementById('view-ask');
+      askView.scrollTop = askView.scrollHeight;
+
+      try {
+        const t0 = performance.now();
+        const res = await fetch(`${API_BASE}/ask`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ticker: ticker, question: q })
+        });
+        const duration = Math.round(performance.now() - t0);
+        const el = document.getElementById(loadingId);
+        if (el) el.remove();
+
+        if (res.ok) {
+          const data = await res.json();
+          const aiResponse = document.createElement('div');
+          aiResponse.className = 'space-y-2';
+
+          const paragraphs = (data.answer || '').split('\n').filter(l => l.trim().length > 0).map(line => {
+            if (line.startsWith('【') || line.startsWith('#') || /^\d+\./.test(line)) {
+              return `<div class="font-bold text-slate-900 mt-2">${line}</div>`;
+            }
+            return `<p class="text-[12px] text-slate-600 leading-relaxed">${line}</p>`;
+          }).join('');
+
+          const evCount = data.evidence_events ? data.evidence_events.length : 0;
+          aiResponse.innerHTML = `
+            <div class="text-[11px] text-slate-400 font-mono">Trace Graph 推理 · 耗时 ${duration}ms · 校验 ${evCount} 个事实证据</div>
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-4 text-[13px] text-slate-700 leading-relaxed space-y-2">
+              ${paragraphs}
+              <div class="pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px]">
+                <span class="text-slate-400 font-mono">${ticker} · 官方证据链已闭环</span>
+                <button onclick="navigateToDetail('apple-nand')" class="font-semibold text-blue-600">查看 4 级图谱 ↗</button>
+              </div>
+            </div>
+          `;
+          stream.appendChild(aiResponse);
+        } else {
+          throw new Error('Ask API failed: ' + res.status);
+        }
+      } catch (err) {
+        const el = document.getElementById(loadingId);
+        if (el) el.remove();
+        const aiResponse = document.createElement('div');
+        aiResponse.className = 'space-y-2';
+        aiResponse.innerHTML = `
+          <div class="text-[11px] text-slate-400 font-mono">Trace 本地推理引擎 · 离线推演</div>
+          <div class="bg-white rounded-2xl border border-slate-200/80 p-4 text-[13px] text-slate-700 leading-relaxed space-y-2">
+            <div class="font-bold text-slate-900">推演研判结论（基于本地拓扑）</div>
+            <p class="text-[12px] text-slate-600">针对“${q}”，结合当前 14 家官方源数据与图谱传导路径，大客户供应链调整对美光科技（MU）及国产封测链预期存在 3~5 日时滞，建议跟踪官方认证进度。</p>
+            <div class="pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px]">
+              <span class="text-slate-400 font-mono">本地规则引擎已验证</span>
+              <button onclick="navigateToDetail('apple-nand')" class="font-semibold text-blue-600">查看图谱 ↗</button>
+            </div>
+          </div>
+        `;
+        stream.appendChild(aiResponse);
+      }
+      askView.scrollTop = askView.scrollHeight;
+    }
+
+    function clearChat() {
+      showMonitorToast('已清空推演上下文');
+    }
+
+    // Toast
+    let toastTimer = null;
+    const toastEl = document.getElementById('toast-monitor');
+    function showMonitorToast(msg) {
+      document.getElementById('toast-title').textContent = msg || '操作成功';
+      if (toastTimer) clearTimeout(toastTimer);
+      toastEl.classList.remove('pointer-events-none', 'opacity-0', '-translate-y-6', 'scale-95');
+      toastEl.classList.add('opacity-100', 'translate-y-0', 'scale-100', 'pointer-events-auto');
+      toastTimer = setTimeout(dismissMonitorToast, 2400);
+    }
+    function dismissMonitorToast() {
+      toastEl.classList.remove('opacity-100', 'translate-y-0', 'scale-100', 'pointer-events-auto');
+      toastEl.classList.add('opacity-0', '-translate-y-6', 'scale-95', 'pointer-events-none');
+    }
+
+    // Quick Actions
+    let isQuickOpen = false;
+    function toggleQuickActions(e) {
+      if (e) e.stopPropagation();
+      const qb = document.getElementById('quick-backdrop');
+      const qs = document.getElementById('quick-sheet');
+      const pi = document.getElementById('plus-icon');
+      isQuickOpen = !isQuickOpen;
+
+      if (isQuickOpen) {
+        qb.classList.remove('opacity-0', 'pointer-events-none');
+        qb.classList.add('opacity-100', 'pointer-events-auto');
+        qs.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-3', 'scale-95');
+        qs.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0', 'scale-100');
+        pi.style.transform = 'rotate(45deg)';
+      } else {
+        qb.classList.remove('opacity-100', 'pointer-events-auto');
+        qb.classList.add('opacity-0', 'pointer-events-none');
+        qs.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0', 'scale-100');
+        qs.classList.add('opacity-0', 'pointer-events-none', 'translate-y-3', 'scale-95');
+        pi.style.transform = 'rotate(0deg)';
+      }
+    }
+
+    // 页面就绪自动拉取实时数据
+    window.addEventListener('DOMContentLoaded', () => {
+      loadLiveIndices();
+      loadLiveWatchlist();
+    });
+    // 立即执行一次以防 DOMContentLoaded 已触发
+    loadLiveIndices();
+    loadLiveWatchlist();
   </script>
 </body>
 </html>

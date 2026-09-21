@@ -433,6 +433,10 @@ def cmd_replay_event(event_id: str, acceptance_test: bool) -> None:
         raise SystemExit(f"{STOP_TRACE_MVP_V1_ACCEPTANCE_REPLAY_INVALID}："
                          f"event {event_id} 不存在")
 
+    from trace.common.source_policy import event_permitted
+    if not event_permitted(app.db, event_id, "forward"):
+        raise SystemExit(f"event {event_id} has sources that disallow forwarding (can_forward=0)")
+
     # 真实 LLM（Stage B + 评分）；幂等键使用同一 event_id + version，
     # 重复回放时 evaluate 的 already_sent 会拦截（不得重复投递）。
     pipeline = Pipeline(app)
@@ -593,7 +597,33 @@ def cmd_digest() -> None:
     print(digest.content_markdown)
 
 
-def cmd_review(resolve: str = "", resolve_all: bool = False) -> None:
+
+def cmd_outbox(list_ambiguous: bool = False, resolve: str = "",
+               action: str = "", operator: str = "", note: str = "") -> None:
+    """Outbox 队列管理与 ambiguous 状态运维处置。"""
+    from trace.db.repositories import AlertOutboxRepo
+    app = create_app()
+    repo = AlertOutboxRepo(app.db)
+    if list_ambiguous:
+        items = repo.list_ambiguous()
+        print(f"待处置 ambiguous 投递: {len(items)} 条")
+        for it in items:
+            print(f"- [{it.outbox_id}] user={it.user_id} channel={it.channel_type}:{it.channel_target} "
+                  f"event={it.event_id} err={it.last_error} created={it.created_at}")
+        return
+    if resolve:
+        if not action or not operator:
+            raise SystemExit("resolve 需要指定 --action <confirm_delivered|requeue|discard> 和 --operator <NAME>")
+        try:
+            res = repo.resolve_ambiguous(resolve, action=action, operator=operator, note=note)
+            print(f"已处理 {res.outbox_id} -> 新状态: {res.status}")
+        except Exception as exc:
+            raise SystemExit(f"处理失败: {exc}")
+        return
+    items = repo.list_ambiguous()
+    print(f"待处置 ambiguous 投递: {len(items)} 条 (使用 --list-ambiguous 或 --resolve 进行管理)")
+
+def cmd_review(resolve: str = "", resolve_all: bool = False, retry: str = "") -> None:
     """人工检查队列：Schema 校验失败、未进入 Alert 链路的样本。
 
     这些是唯一能看出 prompt / 模型输出退化的信号，也是 few-shot 语料来源。
@@ -602,6 +632,9 @@ def cmd_review(resolve: str = "", resolve_all: bool = False) -> None:
 
     app = create_app()
     repo = HumanReviewRepo(app.db)
+    if retry:
+        print('已重新排入处理队列' if repo.retry(retry) else '未找到复核记录')
+        return
     if resolve_all:
         print(f"已标记 {repo.resolve_all()} 条为已处理")
         return
@@ -626,7 +659,7 @@ def main() -> None:
     parser.add_argument("command", choices=[
         "init", "doctor", "run-once", "verify-securities",
         "telegram-init-user", "telegram-test", "replay-event",
-        "run", "bot", "digest", "review", "serve"])
+        "run", "bot", "digest", "review", "serve", "outbox"])
     parser.add_argument("--event-id", default="",
                         help="replay-event：要回放的事件 ID")
     parser.add_argument("--acceptance-test", action="store_true",
@@ -636,6 +669,12 @@ def main() -> None:
                         help="review：把指定 review_id 标记为已处理")
     parser.add_argument("--resolve-all", action="store_true",
                         help="review：把全部待处理项标记为已处理")
+    parser.add_argument('--retry', default='', help='review: requeue a reviewed original payload')
+    parser.add_argument('--list-ambiguous', action='store_true', help='outbox: 列出所有 ambiguous 待处置项')
+    parser.add_argument('--action', default='', choices=['confirm_delivered', 'requeue', 'discard'],
+                        help='outbox: 处置动作')
+    parser.add_argument('--operator', default='', help='outbox: 运维操作人姓名或工号')
+    parser.add_argument('--note', default='', help='outbox: 处置原因或核查记录')
     parser.add_argument("--host", default="0.0.0.0",
                         help="serve：绑定主机地址（默认 0.0.0.0）")
     parser.add_argument("--port", type=int, default=8000,
@@ -649,7 +688,16 @@ def main() -> None:
         cmd_replay_event(args.event_id, args.acceptance_test)
         return
     if args.command == "review":
-        cmd_review(resolve=args.resolve, resolve_all=args.resolve_all)
+        cmd_review(resolve=args.resolve, resolve_all=args.resolve_all, retry=args.retry)
+        return
+    if args.command == "outbox":
+        cmd_outbox(
+            list_ambiguous=args.list_ambiguous,
+            resolve=args.resolve,
+            action=args.action,
+            operator=args.operator,
+            note=args.note,
+        )
         return
     if args.command == "serve":
         cmd_serve(host=args.host, port=args.port, reload=args.reload)
