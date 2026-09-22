@@ -126,7 +126,7 @@ Page({
       url: `${currentBase}/health`,
       method: 'GET',
       header: { 'bypass-tunnel-reminder': '1' },
-      timeout: 4000,
+      timeout: 10000,
       success: (res) => {
         wx.hideLoading();
         if (res.statusCode === 200) {
@@ -169,13 +169,21 @@ Page({
       return;
     }
 
+    const isCurrentlyCloud = currentBase.includes('34.31.198.232');
     const isCurrentlyLocal = currentBase.includes('127.0.0.1') || currentBase.includes('localhost');
-    const altBase = isCurrentlyLocal ? LAN_URL : LOCAL_URL;
-    const altLabel = isCurrentlyLocal ? '局域网直连 (172.20.10.3:8000)' : '本地开发服务 (127.0.0.1:8000)';
+    const altBase = isCurrentlyLocal ? CLOUD_URL : LOCAL_URL;
+    const altLabel = isCurrentlyLocal ? '云端生产专线 (34.31.198.232:8000)' : '本地开发服务 (127.0.0.1:8000)';
+
+    let reasonHint = `无法连接到 ${currentBase}\n原因: ${errorMsg}\n\n建议排查：`;
+    if (isCurrentlyCloud) {
+      reasonHint += `\n1. 确认开发者工具右上角「详情」->「本地设置」已勾选「不校验合法域名、web-view、TLS版本以及HTTPS证书」\n2. 若开启了科学上网代理，可在开发者工具「设置」->「代理设置」选择「使用系统代理」或「不使用代理」\n3. 可随时切换至本地服务通道进行调试 (点击下方切换备用)`;
+    } else {
+      reasonHint += `\n1. 确认本地后端服务已运行 (uvicorn trace.api.app:app)\n2. 开发者工具确认勾选「不校验合法域名」\n3. 尝试切换至通道：【${altLabel}】`;
+    }
 
     wx.showModal({
-      title: '当前端点未连通',
-      content: `无法连接到 ${currentBase}\n原因: ${errorMsg}\n\n建议排查：\n1. 确认后端服务已运行 (uvicorn trace.api.app:app)\n2. 开发者工具确认勾选「不校验合法域名」\n3. 尝试切换至通道：【${altLabel}】`,
+      title: errorMsg.includes('timeout') ? '连接超时' : '当前端点未连通',
+      content: reasonHint,
       confirmText: '切换备用',
       cancelText: '取消',
       confirmColor: '#0F172A',

@@ -58,7 +58,7 @@ App({
       url: `${currentBase}/health`,
       method: 'GET',
       header: { 'bypass-tunnel-reminder': '1' },
-      timeout: 3000,
+      timeout: 8000,
       success: (res) => {
         if (res.statusCode === 200) {
           this.globalData.isOnline = true;
@@ -92,7 +92,7 @@ App({
       url: `${altBase}/health`,
       method: 'GET',
       header: { 'bypass-tunnel-reminder': '1' },
-      timeout: 3500,
+      timeout: 8000,
       success: (res) => {
         if (res.statusCode === 200) {
           const latency = Date.now() - t0;

@@ -45,13 +45,13 @@ def get_health(ctx: Annotated[AppContext, Depends(get_app_context)]):
     t0 = time.perf_counter()
     db_status = "OK"
     try:
-        row = ctx.db.query_one("PRAGMA quick_check;")
-        db_ok = (row and row[0] == "ok")
+        row = ctx.db.query_one("SELECT 1;")
+        db_ok = (row and row[0] == 1)
         db_latency_ms = round((time.perf_counter() - t0) * 1000.0, 2)
         if not db_ok:
-            db_status = "CORRUPTED"
+            db_status = "ERROR"
             overall_status = "UNHEALTHY"
-            diagnostics.append(f"Database quick_check returned: {row[0] if row else 'null'}")
+            diagnostics.append(f"Database probe returned unexpected result: {row[0] if row else 'null'}")
     except Exception as exc:
         db_status = "ERROR"
         db_latency_ms = round((time.perf_counter() - t0) * 1000.0, 2)
