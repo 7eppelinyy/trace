@@ -286,7 +286,7 @@ def test_db_admin_backup_restore_cli_with_special_paths(tmp_path):
         "--directory", str(backup_dir),
         "--keep", "5"
     ]
-    res_b = subprocess.run(cmd_backup, capture_output=True, text=True, check=True)
+    res_b = subprocess.run(cmd_backup, capture_output=True, text=True, encoding="utf-8", check=True)
     backup_file = Path(res_b.stdout.strip())
     assert backup_file.is_file()
 
@@ -298,7 +298,7 @@ def test_db_admin_backup_restore_cli_with_special_paths(tmp_path):
         "--target", str(restored_db),
         "--quarantine-outbox"
     ]
-    res_r = subprocess.run(cmd_restore, capture_output=True, text=True, check=True)
+    res_r = subprocess.run(cmd_restore, capture_output=True, text=True, encoding="utf-8", check=True)
     restore_info = json.loads(res_r.stdout)
     assert restore_info["status"] == "success"
     assert restored_db.is_file()
@@ -309,7 +309,7 @@ def test_db_admin_backup_restore_cli_with_special_paths(tmp_path):
     assert src_v["table_hashes"] == dst_v["table_hashes"]
 
     # 4. 再次 restore 到同一已存在目标，必须报错拒绝
-    res_fail = subprocess.run(cmd_restore, capture_output=True, text=True)
+    res_fail = subprocess.run(cmd_restore, capture_output=True, text=True, encoding="utf-8")
     assert res_fail.returncode != 0
     assert "Restore requires a new target path" in res_fail.stderr
 
@@ -412,7 +412,7 @@ def test_restore_drill_cli_produces_full_report(tmp_path):
         "--target", str(drill_target),
         "--output-json", str(report_json_path)
     ]
-    res = subprocess.run(cmd, capture_output=True, text=True, check=True)
+    res = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", check=True)
     assert report_json_path.is_file()
 
     report = json.loads(report_json_path.read_text(encoding="utf-8"))
