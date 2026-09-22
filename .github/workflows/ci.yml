@@ -8,6 +8,7 @@ on:
 jobs:
   test:
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
@@ -19,7 +20,7 @@ jobs:
           cache: pip
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
       # sentence-transformers 依赖 torch（体积巨大且非必需，
       # 缺失时自动降级 hash embedder），与服务器轻量部署口径一致
       - name: Install dependencies

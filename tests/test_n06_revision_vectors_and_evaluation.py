@@ -478,11 +478,11 @@ def test_100_pair_fixture_checksum_and_label_blind_contract(config):
     fixture_path = Path("tests/fixtures/event_pairs_100.json")
     assert fixture_path.exists(), "tests/fixtures/event_pairs_100.json must exist in repository"
 
-    # 1. 校验 SHA256 指纹，确保测试集未被篡改
+    # 1. 校验 SHA256 指纹，确保测试集未被篡改（跨平台规范化 LF 换行符）
     data_bytes = fixture_path.read_bytes()
-    expected_sha256 = "85664602b4478ffec723446f553ef80cee4725fddd9c1a4bd4afd23e79930cf2"
-    actual_sha256 = hashlib.sha256(data_bytes).hexdigest()
-    assert actual_sha256 == expected_sha256, f"Fixture SHA256 mismatch! Got: {actual_sha256}"
+    expected_lf_sha256 = "a618eed239a2800b6bd50c6aa0d379b7ee0b2d3f8f91af97502b63bb7f75e432"
+    actual_lf_sha256 = hashlib.sha256(data_bytes.replace(b"\r\n", b"\n")).hexdigest()
+    assert actual_lf_sha256 == expected_lf_sha256, f"Fixture SHA256 mismatch! Got: {actual_lf_sha256}"
 
     pairs = json.loads(data_bytes.decode("utf-8"))
     assert len(pairs) == 100
