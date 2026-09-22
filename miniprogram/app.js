@@ -1,13 +1,13 @@
 // app.js - Trace Mini-Program Entry
 const DEFAULT_LOCAL_ENDPOINT = 'http://127.0.0.1:8000/api/v1';
-const DEFAULT_TUNNEL_ENDPOINT = 'https://zgors-66-112-217-25.free.pinggy.net/api/v1';
+const DEFAULT_CLOUD_ENDPOINT = 'http://34.31.198.232:8000/api/v1';
 const DEFAULT_LAN_ENDPOINT = 'http://172.20.10.3:8000/api/v1';
 
 App({
   globalData: {
     apiBase: DEFAULT_LOCAL_ENDPOINT,
     localEndpoint: DEFAULT_LOCAL_ENDPOINT,
-    tunnelEndpoint: DEFAULT_TUNNEL_ENDPOINT,
+    cloudEndpoint: DEFAULT_CLOUD_ENDPOINT,
     lanEndpoint: DEFAULT_LAN_ENDPOINT,
     userId: 'user_default',
     systemInfo: null,
@@ -34,14 +34,14 @@ App({
 
     // 优先读取本地存储配置的 API 服务端点
     const storedApiBase = wx.getStorageSync('apiBase');
-    const isObsoleteTunnel = storedApiBase && (storedApiBase.includes('loca.lt') || storedApiBase.includes('ujjxx') || storedApiBase.includes('gkemt') || storedApiBase.includes('abkqh'));
+    const isObsoleteTunnel = storedApiBase && (storedApiBase.includes('loca.lt') || storedApiBase.includes('ujjxx') || storedApiBase.includes('gkemt') || storedApiBase.includes('abkqh') || storedApiBase.includes('pinggy.net'));
     const isLoopback = storedApiBase && (storedApiBase.includes('127.0.0.1') || storedApiBase.includes('localhost'));
 
-    // 在开发者工具中，优先使用本地环回 127.0.0.1:8000；在真机上则过滤不可达的 127.0.0.1
+    // 在开发者工具中优先使用 127.0.0.1；在真机上默认使用 Google Cloud 生产专线
     if (storedApiBase && !isObsoleteTunnel && (isDevTools || !isLoopback)) {
       this.globalData.apiBase = storedApiBase;
     } else {
-      const defaultEndpoint = isDevTools ? DEFAULT_LOCAL_ENDPOINT : DEFAULT_TUNNEL_ENDPOINT;
+      const defaultEndpoint = isDevTools ? DEFAULT_LOCAL_ENDPOINT : DEFAULT_CLOUD_ENDPOINT;
       this.globalData.apiBase = defaultEndpoint;
       wx.setStorageSync('apiBase', defaultEndpoint);
     }
@@ -77,14 +77,14 @@ App({
 
   _tryAlternativeEndpoint(callback) {
     const isDevTools = this.globalData.systemInfo && this.globalData.systemInfo.platform === 'devtools';
-    // 若当前端点不可达，自动探测备选端点（本地环回、局域网与云端穿透互为备援）
-    let altBase = DEFAULT_TUNNEL_ENDPOINT;
+    // 若当前端点不可达，自动探测备选端点（本地环回、局域网与云端生产互为备援）
+    let altBase = DEFAULT_CLOUD_ENDPOINT;
     if (this.globalData.apiBase === DEFAULT_LOCAL_ENDPOINT) {
-      altBase = DEFAULT_LAN_ENDPOINT;
-    } else if (this.globalData.apiBase === DEFAULT_TUNNEL_ENDPOINT) {
+      altBase = DEFAULT_CLOUD_ENDPOINT;
+    } else if (this.globalData.apiBase === DEFAULT_CLOUD_ENDPOINT) {
       altBase = isDevTools ? DEFAULT_LOCAL_ENDPOINT : DEFAULT_LAN_ENDPOINT;
     } else {
-      altBase = isDevTools ? DEFAULT_LOCAL_ENDPOINT : DEFAULT_TUNNEL_ENDPOINT;
+      altBase = isDevTools ? DEFAULT_LOCAL_ENDPOINT : DEFAULT_CLOUD_ENDPOINT;
     }
     const t0 = Date.now();
 

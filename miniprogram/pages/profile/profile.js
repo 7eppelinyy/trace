@@ -3,7 +3,7 @@ const app = getApp();
 const { getUserId, resetUserId, resetWatchlist, getPreferences, updatePreference } = require('../../utils/api');
 
 const LOCAL_URL = 'http://127.0.0.1:8000/api/v1';
-const TUNNEL_URL = 'https://zgors-66-112-217-25.free.pinggy.net/api/v1';
+const CLOUD_URL = 'http://34.31.198.232:8000/api/v1';
 const LAN_URL = 'http://172.20.10.3:8000/api/v1';
 
 Page({
@@ -14,7 +14,7 @@ Page({
     quietEnd: '08:00',
     prefRevision: 1,
     cacheSize: 0,
-    apiBaseDisplay: 'free.pinggy.net',
+    apiBaseDisplay: '34.31.198.232:8000',
     userIdDisplay: '',
     isOnline: true,
     latencyMs: 0,
@@ -92,8 +92,8 @@ Page({
   },
 
   refreshEndpointDisplay() {
-    const base = (app && app.globalData && app.globalData.apiBase) || TUNNEL_URL;
-    const isTunnel = base.includes('pinggy.net') || base.includes('https://');
+    const base = (app && app.globalData && app.globalData.apiBase) || CLOUD_URL;
+    const isTunnel = base.includes('34.31.198.232') || base.includes('pinggy.net') || base.includes('https://');
     const display = base.replace(/^https?:\/\//, '').replace(/\/api\/v1\/?$/, '');
     const uid = getUserId();
     this.setData({
@@ -119,7 +119,7 @@ Page({
 
   checkServer() {
     wx.showLoading({ title: '正在检测接口...' });
-    const currentBase = (app && app.globalData && app.globalData.apiBase) || TUNNEL_URL;
+    const currentBase = (app && app.globalData && app.globalData.apiBase) || CLOUD_URL;
     const t0 = Date.now();
 
     wx.request({
@@ -189,9 +189,9 @@ Page({
 
   toggleEndpointQuick() {
     const endpoints = [
+      { label: '云端生产专线 (GCP 34.31.198.232)', url: CLOUD_URL },
       { label: '本地开发服务 (127.0.0.1:8000)', url: LOCAL_URL },
-      { label: '局域网直连 (172.20.10.3:8000)', url: LAN_URL },
-      { label: '云端穿透专线 (Pinggy)', url: TUNNEL_URL }
+      { label: '局域网直连 (172.20.10.3:8000)', url: LAN_URL }
     ];
     wx.showActionSheet({
       itemList: endpoints.map(e => e.label),
@@ -218,7 +218,7 @@ Page({
   },
 
   editApiBase() {
-    const current = (app && app.globalData && app.globalData.apiBase) || TUNNEL_URL;
+    const current = (app && app.globalData && app.globalData.apiBase) || CLOUD_URL;
     wx.showModal({
       title: '自定义 API 服务端点',
       editable: true,
