@@ -78,3 +78,11 @@ edges:
   # ---- TSMC 关联 ----
   - {from_node: tsmc, to_node: nvda, edge_type: supplier_of, confidence: 0.95, evidence_source: seed/industry, direction_rule: positive}
   - {from_node: tsmc, to_node: amd, edge_type: supplier_of, confidence: 0.95, evidence_source: seed/industry, direction_rule: positive}
+
+  # ---- 博通 (AVGO) AI以太网/交换芯片/定制ASIC ----
+  - {from_node: avgo, to_node: ai_datacenter, edge_type: benefits_from, confidence: 0.95, evidence_source: seed/company_ir, direction_rule: positive}
+  - {from_node: avgo, to_node: ai_server, edge_type: supplies, confidence: 0.95, evidence_source: seed/company_ir, direction_rule: positive}
+  - {from_node: avgo, to_node: googl, edge_type: supplier_to, confidence: 0.95, evidence_source: seed/company_ir, direction_rule: positive}
+  - {from_node: avgo, to_node: meta, edge_type: supplier_to, confidence: 0.90, evidence_source: seed/company_ir, direction_rule: positive}
+  - {from_node: tsmc, to_node: avgo, edge_type: supplier_of, confidence: 0.95, evidence_source: seed/company_ir, direction_rule: positive}
+

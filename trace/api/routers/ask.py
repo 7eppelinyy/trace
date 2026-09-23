@@ -56,7 +56,7 @@ def ask_question(
     return AskResponse(
         ticker=resolved_ticker,
         event_id=body.event_id,
-        mode=body.mode,
+        mode=getattr(result, "mode", body.mode),
         question=body.question,
         answer=result.text,
         claims=getattr(result, "claims", []),

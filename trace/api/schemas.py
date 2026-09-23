@@ -206,7 +206,7 @@ class AskRequest(BaseModel):
     ticker: str = ""
     event_id: str | None = None
     event_version: int | None = None
-    mode: Literal["evidence_answer", "scenario"] = "evidence_answer"
+    mode: Literal["evidence_answer", "scenario", "auto"] = "evidence_answer"
     question: str = Field(..., min_length=1, max_length=1000)
     history: list[ChatMessage] = Field(default_factory=list, max_length=10)
 

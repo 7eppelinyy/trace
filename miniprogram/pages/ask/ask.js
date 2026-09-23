@@ -62,9 +62,17 @@ Page({
     if (/比亚迪|BYD/i.test(query)) return '002594.SZ';
     if (/特斯拉|TSLA/i.test(query)) return 'TSLA';
     if (/寒武纪/i.test(query)) return '688256.SH';
+    if (/AVGO|博通/i.test(query)) return 'AVGO';
+    if (/NVDA|英伟达/i.test(query)) return 'NVDA';
+    if (/MSFT|微软/i.test(query)) return 'MSFT';
+    if (/GOOG|谷歌/i.test(query)) return 'GOOG';
+    if (/AMZN|亚马逊/i.test(query)) return 'AMZN';
+    if (/META|脸书/i.test(query)) return 'META';
+    if (/AMD|超威/i.test(query)) return 'AMD';
+    if (/QCOM|高通/i.test(query)) return 'QCOM';
+    if (/INTC|英特尔/i.test(query)) return 'INTC';
     if (/MU|美光/i.test(query)) return 'MU';
     if (/SNDK|闪迪/i.test(query)) return 'SNDK';
-    if (/NVDA|英伟达/i.test(query)) return 'NVDA';
     if (/688981|中芯/i.test(query)) return '688981.SH';
     if (/300750|宁德/i.test(query)) return '300750.SZ';
     if (/TSM|台积电/i.test(query)) return 'TSM';
@@ -117,7 +125,7 @@ Page({
       const askOpts = {
         event_id: eventId,
         event_version: eventVersion,
-        mode: 'evidence_answer'
+        mode: eventId ? 'evidence_answer' : 'auto'
       };
       const res = await askQuestion(ticker, q, history, askOpts);
       const duration = (res && res.duration_ms) || (Date.now() - t0);

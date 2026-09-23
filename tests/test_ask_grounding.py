@@ -235,3 +235,31 @@ def test_api_ask_modes_and_grounding(client, app):
     assert data2["status"] == "scenario_simulation"
     assert "【情景假设推演" in data2["answer"]
     assert len(data2["graph_chain"]) > 0
+
+
+def test_broadened_financial_scope_auto_scenario(client, app):
+    """验证放宽金融推演问答范围：标的无事件时自动切入情景推演，无标的金融宏观议题亦顺利推演。"""
+    # 1. 博通股价（已建立标的，但无即时突发事实）
+    resp_avgo = client.post(
+        "/api/v1/ask",
+        json={"question": "怎么看待目前博通的股价？", "mode": "auto"},
+    )
+    assert resp_avgo.status_code == 200
+    data_avgo = resp_avgo.json()
+    assert data_avgo["status"] == "scenario_simulation"
+    assert data_avgo["ticker"] == "AVGO"
+    assert "AVGO" in data_avgo["answer"] or "博通" in data_avgo["answer"]
+    assert len(data_avgo["graph_chain"]) > 0
+
+    # 2. 宏观/Web3金融议题（美股链上交易）
+    resp_onchain = client.post(
+        "/api/v1/ask",
+        json={"question": "评估美股链上交易的影响", "mode": "auto"},
+    )
+    assert resp_onchain.status_code == 200
+    data_onchain = resp_onchain.json()
+    assert data_onchain["status"] == "scenario_simulation"
+    assert "【情景假设推演" in data_onchain["answer"]
+    assert len(data_onchain["claims"]) > 0
+
+

@@ -78,6 +78,8 @@ def test_in_domain_financial_queries_allowed():
         "中芯国际 688981 先进制程良率和排产趋势",
         "评估苹果自研 Wi-Fi 芯片对博通以及射频前端供应链的直接冲击",
         "目前算力中心光模块与液冷产业链的供需缺口如何？",
+        "怎么看待目前博通的股价？",
+        "评估美股链上交易的影响",
     ]
     for query in financial_queries:
         res = FinancialGuardrail.inspect(query)
