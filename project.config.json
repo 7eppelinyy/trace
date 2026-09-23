@@ -9,7 +9,7 @@
     "enhance": true,
     "postcss": true,
     "preloadBackgroundData": false,
-    "minified": true,
+    "minified": false,
     "newFeature": true,
     "coverView": true,
     "nodeModules": false,
@@ -25,8 +25,8 @@
     "compileWorklet": false,
     "packNpmManually": false,
     "packNpmRelationList": [],
-    "minifyWXSS": true,
-    "minifyWXML": true,
+    "minifyWXSS": false,
+    "minifyWXML": false,
     "localPlugins": false,
     "disableUseStrict": false,
     "useCompilerPlugins": false,
@@ -41,7 +41,14 @@
   "libVersion": "3.3.4",
   "srcMiniprogramRoot": "miniprogram/",
   "packOptions": {
-    "ignore": [],
+    "ignore": [
+      { "type": "folder", "value": ".venv" },
+      { "type": "folder", "value": "trace" },
+      { "type": "folder", "value": "tests" },
+      { "type": "folder", "value": "data" },
+      { "type": "folder", "value": ".deploy" },
+      { "type": "folder", "value": "scratch" }
+    ],
     "include": []
   },
   "editorSetting": {
