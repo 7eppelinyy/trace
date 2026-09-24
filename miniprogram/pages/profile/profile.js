@@ -1,6 +1,6 @@
 // pages/profile/profile.js - 投研设置与机构席位中心
 const app = getApp();
-const { getUserId, resetUserId, resetWatchlist, getPreferences, updatePreference } = require('../../utils/api');
+const { getUserId, resetUserId, resetWatchlist, getPreferences, updatePreference, httpTransport } = require('../../utils/api');
 
 const LOCAL_URL = 'http://127.0.0.1:8000/api/v1';
 const CLOUD_URL = 'https://trace-api-319136-10-1495327666.sh.run.tcloudbase.com/api/v1';
@@ -103,8 +103,9 @@ Page({
 
   refreshEndpointDisplay() {
     const base = (app && app.globalData && app.globalData.apiBase) || CLOUD_URL;
-    const isTunnel = base.includes('34.31.198.232') || base.includes('pinggy.net') || base.includes('https://');
-    const display = base.replace(/^https?:\/\//, '').replace(/\/api\/v1\/?$/, '');
+    const isCloud = base.includes('tcloudbase.com');
+    const isTunnel = base.includes('pinggy.net') || base.includes('https://');
+    const display = isCloud ? 'trace-api (微信云托管专线)' : base.replace(/^https?:\/\//, '').replace(/\/api\/v1\/?$/, '');
     const uid = getUserId();
     this.setData({
       apiBaseDisplay: display,
@@ -132,7 +133,7 @@ Page({
     const currentBase = (app && app.globalData && app.globalData.apiBase) || CLOUD_URL;
     const t0 = Date.now();
 
-    wx.request({
+    httpTransport({
       url: `${currentBase}/health`,
       method: 'GET',
       header: { 'bypass-tunnel-reminder': '1' },
@@ -179,14 +180,14 @@ Page({
       return;
     }
 
-    const isCurrentlyCloud = currentBase.includes('34.31.198.232');
+    const isCurrentlyCloud = currentBase.includes('tcloudbase.com') || currentBase.includes('34.31.198.232');
     const isCurrentlyLocal = currentBase.includes('127.0.0.1') || currentBase.includes('localhost');
     const altBase = isCurrentlyLocal ? CLOUD_URL : LOCAL_URL;
-    const altLabel = isCurrentlyLocal ? '云端生产专线 (34.31.198.232:8000)' : '本地开发服务 (127.0.0.1:8000)';
+    const altLabel = isCurrentlyLocal ? '微信云托管专线 (trace-api 容器)' : '本地开发服务 (127.0.0.1:8000)';
 
     let reasonHint = `无法连接到 ${currentBase}\n原因: ${errorMsg}\n\n建议排查：`;
     if (isCurrentlyCloud) {
-      reasonHint += `\n1. 确认开发者工具右上角「详情」->「本地设置」已勾选「不校验合法域名、web-view、TLS版本以及HTTPS证书」\n2. 若开启了科学上网代理，可在开发者工具「设置」->「代理设置」选择「使用系统代理」或「不使用代理」\n3. 可随时切换至本地服务通道进行调试 (点击下方切换备用)`;
+      reasonHint += `\n1. 确认微信云托管服务实例处于正常运行状态\n2. 开发者工具右上角「详情」->「本地设置」确认基础库支持 wx.cloud\n3. 可随时切换至本地服务通道进行调试 (点击下方切换备用)`;
     } else {
       reasonHint += `\n1. 确认本地后端服务已运行 (uvicorn trace.api.app:app)\n2. 开发者工具确认勾选「不校验合法域名」\n3. 尝试切换至通道：【${altLabel}】`;
     }
@@ -207,7 +208,7 @@ Page({
 
   toggleEndpointQuick() {
     const endpoints = [
-      { label: '云端生产专线 (GCP 34.31.198.232)', url: CLOUD_URL },
+      { label: '微信云托管专线 (trace-api 容器直连)', url: CLOUD_URL },
       { label: '本地开发服务 (127.0.0.1:8000)', url: LOCAL_URL },
       { label: '局域网直连 (172.20.10.3:8000)', url: LAN_URL }
     ];

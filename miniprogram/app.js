@@ -46,6 +46,14 @@ App({
       wx.setStorageSync('apiBase', defaultEndpoint);
     }
 
+    // 初始化微信云托管能力（免域名/免备案内网直连）
+    if (wx.cloud) {
+      wx.cloud.init({
+        env: 'trace-prod-d0g7s6tv2aba0f5cb',
+        traceUser: true
+      });
+    }
+
     // 后台服务健康自检（支持智能主备自动切换）
     this.checkBackendHealth();
   },
@@ -53,25 +61,48 @@ App({
   checkBackendHealth(callback) {
     const currentBase = this.globalData.apiBase;
     const t0 = Date.now();
+    const isCloudHost = currentBase.includes('tcloudbase.com');
+
+    const handleSuccess = (res) => {
+      if (res.statusCode === 200) {
+        this.globalData.isOnline = true;
+        this.globalData.latencyMs = Date.now() - t0;
+        console.log('[Trace] Connected to:', currentBase, 'Latency:', this.globalData.latencyMs, 'ms');
+        if (typeof callback === 'function') callback(true, currentBase, this.globalData.latencyMs);
+      } else {
+        this._tryAlternativeEndpoint(callback);
+      }
+    };
+
+    const handleFail = () => {
+      this._tryAlternativeEndpoint(callback);
+    };
+
+    if (isCloudHost && wx.cloud && wx.cloud.callContainer) {
+      wx.cloud.callContainer({
+        config: {
+          env: 'trace-prod-d0g7s6tv2aba0f5cb'
+        },
+        path: '/api/v1/health',
+        method: 'GET',
+        header: {
+          'X-WX-SERVICE': 'trace-api',
+          'content-type': 'application/json'
+        },
+        timeout: 8000,
+        success: handleSuccess,
+        fail: handleFail
+      });
+      return;
+    }
 
     wx.request({
       url: `${currentBase}/health`,
       method: 'GET',
       header: { 'bypass-tunnel-reminder': '1' },
       timeout: 8000,
-      success: (res) => {
-        if (res.statusCode === 200) {
-          this.globalData.isOnline = true;
-          this.globalData.latencyMs = Date.now() - t0;
-          console.log('[Trace] Connected to:', currentBase, 'Latency:', this.globalData.latencyMs, 'ms');
-          if (typeof callback === 'function') callback(true, currentBase, this.globalData.latencyMs);
-        } else {
-          this._tryAlternativeEndpoint(callback);
-        }
-      },
-      fail: () => {
-        this._tryAlternativeEndpoint(callback);
-      }
+      success: handleSuccess,
+      fail: handleFail
     });
   },
 
@@ -87,31 +118,54 @@ App({
       altBase = isDevTools ? DEFAULT_LOCAL_ENDPOINT : DEFAULT_CLOUD_ENDPOINT;
     }
     const t0 = Date.now();
+    const isCloudHost = altBase.includes('tcloudbase.com');
+
+    const handleSuccess = (res) => {
+      if (res.statusCode === 200) {
+        const latency = Date.now() - t0;
+        this.globalData.isOnline = true;
+        this.globalData.apiBase = altBase;
+        this.globalData.latencyMs = latency;
+        wx.setStorageSync('apiBase', altBase);
+        console.log('[Trace] Auto failover switched to alternative endpoint:', altBase);
+        if (typeof callback === 'function') callback(true, altBase, latency);
+      } else {
+        this.globalData.isOnline = false;
+        if (typeof callback === 'function') callback(false);
+      }
+    };
+
+    const handleFail = (err) => {
+      this.globalData.isOnline = false;
+      console.warn('[Trace] Both endpoints unreachable:', err);
+      if (typeof callback === 'function') callback(false, null, 0, err);
+    };
+
+    if (isCloudHost && wx.cloud && wx.cloud.callContainer) {
+      wx.cloud.callContainer({
+        config: {
+          env: 'trace-prod-d0g7s6tv2aba0f5cb'
+        },
+        path: '/api/v1/health',
+        method: 'GET',
+        header: {
+          'X-WX-SERVICE': 'trace-api',
+          'content-type': 'application/json'
+        },
+        timeout: 8000,
+        success: handleSuccess,
+        fail: handleFail
+      });
+      return;
+    }
 
     wx.request({
       url: `${altBase}/health`,
       method: 'GET',
       header: { 'bypass-tunnel-reminder': '1' },
       timeout: 8000,
-      success: (res) => {
-        if (res.statusCode === 200) {
-          const latency = Date.now() - t0;
-          this.globalData.isOnline = true;
-          this.globalData.apiBase = altBase;
-          this.globalData.latencyMs = latency;
-          wx.setStorageSync('apiBase', altBase);
-          console.log('[Trace] Auto failover switched to alternative endpoint:', altBase);
-          if (typeof callback === 'function') callback(true, altBase, latency);
-        } else {
-          this.globalData.isOnline = false;
-          if (typeof callback === 'function') callback(false);
-        }
-      },
-      fail: (err) => {
-        this.globalData.isOnline = false;
-        console.warn('[Trace] Both endpoints unreachable:', err);
-        if (typeof callback === 'function') callback(false, null, 0, err);
-      }
+      success: handleSuccess,
+      fail: handleFail
     });
   }
 });

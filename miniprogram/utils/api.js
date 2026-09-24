@@ -2,10 +2,65 @@
 
 const { MOCK_INDICES, MOCK_WATCHLIST, MOCK_EVENTS } = require('./mock');
 
+const CLOUD_ENV_ID = 'trace-prod-d0g7s6tv2aba0f5cb';
+const CLOUD_SERVICE_NAME = 'trace-api';
+
 const app = getApp();
 function getBaseUrl() {
   const currentApp = getApp();
   return (currentApp && currentApp.globalData && currentApp.globalData.apiBase) || 'http://127.0.0.1:8000/api/v1';
+}
+
+/**
+ * 统一网络传输底层适配层 (自动适配微信云托管内网容器直连与标准 HTTP)
+ * 1. 当目标包含微信云托管 (tcloudbase.com) 时，自动使用 wx.cloud.callContainer 进行内网通信（免配置域名、免 ICP 备案）。
+ * 2. 其它情况（如本地 127.0.0.1 联调）自动走标准 wx.request。
+ */
+function httpTransport(options) {
+  const url = options.url || '';
+  const isCloudHost = url.includes('tcloudbase.com') || (wx.getStorageSync('apiBase') || '').includes('tcloudbase.com');
+
+  if (isCloudHost && typeof wx !== 'undefined' && wx.cloud && typeof wx.cloud.callContainer === 'function') {
+    let path = url;
+    try {
+      const match = url.match(/^https?:\/\/[^\/]+(\/.*)$/);
+      if (match) {
+        path = match[1];
+      }
+    } catch (_) {}
+    if (!path.startsWith('/')) {
+      path = '/' + path;
+    }
+
+    const header = Object.assign({
+      'X-WX-SERVICE': CLOUD_SERVICE_NAME,
+      'content-type': 'application/json'
+    }, options.header || {});
+
+    return wx.cloud.callContainer({
+      config: {
+        env: CLOUD_ENV_ID
+      },
+      path: path,
+      method: (options.method || 'GET').toUpperCase(),
+      header: header,
+      data: options.data,
+      timeout: options.timeout || 15000,
+      success(res) {
+        if (typeof options.success === 'function') {
+          options.success(res);
+        }
+      },
+      fail(err) {
+        console.warn('[CloudContainer] Request failed:', path, err);
+        if (typeof options.fail === 'function') {
+          options.fail(err);
+        }
+      }
+    });
+  }
+
+  return wx.request(options);
 }
 
 // A device guest is a server-issued account, not a fabricated local identity.
@@ -34,7 +89,7 @@ function resetUserId() {
   const oldUid = session && session.user_id ? session.user_id : '';
   const base = getBaseUrl();
   if (session && session.session_token) {
-    wx.request({
+    httpTransport({
       url: base + '/auth/session',
       method: 'DELETE',
       header: { Authorization: 'Bearer ' + session.session_token },
@@ -62,7 +117,7 @@ async function refreshSessionToken() {
   const generation = sessionGeneration;
   const base = getBaseUrl();
   const pending = new Promise((resolve, reject) => {
-    wx.request({
+    httpTransport({
       url: base + '/auth/session/refresh',
       method: 'POST',
       data: { refresh_token: existing.refresh_token },
@@ -111,7 +166,7 @@ async function getSessionToken(forceRefresh = false) {
   const generation = sessionGeneration;
   const base = getBaseUrl();
   const pending = new Promise((resolve, reject) => {
-    wx.request({
+    httpTransport({
       url: base + '/auth/session',
       method: 'POST',
       data: { grant_type: 'guest' },
@@ -175,7 +230,7 @@ async function request(options) {
           header['Authorization'] = `Bearer ${t}`;
         }
 
-        wx.request({
+        httpTransport({
           url,
           method: options.method || 'GET',
           data: options.data,
@@ -517,6 +572,7 @@ async function updatePreference({ securityId = null, threshold = 7.0, enabled = 
 }
 
 module.exports = {
+  httpTransport,
   request,
   getUserId,
   resetUserId,
