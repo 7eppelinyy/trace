@@ -155,3 +155,25 @@
   background-color: #FEF2F2;
   color: #DC2626;
 }
+
+/* 免责声明合规区域 */
+.disclaimer-wrap {
+  margin-top: 48rpx;
+  margin-bottom: 40rpx;
+  padding: 24rpx;
+  text-align: center;
+}
+
+.disclaimer-title {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #64748B;
+  margin-bottom: 12rpx;
+}
+
+.disclaimer-text {
+  font-size: 22rpx;
+  line-height: 1.6;
+  color: #94A3B8;
+  text-align: justify;
+}

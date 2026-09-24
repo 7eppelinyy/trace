@@ -103,4 +103,13 @@
     </view>
   </view>
 
+  <!-- 免责声明与合规说明 (过审必备) -->
+  <view class="disclaimer-wrap">
+    <view class="disclaimer-title">免责声明与风险提示</view>
+    <view class="disclaimer-text">
+      本小程序所展示的数据、产业链图谱、事件资讯及推演内容均来源于公开法定披露与客观拓扑模型，仅供投研学术参考，不构成任何投资建议、买卖依据或收益保证。市场有风险，投资需谨慎并独立决策。
+    </view>
+  </view>
+
 </view>
+
