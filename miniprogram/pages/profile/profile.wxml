@@ -86,10 +86,10 @@
     <view class="tool-btn touch-press btn-primary" bindtap="checkServer">
       检测后端 API 连接状态 (Ping)
     </view>
-    <view class="tool-btn touch-press" bindtap="toggleEndpointQuick">
+    <view class="tool-btn touch-press" bindtap="toggleEndpointQuick" wx:if="{{isDev}}">
       切换通道 (当前: {{apiBaseDisplay}})
     </view>
-    <view class="tool-btn touch-press" bindtap="editApiBase">
+    <view class="tool-btn touch-press" bindtap="editApiBase" wx:if="{{isDev}}">
       自定义服务端点 ({{apiBaseDisplay}})
     </view>
     <view class="tool-btn touch-press" bindtap="handleResetWatchlist">

@@ -3,7 +3,7 @@ const app = getApp();
 const { getUserId, resetUserId, resetWatchlist, getPreferences, updatePreference } = require('../../utils/api');
 
 const LOCAL_URL = 'http://127.0.0.1:8000/api/v1';
-const CLOUD_URL = 'http://34.31.198.232:8000/api/v1';
+const CLOUD_URL = 'https://trace-api-319136-10-1495327666.sh.run.tcloudbase.com/api/v1';
 const LAN_URL = 'http://172.20.10.3:8000/api/v1';
 
 Page({
@@ -14,11 +14,21 @@ Page({
     quietEnd: '08:00',
     prefRevision: 1,
     cacheSize: 0,
-    apiBaseDisplay: '34.31.198.232:8000',
+    apiBaseDisplay: 'trace-api (云托管专线)',
     userIdDisplay: '',
     isOnline: true,
     latencyMs: 0,
-    isTunnelMode: true
+    isTunnelMode: true,
+    isDev: false
+  },
+
+  onLoad() {
+    let isDev = false;
+    try {
+      const accountInfo = wx.getAccountInfoSync ? wx.getAccountInfoSync() : null;
+      isDev = (accountInfo && accountInfo.miniProgram && accountInfo.miniProgram.envVersion === 'develop');
+    } catch (e) {}
+    this.setData({ isDev });
   },
 
   openResearch() { wx.navigateTo({url: '/pages/research/research'}); },

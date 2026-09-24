@@ -1,6 +1,6 @@
 // app.js - Trace Mini-Program Entry
 const DEFAULT_LOCAL_ENDPOINT = 'http://127.0.0.1:8000/api/v1';
-const DEFAULT_CLOUD_ENDPOINT = 'http://34.31.198.232:8000/api/v1';
+const DEFAULT_CLOUD_ENDPOINT = 'https://trace-api-319136-10-1495327666.sh.run.tcloudbase.com/api/v1';
 const DEFAULT_LAN_ENDPOINT = 'http://172.20.10.3:8000/api/v1';
 
 App({
