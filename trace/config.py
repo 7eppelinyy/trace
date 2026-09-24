@@ -99,6 +99,12 @@ def load_config(settings_path: Path | None = None) -> AppConfig:
     if load_dotenv is not None and os.environ.get('TRACE_LOAD_DOTENV', '1') != '0':
         load_dotenv(PROJECT_ROOT / ".env")
 
+    if not os.environ.get("OPENAI_API_KEY") and os.environ.get("DEEPSEEK_API_KEY"):
+        os.environ.setdefault("LLM_PROVIDER", "openai")
+        os.environ.setdefault("OPENAI_API_KEY", os.environ["DEEPSEEK_API_KEY"])
+        os.environ.setdefault("OPENAI_BASE_URL", "https://api.deepseek.com")
+        os.environ.setdefault("OPENAI_MODEL", "deepseek-chat")
+
     from trace.common.modes import TraceMode
     TraceMode.validate()
 
