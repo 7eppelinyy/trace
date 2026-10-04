@@ -4,7 +4,7 @@
   <!-- 顶部 Header -->
   <view class="page-header">
     <view>
-      <view class="brand-kicker">TRACE WATCHLIST</view><view class="page-title">自选</view>
+      <view class="page-title">自选</view>
       <view class="page-subtitle">{{watchlist.length}} 只标的 · 行情与事件</view>
     </view>
     <view style="display: flex; gap: 16rpx; align-items: center;">

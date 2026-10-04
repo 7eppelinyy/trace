@@ -422,20 +422,20 @@ async function askQuestion(ticker, question, history = [], options = {}) {
 }
 
 const SOURCE_NAME_MAP = {
-  src_cninfo: '巨潮资讯 · 官方披露',
-  src_digitimes: '电子时报 · 产业独家',
-  src_sec_edgar: '美国 SEC · 官方披露',
-  src_fed: '美联储 · 权威声明',
-  src_commerce: '美国商务部 · 监管公报',
-  src_mofcom: '中国商务部 · 官方公告',
-  src_miit: '工信部 · 政策公报',
-  src_eetimes: 'EE Times · 产业快报',
-  src_nvidia_ir: '英伟达官方 · IR 发布',
-  src_micron_ir: '美光科技 · 原厂公告',
-  src_sndk_ir: '闪迪/西部数据 · 官方公告',
-  src_jin10: '金十 VIP · 机构快讯',
-  src_bis: '美国 BIS · 出口管制',
-  src_federal_register: '联邦公报 · 监管规则'
+  src_cninfo: '巨潮资讯',
+  src_digitimes: 'DIGITIMES',
+  src_sec_edgar: 'SEC',
+  src_fed: '美联储',
+  src_commerce: '美国商务部',
+  src_mofcom: '商务部',
+  src_miit: '工信部',
+  src_eetimes: 'EE Times',
+  src_nvidia_ir: 'NVIDIA IR',
+  src_micron_ir: 'Micron IR',
+  src_sndk_ir: 'Sandisk IR',
+  src_jin10: '金十数据',
+  src_bis: 'BIS',
+  src_federal_register: 'Federal Register'
 };
 
 /**
@@ -479,6 +479,7 @@ async function getEvents(opts = 6) {
           event_id: item.event_id,
           title: item.title,
           summary: item.summary,
+          first_seen_at: item.first_seen_at || null,
           source: sourceLabel,
           transmission_depth: depth,
           impacts_count: count,

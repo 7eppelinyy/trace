@@ -9,7 +9,7 @@ Page({
     heroEvent: null,
     events: [],
     loading: false,
-    navInset: 64, reduceMotion: false, todayLabel: ''
+    navInset: 64, reduceMotion: false, todayLabel: '', displayEvents: []
   },
 
   onLoad() {
@@ -62,7 +62,12 @@ Page({
       this.setData({
         indices: formattedIndices,
         heroEvent: heroEvent,
-        events: remainingEvents
+        events: remainingEvents,
+        displayEvents: (rawEvents || []).map(item => {
+          const seen = item.first_seen_at ? new Date(item.first_seen_at) : null;
+          const valid = seen && !isNaN(seen.getTime());
+          return { ...item, collectedTime: valid ? `${seen.getMonth() + 1}/${seen.getDate()} ${String(seen.getHours()).padStart(2,'0')}:${String(seen.getMinutes()).padStart(2,'0')}` : '' };
+        })
       });
     } catch (e) {
       console.error('[Index] load data error:', e);

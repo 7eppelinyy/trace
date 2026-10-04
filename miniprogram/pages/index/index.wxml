@@ -1,89 +1,16 @@
-<!-- pages/index/index.wxml - 全网官方源事件雷达 -->
 <view class="page-container premium-page {{reduceMotion ? 'motion-reduced' : ''}}" style="padding-top: {{navInset}}px;">
-
-  <!-- 顶部 Header -->
-  <view class="page-header">
-    <view>
-      <view class="brand-kicker">{{todayLabel}} · 研究雷达</view>
-      <view class="page-title brand-title">Trace<text class="brand-dot">.</text></view>
-    </view>
-    <view class="header-actions">
-      <view class="refresh-btn btn-press" bindtap="onManualRefresh">
-        <image class="refresh-icon-img" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><path d='M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15'/></svg>"></image>
-      </view>
-    </view>
-  </view>
-  <view wx:if="{{loading && !heroEvent && indices.length === 0}}" class="skeleton-card">
-    <view class="skeleton-block skeleton-title"></view><view class="skeleton-block"></view><view class="skeleton-block"></view>
-    <view class="quiet-caption">正在加载市场与事件</view>
-  </view>
-
-  <!-- 今日宏观主线 Hero 卡片 (完全由实时官方事件驱动) -->
-  <view class="hero-card card-active" wx:if="{{heroEvent}}" bindtap="navigateToDetail" data-id="{{heroEvent.event_id}}">
-    <view class="hero-orbit" aria-hidden="true"></view>
-    <view class="hero-topline"><view class="hero-eyebrow">值得关注</view><view class="hero-open" aria-hidden="true">↗</view></view>
-    <view class="hero-title">{{heroEvent.title}}</view>
-    <view class="hero-summary line-clamp-2" wx:if="{{heroEvent.summary}}">{{heroEvent.summary}}</view>
-    <view class="hero-footer">
-      <text class="hero-status">{{heroEvent.source || '权威信源披露'}} · {{heroEvent.impact_level || '产业链传导'}}</text>
-      <text class="hero-link">阅读全文 →</text>
-    </view>
-  </view>
-
-  <!-- 市场联动指数条 (一体化静谧长条，剔除多重边框) -->
-  <view class="market-heading" wx:if="{{indices.length > 0}}"><text>市场一览</text><text class="market-caption">行情与报价状态</text></view>
+  <view class="page-header"><view><view class="page-title">雷达</view><view class="page-subtitle">{{todayLabel}}</view></view><view class="refresh-btn btn-press" bindtap="onManualRefresh" aria-label="刷新"><text>↻</text></view></view>
+  <view wx:if="{{loading && displayEvents.length === 0}}" class="skeleton-card"><view class="skeleton-block skeleton-title"></view><view class="skeleton-block"></view><view class="quiet-caption">正在加载</view></view>
   <view class="indices-strip" wx:if="{{indices.length > 0}}">
-    <block wx:for="{{indices}}" wx:key="code">
-      <view class="index-cell">
-        <view class="index-name">
-          {{item.name}}
-          <text class="index-badge" wx:if="{{item.statusBadge}}">{{item.statusBadge}}</text>
-        </view>
-        <view class="index-price tnum {{!item.hasQuote ? 'color-neutral' : ''}}">{{item.formattedPrice}}</view>
-        <view class="index-pct tnum {{!item.hasQuote ? 'color-neutral' : (item.isUp ? 'color-up' : 'color-down')}}">{{item.formattedPct}}</view>
-      </view>
-    </block>
+    <view class="index-cell" wx:for="{{indices}}" wx:key="code"><view class="index-name">{{item.name}}<text class="index-badge" wx:if="{{item.statusBadge}}">{{item.statusBadge}}</text></view><view class="index-price tnum {{!item.hasQuote ? 'color-neutral' : ''}}">{{item.formattedPrice}}</view><view class="index-pct tnum {{!item.hasQuote ? 'color-neutral' : (item.isUp ? 'color-up' : 'color-down')}}">{{item.formattedPct}}</view></view>
   </view>
-
-  <!-- 核心事件雷达列表 (Apple Inset Group) -->
-  <view class="section-header">
-    <text class="section-title">研究线索</text>
-    <text class="section-sub">最近收录 · {{events.length}} 条</text>
+  <view class="section-header"><text class="section-title">事件</text><text class="section-sub">最近收录</text></view>
+  <view class="event-feed" wx:if="{{displayEvents.length > 0}}">
+    <view class="event-item card-active" wx:for="{{displayEvents}}" wx:key="event_id" bindtap="navigateToDetail" data-id="{{item.event_id}}">
+      <view class="event-meta"><text class="event-source">{{item.source}}</text><text class="event-time" wx:if="{{item.collectedTime}}">收录 {{item.collectedTime}}</text></view>
+      <view class="event-title">{{item.title}}</view><view class="event-summary line-clamp-2" wx:if="{{item.summary}}">{{item.summary}}</view>
+      <view class="event-footer"><view class="securities-wrap"><block wx:for="{{item.securities}}" wx:key="ticker" wx:for-item="security" wx:for-index="securityIndex"><text class="sec-chip" wx:if="{{securityIndex < 2}}">{{security.name || security.ticker}}</text></block><text class="quiet-caption" wx:if="{{item.securities.length > 2}}">+{{item.securities.length - 2}}</text></view><text class="event-chevron">›</text></view>
+    </view>
   </view>
-
-  <view class="apple-group event-feed" wx:if="{{events.length > 0}}">
-    <block wx:for="{{events}}" wx:key="event_id">
-      <view class="apple-cell event-item" bindtap="navigateToDetail" data-id="{{item.event_id}}">
-        <!-- 头部信源与传导级别 -->
-        <view class="event-meta">
-          <text class="event-source">{{item.source}}</text>
-          <text class="event-level tnum">{{item.impact_level}}</text>
-        </view>
-
-        <!-- 标题与摘要 -->
-        <view class="event-title">{{item.title}}</view>
-        <view class="event-summary line-clamp-2" wx:if="{{item.summary}}">{{item.summary}}</view>
-
-        <!-- 底部映射标的与穿透提示 (绝对水平对齐，严防换行) -->
-        <view class="event-footer">
-          <view class="securities-wrap">
-            <block wx:for="{{item.securities}}" wx:key="ticker" wx:for-item="sec" wx:for-index="secIndex">
-              <view class="sec-chip tnum" wx:if="{{secIndex < 2}}">
-                <text class="sec-ticker">{{sec.name || sec.ticker}}</text>
-                <text class="sec-pct {{sec.change_pct === null ? 'color-neutral' : (sec.change_pct >= 0 ? 'color-up' : 'color-down')}}">{{sec.change_pct === null ? '—' : (sec.change_pct >= 0 ? '+' : '') + sec.change_pct + '%'}}</text>
-              </view>
-            </block>
-            <text class="quiet-caption" wx:if="{{item.securities.length > 2}}">+{{item.securities.length - 2}}</text>
-          </view>
-          <view class="graph-link">详情 ›</view>
-        </view>
-      </view>
-    </block>
-  </view>
-
-  <view class="empty-state-home" wx:if="{{events.length === 0 && !loading}}">
-    <view class="empty-title">当前暂无突发事件动态</view>
-    <view class="empty-desc">暂无可展示事件，可以稍后刷新。</view>
-  </view>
-
+  <view class="empty-state-home" wx:if="{{!loading && displayEvents.length === 0}}"><view class="empty-title">暂无事件</view><view class="empty-desc">可以稍后刷新。</view></view>
 </view>

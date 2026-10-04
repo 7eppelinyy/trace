@@ -1,23 +1,25 @@
 <view class="ask-container premium-page {{reduceMotion ? 'motion-reduced' : ''}} {{keyboardVisible ? 'keyboard-open' : ''}}">
   <view class="ask-header" style="padding-top: {{navInset}}px;">
-    <view><view class="brand-kicker">TRACE RESEARCH</view><view class="ask-title">推演</view></view>
+    <view><view class="ask-title">推演</view></view>
     <view class="clear-btn btn-press {{thinking ? 'control-disabled' : ''}}" bindtap="clearChat" aria-label="清空对话，开始新对话"><text>新对话</text></view>
   </view>
   <scroll-view class="chat-stream" scroll-y scroll-into-view="{{scrollTarget}}" bindscroll="onChatScroll" enable-flex>
     <view class="preset-section" wx:if="{{messages.length === 0}}">
-      <view class="research-intro"><view class="research-symbol" aria-hidden="true">T</view><view class="welcome-title">让判断，有所依据。</view><view class="welcome-subtitle"><view>从业务逻辑出发，</view><view>把事实、条件与假设分开。</view></view></view>
-      <view class="preset-item" bindtap="askPreset" data-query="美光和闪迪的业务有什么区别，DRAM和NAND涨价分别对谁更有利？"><view><view class="preset-category">业务比较</view><text class="preset-text">美光与闪迪，有什么不同？</text></view><text class="preset-arrow">↗</text></view>
-      <view class="preset-item" bindtap="askPreset" data-query="假设AI服务器需求放缓，光模块和液冷产业链会受到什么影响？"><view><view class="preset-category">情景假设</view><text class="preset-text">AI 需求放缓，会影响哪些环节？</text></view><text class="preset-arrow">↗</text></view>
-      <view class="preset-item" bindtap="askPreset" data-query="假设美联储降息，美股科技公司的估值会受到什么影响？"><view><view class="preset-category">宏观机制</view><text class="preset-text">降息如何影响科技股估值？</text></view><text class="preset-arrow">↗</text></view>
+      <view class="welcome-title">想了解什么？</view>
+      <view class="suggestion-group">
+        <view class="preset-item" bindtap="askPreset" data-query="美光和闪迪的业务有什么区别？"><text class="preset-text">美光和闪迪的业务有什么区别？</text><text class="preset-arrow">›</text></view>
+        <view class="preset-item" bindtap="askPreset" data-query="假设利率下调，会如何影响科技公司的估值？"><text class="preset-text">假设利率下调，会如何影响科技公司的估值？</text><text class="preset-arrow">›</text></view>
+        <view class="preset-item" bindtap="askPreset" data-query="公司业绩和股价表现有什么区别？"><text class="preset-text">公司业绩和股价表现有什么区别？</text><text class="preset-arrow">›</text></view>
+      </view>
     </view>
     <block wx:for="{{messages}}" wx:key="id">
       <view class="msg-row user-row" wx:if="{{item.role === 'user'}}" id="msg-{{item.id}}"><view class="user-bubble"><text selectable>{{item.content}}</text></view></view>
       <view class="msg-row ai-row" wx:if="{{item.role === 'assistant'}}" id="msg-{{item.id}}">
-        <view class="ai-meta"><view class="answer-monogram">T</view><text>{{item.metaBadge}}</text></view>
+        <view class="ai-meta"><text>{{item.metaBadge}}</text></view>
         <view class="ai-card {{item.isSecurity ? 'ai-card-security' : (item.isDegraded ? 'ai-card-degraded' : '')}}">
           <view class="ai-title">{{item.title}}</view>
           <block wx:if="{{item.answerClaims && item.answerClaims.length > 0}}">
-            <view class="answer-section" wx:for="{{item.answerClaims}}" wx:key="id" wx:for-item="claim" wx:for-index="claimIndex"><view class="answer-kind"><text class="answer-number">{{claimIndex < 9 ? '0' + (claimIndex + 1) : claimIndex + 1}}</text>{{claimIndex === 0 ? '核心回答' : claim.label}}</view><text class="answer-text {{claimIndex === 0 ? 'answer-lead' : ''}}" selectable>{{claim.text}}</text></view>
+            <view class="answer-section" wx:for="{{item.answerClaims}}" wx:key="id" wx:for-item="claim" wx:for-index="claimIndex"><view class="answer-kind">{{claim.label}}</view><text class="answer-text" selectable>{{claim.text}}</text></view>
           </block>
           <text wx:else class="ai-content" selectable>{{item.content}}</text>
           <view class="answer-details-toggle" wx:if="{{item.hasAnswerDetails}}" bindtap="toggleAnswerDetails" data-index="{{index}}">{{item.detailsExpanded ? '收起条件与来源 −' : '查看成立条件与资料来源 ＋'}}</view>

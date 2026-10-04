@@ -1,6 +1,6 @@
 <view class="page-container premium-page {{reduceMotion ? 'motion-reduced' : ''}}" style="padding-top: {{navInset}}px;">
-  <view class="page-header"><view><view class="brand-kicker">YOUR RESEARCH SPACE</view><view class="page-title">我的</view><view class="page-subtitle">为研究，留一点空间。</view></view></view>
-  <view class="account-card"><view class="avatar-badge">T</view><view class="account-info"><view class="account-name">设备访客账户</view><view class="account-id">当前设备的独立研究空间</view></view><view class="status-badge {{isOnline ? 'status-online' : 'status-offline'}}">{{isOnline ? '在线' : '离线'}}</view></view>
+  <view class="page-header"><view><view class="page-title">我的</view></view></view>
+  <view class="account-card"><view class="account-info"><view class="account-name">当前账户</view><view class="account-id">设备访客 · 数据按账户保存</view></view><view class="status-badge {{isOnline ? 'status-online' : 'status-offline'}}">{{isOnline ? '在线' : '离线'}}</view></view>
   <view class="group-title">研究</view>
   <view class="apple-group"><view class="apple-cell flex-between card-active" bindtap="openResearch"><view><view class="setting-name">我的研究</view><view class="setting-desc">记录假设，跟踪新证据</view></view><text class="row-chevron">›</text></view></view>
   <view class="group-title">提醒偏好</view>
