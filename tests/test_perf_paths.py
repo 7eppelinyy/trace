@@ -85,6 +85,53 @@ def test_list_by_event_uses_index(db):
     assert "SCAN raw_item" not in detail, f"list_by_event 全表扫描: {detail}"
 
 
+def test_display_pagination_evidence_lookups_use_indexes(db):
+    queries = []
+    original_query_one = db.query_one
+
+    def capture(sql, params=()):
+        queries.append((sql, params))
+        return original_query_one(sql, params)
+
+    db.query_one = capture
+    try:
+        EventRepo(db).paginate_events(enforce_display=True)
+    finally:
+        db.query_one = original_query_one
+    count_sql, params = next(q for q in queries if "COUNT(*)" in q[0])
+    plan = _plan(db, count_sql, params)
+    assert "SCAN rp" not in plan, plan
+    assert "SCAN ep" not in plan, plan
+
+
+def test_display_pagination_withholds_forbidden_linked_evidence(db):
+    from trace.db.repositories import EventSourceRepo
+    from trace.domain.models import EventSource
+
+    now = datetime.now(timezone.utc)
+    db.execute("UPDATE source SET can_display=1 WHERE source_id='src_sec_edgar'")
+    db.execute("UPDATE source SET can_display=0 WHERE source_id='src_reuters'")
+    repo = EventRepo(db)
+    for eid in ("display_allowed", "display_direct_blocked", "display_linked_blocked"):
+        repo.insert(Event(event_id=eid, title=eid, first_source_id="src_sec_edgar",
+                          first_seen_at=now, last_updated_at=now))
+    for rid, eid in (("raw_direct_blocked", "display_direct_blocked"),
+                     ("raw_linked_blocked", "display_allowed")):
+        RawItemRepo(db).insert(RawItem(raw_item_id=rid, source_id="src_reuters",
+                                      source_item_id=rid, title=rid, event_id=eid,
+                                      published_at=now, fetched_at=now))
+    EventSourceRepo(db).add(EventSource(event_id="display_linked_blocked",
+                                      raw_item_id="raw_linked_blocked", role="supporting"))
+    # Both the raw owner and a secondary evidence link must be withheld.
+    visible, total, _ = repo.paginate_events(enforce_display=True)
+    assert not {"display_allowed", "display_direct_blocked", "display_linked_blocked"}.intersection(
+        e.event_id for e in visible)
+    repo.insert(Event(event_id="display_fallback", title="fallback",
+                      first_source_id="src_sec_edgar", first_seen_at=now, last_updated_at=now))
+    visible, _, _ = repo.paginate_events(enforce_display=True)
+    assert "display_fallback" in {e.event_id for e in visible}
+
+
 def test_dedup_still_correct_after_indexing(db):
     """索引不得改变去重语义：四条路径逐一命中。"""
     repo = RawItemRepo(db)

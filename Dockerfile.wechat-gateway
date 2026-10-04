@@ -1,0 +1,4 @@
+FROM nginx:stable-alpine
+COPY deployment/wechat-gcp/backend.crt /etc/nginx/trace-backend.crt
+COPY deployment/wechat-gcp/default.conf /etc/nginx/conf.d/default.conf
+EXPOSE 8080

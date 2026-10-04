@@ -448,12 +448,19 @@ class EventRepo:
 
         target_markets = [m.strip().upper() for m in market.split(",") if m.strip()] if market else None
 
+        # Split direct and linked evidence so each correlated lookup can use
+        # its event_id index. An OR across the joined tables scans all raw
+        # items for every event once the production database grows.
         where_clauses = ["e.first_seen_at <= ?", """NOT EXISTS (
-            SELECT 1 FROM raw_item rp LEFT JOIN event_source ep ON ep.raw_item_id=rp.raw_item_id
-            LEFT JOIN source sp ON sp.source_id=rp.source_id
-            WHERE (rp.event_id=e.event_id OR ep.event_id=e.event_id) AND COALESCE(sp.can_display,0)=0)
-            AND (EXISTS (SELECT 1 FROM raw_item rp LEFT JOIN event_source ep ON ep.raw_item_id=rp.raw_item_id
-                         WHERE rp.event_id=e.event_id OR ep.event_id=e.event_id)
+            SELECT 1 FROM raw_item rp LEFT JOIN source sp ON sp.source_id=rp.source_id
+            WHERE rp.event_id=e.event_id AND COALESCE(sp.can_display,0)=0)
+            AND NOT EXISTS (
+                SELECT 1 FROM event_source ep JOIN raw_item rp ON rp.raw_item_id=ep.raw_item_id
+                LEFT JOIN source sp ON sp.source_id=rp.source_id
+                WHERE ep.event_id=e.event_id AND COALESCE(sp.can_display,0)=0)
+            AND (EXISTS (SELECT 1 FROM raw_item rp WHERE rp.event_id=e.event_id)
+                 OR EXISTS (SELECT 1 FROM event_source ep JOIN raw_item rp ON rp.raw_item_id=ep.raw_item_id
+                            WHERE ep.event_id=e.event_id)
                  OR EXISTS (SELECT 1 FROM source sp WHERE sp.source_id=e.first_source_id AND sp.can_display=1))"""]
         if not enforce_display:
             where_clauses = where_clauses[:1]

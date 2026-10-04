@@ -1,0 +1,4 @@
+*
+!Dockerfile
+!default.conf
+!backend.crt
