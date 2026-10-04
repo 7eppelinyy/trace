@@ -69,6 +69,10 @@ function loadPage(name, api = {}) {
   assert.strictEqual(ask.data.showNewAnswerHint, true);
   ask.jumpToLatest();
   assert.strictEqual(ask.data.showNewAnswerHint, false);
+  ask.onKeyboardChange({detail:{height:300}});
+  assert.strictEqual(ask.data.keyboardVisible,true);
+  ask.onHide();
+  assert.strictEqual(ask.data.keyboardVisible,false,'Cached page must not retain keyboard layout after leaving');
   ask.toggleAnswerDetails({currentTarget: {dataset: {index: 1}}});
   assert.strictEqual(ask.data.messages[1].detailsExpanded, true);
 

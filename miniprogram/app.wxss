@@ -1,3 +1,4 @@
+@import "styles/premium.wxss";
 /** app.wxss - Apple Design System & Quiet Craftsmanship **/
 
 page {

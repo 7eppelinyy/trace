@@ -1,7 +1,7 @@
 // pages/index/index.js - 全网官方源事件雷达
 const { getIndices, getEvents } = require('../../utils/api');
 const { formatIndexPoint, formatPct, isPositive } = require('../../utils/format');
-const { getUiSettings } = require('../../utils/ui');
+const { getUiSettings, syncTabBar } = require('../../utils/ui');
 
 Page({
   data: {
@@ -17,7 +17,7 @@ Page({
     this.setData({ ...getUiSettings(), todayLabel: `${now.getMonth() + 1}月${now.getDate()}日` });
     this.loadAllData();
   },
-  onShow() { this.setData(getUiSettings()); },
+  onShow() { this.setData(getUiSettings()); syncTabBar(this, 0); },
 
   onPullDownRefresh() {
     this.loadAllData(() => {

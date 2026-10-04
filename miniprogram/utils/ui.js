@@ -10,4 +10,14 @@ function getUiSettings() {
   };
 }
 function setReduceMotion(enabled) { wx.setStorageSync('trace_reduce_motion', !!enabled); }
-module.exports = { getUiSettings, setReduceMotion };
+function syncTabBar(page, selected) {
+  if (typeof page.getTabBar !== 'function') return;
+  const bar = page.getTabBar();
+  if (bar) bar.setData({ selected, reduceMotion: !!page.data.reduceMotion, overlayHidden: !!page.data.showSearchSheet });
+}
+function setTabBarOverlay(page, overlayHidden) {
+  if (typeof page.getTabBar !== 'function') return;
+  const bar = page.getTabBar();
+  if (bar) bar.setData({ overlayHidden });
+}
+module.exports = { getUiSettings, setReduceMotion, syncTabBar, setTabBarOverlay };

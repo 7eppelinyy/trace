@@ -1,5 +1,5 @@
 <!-- pages/detail/detail.wxml - 产业链全景推演与证据工作台 -->
-<view class="detail-container {{reduceMotion ? 'motion-reduced' : ''}}">
+<view class="detail-container premium-page {{reduceMotion ? 'motion-reduced' : ''}}">
 
   <!-- 加载状态 -->
   <view class="detail-card state-card" wx:if="{{loading}}">
@@ -26,7 +26,7 @@
     </view>
 
     <!-- 1. 事实与关联卡片 -->
-    <view class="detail-card">
+    <view class="detail-card detail-summary">
       <view class="event-header-row">
         <view class="source-label">{{event.source_label}}</view>
         <view class="event-meta-tags">

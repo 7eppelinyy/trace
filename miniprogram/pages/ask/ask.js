@@ -1,6 +1,6 @@
 // pages/ask/ask.js - 产业链 AI 深度推演与防破甲对话
 const { askQuestion } = require('../../utils/api');
-const { getUiSettings } = require('../../utils/ui');
+const { getUiSettings, syncTabBar } = require('../../utils/ui');
 const { presentAnswer } = require('../../utils/answer');
 
 Page({
@@ -11,11 +11,12 @@ Page({
     messages: [],
     pendingEventId: null,
     pendingEventVersion: null,
-    navInset: 64, reduceMotion: false, elapsedSeconds: 0, showNewAnswerHint: false
+    navInset: 64, reduceMotion: false, elapsedSeconds: 0, showNewAnswerHint: false, keyboardVisible: false
   },
 
   onShow() {
     this.setData(getUiSettings());
+    syncTabBar(this, 1);
     if (this.data.thinking) this.startThinkingTimer();
     const app = getApp();
     if (app && app.globalData && app.globalData.pendingAskQuery) {
@@ -35,9 +36,10 @@ Page({
     }
   },
 
-  onHide() { this.stopThinkingTimer(); },
+  onHide() { this.stopThinkingTimer(); this.setData({ keyboardVisible: false }); },
   onReady() { this.measureChat(); },
   onResize() { this.measureChat(); },
+  onKeyboardChange(e) { this.setData({ keyboardVisible: e.detail.height > 0 }); this.measureChat(); },
   measureChat() {
     if (typeof wx.createSelectorQuery !== 'function') return;
     wx.createSelectorQuery().select('.chat-stream').boundingClientRect(rect => {

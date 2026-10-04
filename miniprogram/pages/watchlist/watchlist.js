@@ -1,7 +1,7 @@
 // pages/watchlist/watchlist.js - 自选监控与阈值预警
 const { getWatchlist, addWatchlist, removeWatchlist, clearWatchlist, resetWatchlist, searchWatchlist, getPreferences, updatePreference } = require('../../utils/api');
 const { formatPrice, formatPct, isPositive, shortTicker } = require('../../utils/format');
-const { getUiSettings } = require('../../utils/ui');
+const { getUiSettings, syncTabBar, setTabBarOverlay } = require('../../utils/ui');
 
 Page({
   data: {
@@ -32,6 +32,7 @@ Page({
 
   onShow() {
     this.setData(getUiSettings());
+    syncTabBar(this, 2);
     this.loadData();
   },
   onUnload() { clearTimeout(this.searchTimer); clearTimeout(this._sheetCloseTimer); },
@@ -337,6 +338,7 @@ Page({
   },
 
   openAddModal() {
+    setTabBarOverlay(this, true);
     clearTimeout(this._sheetCloseTimer);
     this.setData({
       sheetClosing: false,
@@ -352,6 +354,7 @@ Page({
     this.setData({ sheetClosing: true, searchFocused: false });
     this._sheetCloseTimer = setTimeout(() => {
       this.setData({ showSearchSheet: false, sheetClosing: false });
+      setTabBarOverlay(this, false);
     }, this.data.reduceMotion ? 0 : 200);
   },
 

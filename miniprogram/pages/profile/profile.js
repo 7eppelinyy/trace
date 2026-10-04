@@ -1,7 +1,7 @@
 // pages/profile/profile.js - 投研设置与机构席位中心
 const app = getApp();
 const { getUserId, resetUserId, resetWatchlist, getPreferences, updatePreference, httpTransport } = require('../../utils/api');
-const { getUiSettings, setReduceMotion } = require('../../utils/ui');
+const { getUiSettings, setReduceMotion, syncTabBar } = require('../../utils/ui');
 
 const LOCAL_URL = 'http://127.0.0.1:8000/api/v1';
 const CLOUD_URL = 'https://trace-api-319136-10-1495327666.sh.run.tcloudbase.com/api/v1';
@@ -37,6 +37,7 @@ Page({
 
   onShow() {
     this.setData(getUiSettings());
+    syncTabBar(this, 3);
     this.refreshEndpointDisplay();
     this.calcCacheSize();
     this.probeServerStatus();
@@ -46,6 +47,7 @@ Page({
   onReduceMotionChange(e) {
     setReduceMotion(e.detail.value);
     this.setData({ reduceMotion: !!e.detail.value });
+    syncTabBar(this, 3);
   },
 
   async loadUserPreferences() {

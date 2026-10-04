@@ -1,4 +1,4 @@
-<view class="research {{reduceMotion ? 'motion-reduced' : ''}}">
+<view class="research premium-page {{reduceMotion ? 'motion-reduced' : ''}}">
   <view class="heading">{{shared ? '研究分享快照' : '我的研究'}}</view>
   <view class="secondary">{{shared ? '用户的假设与判断，尚需独立核验。' : '把想法留下，让证据跟上。默认私有。'}}</view>
   <view wx:if="{{error}}" class="error" role="alert">{{error}}</view>

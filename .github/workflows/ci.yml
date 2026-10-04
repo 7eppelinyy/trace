@@ -35,3 +35,4 @@ jobs:
           node miniprogram/tests/detail_mapping.test.js
           node miniprogram/tests/session_research.test.js
           node miniprogram/tests/ui_behavior.test.js
+          node miniprogram/tests/tabbar_behavior.test.js
