@@ -1,6 +1,6 @@
-<view class="research">
+<view class="research {{reduceMotion ? 'motion-reduced' : ''}}">
   <view class="heading">{{shared ? '研究分享快照' : '我的研究'}}</view>
-  <view class="secondary">{{shared ? '这是用户的假设与判断，不代表已核实事实。' : '记录假设、核对新证据。内容默认私有。'}}</view>
+  <view class="secondary">{{shared ? '用户的假设与判断，尚需独立核验。' : '把想法留下，让证据跟上。默认私有。'}}</view>
   <view wx:if="{{error}}" class="error" role="alert">{{error}}</view>
   <view wx:if="{{loading}}" class="secondary">正在加载…</view>
   <view wx:if="{{!shared}}" class="actions">

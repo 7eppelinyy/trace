@@ -19,6 +19,7 @@ function loadPage(apiMock = {}) {
       navigateTo: () => {}
     },
     require: modulePath => {
+      if (modulePath.includes('utils/ui')) return require(path.join(__dirname, '../utils/ui.js'));
       if (modulePath.includes('utils/api')) {
         return Object.assign({
           getEventDetail: async (id) => null

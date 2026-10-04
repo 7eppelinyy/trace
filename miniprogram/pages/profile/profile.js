@@ -1,6 +1,7 @@
 // pages/profile/profile.js - 投研设置与机构席位中心
 const app = getApp();
 const { getUserId, resetUserId, resetWatchlist, getPreferences, updatePreference, httpTransport } = require('../../utils/api');
+const { getUiSettings, setReduceMotion } = require('../../utils/ui');
 
 const LOCAL_URL = 'http://127.0.0.1:8000/api/v1';
 const CLOUD_URL = 'https://trace-api-319136-10-1495327666.sh.run.tcloudbase.com/api/v1';
@@ -19,7 +20,8 @@ Page({
     isOnline: true,
     latencyMs: 0,
     isTunnelMode: true,
-    isDev: false
+    isDev: false,
+    navInset: 64, reduceMotion: false, showAdvanced: false
   },
 
   onLoad() {
@@ -28,16 +30,22 @@ Page({
       const accountInfo = wx.getAccountInfoSync ? wx.getAccountInfoSync() : null;
       isDev = (accountInfo && accountInfo.miniProgram && accountInfo.miniProgram.envVersion === 'develop');
     } catch (e) {}
-    this.setData({ isDev });
+    this.setData({ isDev, ...getUiSettings() });
   },
 
   openResearch() { wx.navigateTo({url: '/pages/research/research'}); },
 
   onShow() {
+    this.setData(getUiSettings());
     this.refreshEndpointDisplay();
     this.calcCacheSize();
     this.probeServerStatus();
     this.loadUserPreferences();
+  },
+  toggleAdvanced() { this.setData({ showAdvanced: !this.data.showAdvanced }); },
+  onReduceMotionChange(e) {
+    setReduceMotion(e.detail.value);
+    this.setData({ reduceMotion: !!e.detail.value });
   },
 
   async loadUserPreferences() {
@@ -149,7 +157,7 @@ Page({
           }
           const body = (typeof res.data === 'object') ? res.data : {};
           const statusVal = body.status || 'OK';
-          const sourcesCount = (body.sources && Array.isArray(body.sources)) ? body.sources.length : 14;
+          const sourcesCount = (body.sources && Array.isArray(body.sources)) ? body.sources.length : '未提供';
           wx.showModal({
             title: '后端服务在线',
             content: `已成功连接服务端点:\n${currentBase}\n\n• 往返延时: ${latency}ms\n• 状态: HTTP 200 (${statusVal})\n• 监测官方源池: ${sourcesCount} 个`,
@@ -281,15 +289,15 @@ Page({
 
   handleResetSession() {
     wx.showModal({
-      title: '重置席位会话',
-      content: '确定要重置当前设备会话 Token 吗？系统将分配全新的独立用户空间并自动初始化自选池。',
+      title: '重置设备访客账户',
+      content: '将清除当前会话，并在下次使用时建立独立的新账户。原有自选与研究记录不会自动迁移。确定重置吗？',
       confirmText: '重置',
       confirmColor: '#DC2626',
       success: (res) => {
         if (res.confirm) {
           const newUid = resetUserId();
           this.setData({ userIdDisplay: newUid });
-          wx.showToast({ title: '已分配新席位 Token', icon: 'success' });
+          wx.showToast({ title: '当前会话已清除', icon: 'success' });
         }
       }
     });

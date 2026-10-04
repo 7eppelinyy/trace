@@ -1,5 +1,7 @@
 // pages/ask/ask.js - 产业链 AI 深度推演与防破甲对话
 const { askQuestion } = require('../../utils/api');
+const { getUiSettings } = require('../../utils/ui');
+const { presentAnswer } = require('../../utils/answer');
 
 Page({
   data: {
@@ -8,10 +10,13 @@ Page({
     scrollTarget: '',
     messages: [],
     pendingEventId: null,
-    pendingEventVersion: null
+    pendingEventVersion: null,
+    navInset: 64, reduceMotion: false, elapsedSeconds: 0, showNewAnswerHint: false
   },
 
   onShow() {
+    this.setData(getUiSettings());
+    if (this.data.thinking) this.startThinkingTimer();
     const app = getApp();
     if (app && app.globalData && app.globalData.pendingAskQuery) {
       const q = app.globalData.pendingAskQuery;
@@ -28,6 +33,34 @@ Page({
         this.submitAsk();
       });
     }
+  },
+
+  onHide() { this.stopThinkingTimer(); },
+  onReady() { this.measureChat(); },
+  onResize() { this.measureChat(); },
+  measureChat() {
+    if (typeof wx.createSelectorQuery !== 'function') return;
+    wx.createSelectorQuery().select('.chat-stream').boundingClientRect(rect => {
+      if (rect) this._chatHeight = rect.height;
+    }).exec();
+  },
+  onChatScroll(e) {
+    const { scrollTop, scrollHeight } = e.detail;
+    if (this._chatHeight) this._followAnswer = scrollHeight - scrollTop - this._chatHeight < 64;
+    else if (this._lastScrollTop !== undefined && scrollTop < this._lastScrollTop - 12) this._followAnswer = false;
+    this._lastScrollTop = scrollTop;
+  },
+  jumpToLatest() { this._followAnswer = true; this.setData({ showNewAnswerHint: false, scrollTarget: 'scroll-bottom' }); },
+  onUnload() { this._unloaded = true; this.stopThinkingTimer(); },
+  startThinkingTimer() {
+    this.stopThinkingTimer();
+    this._thinkingTimer = setInterval(() => {
+      this.setData({ elapsedSeconds: Math.floor((Date.now() - this._askStarted) / 1000) });
+    }, 1000);
+  },
+  stopThinkingTimer() {
+    if (this._thinkingTimer) clearInterval(this._thinkingTimer);
+    this._thinkingTimer = null;
   },
 
   onInput(e) {
@@ -99,6 +132,7 @@ Page({
     const eventVersion = this.data.pendingEventVersion;
 
     const userMsgId = Date.now();
+    this._followAnswer = true;
     const newMsgList = this.data.messages.concat({
       id: userMsgId,
       role: 'user',
@@ -110,7 +144,7 @@ Page({
       inputValue: '',
       pendingEventId: null,
       pendingEventVersion: null,
-      thinking: true,
+      thinking: true, elapsedSeconds: 0, showNewAnswerHint: false,
       scrollTarget: 'msg-thinking'
     });
 
@@ -120,6 +154,8 @@ Page({
       .map(m => ({ role: m.role, content: m.content }));
 
     const t0 = Date.now();
+    this._askStarted = t0;
+    this.startThinkingTimer();
 
     try {
       const askOpts = {
@@ -128,6 +164,7 @@ Page({
         mode: eventId ? 'evidence_answer' : 'auto'
       };
       const res = await askQuestion(ticker, q, history, askOpts);
+      if (this._unloaded) return;
       const duration = (res && res.duration_ms) || (Date.now() - t0);
 
       const status = (res && res.status) || 'ok';
@@ -142,11 +179,11 @@ Page({
       const evidenceEvents = (res && res.evidence_events) || [];
       const hasEvidence = evidenceEvents.length > 0;
 
-      let title = 'Trace 产业链深度研判';
+      let title = '研究回答';
       let metaBadge = hasEvidence
-        ? `Trace 研判 · 耗时 ${duration}ms · 关联 ${evidenceEvents.length} 条事实证据`
-        : `Trace 产业链拓扑研判 · 耗时 ${duration}ms`;
-      let sourceLabel = hasEvidence ? '官方证据链与图谱拓扑' : '产业链拓扑推演';
+        ? `${evidenceEvents.length} 条关联证据 · ${(duration / 1000).toFixed(1)} 秒`
+        : `${(duration / 1000).toFixed(1)} 秒`;
+      let sourceLabel = hasEvidence ? '证据与推断' : '研究解释';
 
       if (isBlocked) {
         title = '安全防御拦截';
@@ -159,10 +196,13 @@ Page({
       } else if (isBudgetExhausted) {
         title = '推演额度提醒';
         metaBadge = '成本保护 · 当日模型调用额度耗尽';
-        sourceLabel = '离线规则推演';
+        sourceLabel = '额度提示';
+      } else if (res && res.mode === 'background' && status === 'ok') {
+        title = '业务与原理';
+        sourceLabel = '背景解释 · 非实时核验';
       } else if (isScenario) {
-        title = 'Trace 产业链情景推演';
-        metaBadge = `情景模拟 · 基于拓扑第一性原理假设 · 耗时 ${duration}ms`;
+        title = '情景推演';
+        metaBadge = `基于假设 · ${(duration / 1000).toFixed(1)} 秒`;
         sourceLabel = '情景假设模拟（非既成事实）';
       } else if (isDegraded) {
         title = 'Trace 规则模板研判（降级模式）';
@@ -174,8 +214,11 @@ Page({
         sourceLabel = '证据核验拒绝虚构';
       } else if (status === 'invalid_model_output') {
         title = '模型输出未通过事实核验';
-        metaBadge = '校验拦截 · 模型输出不符合原文硬约束，已转为规则兜底';
-        sourceLabel = '本地规则兜底';
+        metaBadge = '回答未通过内容校验';
+        sourceLabel = '暂无可靠结论';
+      } else if (status === 'model_unavailable') {
+        title = '服务暂时不可用';
+        sourceLabel = '稍后重试';
       } else if (isError) {
         title = '推演服务通信异常';
         metaBadge = '服务异常 · 请检查网络与后端配置';
@@ -203,18 +246,23 @@ Page({
         metaBadge: metaBadge,
         sourceLabel: sourceLabel,
         content: finalContent,
+        ...presentAnswer(res || {}),
         isSecurity: isBlocked || isOutOfDomain,
         isDegraded: isDegraded || isInsufficientEvidence || isBudgetExhausted || status === 'invalid_model_output' || finalStatus === 'insufficient_evidence',
         evidenceEvents: evidenceEvents,
-        graphChain: (res && res.graph_chain) || []
+        graphChain: (res && res.graph_chain) || [],
+        canRetry: ['error', 'model_unavailable', 'invalid_model_output'].includes(finalStatus),
+        retryQuery: q, retryEventId: eventId, retryEventVersion: eventVersion
       });
 
       this.setData({
         messages: aiMsgList,
         thinking: false,
-        scrollTarget: 'scroll-bottom'
+        scrollTarget: this._followAnswer === false ? '' : 'scroll-bottom',
+        showNewAnswerHint: this._followAnswer === false
       });
     } catch (e) {
+      if (this._unloaded) return;
       const errItem = {
         id: Date.now(),
         role: 'assistant',
@@ -223,33 +271,52 @@ Page({
         title: '推演请求未完成',
         metaBadge: '网络或服务异常 · 可点击重试',
         sourceLabel: 'Trace 通道',
-        content: '推演服务连接超时或网络异常，未消耗 AI 推演预算。请检查网络后点击下方重试。',
+        content: '请求未能完成。请检查网络后重试；服务端可能已经开始处理。',
         isSecurity: false,
         isDegraded: true,
         isError: true,
         canRetry: true,
-        retryQuery: q
+        retryQuery: q, retryEventId: eventId, retryEventVersion: eventVersion
       };
       this.setData({
         messages: this.data.messages.concat(errItem),
         thinking: false,
-        scrollTarget: 'scroll-bottom'
+        scrollTarget: this._followAnswer === false ? '' : 'scroll-bottom',
+        showNewAnswerHint: this._followAnswer === false
       });
       wx.showToast({ title: '推演请求未完成', icon: 'none' });
+    } finally {
+      this.stopThinkingTimer();
     }
+  },
+
+  toggleAnswerDetails(e) {
+    const index = Number(e.currentTarget.dataset.index);
+    const messages = this.data.messages.map((message, i) => i === index ? { ...message, detailsExpanded: !message.detailsExpanded } : message);
+    this.setData({ messages });
+  },
+  copyAnswer(e) {
+    const message = this.data.messages[Number(e.currentTarget.dataset.index)];
+    if (message) wx.setClipboardData({ data: message.content });
+  },
+  copySource(e) {
+    const url = e.currentTarget.dataset.url;
+    if (url) wx.setClipboardData({ data: url });
   },
 
   retryAsk(e) {
     if (this.data.thinking) return;
     const q = e.currentTarget.dataset.query;
+    const message = this.data.messages[Number(e.currentTarget.dataset.index)] || {};
     if (q) {
-      this.setData({ inputValue: q }, () => {
+      this.setData({ inputValue: q, pendingEventId: message.retryEventId || null, pendingEventVersion: message.retryEventVersion || null }, () => {
         this.submitAsk();
       });
     }
   },
 
   clearChat() {
+    if (this.data.thinking) return;
     this.setData({
       messages: []
     });

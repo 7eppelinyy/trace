@@ -1,86 +1,49 @@
-<!-- pages/ask/ask.wxml - 产业链 AI 深度推演与防破甲交互 -->
-<view class="ask-container">
-
-  <!-- 顶部 Header 状态 -->
-  <view class="ask-header">
-    <view>
-      <view class="ask-title">产业链推演</view>
-      <view class="ask-subtitle">Trace Graph 推理 · 实时行情与官方源穿透</view>
-    </view>
-    <view class="clear-btn btn-press" bindtap="clearChat" title="清空对话">
-      <image class="clear-icon-img" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394A3B8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M3 6h18'/><path d='M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6'/><path d='M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2'/></svg>"></image>
-    </view>
+<view class="ask-container {{reduceMotion ? 'motion-reduced' : ''}}">
+  <view class="ask-header" style="padding-top: {{navInset}}px;">
+    <view><view class="ask-title">推演</view><view class="ask-subtitle">把问题想清楚</view></view>
+    <view class="clear-btn btn-press {{thinking ? 'control-disabled' : ''}}" bindtap="clearChat" aria-label="清空对话"><text>清空</text></view>
   </view>
-
-  <!-- 对话与流式推演区域 -->
-  <scroll-view class="chat-stream" scroll-y scroll-into-view="{{scrollTarget}}" enable-flex>
-    
-    <!-- 快捷研报追问建议 -->
-    <view class="preset-section">
-      <view class="preset-label">研报追问建议</view>
-      <view class="preset-item" bindtap="askPreset" data-query="深度分析英伟达 GB200 铜互联方案对 A 股连接器及线缆板块（如沃尔核材、立讯精密）的业绩弹性与估值影响">
-        <text class="preset-text">[英伟达/铜互联] GB200 放量对 A 股线缆连接器业绩弹性？</text>
-        <text class="preset-arrow">→</text>
-      </view>
-      <view class="preset-item" bindtap="askPreset" data-query="请深度评估苹果评估铠侠 NAND 闪存对美光科技（MU）与闪迪（SNDK）的冲击与长单毛利率影响">
-        <text class="preset-text">[美光/闪迪] 苹果引入二供对 Q4 合约毛利率影响？</text>
-        <text class="preset-arrow">→</text>
-      </view>
-      <view class="preset-item" bindtap="askPreset" data-query="美联储货币政策转向与降息预期对中美半导体估值传导逻辑">
-        <text class="preset-text">[宏观降息] 美联储货币政策转向对科技半导体估值传导？</text>
-        <text class="preset-arrow">→</text>
-      </view>
+  <scroll-view class="chat-stream" scroll-y scroll-into-view="{{scrollTarget}}" bindscroll="onChatScroll" enable-flex>
+    <view class="preset-section" wx:if="{{messages.length === 0}}">
+      <view class="welcome-title">从一个好问题开始</view>
+      <view class="welcome-subtitle">解释业务、比较公司，或检验一个假设。</view>
+      <view class="preset-item" bindtap="askPreset" data-query="美光和闪迪的业务有什么区别，DRAM和NAND涨价分别对谁更有利？"><text class="preset-text">美光与闪迪，有什么不同？</text><text class="preset-arrow">↗</text></view>
+      <view class="preset-item" bindtap="askPreset" data-query="假设AI服务器需求放缓，光模块和液冷产业链会受到什么影响？"><text class="preset-text">AI 需求放缓，会影响哪些环节？</text><text class="preset-arrow">↗</text></view>
+      <view class="preset-item" bindtap="askPreset" data-query="假设美联储降息，美股科技公司的估值会受到什么影响？"><text class="preset-text">降息如何影响科技股估值？</text><text class="preset-arrow">↗</text></view>
     </view>
-
-    <!-- 消息对话流 -->
     <block wx:for="{{messages}}" wx:key="id">
-      <!-- 用户消息 -->
-      <view class="msg-row user-row" wx:if="{{item.role === 'user'}}" id="msg-{{item.id}}">
-        <view class="user-bubble">{{item.content}}</view>
-      </view>
-
-      <!-- AI 推演消息 -->
+      <view class="msg-row user-row" wx:if="{{item.role === 'user'}}" id="msg-{{item.id}}"><view class="user-bubble"><text selectable>{{item.content}}</text></view></view>
       <view class="msg-row ai-row" wx:if="{{item.role === 'assistant'}}" id="msg-{{item.id}}">
-        <view class="ai-meta tnum">{{item.metaBadge || (item.isSecurity ? 'Trace 防护护栏 · 安全审计拦截' : 'Trace Graph 推理 · 耗时 ' + (item.duration || 210) + 'ms · 事实证据已穿透')}}</view>
+        <view class="ai-meta">{{item.metaBadge}}</view>
         <view class="ai-card {{item.isSecurity ? 'ai-card-security' : (item.isDegraded ? 'ai-card-degraded' : '')}}">
-          <view class="ai-title {{item.isSecurity ? 'ai-title-security' : (item.isDegraded ? 'ai-title-degraded' : '')}}">{{item.title || '推演研判结论'}}</view>
-          <view class="ai-content {{item.isSecurity ? 'ai-content-security' : ''}}">{{item.content}}</view>
-          <view class="ai-footer">
-            <text class="ai-source tnum">{{item.ticker || '核心标的'}} · {{item.sourceLabel || (item.isSecurity ? '安全隔离保护' : '官方证据链与图谱拓扑')}}</text>
-            <view class="ai-link" wx:if="{{!item.isSecurity && item.graphChain && item.graphChain.length > 0}}" bindtap="navigateToDetail" data-index="{{index}}">
-              查看 4 级图谱 ↗
-            </view>
+          <view class="ai-title">{{item.title}}</view>
+          <block wx:if="{{item.answerClaims && item.answerClaims.length > 0}}">
+            <view class="answer-section" wx:for="{{item.answerClaims}}" wx:key="id" wx:for-item="claim" wx:for-index="claimIndex"><view class="answer-kind">{{claimIndex === 0 ? '核心回答' : claim.label}}</view><text class="answer-text {{claimIndex === 0 ? 'answer-lead' : ''}}" selectable>{{claim.text}}</text></view>
+          </block>
+          <text wx:else class="ai-content" selectable>{{item.content}}</text>
+          <view class="answer-details-toggle" wx:if="{{item.hasAnswerDetails}}" bindtap="toggleAnswerDetails" data-index="{{index}}">{{item.detailsExpanded ? '收起条件与来源 −' : '查看成立条件与资料来源 ＋'}}</view>
+          <view class="answer-details" wx:if="{{item.detailsExpanded}}">
+            <block wx:for="{{item.answerClaims}}" wx:key="id" wx:for-item="claim" wx:for-index="claimIndex">
+              <view class="condition-group" wx:if="{{claim.conditions.length > 0 || claim.supportQuote || claim.counterEvidence.length > 0}}">
+                <view class="answer-kind">第 {{claimIndex + 1}} 项 · 条件与支持</view>
+                <view class="condition-text" wx:for="{{claim.conditions}}" wx:key="*this" wx:for-item="condition">· {{condition}}</view>
+                <text class="condition-text" wx:if="{{claim.supportQuote}}" selectable>支持片段：{{claim.supportQuote}}</text>
+                <view class="condition-text" wx:for="{{claim.counterEvidence}}" wx:key="*this" wx:for-item="counter">反证条件：{{counter}}</view>
+              </view>
+            </block>
+            <text class="condition-text next-checks" wx:if="{{item.nextChecksText}}" selectable>{{item.nextChecksText}}</text>
+            <view class="answer-kind" wx:if="{{item.answerSources.length > 0}}">资料来源 · 点击复制链接</view>
+            <view class="source-row" wx:for="{{item.answerSources}}" wx:key="url" wx:for-item="source" bindtap="copySource" data-url="{{source.url}}"><text>{{source.number}}. {{source.label}}</text><text>↗</text></view>
           </view>
+          <view class="ai-footer"><text class="ai-source">{{item.sourceLabel}}</text><view class="ai-link" bindtap="copyAnswer" data-index="{{index}}">复制回答</view></view>
+          <view class="ai-link graph-action" wx:if="{{!item.isSecurity && item.graphChain && item.graphChain.length > 0}}" bindtap="navigateToDetail" data-index="{{index}}">查看关联路径 →</view>
+          <view class="retry-answer btn-press" wx:if="{{item.canRetry}}" bindtap="retryAsk" data-index="{{index}}" data-query="{{item.retryQuery}}">重新尝试</view>
         </view>
       </view>
     </block>
-
-    <!-- 推演中 Loading 状态 -->
-    <view class="msg-row ai-row" wx:if="{{thinking}}" id="msg-thinking">
-      <view class="thinking-box">
-        <view class="thinking-spinner"></view>
-        <text class="thinking-text">Trace Graph 正在穿透产业链拓扑、实时行情与事实证据...</text>
-      </view>
-    </view>
-
-    <view id="scroll-bottom" style="height: 32rpx;"></view>
+    <view class="msg-row ai-row" wx:if="{{thinking}}" id="msg-thinking"><view class="thinking-box"><view class="thinking-spinner"></view><text class="thinking-text">正在生成回答{{elapsedSeconds > 0 ? ' · ' + elapsedSeconds + ' 秒' : ''}}</text></view><view class="quiet-caption">复杂问题可能需要更长时间</view></view>
+    <view id="scroll-bottom" style="height: 24rpx;"></view>
   </scroll-view>
-
-  <!-- 底部固定输入条 -->
-  <view class="input-bar">
-    <input 
-      class="ask-input" 
-      placeholder="输入宏观事件、产业链议题或标的代码追问..." 
-      value="{{inputValue}}" 
-      bindinput="onInput" 
-      bindconfirm="submitAsk"
-      confirm-type="send"
-      adjust-position="{{true}}"
-      cursor-spacing="16"
-    />
-    <view class="send-btn btn-press" bindtap="submitAsk">
-      发送
-    </view>
-  </view>
-
+  <view class="new-answer-hint" wx:if="{{showNewAnswerHint}}" bindtap="jumpToLatest">新回答已就绪 · 向下查看 ↓</view>
+  <view class="input-bar"><input class="ask-input" placeholder="有什么想研究的问题？" value="{{inputValue}}" bindinput="onInput" bindconfirm="submitAsk" bindkeyboardheightchange="measureChat" confirm-type="send" adjust-position="{{true}}" cursor-spacing="24" maxlength="1000" /><view class="send-btn btn-press {{thinking ? 'control-disabled' : ''}}" bindtap="submitAsk">{{thinking ? '等待' : '发送'}}</view></view>
 </view>

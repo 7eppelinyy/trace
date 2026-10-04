@@ -44,7 +44,7 @@ vm.runInNewContext(fs.readFileSync('miniprogram/utils/api.js','utf8'),
 
 (async () => {
   const api = moduleObject.exports;
-  
+
   // 1. Initial auth calls deduplicated to single session issuance
   await Promise.all([api.request({url:'/watchlist'}), api.request({url:'/preferences'})]);
   const authCalls = calls.filter(c => c.url.endsWith('/auth/session') && c.method === 'POST');
@@ -107,7 +107,7 @@ vm.runInNewContext(fs.readFileSync('miniprogram/utils/api.js','utf8'),
     return {items:[]};
   };
   vm.runInNewContext(fs.readFileSync('miniprogram/pages/research/research.js','utf8'), {
-    Page: p => page=p, require: () => ({request:requests,getUserId:()=> 'usr-server'}), console,
+    Page: p => page=p, require: p => p.includes('utils/ui') ? require('../utils/ui') : ({request:requests,getUserId:()=> 'usr-server'}), console,
     wx: {showToast:()=>{}}, Date
   });
   page.setData = function(data) {Object.assign(this.data,data);};

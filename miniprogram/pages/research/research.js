@@ -1,11 +1,13 @@
 const {request, getUserId} = require('../../utils/api');
+const {getUiSettings} = require('../../utils/ui');
 
 Page({
   data: {items: [], loading: false, saving: false, error: '', selected: null, shared: false,
     title: '', hypothesis: '', supporting: '', contradicting: '', userNotes: '', nextDate: '', sharePath: '',
-    total: 0, hasMore: false, loadingMore: false},
+    total: 0, hasMore: false, loadingMore: false, reduceMotion: false},
   generation: 0,
   async onLoad(options = {}) {
+    this.setData(getUiSettings());
     if (options.shareId && options.token) {
       this.setData({shared: true, loading: true});
       try {
@@ -22,7 +24,7 @@ Page({
       } catch (_) { this.setData({error: '无法读取事件，请稍后重试'}); }
     }
   },
-  onShow() { if (!this.data.shared) this.load(); },
+  onShow() { this.setData(getUiSettings()); if (!this.data.shared) this.load(); },
   onUnload() { this.generation += 1; },
   onReachBottom() {
     if (this.data.hasMore && !this.data.loadingMore && !this.data.loading && !this.data.shared) {

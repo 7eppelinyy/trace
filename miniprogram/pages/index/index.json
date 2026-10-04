@@ -1,5 +1,6 @@
 {
   "navigationBarTitleText": "Trace",
+  "navigationStyle": "custom",
   "enablePullDownRefresh": true,
   "backgroundTextStyle": "dark"
 }

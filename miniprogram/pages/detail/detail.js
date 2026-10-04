@@ -2,6 +2,7 @@
 const { getEventDetail } = require('../../utils/api');
 const { getMockDetailById } = require('../../utils/mock');
 const app = getApp();
+const { getUiSettings } = require('../../utils/ui');
 
 let loadGenerationCounter = 0;
 
@@ -12,10 +13,14 @@ Page({
     loading: false,
     loadError: false,
     errorMessage: '',
-    isDemo: false
+    isDemo: false,
+    detailTab: 'overview', reduceMotion: false
   },
+  onShow() { this.setData(getUiSettings()); },
+  switchDetailTab(e) { this.setData({ detailTab: e.currentTarget.dataset.tab }); },
 
   async onLoad(options) {
+    this.setData(getUiSettings());
     const id = (options && options.id) || '';
     const from = (options && options.from) || '';
     const currentGen = ++loadGenerationCounter;
@@ -23,7 +28,7 @@ Page({
     this.setData({ eventId: id, loading: true, loadError: false, errorMessage: '' });
 
     wx.setNavigationBarTitle({
-      title: from === 'ask' ? '动态产业链推演图谱' : '事件证据与推演工作台'
+      title: from === 'ask' ? '关联路径' : '事件详情'
     });
 
     let ev = null;

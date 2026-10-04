@@ -1,5 +1,6 @@
 {
   "navigationBarTitleText": "自选与预警",
+  "navigationStyle": "custom",
   "enablePullDownRefresh": true,
   "backgroundTextStyle": "dark"
 }

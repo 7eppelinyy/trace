@@ -36,7 +36,7 @@
 .hero-eyebrow {
   font-size: 21rpx;
   font-weight: 600;
-  color: #94A3B8;
+  color: #86868B;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   margin-bottom: 10rpx;
@@ -45,7 +45,7 @@
 .hero-title {
   font-size: 32rpx;
   font-weight: 700;
-  color: #0F172A;
+  color: #1D1D1F;
   line-height: 1.38;
   letter-spacing: -0.02em;
 }
@@ -61,12 +61,12 @@
 }
 
 .hero-status {
-  color: #64748B;
+  color: #6E6E73;
   font-weight: 400;
 }
 
 .hero-link {
-  color: #2563EB;
+  color: #007AFF;
   font-weight: 600;
   letter-spacing: -0.01em;
 }
@@ -100,14 +100,14 @@
 
 .index-name {
   font-size: 20rpx;
-  color: #94A3B8;
+  color: #86868B;
   font-weight: 500;
 }
 
 .index-price {
   font-size: 26rpx;
   font-weight: 700;
-  color: #0F172A;
+  color: #1D1D1F;
   margin-top: 4rpx;
   letter-spacing: -0.02em;
 }
@@ -130,13 +130,13 @@
 .section-title {
   font-size: 27rpx;
   font-weight: 700;
-  color: #0F172A;
+  color: #1D1D1F;
   letter-spacing: -0.01em;
 }
 
 .section-sub {
   font-size: 21rpx;
-  color: #94A3B8;
+  color: #86868B;
   font-weight: 400;
 }
 
@@ -150,12 +150,12 @@
 }
 
 .event-source {
-  color: #94A3B8;
+  color: #86868B;
   font-weight: 400;
 }
 
 .event-level {
-  color: #475569;
+  color: #515154;
   font-weight: 500;
   font-size: 20rpx;
   background-color: rgba(15, 23, 42, 0.04);
@@ -166,14 +166,14 @@
 .event-title {
   font-size: 29rpx;
   font-weight: 600;
-  color: #0F172A;
+  color: #1D1D1F;
   line-height: 1.4;
   letter-spacing: -0.015em;
 }
 
 .event-summary {
   font-size: 24rpx;
-  color: #64748B;
+  color: #6E6E73;
   margin-top: 8rpx;
   line-height: 1.45;
   font-weight: 400;
@@ -204,7 +204,7 @@
 }
 
 .sec-ticker {
-  color: #334155;
+  color: #424245;
   font-weight: 600;
   margin-right: 8rpx;
 }
@@ -214,7 +214,7 @@
 }
 
 .graph-link {
-  color: #94A3B8;
+  color: #86868B;
   font-size: 21rpx;
   font-weight: 500;
   line-height: 1;
@@ -223,7 +223,7 @@
 
 .index-badge {
   font-size: 16rpx;
-  color: #64748B;
+  color: #6E6E73;
   background-color: rgba(15, 23, 42, 0.06);
   padding: 2rpx 8rpx;
   border-radius: 6rpx;
@@ -232,7 +232,7 @@
 }
 
 .color-neutral {
-  color: #94A3B8 !important;
+  color: #86868B !important;
 }
 
 .empty-state-home {
@@ -246,11 +246,37 @@
 .empty-state-home .empty-title {
   font-size: 28rpx;
   font-weight: 600;
-  color: #0F172A;
+  color: #1D1D1F;
   margin-bottom: 8rpx;
 }
 
 .empty-state-home .empty-desc {
   font-size: 22rpx;
-  color: #94A3B8;
+  color: #86868B;
 }
+
+
+/* V2: quiet market overview and editorial event rows. */
+.refresh-btn { width: 88rpx; height: 88rpx; border: 0; box-shadow: none; background: #EDEDF2; }
+.hero-card { padding: 36rpx; border: 0; box-shadow: none; border-radius: 32rpx; }
+.hero-eyebrow { color: #007AFF; font-size: 24rpx; letter-spacing: 0; }
+.hero-title { font-size: 38rpx; line-height: 1.4; font-weight: 650; }
+.hero-footer { flex-wrap: wrap; gap: 16rpx; line-height: 1.5; font-size: 24rpx; }
+.hero-status { flex: 1; min-width: 200rpx; }
+.indices-strip { display: grid; grid-template-columns: 1fr 1fr; border: 0; box-shadow: none; padding: 12rpx; gap: 0; border-radius: 28rpx; }
+.index-cell { padding: 20rpx; text-align: left; min-width: 0; }
+.index-cell::after { display: none; }
+.index-name { font-size: 24rpx; }
+.index-price { font-size: 34rpx; font-weight: 600; }
+.index-pct { font-size: 25rpx; }
+.section-header { margin: 36rpx 0 20rpx; gap: 16rpx; flex-wrap: wrap; }
+.section-title { font-size: 34rpx; font-weight: 650; }
+.section-sub { font-size: 24rpx; }
+.event-meta { gap: 12rpx; flex-wrap: wrap; font-size: 24rpx; }
+.event-level { font-size: 22rpx; background: transparent; padding: 0; color: #6E6E73; }
+.event-title { font-size: 32rpx; line-height: 1.5; }
+.event-summary { font-size: 27rpx; line-height: 1.6; margin-top: 12rpx; }
+.event-footer { gap: 16rpx; flex-wrap: wrap; line-height: 1.4; }
+.securities-wrap { flex-wrap: wrap; min-width: 0; gap: 14rpx; }
+.sec-chip { font-size: 24rpx; line-height: 1.5; }
+.graph-link { font-size: 24rpx; padding: 12rpx 0; }

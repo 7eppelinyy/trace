@@ -8,15 +8,15 @@
     "pages/research/research"
   ],
   "window": {
-    "navigationBarBackgroundColor": "#F8FAFC",
+    "navigationBarBackgroundColor": "#F5F5F7",
     "navigationBarTitleText": "Trace",
     "navigationBarTextStyle": "black",
-    "backgroundColor": "#F8FAFC",
+    "backgroundColor": "#F5F5F7",
     "backgroundTextStyle": "dark"
   },
   "tabBar": {
     "color": "#94A3B8",
-    "selectedColor": "#0F172A",
+    "selectedColor": "#007AFF",
     "backgroundColor": "#FFFFFF",
     "borderStyle": "white",
     "list": [
@@ -40,7 +40,7 @@
       },
       {
         "pagePath": "pages/profile/profile",
-        "text": "设置",
+        "text": "我的",
         "iconPath": "assets/icons/profile.png",
         "selectedIconPath": "assets/icons/profile-active.png"
       }

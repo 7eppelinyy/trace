@@ -1,6 +1,7 @@
 // pages/watchlist/watchlist.js - 自选监控与阈值预警
 const { getWatchlist, addWatchlist, removeWatchlist, clearWatchlist, resetWatchlist, searchWatchlist, getPreferences, updatePreference } = require('../../utils/api');
 const { formatPrice, formatPct, isPositive, shortTicker } = require('../../utils/format');
+const { getUiSettings } = require('../../utils/ui');
 
 Page({
   data: {
@@ -12,7 +13,9 @@ Page({
     showSearchSheet: false,
     searchQuery: '',
     searchResults: [],
-    searchFocused: false
+    searchFocused: false,
+    navInset: 64, reduceMotion: false, editing: false,
+    filterQuery: '', sheetClosing: false, draggingIndex: -1
   },
 
   searchTimer: null,
@@ -23,12 +26,17 @@ Page({
   activeSwipeIdx: -1,
 
   onLoad() {
+    this.setData(getUiSettings());
     this.loadData();
   },
 
   onShow() {
+    this.setData(getUiSettings());
     this.loadData();
   },
+  onUnload() { clearTimeout(this.searchTimer); clearTimeout(this._sheetCloseTimer); },
+  toggleEditing() { this.closeAllSwipes(); this.setData({ editing: !this.data.editing }); },
+  onFilterInput(e) { this.setData({ filterQuery: e.detail.value }); this.applyFilter(this.data.currentMarket); },
 
   onPullDownRefresh() {
     this.loadData(() => {
@@ -64,6 +72,7 @@ Page({
         formattedPrice: formatPrice(item.last_price, item.market),
         formattedPct: formatPct(item.change_pct),
         isUp: isPositive(item.change_pct),
+        hasQuote: item.last_price !== null && item.last_price !== undefined && item.change_pct !== null && item.change_pct !== undefined && Number.isFinite(Number(item.last_price)) && Number.isFinite(Number(item.change_pct)),
         pushEnabled: overrideMap[item.security_id] !== undefined ? overrideMap[item.security_id] : globalEnabled,
         offsetX: 0
       }));
@@ -97,15 +106,20 @@ Page({
     if (market !== 'all') {
       list = list.filter(item => item.market === market);
     }
+    const query = this.data.filterQuery.trim().toLowerCase();
+    if (query) list = list.filter(item => [item.ticker, item.company_name_zh, item.company_name_en].some(value => value && value.toLowerCase().includes(query)));
     this.setData({ filteredList: list });
   },
 
   // ---------------- 滑动操作 (Swipe to Delete / Pin) ----------------
   onTouchStart(e) {
-    if (!e.touches.length) return;
+    if (e.touches.length !== 1) return;
     this.touchStartX = e.touches[0].clientX;
     this.touchStartY = e.touches[0].clientY;
     const idx = e.currentTarget.dataset.index;
+    this.touchStartOffset = (this.data.filteredList[idx] || {}).offsetX || 0;
+    this.touchAxis = null;
+    this._rpxRatio = 750 / (wx.getSystemInfoSync().windowWidth || 375);
 
     // 如果之前有展开的卡片且不是当前卡片，先收起
     if (this.activeSwipeIdx !== -1 && this.activeSwipeIdx !== idx) {
@@ -114,33 +128,35 @@ Page({
   },
 
   onTouchMove(e) {
-    if (!e.touches.length) return;
+    if (e.touches.length !== 1) return;
     const currentX = e.touches[0].clientX;
     const currentY = e.touches[0].clientY;
     const dx = currentX - this.touchStartX;
     const dy = currentY - this.touchStartY;
 
-    // 水平手势判定
-    if (Math.abs(dx) > Math.abs(dy)) {
+    if (!this.touchAxis && Math.max(Math.abs(dx), Math.abs(dy)) > 8) {
+      this.touchAxis = Math.abs(dx) > Math.abs(dy) ? 'horizontal' : 'vertical';
+    }
+    if (this.touchAxis === 'horizontal') {
       const idx = e.currentTarget.dataset.index;
       const list = this.data.filteredList;
       if (!list[idx]) return;
 
       // 转换为 rpx (基于屏幕宽度)
-      const sys = wx.getSystemInfoSync();
-      const rpxRatio = 750 / (sys.windowWidth || 375);
-      let offsetRpx = dx * rpxRatio;
+      let offsetRpx = this.touchStartOffset + dx * this._rpxRatio;
 
       // 限制左滑最大展开 240rpx，右滑不超过 0
       if (offsetRpx < -240) offsetRpx = -240;
       if (offsetRpx > 0) offsetRpx = 0;
 
       list[idx].offsetX = offsetRpx;
-      this.setData({ filteredList: list });
+      this.setData({ [`filteredList[${idx}].offsetX`]: offsetRpx, draggingIndex: idx });
     }
   },
 
   onTouchEnd(e) {
+    this.setData({ draggingIndex: -1 });
+    if (this.touchAxis !== 'horizontal') return;
     const idx = e.currentTarget.dataset.index;
     const list = this.data.filteredList;
     const item = list[idx];
@@ -321,7 +337,9 @@ Page({
   },
 
   openAddModal() {
+    clearTimeout(this._sheetCloseTimer);
     this.setData({
+      sheetClosing: false,
       showSearchSheet: true,
       searchFocused: true,
       searchQuery: '',
@@ -330,10 +348,11 @@ Page({
   },
 
   closeSearchModal() {
-    this.setData({
-      showSearchSheet: false,
-      searchFocused: false
-    });
+    if (this.data.sheetClosing) return;
+    this.setData({ sheetClosing: true, searchFocused: false });
+    this._sheetCloseTimer = setTimeout(() => {
+      this.setData({ showSearchSheet: false, sheetClosing: false });
+    }, this.data.reduceMotion ? 0 : 200);
   },
 
   clearSearchQuery() {

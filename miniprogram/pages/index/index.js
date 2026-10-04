@@ -1,18 +1,23 @@
 // pages/index/index.js - 全网官方源事件雷达
 const { getIndices, getEvents } = require('../../utils/api');
 const { formatIndexPoint, formatPct, isPositive } = require('../../utils/format');
+const { getUiSettings } = require('../../utils/ui');
 
 Page({
   data: {
     indices: [],
     heroEvent: null,
     events: [],
-    loading: false
+    loading: false,
+    navInset: 64, reduceMotion: false, todayLabel: ''
   },
 
   onLoad() {
+    const now = new Date();
+    this.setData({ ...getUiSettings(), todayLabel: `${now.getMonth() + 1}月${now.getDate()}日` });
     this.loadAllData();
   },
+  onShow() { this.setData(getUiSettings()); },
 
   onPullDownRefresh() {
     this.loadAllData(() => {
