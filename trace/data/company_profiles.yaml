@@ -1,0 +1,19 @@
+# Manually verified company context for background explanations.
+# Product facts are not current revenue mix, forecasts, prices or orders.
+profiles:
+  SNDK:
+    verified_at: '2026-10-04'
+    facts:
+      - 'Sandisk Corporation（闪迪），纳斯达克代码 SNDK。2025-02-24 已完成从 Western Digital 分拆，成为独立上市公司；不能描述成目前仍是西部数据旗下品牌。'
+      - '官方介绍为 Flash 闪存解决方案和先进存储技术公司，包含消费与企业产品。'
+    references:
+      - title: 'Sandisk completes separation and Nasdaq listing — official SEC exhibit'
+        url: 'https://www.sec.gov/Archives/edgar/data/2023554/000119312525033433/d849281dex991.htm'
+  MU:
+    verified_at: '2026-10-04'
+    facts:
+      - 'Micron Technology（美光）的官方产品目录包含 DRAM、HBM、NAND flash 和 SSD；讨论 NAND 时不能把美光排除在外。'
+      - '此产品目录不提供当前各业务收入占比，也不证明当前涨价幅度或利润弹性。'
+    references:
+      - title: 'Micron official product catalog'
+        url: 'https://www.micron.com/products'
